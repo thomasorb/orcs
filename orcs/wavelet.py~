@@ -1,0 +1,493 @@
+#!/usr/bin/python
+# *-* coding: utf-8 *-*
+# Author: Thomas Martin <thomas.martin.1@ulaval.ca>
+# File: orcs.py
+
+__author__ = "Thomas Martin"
+__licence__ = "Thomas Martin (thomas.martin.1@ulaval.ca)"                      
+__docformat__ = 'reStructuredText'
+__version__ = "0.5"
+"""
+Core module of ORCS.
+"""
+
+## BASIC IMPORTS
+
+import os, sys
+
+# import data
+from data import *
+
+# import ORBS
+try:
+    sys.path.append(ORBS_PATH)
+    from orbs.core import Tools, ProgressBar, Cube
+    from orbs.astrometry import *
+    from orbs.utils import *
+    
+except IOError, e:
+    print "ORBS could not be found at %s. Check orcs/data.py"%ORBS_PATH
+    print e
+    sys.exit(2)
+
+
+# import Python libraries
+from scipy import interpolate, optimize
+import numpy as np
+import pywcs as pw
+import warnings
+import StringIO
+import urllib2
+import pyfits
+
+
+#################################################
+#### CLASS ORCSTools ############################
+#################################################
+class ORCSTools(Tools):
+    """
+    This class is simply an extension of the orbs.core.Tools class of
+    ORBS. Some ORCS specific methods and attributes are added.
+    
+    Spectral lines rest wavelength::
+    
+      ============ ======== =======
+        Em. Line    Vaccum    Air
+      ============ ======== =======
+      [OII]3726    372.709  372.603
+      [OII]3729    372.988  372.882
+      Hepsilon     397.119  397.007
+      Hdelta       410.292  410.176
+      Hgamma       434.169  434.047
+      [OIII]4363   436.444  436.321
+      Hbeta        486.269  486.133
+      [OIII]4959   496.030  495.892
+      [OIII]5007   500.824  500.684
+      [NII]6549    654.984  654.803
+      Halpha       656.461  656.280
+      [NII]6583    658.523  658.341
+      [SII]6717    671.832  671.647
+      [SII]6731    673.271  673.085
+    """
+    vac_lines_nm = {'[OII]3726':372.709,
+                    '[OII]3729':372.988,
+                    'Hepsilon':397.119,
+                    'Hdelta':410.292,
+                    'Hgamma':434.169,
+                    '[OIII]4363':436.444,
+                    'Hbeta':486.269,
+                    '[OIII]4959':496.030,
+                    '[OIII]5007':500.824,
+                    '[NII]6549':654.984,
+                    'Halpha':656.461,
+                    '[NII]6583':658.523,
+                    '[SII]6717':671.832,
+                    '[SII]6731':673.271}
+    """Dictionary of the """
+    
+    air_lines_nm = {'[OII]3726':372.603,
+                    '[OII]3729':372.882,
+                    'Hepsilon':397.007,
+                    'Hdelta':410.176,
+                    'Hgamma':434.047,
+                    '[OIII]4363':436.321,
+                    'Hbeta':486.133,
+                    '[OIII]4959':495.892,
+                    '[OIII]5007':500.684,
+                    '[NII]6549':654.803,
+                    'Halpha':656.280,
+                    '[NII]6583':658.341,
+                    '[SII]6717':671.647,
+                    '[SII]6731':673.085}
+
+    def get_mask_from_ds9_region_file(self, reg_path, x_range=None,
+                                      y_range=None):
+        """Return the indices of the elements inside 'box' and
+        'circle' regions.
+
+        :param reg_path: Path to a ds9 region file
+        
+        :param x_range: (Optional) Range of x image coordinates
+          considered as valid. Pixels outside this range are
+          rejected. If None, no validation is done (default None).
+
+        :param y_range: (Optional) Range of y image coordinates
+          considered as valid. Pixels outside this range are
+          rejected. If None, no validation is done (default None).
+
+        .. note:: The returned array can be used as the list of
+          indices returned by numpy.nonzero().
+        
+        .. note:: Coordinates can be image coordinates (x,y) or sky
+          coordinates (ra, dec)
+        """
+        f = self.open_file(reg_path, 'r')
+        x_list = list()
+        y_list = list()
+        for iline in f:
+            if len(iline) > 3:
+                if iline[:3] == 'box':
+                    iline = iline[4:]
+                    iline = iline[:-2]
+                    box_coords = np.array(iline.split(","), dtype=float)
+                    x_min = round(box_coords[0] - (box_coords[2] / 2.) - .5)
+                    x_max = round(box_coords[0] + (box_coords[2] / 2.) + .5)
+                    y_min = round(box_coords[1] - (box_coords[3] / 2.) - .5) 
+                    y_max = round(box_coords[1] + (box_coords[3] / 2.) + .5)
+                    if x_range != None:
+                        if x_min < np.min(x_range) : x_min = np.min(x_range)
+                        if x_max > np.max(x_range) : x_max = np.max(x_range)
+                    if y_range != None:
+                        if y_min < np.min(y_range) : y_min = np.min(y_range)
+                        if y_max > np.max(y_range) : y_max = np.max(y_range)
+                    
+                    for ipix in range(int(x_min), int(x_max)):
+                         for jpix in range(int(y_min), int(y_max)):
+                             x_list.append(ipix)
+                             y_list.append(jpix)
+                            
+                if iline[:6] == 'circle':
+                    iline = iline[7:]
+                    iline = iline[:-2]
+                    cir_coords = np.array(iline.split(","), dtype=float)
+                    x_min = round(cir_coords[0] - (cir_coords[2]) - .5)
+                    x_max = round(cir_coords[0] + (cir_coords[2]) + .5)
+                    y_min = round(cir_coords[1] - (cir_coords[2]) - .5)
+                    y_max = round(cir_coords[1] + (cir_coords[2]) + .5)
+                    if x_range != None:
+                        if x_min < np.min(x_range) : x_min = np.min(x_range)
+                        if x_max > np.max(x_range) : x_max = np.max(x_range) + 1
+                    if y_range != None:
+                        if y_min < np.min(y_range) : y_min = np.min(y_range)
+                        if y_max > np.max(y_range) : y_max = np.max(y_range) + 1
+
+                    for ipix in range(int(x_min), int(x_max)):
+                         for jpix in range(int(y_min), int(y_max)):
+                             if math.sqrt((ipix - cir_coords[0])**2
+                                          + (jpix - cir_coords[1])**2) <= round(cir_coords[2]):
+                                 x_list.append(ipix)
+                                 y_list.append(jpix)
+
+        x_list = np.array(x_list)
+        y_list = np.array(y_list)
+        
+        return list([x_list, y_list])
+
+    def get_lines_nm(self, lines_name, air=True):
+        """Return the wavelength of a line
+
+        :param lines_name: List of lines name
+
+        :param air: (Optional) If True, air rest wavelength are
+          returned. If False, vacuum rest wavelength are
+          returned. (default True)
+        """
+        if air:
+            return [self.air_lines_nm[line_name] for line_name in lines_name]
+        else:
+            return [self.vac_lines_nm[line_name] for line_name in lines_name]
+
+    def get_line_name(self, lines, air=True):
+        """Return the name of the line given its wavelength.
+
+        :param lines: List of the lines wavelength
+
+        :param air: (Optional) If True, rest wavelength is considered
+          to be in air. If False it is considered to be in
+          vacuum. (default True)
+        """
+        if air:
+            line_name = [line_name
+                         for line_name
+                         in self.air_lines_nm.iterkeys()
+                         if self.air_lines_nm[line_name] == lines]
+            return str(line_name[0])
+        else:
+            line_name = [line_name
+                         for line_name
+                         in self.vac_lines_nm.iterkeys()
+                         if self.vac_lines_nm[line_name] == lines]
+            return str(line_name[0])
+    
+
+#################################################
+#### CLASS OptionFile ###########################
+#################################################
+        
+class OptionFile(ORCSTools):
+
+    option_file = None
+    options = None
+    
+    def __init__(self, option_file_path):
+        self.option_file = self.open_file(option_file_path, 'r')
+        self.options = dict()
+        for line in self.option_file:
+            if len(line) > 2:
+                if line[0] != '#':
+                    if '#' in line:
+                        line = line[:line.find('#')]
+                    line = line.split()
+                    if len(line) > 2:
+                        self.options[line[0]] = line[1:]
+                    elif len(line) > 1:
+                        self.options[line[0]] = line[1]
+
+                        
+    def __getitem__(self, key):
+        if key in self.options:
+            return self.options[key]
+        else: return None
+        
+    def iteritems(self):
+        return self.options.iteritems()
+
+    def get_regions_parameters(self):
+        return {k:v for k,v in self.iteritems() if k.startswith('REG')}
+
+    def get_lines(self):
+        lines = self['LINES']
+        if len(lines) > 2:
+            lines = lines.split(',')
+            return self.get_lines_nm(lines)
+        else:
+            return None
+            
+    def get_filter_edges(self):
+        filter_edges = self['FILTER_EDGES']
+        if filter_edges != None:
+            filter_edges = filter_edges.split(',')
+            if len(filter_edges) == 2:
+                return np.array(filter_edges).astype(float)
+            else:
+                self._print_error('Bad filter edges definition: check option file')
+        else:
+            return None
+
+
+
+
+
+##################################################
+#### WAVELET CLASSES #############################
+##################################################
+
+class CWavelet(Tools):
+    """Continous wavelet class.
+
+    1D methods of this class have been derived from 'pywct'.
+
+    Please see: Torrence and Compo. A practical guide to wavelet
+      analysis. Bulletin of American Meteorological Society. 1998,
+      79(1):61-78
+    """
+    wavelet_names = ['mexican_hat', 'sinc']
+    wavelet = None
+    
+    def __init__(self, wavelet_name='mexican_hat', param=None):
+        if wavelet_name  == 'mexican_hat':
+            if param == None:
+                param = 1.
+            self.wavelet = MexicanHat(sigma=param)
+        elif wavelet_name  == 'sinc':
+            if param == None:
+                param = 1.
+            self.wavelet = Sinc(sigma=param)
+
+        else:
+            self._print_error("Unrecognized wavelet name: %s. Please try %s"%(wavelet_name, str(self.wavelet_names)))
+
+    def transform1d(self, a, scales, sampling_scale=1.,
+                    apodization_border_ratio=0.1, silent=False):
+        """
+        1-D Continous wavelet transform.
+        
+        :param a: The 1d vector to transform.
+        
+        :param scales: Array or tuple containing the different scales of the
+          transformation.
+
+        :param sampling_scale: (Optional) Gives the sampling scale in
+          channel number (default 1.).
+
+        :param silent: (Optional) If True, no progess bar is printed
+          during processing (default False). Note that ih only one
+          scale is given no progress bar is printed.
+        """
+        a = np.copy(np.array(a))
+        scales = np.array(scales)
+        if np.size(scales) == 1:
+            silent = True
+        dimz = a.shape[0]
+        minpad = self.wavelet.cone_s(np.max(scales)) # minimum padded length
+
+        # Remove mean
+        a -= np.mean(a)
+        
+        # Apodization of the border
+        apodization_window = np.ones(dimz)
+        apod_border_len = int(dimz*apodization_border_ratio/2.) + 1
+        apodization_window[:apod_border_len] = 0.
+        apodization_window[-apod_border_len:] = 0.
+        apodization_window = smooth(apodization_window, deg=apod_border_len,
+                                   kind='gaussian_conv')
+        a *= apodization_window
+            
+        # Zero-padding
+        zero_padded_len = int(next_power_of_two(dimz + 2*minpad))
+        zero_padded_signal = np.zeros(zero_padded_len)
+        padded_border = int((zero_padded_len - dimz)/2.)
+        zero_padded_signal[padded_border:padded_border + dimz] = a
+        
+        # FFT of the signal
+        signal_fft = np.fft.fft(zero_padded_signal)
+        # FFT frequencies corresponding to the sampling scale
+        fftfreqs = np.fft.fftfreq(zero_padded_len, sampling_scale)
+        
+        scales = scales.reshape(-1,1)
+        W = np.zeros((dimz, len(scales)), dtype='complex')
+        # Normalization coefficient from Torrence and Compo (1998).
+        coeff = np.sqrt(2*math.pi/sampling_scale)
+        if not silent: progress = ProgressBar(len(scales))
+        for n,s in enumerate(scales):
+            if not silent: progress.update(n, info="Scale %d/%d"%(n, len(s)))
+            psi_ft_bar = self.wavelet.psi_ft(s * fftfreqs)
+            # Normalization 
+            psi_ft_bar *= coeff * np.sqrt(s) 
+            W[:,n] = np.fft.ifft(signal_fft * psi_ft_bar)[padded_border:
+                                                          padded_border+dimz]
+        if not silent: progress.end()
+        if np.size(scales) > 1:
+            return W
+        else:
+            return W.reshape((np.size(W)))
+
+
+    def transform2d(self, im, scales, sampling_scale=1.,
+                    apodization_border_ratio=0.01, silent=False):
+        """
+        2-D Continous wavelet transform.
+        
+        :param a: The 2d image to transform.
+        
+        :param scales: Array or tuple containing the different scales of the
+          transformation.
+
+        :param sampling_scale: (Optional) Gives the sampling scale in
+          channel number (default 1.).
+
+        :param silent: (Optional) If True, no progess bar is printed
+          during processing (default False). Note that if only one
+          scale is given no progress bar is printed.
+        """
+        im = np.copy(np.array(im))
+        scales = np.array(scales)
+        if np.size(scales) == 1:
+            silent = True
+        dimx = im.shape[0]
+        dimy = im.shape[1]
+
+        # Remove mean
+        im -= np.mean(im)
+        
+        ## # Apodization of the border
+        if apodization_border_ratio > 0.:
+            apodization_window = np.ones((dimx, dimy))
+            apod_border_len = int(max(dimx,dimy)
+                                  * apodization_border_ratio/2.) + 1
+            apodization_window[:apod_border_len,:] = 0.
+            apodization_window[-apod_border_len:,:] = 0.
+            apodization_window[:,:apod_border_len] = 0.
+            apodization_window[:,-apod_border_len:] = 0.
+            apodization_window = low_pass_image_filter(apodization_window,
+                                                       deg=apod_border_len)
+            im *= apodization_window
+        
+        
+        # Zero-padding
+        minpad = self.wavelet.cone_s(np.max(scales)) # minimum padded length
+        zp_len_x = int(next_power_of_two(dimx + 2.*minpad))
+        zp_len_y = int(next_power_of_two(dimy + 2.*minpad))
+        zp_im = np.zeros((zp_len_x, zp_len_y), dtype=float)
+        pad_border_x = int((zp_len_x - dimx)/2.)
+        pad_border_y = int((zp_len_y - dimy)/2.)
+        
+        zp_im[pad_border_x:pad_border_x + dimx,
+              pad_border_y:pad_border_y + dimy] = im
+    
+        # FFT of the signal
+        im_fft = np.fft.fft2(zp_im)
+        # FFT frequencies corresponding to the sampling scale in 2D
+        dim_max = max(zp_len_x, zp_len_y)
+        fftfreqs = polar_map2d(lambda x : x / (float(sampling_scale)
+                                               * float(dim_max)),
+                               (zp_len_x, zp_len_y), circle=False)
+        
+        
+        scales = scales.reshape(-1,1)
+        W = np.zeros((dimx, dimy, len(scales)), dtype='complex')
+        # Normalization coefficient from Torrence and Compo (1998).
+        coeff = np.sqrt(2*math.pi/sampling_scale) 
+        if not silent: progress = ProgressBar(len(scales))
+        for n,s in enumerate(scales):
+            if not silent: progress.update(n, info="Scale %d/%d"%(n, len(s)))
+            psi_ft_bar2 = self.wavelet.psi_ft(s * fftfreqs)
+            # Normalization 
+            psi_ft_bar2 *= coeff * np.sqrt(s)
+            W[:,:,n] = (np.fft.ifft2(im_fft * psi_ft_bar2))[
+                pad_border_x:pad_border_x + dimx,
+                pad_border_y:pad_border_y + dimy]
+                               
+        if not silent: progress.end()
+        return W
+    
+class MexicanHat:
+    """Mexican Hat wavelet class.
+
+    This class has been derived from 'pywct'
+
+    Please see: Torrence and Compo. A practical guide to wavelet
+      analysis. Bulletin of American Meteorological Society. 1998,
+      79(1):61-78
+    """
+    def __init__(self, sigma=1.):
+        self.sigma = sigma
+
+    def psi(self, t):
+        """Mexican hat wavelet as described in [1]"""
+        xsq = (t / self.sigma)**2.
+        # normalization constant from [1]
+        c = 2 * math.pi**-.25 / np.sqrt(3 * self.sigma) 
+        out =  c * (1 - xsq) * np.exp(-.5 * xsq)
+        out *= (t < 6) * (t > -6) # make it 'compact support'
+        return out
+
+    def psi_ft(self, f):
+        """Return the Fourier transform of the Mexican Hat wavelet"""
+        c = np.sqrt(8./3.) * math.pi**.25 * self.sigma**2.5 
+        wsq = (2. * math.pi * f)**2.
+        return -c * wsq * np.exp(-.5 * wsq * self.sigma**2.)
+
+    def cone_s(self, s):
+        """e-folding time for scales transform.
+        """
+        return 2.**0.5*s
+
+
+class Sinc:
+
+    def __init__(self, sigma=1.):
+        self.sigma = sigma
+
+    def psi(self, t):
+        x = math.pi*t/self.sigma
+        return np.sin(x)/x
+
+    def psi_ft(self, f):
+        u = f/self.sigma
+        return np.where(np.abs(u) > 0.5, 0., 1.)
+    
+    def cone_s(self, s):
+        """e-folding time for scales transform.
+        """
+        return 2.*s

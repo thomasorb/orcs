@@ -1,0 +1,28 @@
+#!/usr/bin/python
+# *-* coding: utf-8 *-*
+# Author: Thomas Martin <thomas.martin.1@ulaval.ca>
+# File: orcs.py
+
+__licence__ = "Thomas Martin (thomas.martin.1@ulaval.ca)"                      
+__docformat__ = 'reStructuredText'
+__version__ = "0.1"
+
+"""
+Graph module contains useful graphical functions.
+"""
+
+
+import pylab as pl
+
+
+def plot_spectrum(spectrum, nm_axis):
+    pl.plot(self.nm_axis[np.min(signal_range):
+                         np.max(signal_range)], spectrum)
+            if fitted_vector != None:
+                pl.plot(self.nm_axis[np.min(signal_range):
+                                     np.max(signal_range)],
+                        fitted_vector)
+            pl.ylabel("Intensity")
+            pl.xlabel("Wavelength [in nm]")
+            pl.title("Integrated vector")
+            pl.show()

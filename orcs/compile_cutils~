@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cython cutils.pyx
+gcc -c -fPIC -I/usr/include/python2.7 cutils.c
+gcc -shared cutils.o -o cutils.so
