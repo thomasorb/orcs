@@ -1,0 +1,459 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RVCorrect module &mdash; Orcs 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+    <link rel="top" title="Orcs 0.9 documentation" href="index.html" />
+    <link rel="next" title="Utils module" href="utils_module.html" />
+    <link rel="prev" title="Orcs module" href="orcs_module.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils_module.html" title="Utils module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="orcs_module.html" title="Orcs module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">RVCorrect module</a><ul>
+<li><a class="reference internal" href="#rvcorrect-class">RVCorrect class</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="orcs_module.html"
+                        title="previous chapter">Orcs module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils_module.html"
+                        title="next chapter">Utils module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/rvcorrect_module.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rvcorrect-module">
+<h1><a class="toc-backref" href="#id1">RVCorrect module</a><a class="headerlink" href="#rvcorrect-module" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#rvcorrect-module" id="id1">RVCorrect module</a><ul>
+<li><a class="reference internal" href="#rvcorrect-class" id="id2">RVCorrect class</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="rvcorrect-class">
+<h2><a class="toc-backref" href="#id2">RVCorrect class</a><a class="headerlink" href="#rvcorrect-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rvcorrect.RVCorrect">
+<em class="property">class </em><tt class="descclassname">rvcorrect.</tt><tt class="descname">RVCorrect</tt><big>(</big><em>ra</em>, <em>dec</em>, <em>date</em>, <em>ut</em>, <em>obs_coords</em>, <em>ep=2000.0</em>, <em>silent=False</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute radial velocity correction. The whole class has been
+created using David Nidever&#8217;s IDL function RVCORRECT itself
+translated from the IRAF function RVCORRECT.</p>
+<p>The IDL code can be found at:</p>
+<div class="highlight-python"><pre>http://www.astro.virginia.edu/~dln5q/research/idl/rvcorrect.pro</pre>
+</div>
+<p>The description of the IRAF function can be found at:</p>
+<div class="highlight-python"><pre>http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?rvcorrect</pre>
+</div>
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_coord">
+<tt class="descname">ast_coord</tt><big>(</big><em>ao</em>, <em>bo</em>, <em>ap</em>, <em>bp</em>, <em>a1</em>, <em>b1</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert spherical coordinates to new system.</p>
+<p>This procedure converts the longitude-latitude coordinates
+(a1, b1) of a point on a sphere into corresponding coordinates
+(a2, b2) in a different coordinate system that is specified by
+the coordinates of its origin (ao, bo).  The range of a2 will
+be from -pi to pi.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ao</strong> &#8211; longitude of the origin of the new coordinates (radians)</li>
+<li><strong>bo</strong> &#8211; latitude of the origin of the new coordinates (radians)</li>
+<li><strong>ap</strong> &#8211; longitude of the pole of the new coordinates (radians)</li>
+<li><strong>bp</strong> &#8211; latitude of the pole of the new coordinates (radians)</li>
+<li><strong>a1</strong> &#8211; longitude of the pole of the coordinates to be
+converted (radians)</li>
+<li><strong>b1</strong> &#8211; latitude of the pole of the coordinates to be
+converted (radians)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_date_to_epoch">
+<tt class="descname">ast_date_to_epoch</tt><big>(</big><em>year</em>, <em>month</em>, <em>day</em>, <em>ut</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_date_to_epoch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Gregorian date and solar mean time to a Julian epoch.
+A Julian epoch has 365.25 days per year and 24 hours per day.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>year</strong> &#8211; Year</li>
+<li><strong>month</strong> &#8211; Month (1-12)</li>
+<li><strong>day</strong> &#8211; Day of month</li>
+<li><strong>ut</strong> &#8211; Universal time for date (mean solar day)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_date_to_julday">
+<tt class="descname">ast_date_to_julday</tt><big>(</big><em>year</em>, <em>month</em>, <em>day</em>, <em>t</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_date_to_julday" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert date to Julian day. This assumes dates after year 99.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>year</strong> &#8211; Year</li>
+<li><strong>month</strong> &#8211; Month</li>
+<li><strong>day</strong> &#8211; Day</li>
+<li><strong>t</strong> &#8211; Time for date</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_epoch_to_date">
+<tt class="descname">ast_epoch_to_date</tt><big>(</big><em>epoch</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_epoch_to_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a Julian epoch to year, month, day, and time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>epoch</strong> &#8211; Julian epoch</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_hjd">
+<tt class="descname">ast_hjd</tt><big>(</big><em>ra</em>, <em>dec</em>, <em>epoch</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_hjd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Heliocentric Julian Day from Epoch</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra</strong> &#8211; RA of observation (hours)</li>
+<li><strong>dec</strong> &#8211; DEC of observation (degrees)</li>
+<li><strong>epoch</strong> &#8211; Julian epoch of observation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_jd_to_hjd">
+<tt class="descname">ast_jd_to_hjd</tt><big>(</big><em>ra</em>, <em>dec</em>, <em>jd</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_jd_to_hjd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Heliocentric Julian Day from UT Julian date</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra</strong> &#8211; RA of observation (hours)</li>
+<li><strong>dec</strong> &#8211; DEC of observation (degrees)</li>
+<li><strong>jd</strong> &#8211; Geocentric Julian date of observation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_julday">
+<tt class="descname">ast_julday</tt><big>(</big><em>epoch</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_julday" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert epoch to Julian day.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>epoch</strong> &#8211; Epoch</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_julday_to_date">
+<tt class="descname">ast_julday_to_date</tt><big>(</big><em>j</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_julday_to_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Julian date to calendar date.  This is taken from
+Numerical Receipes by Press, Flannery, Teukolsy, and
+Vetterling.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>j</strong> &#8211; Julian date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_mst">
+<tt class="descname">ast_mst</tt><big>(</big><em>epoch</em>, <em>longitude</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_mst" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean sidereal time of the epoch at the given longitude.  This
+procedure may be used to optain Greenwich Mean Sidereal Time
+(GMST) by setting the longitude to 0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>epoch</strong> &#8211; Epoch</li>
+<li><strong>longitude</strong> &#8211; Longitude in degrees</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_precess">
+<tt class="descname">ast_precess</tt><big>(</big><em>ra1</em>, <em>dec1</em>, <em>epoch1</em>, <em>epoch2</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_precess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Precess coordinates from epoch1 to epoch2.</p>
+<p>The method used here is based on the new IAU system described
+in the supplement to the 1984 Astronomical Almanac.  The
+precession is done in two steps; precess epoch1 to the
+standard epoch J2000.0 and then precess from the standard
+epoch to epoch2.  The precession between any two dates is done
+this way because the rotation matrix coefficients are given
+relative to the standard epoch.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra1</strong> &#8211; RA for first coordinates</li>
+<li><strong>dec1</strong> &#8211; DEC for first coordinates</li>
+<li><strong>1</strong> (<em>epoch</em>) &#8211; Epoch for first coordinates</li>
+<li><strong>2</strong> (<em>epoch</em>) &#8211; Epoch for second coordinates</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_rotmatrix">
+<tt class="descname">ast_rotmatrix</tt><big>(</big><em>epoch</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_rotmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the precession rotation matrix from the standard epoch
+J2000.0 to the specified epoch.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>epoch</strong> &#8211; Epoch of date</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_vbary">
+<tt class="descname">ast_vbary</tt><big>(</big><em>ra</em>, <em>dec</em>, <em>epoch</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_vbary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radial velocity component of center of the Earth relative to
+to the barycenter of the Earth-Moon system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra</strong> &#8211; RA of observation (hours)</li>
+<li><strong>dec</strong> &#8211; DEC of observation (degrees)</li>
+<li><strong>epoch</strong> &#8211; Julian epoch of observation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_vorbit">
+<tt class="descname">ast_vorbit</tt><big>(</big><em>ra</em>, <em>dec</em>, <em>epoch</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_vorbit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radial velocity component of the Earth-Moon barycenter
+relative to the Sun.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra</strong> &#8211; RA of observation (hours)</li>
+<li><strong>dec</strong> &#8211; DEC of observation (degrees)</li>
+<li><strong>epoch</strong> &#8211; Julian epoch of observation</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_vr">
+<tt class="descname">ast_vr</tt><big>(</big><em>ra1</em>, <em>dec1</em>, <em>v1</em>, <em>ra2</em>, <em>dec2</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_vr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project a velocity vector in radial velocity along line of sight.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra1</strong> &#8211; Right ascension of velocity vector (hours)</li>
+<li><strong>dec1</strong> &#8211; Declination of velocity vector (degrees)</li>
+<li><strong>v1</strong> &#8211; Magnitude of velocity vector</li>
+<li><strong>ra2</strong> &#8211; Right ascension of observation (hours)</li>
+<li><strong>dec2</strong> &#8211; Declination of observation (degrees)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.ast_vrotate">
+<tt class="descname">ast_vrotate</tt><big>(</big><em>ra</em>, <em>dec</em>, <em>epoch</em>, <em>latitude</em>, <em>longitude</em>, <em>altitude</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.ast_vrotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radial velocity component of the observer relative to the
+center of the Earth due to the Earth&#8217;s rotation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ra</strong> &#8211; Right Ascension of observation (hours)</li>
+<li><strong>dec</strong> &#8211; Declination of observation (degrees)</li>
+<li><strong>epoch</strong> &#8211; Epoch of observation (Julian epoch)</li>
+<li><strong>latitude</strong> &#8211; Latitude (degrees)</li>
+<li><strong>longitude</strong> &#8211; Latitude (degrees)</li>
+<li><strong>altitude</strong> &#8211; Altitude (meters)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rvcorrect.RVCorrect.rvcorrect">
+<tt class="descname">rvcorrect</tt><big>(</big><em>vobs=0.0</em><big>)</big><a class="headerlink" href="#rvcorrect.RVCorrect.rvcorrect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the radial velocities.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils_module.html" title="Utils module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="orcs_module.html" title="Orcs module"
+             >previous</a> |</li>
+        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Utils module &mdash; Orcs 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+    <link rel="top" title="Orcs 0.9 documentation" href="index.html" />
+    <link rel="prev" title="RVCorrect module" href="rvcorrect_module.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rvcorrect_module.html" title="RVCorrect module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rvcorrect_module.html"
+                        title="previous chapter">RVCorrect module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/utils_module.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-utils">
+<span id="utils-module"></span><h1>Utils module<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h1>
+<p>Utils module contains core functions that are used by the processing
+classes of ORCS</p>
+<dl class="function">
+<dt id="utils.add_phase">
+<tt class="descclassname">utils.</tt><tt class="descname">add_phase</tt><big>(</big><em>a</em>, <em>phi</em><big>)</big><a class="headerlink" href="#utils.add_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a phase to a vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> &#8211; A vector</li>
+<li><strong>phi</strong> &#8211; Phase to be added. Can be a float or a vector of the
+same size as a.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a complex vector of the same size as a.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.calib_hst_image">
+<tt class="descclassname">utils.</tt><tt class="descname">calib_hst_image</tt><big>(</big><em>hst_path</em><big>)</big><a class="headerlink" href="#utils.calib_hst_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibrate an HST frame using PHOTFLAM keyword.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.compute_line_fwhm">
+<tt class="descclassname">utils.</tt><tt class="descname">compute_line_fwhm</tt><big>(</big><em>step_nb</em>, <em>step</em>, <em>order</em>, <em>apod_coeff=1.0</em>, <em>wavenumber=False</em><big>)</big><a class="headerlink" href="#utils.compute_line_fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the expected FWHM (in nm or in cm-1) of a line given the
+observation parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>step_nb</strong> &#8211; Number of steps</li>
+<li><strong>step</strong> &#8211; Step size in nm</li>
+<li><strong>order</strong> &#8211; Folding order</li>
+<li><strong>apod_coeff</strong> &#8211; (Optional) Apodization coefficient. 1. stand
+for no apodization and gives the FWHM of the central lobe of the
+sinc (default 1.)</li>
+<li><strong>wavenumber</strong> &#8211; (Optional) If True the result is returned in cm-1,
+else it is returned in nm.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.compute_line_shift">
+<tt class="descclassname">utils.</tt><tt class="descname">compute_line_shift</tt><big>(</big><em>velocity</em>, <em>step_nb</em>, <em>step</em>, <em>order</em>, <em>wavenumber=False</em><big>)</big><a class="headerlink" href="#utils.compute_line_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the line shift given its velocity in nm or in cm-1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>velocity</strong> &#8211; Line velocity in km.s-1</li>
+<li><strong>step_nb</strong> &#8211; Number of steps</li>
+<li><strong>step</strong> &#8211; Step size in nm</li>
+<li><strong>order</strong> &#8211; Folding order</li>
+<li><strong>wavenumber</strong> &#8211; (Optional) If True the result is returned in cm-1,
+else it is returned in nm.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.compute_radial_velocity">
+<tt class="descclassname">utils.</tt><tt class="descname">compute_radial_velocity</tt><big>(</big><em>line</em>, <em>rest_line</em>, <em>wavenumber=False</em><big>)</big><a class="headerlink" href="#utils.compute_radial_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return radial velocity in km.s-1</p>
+<p>V [km.s-1] = c [km.s-1]* (Lambda - Lambda_0) / Lambda_0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>line</strong> &#8211; Emission line wavelength/wavenumber (can be a numpy
+array)</li>
+<li><strong>rest_line</strong> &#8211; Rest-frame wavelength/wavenumber (can be a numpy
+array but must have the same size as nm)</li>
+<li><strong>wavenumber</strong> &#8211; (Optional) If True the result is returned in cm-1,
+else it is returned in nm.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.get_calibration_coeff_from_hst_image">
+<tt class="descclassname">utils.</tt><tt class="descname">get_calibration_coeff_from_hst_image</tt><big>(</big><em>cube_path</em>, <em>hst_path</em>, <em>filter_file_path</em>, <em>hst_ds9_reg_path</em>, <em>cube_ds9_reg_path</em><big>)</big><a class="headerlink" href="#utils.get_calibration_coeff_from_hst_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>2 reg files are nescessary to be able to compare the same regions
+in the HST image and the simulated image from the cube. Those
+files must gives the coordinates of the same region in &#8216;image&#8217;
+format (region can be a box or a circle).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.read_sexphot">
+<tt class="descclassname">utils.</tt><tt class="descname">read_sexphot</tt><big>(</big><em>sexphot_path</em><big>)</big><a class="headerlink" href="#utils.read_sexphot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a SExtractor sources list file given with an HST frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sexphot_path</strong> &#8211; Path to the SExtractor source list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.sexcalib_hst_image">
+<tt class="descclassname">utils.</tt><tt class="descname">sexcalib_hst_image</tt><big>(</big><em>hst_path</em>, <em>sexphot_path</em>, <em>lambda_c</em><big>)</big><a class="headerlink" href="#utils.sexcalib_hst_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calibrate an HST frame using a Sextractor sources list.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">WFPC2 frames can be calibrated by simply multiplying
+their count rate by the value of PHOTFLAM in the header of the
+frame.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.simulate_hst_filter">
+<tt class="descclassname">utils.</tt><tt class="descname">simulate_hst_filter</tt><big>(</big><em>cube_path</em>, <em>filter_file_path</em><big>)</big><a class="headerlink" href="#utils.simulate_hst_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate an HST image from a calibrated spectrum cube</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cube_path</strong> &#8211; Path to the calibrated spectrum cube.</li>
+<li><strong>filter_file_path</strong> &#8211; Path to the HST filter file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rvcorrect_module.html" title="RVCorrect module"
+             >previous</a> |</li>
+        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

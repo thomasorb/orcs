@@ -36,16 +36,74 @@ import numpy as np
 import math
 from scipy import optimize
 
-def compute_radial_velocity(nm, rest_nm):
+def compute_line_fwhm(step_nb, step, order, apod_coeff=1., wavenumber=False):
+    """Return the expected FWHM (in nm or in cm-1) of a line given the
+    observation parameters.
+
+    :param step_nb: Number of steps
+    
+    :param step: Step size in nm
+    
+    :param order: Folding order
+    
+    :param apod_coeff: (Optional) Apodization coefficient. 1. stand
+      for no apodization and gives the FWHM of the central lobe of the
+      sinc (default 1.)
+    
+    :param wavenumber: (Optional) If True the result is returned in cm-1,
+      else it is returned in nm.
+    """
+    nm_axis = orb.utils.create_nm_axis(step_nb, step, order)
+    nm_mean = (nm_axis[-1] + nm_axis[0])/2.
+    opd_max = step_nb * step
+    if not wavenumber:
+        return nm_mean**2. * 1.2067 / opd_max * apod_coeff
+    else:
+        return 1.2067 / opd_max * apod_coeff * 1e7
+    
+
+def compute_line_shift(velocity, step_nb, step, order, wavenumber=False):
+    """Return the line shift given its velocity in nm or in cm-1.
+
+    :param velocity: Line velocity in km.s-1
+    
+    :param step_nb: Number of steps
+
+    :param step: Step size in nm
+
+    :param order: Folding order
+
+    :param wavenumber: (Optional) If True the result is returned in cm-1,
+      else it is returned in nm.
+    """
+    if not wavenumber:
+        nm_axis = orb.utils.create_nm_axis(step_nb, step, order)
+        mean = (nm_axis[-1] + nm_axis[0])/2.
+    else:
+        cm1_axis = orb.utils.create_cm1_axis(step_nb, step, order)
+        mean = (cm1_axis[-1] + cm1_axis[0])/2.
+        
+    return orb.utils.line_shift(velocity, mean, wavenumber=wavenumber)
+        
+
+def compute_radial_velocity(line, rest_line, wavenumber=False):
     """
     Return radial velocity in km.s-1
 
     V [km.s-1] = c [km.s-1]* (Lambda - Lambda_0) / Lambda_0
 
-    :param nm: Emission line wavelength (can be a numpy array)
-    :param rest_nm: Rest-frame wavelength
+    :param line: Emission line wavelength/wavenumber (can be a numpy
+      array)
+    
+    :param rest_line: Rest-frame wavelength/wavenumber (can be a numpy
+      array but must have the same size as nm)
+
+    :param wavenumber: (Optional) If True the result is returned in cm-1,
+      else it is returned in nm.
     """
-    return (orb.globals.LIGHT_VEL_KMS) * (nm - rest_nm) / rest_nm
+    vel = (orb.globals.LIGHT_VEL_KMS) * (line - rest_line) / rest_line
+    if wavenumber: return -vel
+    else: return vel
 
 def add_phase(a, phi):
     """Add a phase to a vector.

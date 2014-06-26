@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick start Guide &mdash; Orcs 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+    <link rel="top" title="Orcs 0.9 documentation" href="index.html" />
+    <link rel="next" title="Orcs module" href="orcs_module.html" />
+    <link rel="prev" title="ORCS Documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="orcs_module.html" title="Orcs module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="ORCS Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quick start Guide</a><ul>
+<li><a class="reference internal" href="#step-1-create-your-option-file">Step 1: Create your option file</a><ul>
+<li><a class="reference internal" href="#basic-parameters">Basic parameters</a></li>
+<li><a class="reference internal" href="#heliocentric-velocity-correction-parameters">Heliocentric velocity correction parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#step-2-run-it">Step 2: Run it</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">ORCS Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="orcs_module.html"
+                        title="next chapter">Orcs module</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/quick_start.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quick-start-guide">
+<h1><a class="toc-backref" href="#id1">Quick start Guide</a><a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#quick-start-guide" id="id1">Quick start Guide</a><ul>
+<li><a class="reference internal" href="#step-1-create-your-option-file" id="id2">Step 1: Create your option file</a><ul>
+<li><a class="reference internal" href="#basic-parameters" id="id3">Basic parameters</a></li>
+<li><a class="reference internal" href="#heliocentric-velocity-correction-parameters" id="id4">Heliocentric velocity correction parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#step-2-run-it" id="id5">Step 2: Run it</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="step-1-create-your-option-file">
+<h2><a class="toc-backref" href="#id2">Step 1: Create your option file</a><a class="headerlink" href="#step-1-create-your-option-file" title="Permalink to this headline">¶</a></h2>
+<p>Like ORBS, ORCS uses option files to load all the parameters
+needed. Here&#8217;s en example.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># option_file.orc</span>
+
+<span class="c">## ORCS option file</span>
+
+<span class="c">######################</span>
+<span class="c">## BASIC PARAMETERS ##</span>
+<span class="c">######################</span>
+
+<span class="n">CUBE_PATH</span> <span class="n">NGC7635_R_1</span><span class="o">.</span><span class="mf">8.</span><span class="n">fits</span>
+<span class="n">LINES</span> <span class="p">[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6548</span><span class="p">,</span><span class="n">Halpha</span><span class="p">,[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6583</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6716</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6731</span> 
+
+<span class="n">SHIFT</span> <span class="o">-</span><span class="mf">0.5</span>
+<span class="n">FWHM</span> <span class="mf">0.5</span> 
+<span class="n">FILTER_EDGES</span> <span class="mi">648</span><span class="p">,</span><span class="mi">677</span>
+<span class="n">POLY_ORDER</span> <span class="mi">1</span> 
+<span class="n">ROI</span> <span class="mi">30</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">290</span><span class="p">,</span><span class="mi">340</span> 
+
+<span class="c">#########################</span>
+<span class="c">## OPTIONAL PARAMETERS ##</span>
+<span class="c">#########################</span>
+
+<span class="n">OBS_LAT</span> <span class="mf">45.455000</span>
+<span class="n">OBS_LONG</span> <span class="o">-</span><span class="mf">71.153000</span>
+<span class="n">OBS_ALT</span> <span class="mf">1100.</span>
+<span class="n">DATE</span> <span class="mi">2012</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">17</span>
+<span class="n">HOUR_UT</span> <span class="mo">04</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mo">00</span>
+</pre></div>
+</div>
+<div class="section" id="basic-parameters">
+<h3><a class="toc-backref" href="#id3">Basic parameters</a><a class="headerlink" href="#basic-parameters" title="Permalink to this headline">¶</a></h3>
+<p><em class="xref std std-option">CUBE_PATH</em> Path to the spectral cube</p>
+<p><em class="xref std std-option">LINES</em> Emission Lines names, enter an integer or a float to
+use a non_recorded emission line. See <tt class="xref py py-class docutils literal"><span class="pre">ORCSTools</span></tt> to
+get a list of the available lines.</p>
+<p><em class="xref std std-option">SHIFT</em> Spectral shift of the lines [in nm]</p>
+<p><em class="xref std std-option">FWHM</em> Rough FWHM of the lines [in nm]</p>
+<p><em class="xref std std-option">FILTER_EDGES</em> Edges of the filter filter_min,filter_max [in nm]</p>
+<p><em class="xref std std-option">POLY_ORDER</em> Order of the polynomial used to fit continuum</p>
+<p><em class="xref std std-option">ROI</em> Region of interest : Xmin,Xmax,Ymin,Ymax. Must be integers.</p>
+</div>
+<div class="section" id="heliocentric-velocity-correction-parameters">
+<h3><a class="toc-backref" href="#id4">Heliocentric velocity correction parameters</a><a class="headerlink" href="#heliocentric-velocity-correction-parameters" title="Permalink to this headline">¶</a></h3>
+<p><em class="xref std std-option">OBS_LAT</em> Observatory latitude</p>
+<p><em class="xref std std-option">OBS_LONG</em> Observatory longitude</p>
+<p><em class="xref std std-option">OBS_ALT</em> Observatory altitude</p>
+<p><em class="xref std std-option">DATE</em> Observation date</p>
+<p><em class="xref std std-option">HOUR_UT</em> Observation hour</p>
+</div>
+</div>
+<div class="section" id="step-2-run-it">
+<h2><a class="toc-backref" href="#id5">Step 2: Run it</a><a class="headerlink" href="#step-2-run-it" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Don&#8217;t forget to put the correct path to ORBS in orcs/data.py</p>
+</div>
+<p>To run the option you must create a python script like this one:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span class="c"># orcs_script.py</span>
+
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&quot;/path/to/Orcs&quot;</span><span class="p">))</span> <span class="c"># set Orcs Path</span>
+
+<span class="kn">from</span> <span class="nn">orcs.orcs</span> <span class="kn">import</span> <span class="o">*</span> <span class="c"># import orcs module</span>
+
+<span class="n">sc</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s">&quot;option_file.orc&quot;</span><span class="p">)</span> <span class="c"># Init extracting class</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">extract_lines_maps</span><span class="p">()</span> <span class="c"># start map extraction</span>
+</pre></div>
+</td></tr></table></div>
+<p>You can then run this script with the command:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">python orcs_script.py</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="orcs_module.html" title="Orcs module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="ORCS Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+    </div>
+  </body>
+</html>

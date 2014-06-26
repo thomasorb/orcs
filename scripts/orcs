@@ -1,0 +1,97 @@
+#!/usr/bin/python
+# *-* coding: utf-8 *-*
+# Author: Thomas Martin <thomas.martin.1@ulaval.ca>
+
+## Copyright (c) 2010-2014 Thomas Martin <thomas.martin.1@ulaval.ca>
+## 
+## This file is part of ORCS
+##
+## ORCS is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## ORCS is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+## License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with ORCS.  If not, see <http://www.gnu.org/licenses/>.
+
+####################################################
+############ ORBS reduction script #################
+####################################################
+
+# Note that this script is aimed to run the data extraction
+
+# To run this script simply use the following command :
+# $ ./orcs option_file.opt
+# Remember : for any help please refer to the documentation
+
+import sys, os, time
+import getopt
+
+import numpy as np
+
+# Defining the path to ORCS module from script location
+script_path = os.path.dirname(os.path.realpath(__file__)).split()
+orbs_path = os.path.normpath(('%s'%os.sep).join(str(script_path[0]).split(os.sep)[:-1]))
+sys.path.append(orbs_path)
+
+import orb
+from orb.core import Tools
+import orcs
+from orcs.orcs import Orcs
+
+
+def usage(): 
+    print """usage: orcs [OPTIONS]... OPTION_FILE...
+
+    Run the data extraction.
+
+  ORCS version: {}, ORB version: {}
+  Author: Thomas Martin (thomas.martin.1@ulaval.ca)  
+""".format(orcs.version.__version__, orb.version.__version__)
+    sys.exit(2)
+
+def main():
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "", [])
+    except getopt.GetoptError, err:
+        print str(err)
+        usage()
+
+    # defining default options
+    
+    start_time = time.time()
+
+    if (len(args) > 0):
+        if not os.path.exists(args[0]):
+            raise Exception('Option file %s does not exist'%args[0])
+        to = Tools(logfile_name=os.path.basename(str(args[0])) + '.log')
+    else:
+        usage()
+ 
+        
+    ###################################
+    # Run ORCS with the given options #
+    ###################################
+    
+    if (len(args) > 0):
+        to._print_msg("Option file : %s"%str(args[0]), color=True)
+        
+        orcs = Orcs(str(args[0]), overwrite=True)
+        orcs.extract_lines_maps()
+        
+        end_time = time.time()
+        to._print_msg("Script finished at : " + time.ctime(end_time), color=True)
+        to._print_msg("Total time : " + str((end_time - start_time) / 3600.) + " hours", color=True)         
+    else: usage()
+
+if __name__ == "__main__":
+    main()
+
+
+

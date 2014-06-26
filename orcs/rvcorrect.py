@@ -81,7 +81,8 @@ class RVCorrect():
     vorb = None # VORB : The annual velocity
     vsol = None # VSOL : The solar velocity
 
-    def __init__(self, ra, dec, date, ut, obs_coords, ep=2000., silent=False):
+    def __init__(self, ra, dec, date, ut, obs_coords, ep=2000.,
+                 silent=False):
         """
         :param ra: RA of the object. The format can be either
           'hours:minutes:seconds' or (hours,minutes,seconds) or a
@@ -684,7 +685,7 @@ class RVCorrect():
         
         return v
 
-    def rvcorrect(self, vobs=0., silent=False):
+    def rvcorrect(self, vobs=0.):
         """ Compute the radial velocities.
         """
 
