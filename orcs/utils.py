@@ -29,7 +29,7 @@ classes of ORCS
 from orb.core import Tools
 import orb.utils
 import orb.astrometry
-import orb.globals
+import orb.constants
 
 import pyfits
 import numpy as np
@@ -96,12 +96,12 @@ def compute_radial_velocity(line, rest_line, wavenumber=False):
       array)
     
     :param rest_line: Rest-frame wavelength/wavenumber (can be a numpy
-      array but must have the same size as nm)
+      array but must have the same size as line)
 
     :param wavenumber: (Optional) If True the result is returned in cm-1,
       else it is returned in nm.
     """
-    vel = (orb.globals.LIGHT_VEL_KMS) * (line - rest_line) / rest_line
+    vel = (orb.constants.LIGHT_VEL_KMS) * (line - rest_line) / rest_line
     if wavenumber: return -vel
     else: return vel
 
@@ -171,8 +171,7 @@ def sexcalib_hst_image(hst_path, sexphot_path, lambda_c):
     hdulist.writeto(hst_path + '.sexcalib', clobber=True)
 
 def calib_hst_image(hst_path):
-    """Calibrate an HST frame using PHOTFLAM keyword.
-    """
+    """Calibrate an HST frame using PHOTFLAM keyword."""
 
     hdulist = pyfits.open(hst_path)
     calib_coeff = hdulist[1].header['PHOTFLAM']
@@ -223,7 +222,9 @@ def simulate_hst_filter(cube_path, filter_file_path):
 def get_calibration_coeff_from_hst_image(cube_path, hst_path,
                                          filter_file_path,
                                          hst_ds9_reg_path,
-                                         cube_ds9_reg_path):
+                                         cube_ds9_reg_path,
+                                         hst_sky_ds9_reg_path,
+                                         sky_ds9_reg_path):
     """
     2 reg files are nescessary to be able to compare the same regions
     in the HST image and the simulated image from the cube. Those
@@ -233,7 +234,9 @@ def get_calibration_coeff_from_hst_image(cube_path, hst_path,
 
     hst_pix = orb.utils.get_mask_from_ds9_region_file(hst_ds9_reg_path)
     cube_pix = orb.utils.get_mask_from_ds9_region_file(cube_ds9_reg_path)
-
+    sky_pix =  orb.utils.get_mask_from_ds9_region_file(sky_ds9_reg_path)
+    hst_sky_pix =  orb.utils.get_mask_from_ds9_region_file(hst_sky_ds9_reg_path)
+    
     hdu_cube = Tools().read_fits(cube_path, return_hdu_only=True)
     hdr_cube = hdu_cube[0].header
     hdu_hst = Tools().read_fits(hst_path, return_hdu_only=True)
@@ -250,14 +253,26 @@ def get_calibration_coeff_from_hst_image(cube_path, hst_path,
     sim_hst_image = simulate_hst_filter(cube_path, filter_file_path).astype(float)
 
     # get sky level in simulated frame
-    sky_level = orb.astrometry.sky_background_level(sim_hst_image)
+    #sky_level = orb.astrometry.sky_background_level(sim_hst_image)
     #sky_level = 0
+    # get sky level in simulated frame
+    sky_level = orb.utils.robust_median(sim_hst_image[sky_pix])
+    sky_level_std = orb.utils.robust_std(sim_hst_image[sky_pix])
+    hst_sky_level = orb.utils.robust_median(hst_image[sky_pix])
+    hst_sky_level_std = orb.utils.robust_std(hst_image[sky_pix])
     
-    hst_sum = orb.utils.robust_sum(hst_image[hst_pix]) / hst_area
+    hst_sum = orb.utils.robust_sum(hst_image[hst_pix] - hst_sky_level) / hst_area
     sim_hst_sum = orb.utils.robust_sum(
         sim_hst_image[cube_pix] - sky_level) / cube_area
+    
+    sky_level_error = np.sqrt((len(cube_pix[0]) * sky_level_std**2.)) / cube_area
+    hst_sky_level_error = np.sqrt((len(hst_pix[0]) * hst_sky_level_std**2.)) / hst_area
+    total_error = math.sqrt((sky_level_error/sim_hst_sum)**2. + (hst_sky_level_error/hst_sum)**2.)
+    print 'sky_level: {}, error: {}%'.format(sky_level,
+                                             sky_level_std/sky_level*100)
     print 'hst [flux mean / arcsec^2]: ', hst_sum
     print 'sim_hst [flux mean / arcsec^2]: ', sim_hst_sum
+    print 'flux error: {}%'.format((total_error)*100.)
     calib_coeff = hst_sum / sim_hst_sum
     print calib_coeff
     return calib_coeff

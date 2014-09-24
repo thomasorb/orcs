@@ -48,7 +48,20 @@ from orcs.orcs import Orcs
 def usage(): 
     print """usage: orcs [OPTIONS]... OPTION_FILE...
 
-    Run the data extraction.
+    Run data extraction.
+
+    Options
+    -------
+
+    -i : Extact only the integrated spectra. The keyword
+       INTEG_REG_PATH must be set to the path to a ds9 region file.
+
+    -v : Extract the sky spectrum and fit its lines to get the sky
+       velocity. SKY_REG keyword must be set to the path to a ds9
+       region file.
+
+    --info : Only print values computed at the beginning of the
+       extraction process.
 
   ORCS version: {}, ORB version: {}
   Author: Thomas Martin (thomas.martin.1@ulaval.ca)  
@@ -58,12 +71,15 @@ def usage():
 def main():
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "", [])
+        opts, args = getopt.getopt(sys.argv[1:], "iv", ['info'])
     except getopt.GetoptError, err:
         print str(err)
         usage()
 
     # defining default options
+    integ = False
+    sky_radial_velocity = False
+    info = False
     
     start_time = time.time()
 
@@ -73,8 +89,27 @@ def main():
         to = Tools(logfile_name=os.path.basename(str(args[0])) + '.log')
     else:
         usage()
- 
         
+    #################
+    # Check options #
+    #################
+    
+    for opt, arg in opts:
+        
+        if opt == "-i":
+            integ = True
+
+        if opt == "-v":
+            sky_radial_velocity = True
+
+        if opt == '--info':
+            info = True
+
+    # check that no more than one extraction mode is asked at the same time
+    if np.sum(np.array([integ, sky_radial_velocity, info])) > 1:
+        to._print_error('{} cannot be used at the same time'.format(
+            np.array(['-i', '-v', '--info'])[np.nonzero(np.array([integ, sky_radial_velocity, info]))]))
+
     ###################################
     # Run ORCS with the given options #
     ###################################
@@ -83,7 +118,16 @@ def main():
         to._print_msg("Option file : %s"%str(args[0]), color=True)
         
         orcs = Orcs(str(args[0]), overwrite=True)
-        orcs.extract_lines_maps()
+
+        if info:
+            pass
+        elif integ:
+            orcs.extract_integrated_spectra()
+        elif sky_radial_velocity:
+            orcs.get_sky_radial_velocity()
+        else:
+            orcs.extract_lines_maps()
+        
         
         end_time = time.time()
         to._print_msg("Script finished at : " + time.ctime(end_time), color=True)

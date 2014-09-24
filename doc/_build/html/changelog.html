@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &mdash; Orcs 0.9 documentation</title>
+    <title>Changelog &mdash; Orcs 0.91 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9',
+        VERSION:     '0.91',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/logo.ico"/>
-    <link rel="top" title="Orcs 0.9 documentation" href="index.html" />
+    <link rel="top" title="Orcs 0.91 documentation" href="index.html" />
     <link rel="prev" title="Utils module" href="utils_module.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="utils_module.html" title="Utils module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Orcs 0.91 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -52,7 +52,14 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#v0-9-orcs-integration-to-orb-suite">v0.9 ORCS integration to ORB suite</a></li>
+<li><a class="reference internal" href="#v0-9-orcs-integration-to-orb-suite">v0.9 ORCS integration to ORB suite</a><ul>
+<li><a class="reference internal" href="#v0-91">v0.91</a><ul>
+<li><a class="reference internal" href="#recoded-methods">Recoded methods:</a></li>
+<li><a class="reference internal" href="#bug-fix">bug fix:</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -101,14 +108,30 @@ uncalibrated spectrum cube which spectra have never been
 interpolated so their spectral information has not been
 corrupted. The 3 other configurations are also possible.</li>
 <li>Modification of the option file keywords</li>
-<li>Creation of the executable script <strong>orcs</strong> which run the extraction
+<li>Creation of the executable script <strong>orcs</strong> which runs the extraction
 process directly</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Up to the v1.0 some secondaries functionalities have been
-deactivated for they have to be rewritten because of the
-architecture change . We will add them on the next release.</p>
+deactivated because they have to be rewritten to account for the
+architecture change. They will be added on next releases.</p>
+</div>
+<div class="section" id="v0-91">
+<h3>v0.91<a class="headerlink" href="#v0-91" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="recoded-methods">
+<h4>Recoded methods:<a class="headerlink" href="#recoded-methods" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>py:meth:<cite>orcs.orcs.SpectralCube.extract_raw_lines_maps</cite> and its
+wrapper py:meth:<cite>orcs.orcs.Orcs.extract_raw_lines_maps</cite>.</li>
+</ul>
+</div>
+<div class="section" id="bug-fix">
+<h4>bug fix:<a class="headerlink" href="#bug-fix" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>conversion of the fwhm from cm-1/nm to pixels before fit</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -131,7 +154,7 @@ architecture change . We will add them on the next release.</p>
         <li class="right" >
           <a href="utils_module.html" title="Utils module"
              >previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Orcs 0.91 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

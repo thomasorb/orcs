@@ -24,9 +24,7 @@
 ORCS (Outils de Réduction de Cubes Spectraux) base processing module
 provides tools to fix WCS and extract data from ORBS spectral cubes.
 
-.. note:: ORCS is built over ORB so that ORB must be
-  installed. Please make sure to give ORCS the correct path to ORB
-  files
+.. note:: ORCS is built over ORB so that ORB must be installed.
 """
 
 import version
@@ -38,7 +36,8 @@ import sys
 import math
 
 import numpy as np
-import pywcs
+import astropy.wcs as pywcs
+import astropy.io.fits as pyfits
 import bottleneck as bn
 
 # import ORB
@@ -122,6 +121,7 @@ class Orcs(Tools):
     optionfile = None
     spectralcube = None # SpectralCube instance
     wcs = None # pywcs.WCS Instance
+    wcs_header = None
     
     def __init__(self, option_file_path, config_file_name="config.orb",
                  overwrite=True):
@@ -219,50 +219,107 @@ class Orcs(Tools):
             self._print_msg('Cube is NOT CALIBRATED in wavelength')
             store_option_parameter('calibration_laser_map_path',
                                    'CALIBMAP', str)
-
-        # target position
+        # WCS
+        self.options['wcs'] = True
+        store_option_parameter('wcs', 'WCS', bool, optional=True)
+        if not self.options['wcs']:
+            wcs_optional = True
+        else:
+            wcs_optional = False  
+            
         store_option_parameter('target_ra', 'TARGETR', str, ':',
-                               post_cast=float)
+                               post_cast=float, optional=wcs_optional)
         store_option_parameter('target_dec', 'TARGETD', str, ':',
-                               post_cast=float)
-        store_option_parameter('target_x', 'TARGETX', float)
-        store_option_parameter('target_y', 'TARGETY', float)
+                               post_cast=float, optional=wcs_optional)
+        store_option_parameter('target_x', 'TARGETX', float, optional=wcs_optional)
+        store_option_parameter('target_y', 'TARGETY', float, optional=wcs_optional)
         store_option_parameter('obs_date', 'OBSDATE', str, '-',
-                               post_cast=int)
+                               post_cast=int, optional=wcs_optional)
         store_option_parameter('hour_ut', 'HOUR_UT', str, ':',
-                               post_cast=float)
+                               post_cast=float, optional=wcs_optional)
 
         # optional parameters
         store_option_parameter('roi', 'ROI', str, ',', post_cast=int,
                                optional=True)
         store_option_parameter('sky_regions_path', 'SKY_REG', str,
                                optional=True)
+
+
+        # Integrated spectra
+        store_option_parameter('integ_reg_path', 'INTEG_REG_PATH', str,
+                               optional=True)
         
+        self.options['auto_sky_extraction'] = False
+        store_option_parameter('auto_sky_extraction', 'INTEG_AUTO_SKY', bool,
+                               optional=True)
+        
+        self.options['sky_size_coeff'] = 2.
+        store_option_parameter('sky_size_coeff', 'INTEG_SKY_SIZE_COEFF', float,
+                               optional=True)
+
+        self.options['plot'] = True
+        store_option_parameter('plot', 'INTEG_PLOT', bool,
+                               optional=True)
+
+        # filter boundaries
+        self.options['filter_range'] = orb.utils.read_filter_file(
+            self._get_filter_file_path(self.options['filter_name']))[2:]
+        if self.options['wavenumber']:
+            self.options['filter_range'] = orb.utils.nm2cm1(
+                self.options['filter_range'])
+            
         ## Get lines parameters
         # Lines nm
-        self.options['lines'] = self.optionfile.get_lines()
+        if self.options['wavenumber']:
+            nm_min = orb.utils.cm12nm(np.max(self.options['filter_range']))
+            nm_max = orb.utils.cm12nm(np.min(self.options['filter_range']))
+            delta_nm =  orb.utils.fwhm_cm12nm(
+                self.get_lines_fwhm(),
+                (np.min(self.options['filter_range'])
+                 + np.max(self.options['filter_range']))/2.)
+        else:
+            nm_min = np.min(self.options['filter_range'])
+            nm_max = np.max(self.options['filter_range'])
+            delta_nm =  self.get_lines_fwhm()
+        self.options['lines'] = self.optionfile.get_lines(
+           nm_min, nm_max, delta_nm)
+    
         self._print_msg('Searched lines (in nm): {}'.format(
             self.options['lines']))
         if self.options['wavenumber']:
             self.options['lines'] = orb.utils.nm2cm1(self.options['lines'])
             self._print_msg('Searched lines (in {}): {}'.format(
                 unit, self.options['lines']))
-        
+       
         # Lines shift
         self.options['object_velocity'] = 0.
         store_option_parameter('object_velocity', 'OBJECT_VELOCITY', float,
                                optional=True)
         self._print_msg('Mean object velocity: {} km.s-1'.format(
             self.options['object_velocity']))
-        
-        # LSR
-        self._print_msg('Radial velocity correction: {} km.s-1'.format(
-           self.get_lsr_velocity()))
+
+        # cov lines
+        store_option_parameter('cov_lines', 'COV_LINES', str, ',',
+                               optional=True)
+
+        if 'cov_lines' in self.options:
+            self.cov_pos = self.options['cov_lines']
+        else:
+            self.cov_pos = True
+
+        # HELIO
+        if self.options['wcs']:
+            helio_velocity = self.get_helio_velocity()
+            self._print_msg(
+                'Heliocentric velocity correction: {} km.s-1'.format(
+                helio_velocity))
+        else:
+            helio_velocity = 0.
 
         # Total mean velocity
         self.options['mean_velocity'] = (
             self.options['object_velocity']
-            + self.get_lsr_velocity())
+            - helio_velocity)
         
         self._print_msg('Mean velocity shift: {} km.s-1, {:.3f} {}'.format(
             self.options['mean_velocity'], self.get_lines_shift(), unit))
@@ -279,24 +336,19 @@ class Orcs(Tools):
             'Order of the polynomial used to fit continuum: {}'.format(
                 self.options['poly_order']))
 
-        # filter boundaries
-        self.options['filter_range'] = orb.utils.read_filter_file(
-            self._get_filter_file_path(self.options['filter_name']))[2:]
-        if self.options['wavenumber']:
-            self.options['filter_range'] = orb.utils.nm2cm1(
-                self.options['filter_range'])
-
         ## Get WCS header
         cube = Cube(self.options['spectrum_list_path'],
                     silent_init=True)
-        self.wcs = pywcs.WCS(cube.get_frame_header(0))
+        if self.options['wcs']:
+            self.wcs = pywcs.WCS(cube.get_frame_header(0))
+            self.wcs_header = self.wcs.to_header()
         
         ## Init spectral cube
         self.spectralcube = SpectralCube(
             self.options['spectrum_list_path'],
             data_prefix=self._get_data_prefix(),
             project_header=self._get_project_fits_header(),
-            wcs_header = self.wcs.to_header(),
+            wcs_header = self.wcs_header,
             overwrite=self.overwrite,
             logfile_name = self._logfile_name)
 
@@ -317,7 +369,6 @@ class Orcs(Tools):
         created FITS files."""
         hdr = list()
         hdr.append(('ORCS', '{:s}'.format(self.__version__), 'ORCS version'))
-        hdr += self.wcs.to_header()
         return hdr
     
     def get_lines_fwhm(self):
@@ -331,8 +382,8 @@ class Orcs(Tools):
             self.options['order'], apod_coeff=self.options['apodization'],
             wavenumber=self.options['wavenumber'])
 
-    def get_lsr_velocity(self):
-        """Return LSR velocity in km.s-1
+    def get_helio_velocity(self):
+        """Return heliocentric velocity in km.s-1
 
         .. seealso:: :py:class:`orcs.rvcorrect.RVCorrect` a
           translation in Python of the IRAF function RVCORRECT.
@@ -358,7 +409,7 @@ class Orcs(Tools):
         
         return RVCorrect(target_ra, target_dec,
                          self.options['obs_date'], hour_ut,
-                         obs_coords, silent=True).rvcorrect()[1]
+                         obs_coords, silent=True).rvcorrect()[0]
 
     def get_lines_shift(self):
         """Return the expected line shift in nm or in cm-1 depending
@@ -373,14 +424,25 @@ class Orcs(Tools):
             wavenumber=self.options['wavenumber'])
             
     def extract_lines_maps(self):
-        
+        """Extract lines maps.
+
+        This is a wrapper around
+        :py:meth:`orcs.SpectralCube.extract_lines_maps`.
+
+        .. seealso:: :py:meth:`orcs.SpectralCube.extract_lines_maps`
+        """
         if self.options.get('roi') is not None:
             x_range = self.options['roi'][:2]
             y_range = self.options['roi'][2:]
         else:
             x_range = None
             y_range = None
-            
+
+        if self.options['apodization'] == 1.0:
+            fmodel = 'sinc'
+        else:
+            fmodel = 'gaussian'
+        
         self.spectralcube.extract_lines_maps(
             self.options['lines'],
             self.options['mean_velocity'],
@@ -395,8 +457,97 @@ class Orcs(Tools):
             nm_laser = self.config['CALIB_NM_LASER'],
             sky_regions_file_path=self.options.get('sky_regions_path'),
             x_range=x_range,
-            y_range=y_range)
+            y_range=y_range,
+            fmodel=fmodel,
+            cov_pos=self.cov_pos)
 
+    def get_sky_radial_velocity(self):
+        """Return sky radial velocity
+
+        This is a wrapper around
+        :py:meth:`orcs.SpectralCube.get_sky_radial_velocity`.
+
+        .. seealso:: :py:meth:`orcs.SpectralCube.get_sky_radial_velocity`
+        """
+        if self.options['apodization'] == 1.0:
+            fmodel = 'sinc'
+        else:
+            fmodel = 'gaussian'
+        
+        self.spectralcube.get_sky_radial_velocity(
+            self.options.get('sky_regions_path'),
+            self.get_lines_fwhm(),
+            self.options['filter_range'],
+            self.options['wavenumber'],
+            self.options['step'],
+            self.options['order'],
+            poly_order=self.options.get('poly_order'),
+            calibration_laser_map_path=self.options[
+                'calibration_laser_map_path'],
+            nm_laser = self.config['CALIB_NM_LASER'],
+            fmodel=fmodel)
+        
+    def extract_raw_lines_maps(self):
+        """Extract raw lines maps.
+
+        This is a wrapper around
+        :py:meth:`orcs.SpectralCube.extract_raw_lines_maps`.
+
+        .. seealso:: :py:meth:`orcs.SpectralCube.extract_raw_lines_maps`
+        """
+        self.spectralcube.extract_raw_lines_maps(
+            self.options['lines'],
+            self.options['mean_velocity'],
+            self.get_lines_fwhm(),
+            self.options['step'],
+            self.options['order'],
+            self.options['wavenumber'],
+            calibration_laser_map_path=self.options[
+                'calibration_laser_map_path'],
+            nm_laser = self.config['CALIB_NM_LASER'])
+
+    def extract_integrated_spectra(self):
+        """Extract integrated spectra.
+
+        This is a wrapper around
+        :py:meth:`orcs.SpectralCube.extract_integrated_spectra`.
+
+        .. seealso:: :py:meth:`orcs.SpectralCube.extract_integrated_spectra`
+        """
+        if self.options.get('roi') is not None:
+            x_range = self.options['roi'][:2]
+            y_range = self.options['roi'][2:]
+        else:
+            x_range = None
+            y_range = None
+
+        if self.options['apodization'] == 1.0:
+            fmodel = 'sinc'
+        else:
+            fmodel = 'gaussian'
+        
+        self.spectralcube.extract_integrated_spectra(
+            self.options['integ_reg_path'],
+            self.options['lines'],
+            self.options['mean_velocity'],
+            self.get_lines_fwhm(),
+            self.options['filter_range'],
+            self.options['wavenumber'],
+            self.options['step'],
+            self.options['order'],
+            poly_order=self.options.get('poly_order'),
+            calibration_laser_map_path=self.options[
+                'calibration_laser_map_path'],
+            nm_laser = self.config['CALIB_NM_LASER'],
+            sky_regions_file_path=self.options.get('sky_regions_path'),
+            fmodel=fmodel,
+            cov_pos=self.cov_pos,
+            plot=self.options['plot'],
+            auto_sky_extraction=self.options['auto_sky_extraction'],
+            sky_size_coeff=self.options['sky_size_coeff'])
+
+    
+        
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
@@ -411,10 +562,41 @@ class SpectralCube(Cube):
         """Return path to the list of extacted emission lines maps"""
         return self._data_path_hdr + "maps_list"
 
-    def _get_fits_header(self, file_type, comment=None):
-        return (self._get_basic_header('Deep frame')
-                + self._project_header
-                + self._get_basic_frame_header(self.dimx, self.dimy))
+    def _get_frame_header(self, file_type, comment=None):
+        """Return frame header
+
+        :param file_type: Type of file
+
+        :param comment: (Optional) Comments on the file type (default
+          None).
+        """
+        hdr = (self._get_basic_header('Deep frame')
+               + self._project_header
+               + self._get_basic_frame_header(self.dimx, self.dimy))
+        hdr = self._add_wcs_header(hdr)
+        return hdr
+        
+    def _add_wcs_header(self, hdr):
+        """Add WCS header keywords to a header.
+
+        :param hdr: Header to update
+        """
+        if self._wcs_header is not None:
+            new_hdr = pyfits.Header()
+            new_hdr.extend(hdr, strip=True,
+                           update=True, end=True)
+
+            new_hdr.extend(self._wcs_header, strip=True,
+                           update=True, end=True)
+
+            del new_hdr['RESTFRQ']
+            del new_hdr['RESTWAV']
+            del new_hdr['LONPOLE']
+            del new_hdr['LATPOLE']
+
+            return new_hdr
+        else:
+            return hdr
 
     def _get_map_path(self, line_name, err=False, param="amplitude"):
         """Return the path to a map of one gaussian fit parameter for
@@ -455,35 +637,85 @@ class SpectralCube(Cube):
         return (dirname + os.sep + "MAPS" + os.sep
                 + basename + "%s_MAP%s_%d.fits" %(param, err, line_name))
 
-    def _get_integrated_spectra_fit_params_path(self):
-        return self._data_path_hdr + "integ_spectra_fit_params"
 
     def _get_deep_frame_path(self):
         return self._data_path_hdr + "deep_frame.fits"
 
     def _get_raw_line_map_path(self, line_nm):
-        return self._data_path_hdr + "%s_raw.fits"%str(line_nm)
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "RAW_MAPS" + os.sep
+                + basename + "%s_raw.fits"%str(line_nm))
 
     def _get_raw_err_map_path(self, line_nm):
-        return self._data_path_hdr + "%s_raw_err.fits"%str(line_nm)
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "RAW_MAPS" + os.sep
+                + basename + "%s_raw_err.fits"%str(line_nm))
 
     def _get_sky_mask_path(self):
         return self._data_path_hdr + "sky_mask.fits"
 
     def _get_noise_map_path(self):
         return self._data_path_hdr + "noise_map.fits"
+
+    def _get_integrated_spectra_fit_params_path(self):
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "INTEGRATED"
+                + os.sep + basename + "integ_spectra_fit_params")
     
     def _get_integrated_spectrum_path(self, region_name):
-        return self._data_path_hdr + "integrated_spectrum_%s"%region_name
-    
-    def _get_integrated_spectrum_map_path(self, region_name):
-        return self._data_path_hdr + "integrated_spectrum_map_%s"%region_name
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "INTEGRATED"
+                + os.sep + basename + "integrated_spectrum_{}.fits".format(region_name))
 
+    def _get_integrated_spectrum_fit_path(self, region_name):
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "INTEGRATED"
+                + os.sep + basename + "integrated_spectrum_fit_{}.fits".format(region_name))
+
+    def _get_integrated_spectrum_header(self, region_name, axis, wavenumber):
+        """Return integrated spectrum header
+
+        :param axis: Axis of the spectrum
+        
+        :param region_name: Region name    
+        """
+        hdr = (self._get_basic_header('Integrated region {}'.format(region_name))
+               + self._project_header
+               + self._get_basic_spectrum_header(axis, wavenumber=wavenumber))
+        return hdr
 
     def _get_fwhm_pix(self):
         """Return fwhm in channels from default lines FWHM"""
         return orb.utils.nm2pix(self.nm_axis,
                                 self.nm_axis[0] + self.lines_fwhm)
+
+    def _get_calibration_coeff_map(self, calibration_laser_map_path, nm_laser):
+        """Return the calibration coeff map based on the calibration
+        laser map and the laser wavelength.
+
+        :param calibration_laser_map_path: Path to the calibration
+          laser map. If None, the returned calibration laser map will
+          be a map full of ones.
+
+        :param nm_laser: calibration laser wavelength in nm.
+        """
+        if calibration_laser_map_path is None:
+            return np.ones((self.dimx, self.dimy), dtype=float)
+        
+        else:
+            calibration_laser_map = self.read_fits(
+                calibration_laser_map_path)
+            if (calibration_laser_map.shape[0] != self.dimx):
+                calibration_laser_map = orb.utils.interpolate_map(
+                    calibration_laser_map, self.dimx, self.dimy)
+            if nm_laser is None:
+                self._print_error('If a calibration laser map path is given the wavelength of the calibration laser used must also be given. Please set nm_laser option.')
+            return calibration_laser_map / nm_laser
     
     def _extract_spectrum_from_region(self, region,
                                       calibration_coeff_map,
@@ -553,6 +785,29 @@ class SpectralCube(Cube):
 
         spectrum = np.zeros(self.dimz, dtype=float)
 
+        # get range to check if a quadrants extraction is nescessary
+        mask_x_proj = np.nanmax(mask, axis=1).astype(float)
+        mask_x_proj[np.nonzero(mask_x_proj == 0)] = np.nan
+        mask_x_proj *= np.arange(self.dimx)
+        x_min = int(np.nanmin(mask_x_proj))
+        x_max = int(np.nanmax(mask_x_proj))
+        
+        mask_y_proj = np.nanmax(mask, axis=0).astype(float)
+        mask_y_proj[np.nonzero(mask_y_proj == 0)] = np.nan
+        mask_y_proj *= np.arange(self.dimy)
+        y_min = int(np.nanmin(mask_y_proj))
+        y_max = int(np.nanmax(mask_y_proj))
+
+        if (x_max - x_min < self.dimx / float(self.DIV_NB)
+            and y_max - y_min < self.dimy / float(self.DIV_NB)):
+            quadrant_extraction = False
+            QUAD_NB = 1
+            DIV_NB = 1
+        else:
+            quadrant_extraction = True
+            QUAD_NB = self.QUAD_NB
+            DIV_NB = self.DIV_NB
+
         if np.any(calibration_coeff_map != 1.):
             if wavenumber:
                 base_axis = orb.utils.create_cm1_axis(
@@ -561,8 +816,11 @@ class SpectralCube(Cube):
                 base_axis  = orb.utils.create_nm_axis_ireg(
                     self.dimz, step, order, corr=1.)
 
-            for iquad in range(0, self.QUAD_NB):
-                x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
+            for iquad in range(0, QUAD_NB):
+                
+                if quadrant_extraction:
+                    # x_min, x_max, y_min, y_max are now used for quadrants boundaries
+                    x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max, 
                                            0, self.dimz)
 
@@ -594,7 +852,7 @@ class SpectralCube(Cube):
 
                     if not silent:
                         progress.update(ii, info="column : {}/{}".format(
-                            ii, self.dimx))
+                            ii, int(self.dimx/float(DIV_NB))))
                 self._close_pp_server(job_server)
                 if not silent: progress.end()
             
@@ -674,7 +932,7 @@ class SpectralCube(Cube):
         """
         
         def _fit_lines_in_column(data, calib_map_col, mask_col,
-                                 lines, fwhm_guess, filter_range,
+                                 lines, fwhm_guess_pix, filter_range,
                                  poly_order, fix_fwhm, fmodel,
                                  step, order, wavenumber,
                                  cov_pos, cov_fwhm, substract):
@@ -691,7 +949,6 @@ class SpectralCube(Cube):
             res = np.empty((data.shape[0], len(lines), 2),
                            dtype=float)
             res.fill(np.nan)
-            
             # convert lines wavelength/wavenumber into calibrated
             # positions
             if np.all(calib_map_col == 1.):
@@ -708,7 +965,6 @@ class SpectralCube(Cube):
                     filter_range_pix = orb.utils.nm2pix(
                         nm_axis, filter_range)
 
-                
             for ij in range(data.shape[0]):
                 if mask_col[ij]:
                     if calib_map_col[ij] != 1.:
@@ -758,7 +1014,7 @@ class SpectralCube(Cube):
                     result_fit = orb.utils.fit_lines_in_vector(
                         data[ij,:],
                         lines_pix,
-                        fwhm_guess=fwhm_guess,
+                        fwhm_guess=fwhm_guess_pix,
                         cont_guess=None,
                         fix_cont=False,
                         poly_order=poly_order,
@@ -772,23 +1028,37 @@ class SpectralCube(Cube):
                         wavenumber=wavenumber)
                     
                 else: result_fit = []
+
+
+                if result_fit != []: # reject fit with no associated error
+                    if not 'lines-params-err' in result_fit:
+                        result_fit = []
                     
                 for iline in range(len(lines)):
                     if result_fit != []:
                         fit[ij,iline,:] = result_fit[
                             'lines-params'][iline, :]
-                        
+                        err[ij,iline,:] = result_fit[
+                            'lines-params-err'][iline, :]
+                            
                         # return the wavelength/wavenumber instead of
                         # the position in the vector
                         if wavenumber:
+                            err[ij,iline,2] = orb.utils.pix2cm1(
+                                cm1_axis, err[ij,iline,2] + fit[ij,iline,2])
                             fit[ij,iline,2] = orb.utils.pix2cm1(
                                 cm1_axis, fit[ij,iline,2])
+                            err[ij,iline,2] -= fit[ij,iline,2]
+                            
                         else:
+                            err[ij,iline,2] = orb.utils.pix2nm(
+                                nm_axis, err[ij,iline,2] + fit[ij,iline,2])
                             fit[ij,iline,2] = orb.utils.pix2nm(
                                 nm_axis, fit[ij,iline,2])
+                            err[ij,iline,2] -= fit[ij,iline,2]
+                            
+                        err[ij,iline,2] = abs(err[ij,iline,2])
                         
-                        err[ij,iline,:] = result_fit[
-                            'lines-params-err'][iline, :]
                         res[ij,iline,:] = [
                             result_fit['reduced-chi-square'],
                             result_fit['snr'][iline]]
@@ -799,7 +1069,6 @@ class SpectralCube(Cube):
                         err[ij,iline,:] = [float('NaN'), float('NaN'),
                                            float('NaN'), float('NaN')]
                         res[ij,iline,:] = [float('NaN'), float('NaN')]
-            
 
             return fit, err, res
         
@@ -866,6 +1135,17 @@ class SpectralCube(Cube):
         mask = np.zeros((self.dimx, self.dimy), dtype=bool)
         mask[x_min:x_max, y_min:y_max] = True
 
+
+        # convert fwhm in pixels
+        if wavenumber:
+            cm1_axis = orb.utils.create_cm1_axis(self.dimz, step, order)
+            fwhm_guess_pix = orb.utils.cm12pix(
+                cm1_axis, cm1_axis[0] + fwhm_guess)
+        else:
+            nm_axis = orb.utils.create_nm_axis(self.dimz, step, order)
+            fwhm_guess_pix = orb.utils.nm2pix(
+                nm_axis, nm_axis[0] + fwhm_guess)
+            
         for iquad in range(0, self.QUAD_NB):
             # note that x_min, x_max ... are redefined as the quadrant
             # boundaries
@@ -888,7 +1168,7 @@ class SpectralCube(Cube):
                           calibration_coeff_map[x_min + ii + ijob,
                                                 y_min:y_max],
                           mask[x_min + ii + ijob, y_min:y_max],
-                          lines, fwhm_guess, filter_range,
+                          lines, fwhm_guess_pix, filter_range,
                           poly_order, fix_fwhm, fmodel,
                           step, order, wavenumber,
                           cov_pos, cov_fwhm, substract), 
@@ -918,7 +1198,7 @@ class SpectralCube(Cube):
                               y_min:y_max,:] = chi[:,:,1]
                 
                 progress.update(ii, info="column : {}/{}".format(
-                    ii, self.dimx))
+                    ii, int(self.dimx/float(self.DIV_NB))))
                 
             self._close_pp_server(job_server)
             progress.end()
@@ -969,92 +1249,221 @@ class SpectralCube(Cube):
 
     ##     self.write_fits(self._get_sky_mask_path(), mask_map,
     ##                     overwrite=self.overwrite,
-    ##                     fits_header=self._get_fits_header("Sky Mask"))
+    ##                     fits_header=self._get_frame_header("Sky Mask"))
     ##     return mask_map
 
 
-    ## def get_sky_radial_velocity(self, sky_region_file_path, fmodel='gaussian',
-    ##                             lines_shift=0., show=True):
-    ##     """
-    ##     .. note:: Use :py:class:`orb.core.Lines` to get the sky lines
-    ##       to fit.
 
-    
-    
-    ##     """
-    ##     # compute signal range
-    ##     signal_range = self._get_signal_range().astype(int)
+    def _convert_fit_result(self, fit_result, wavenumber, step, order,
+                            axis):
+        """Convert the result from
+        :py:meth:`orb.utils.fit_lines_in_vector` in
+        wavelength/wavenumber.
+
+        :param fit_result: Result from fit
+
+        :param wavenumber: If True the spectrum is in wavenumber else it
+          is in wavelength.
+
+        :param step: Step size in nm
+
+        :param order: Folding order
+
+        :param axis: Axis of the spectrum in wavelength or wavenumber.
+        """
+        fit_params = np.copy(fit_result['lines-params'])
+        err_params = np.copy(fit_result['lines-params-err'])
+        # convert position and fwhm to wavelength/wavenumber
+        if wavenumber:
+            fit_params[:, 2] = orb.utils.pix2cm1(
+                axis, fit_params[:, 2])
+            err_params[:, 2] = (
+                orb.utils.pix2cm1(axis, err_params[:, 2]
+                                  + fit_result['lines-params'][:, 2])
+                - fit_params[:, 2])
+            fit_params[:, 3] = (
+                orb.utils.pix2cm1(axis, fit_params[:, 3]
+                                  + fit_result['lines-params'][:, 2])
+                - fit_params[:, 2])
+            err_params[:, 3] = (
+                orb.utils.pix2cm1(axis, err_params[:, 3]
+                                  + fit_result['lines-params'][:, 2])
+                - fit_params[:, 2])
+        else:
+            fit_params[:, 2] = orb.utils.pix2nm(
+                axis, fit_params[:, 2])
+            err_params[:, 2] = (
+                orb.utils.pix2nm(axis, err_params[:, 2]
+                                 + fit_result['lines-params'][:, 2])
+                - fit_params[:, 2])
+            fit_params[:, 3] = (
+                orb.utils.pix2nm(axis, fit_params[:, 3]
+                                 + fit_result['lines-params'][:, 2])
+                - fit_params[:, 2])
+            err_params[:, 3] = (
+                orb.utils.pix2nm(axis, err_params[:, 3]
+                                 + fit_result['lines-params'][:, 2])
+                - fit_params[:, 2])
+            
+        return fit_params, err_params
+
+    def get_sky_radial_velocity(self, sky_regions_file_path,
+                                lines_fwhm, filter_range,
+                                wavenumber, step, order,
+                                poly_order=0,
+                                calibration_laser_map_path=None,
+                                nm_laser=None,
+                                fix_fwhm=False,
+                                fmodel='gaussian', show=True):
+        """
+        Return the sky radial velocity.
+
+        :sky_regions_file_path: Path to a ds9 region file giving the
+          pixels where the sky spectrum has to be extracted.
+
+        :param lines_fwhm: Expected FWHM of the lines. Must be given
+          in the unit of the cube (cm-1 if wavenumber is True, nm if
+          False)
+
+        :param filter_range: A tuple giving the min and max
+          wavelength/wavenumber of the filter bandpass. Must be given
+          in the unit of the cube (cm-1 if wavenumber is True, nm if
+          False)
+
+        :param wavenumber: If True the cube is in wavenumber else it
+          is in wavelength.
+
+        :param step: Step size in nm
+
+        :param order: Folding order
+
+        :param poly_order: Order of the polynomial used to fit
+          continuum.
+
+        :param calibration_laser_map_path: (Optional) If not None the
+          cube is considered to be uncalibrated in wavelength. In this
+          case the calibration laser wavelength (nm_laser) must also
+          be given (default None).
+
+        :param nm_laser: (Optional) Calibration laser wavelentgh. Must
+          be given if calibration_laser_map_path is not None (default
+          None).
+
+        :param fix_fwhm: If True fix FWHM to its guess (default
+          False).
+
+        :param fmodel: (Optional) Type of line to fit. Can be
+          'gaussian' or 'sinc' (default 'gaussian').
+
+        :param show: (Optional) If True, show the sky spectrum and the
+          fitted function (default True).
+          
+        .. note:: Use :py:class:`orb.core.Lines` to get the sky lines
+          to fit.
+        """
+        calibration_coeff_map = self._get_calibration_coeff_map(
+            calibration_laser_map_path, nm_laser)
+                
+        self._print_msg("Extracting sky median vector")
+        median_sky_spectrum = self._extract_spectrum_from_region(
+            orb.utils.get_mask_from_ds9_region_file(
+                sky_regions_file_path,
+                x_range=[0, self.dimx],
+                y_range=[0, self.dimy]),
+            calibration_coeff_map,
+            wavenumber, step, order)
         
-    ##     sky_lines_nm = Lines().get_sky_lines(self.filter_min, self.filter_max,
-    ##                                          self.lines_fwhm)
-        
-    ##     sky_lines_nm_shift = np.array(sky_lines_nm) + lines_shift
-    ##     sky_lines_pix = orb.utils.nm2pix(self.nm_axis, sky_lines_nm_shift)
-        
+        if wavenumber:
+            cm1_axis = orb.utils.create_cm1_axis(
+                self.dimz, step, order, corr=1.)
+            filter_min_nm = orb.utils.cm12nm(np.max(filter_range))
+            filter_max_nm = orb.utils.cm12nm(np.min(filter_range))
+            lines_fwhm_nm = orb.utils.fwhm_cm12nm(
+                lines_fwhm, (cm1_axis[0] + cm1_axis[-1])/2.)
+        else:
+            nm_axis = orb.utils.create_nm_axis(
+                self.dimz, step, order, corr=1.)
+            filter_min_nm = np.min(filter_range)
+            filter_max_nm = np.max(filter_range)
+            lines_fwhm_nm = lines_fwhm
+
+        lines = Lines().get_sky_lines(
+            filter_min_nm, filter_max_nm, lines_fwhm_nm)
    
-    ##     region = orb.utils.get_mask_from_ds9_region_file(
-    ##         sky_region_file_path,
-    ##         x_range=[0, self.dimx], y_range=[0, self.dimy])
-    ##     sky_median_spectrum = self._extract_spectrum_from_region(
-    ##         region, median=True)
+        if wavenumber:
+            lines = orb.utils.nm2cm1(lines)
+            fwhm_guess_pix = orb.utils.cm12pix(
+                cm1_axis, cm1_axis[0] + lines_fwhm)
+            filter_range_pix = orb.utils.cm12pix(cm1_axis, filter_range)
+            lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+            axis = cm1_axis
+        else:
+            fwhm_guess_pix = orb.utils.nm2pix(
+                nm_axis, nm_axis[0] + lines_fwhm)
+            filter_range_pix = orb.utils.nm2pix(nm_axis, filter_range)
+            lines_pix = orb.utils.nm2pix(nm_axis, lines)
+            axis = nm_axis
 
-    ##     cont_guess = orb.utils.robust_median(sky_median_spectrum)
-    ##     fix_cont = False
-        
+        fit = orb.utils.fit_lines_in_vector(
+            median_sky_spectrum,
+            lines_pix,
+            fwhm_guess=fwhm_guess_pix,
+            cont_guess=None,
+            fix_cont=False,
+            poly_order=poly_order,
+            cov_pos=True,
+            cov_fwhm=True,
+            fix_fwhm=fix_fwhm,
+            fmodel=fmodel,
+            observation_params=[step, order],
+            signal_range=filter_range_pix,
+            return_fitted_vector=True,
+            wavenumber=wavenumber)
 
-    ##     fit = orb.utils.fit_lines_in_vector(
-    ##         sky_median_spectrum,
-    ##         np.copy(sky_lines_pix),
-    ##         cont_guess=[cont_guess],
-    ##         fix_cont=fix_cont,
-    ##         poly_order=0,
-    ##         fmodel=fmodel,
-    ##         cov_pos=True,
-    ##         cov_fwhm=True,
-    ##         return_fitted_vector=True,
-    ##         fwhm_guess=self._get_fwhm_pix(),
-    ##         fix_fwhm=False,
-    ##         signal_range=signal_range,
-    ##         interpolation_params=[float(self.hdr['STEP']),
-    ##                               float(self.hdr['ORDER'])])
+        if fit != []:
+
+            fit_params, err_params = self._convert_fit_result(
+                fit, wavenumber, step, order, axis)
+
+            # convert velocity to km.s-1
+            velocities = utils.compute_radial_velocity(
+                fit_params[:, 2], lines,
+                wavenumber=wavenumber)
+            
+            if wavenumber:
+                velocities_err = utils.compute_radial_velocity(
+                    err_params[:, 2] + cm1_axis[0],
+                    cm1_axis[0])
+            else:
+                velocities_err = utils.compute_radial_velocity(
+                    err_params[:, 2] + nm_axis[0],
+                    nm_axis[0])
+
+        self._print_msg("Mean sky radial velocity : {} +/- {} km/s".format(
+            np.mean(velocities), np.mean(velocities_err)))
     
-    ##     fit_params = fit['lines-params']
-    ##     fit_params_err = fit['lines-params-err']
-        
-            
-    ##     velocity = list()
-    ##     for iline in range(len(fit_params)):
-    ##         pline = fit_params[iline]
-    ##         velocity.append(utils.compute_radial_velocity(
-    ##             orb.utils.pix2nm(self.nm_axis, pline[2]),
-    ##             sky_lines_nm[iline]))
-            
-    ##         err = utils.compute_radial_velocity(
-    ##             orb.utils.pix2nm(self.nm_axis, fit_params_err[iline][2]
-    ##              + sky_lines_pix[iline]),
-    ##             orb.utils.pix2nm(self.nm_axis, sky_lines_pix[iline]))
-            
-    ##         self._print_msg("Line %f nm, velocity : %f km/s [+/-] %f"%(
-    ##             sky_lines_nm[iline], velocity[-1], err))
-            
-    ##     self._print_msg(
-    ##         "Mean sky radial velocity : %f km/s"%np.mean(np.array(velocity)))
+        if show:
+            import pylab as pl
+            pl.figure(figsize=(10, 5))
+            if wavenumber:
+                axis = orb.utils.cm12nm(axis)
+                lines = orb.utils.cm12nm(lines)
+                filter_range = orb.utils.cm12nm(filter_range)
+            for iline in range(np.size(lines)):
+                pl.axvline(x=lines[iline], alpha=0.5,
+                           color='0.', linestyle=':')
+            pl.plot(axis, median_sky_spectrum, color='0.5',
+                    label = 'sky spectrum')
+            pl.plot(axis, fit['fitted-vector'], color='0.',
+                    linewidth=2., label='fit')
+            pl.xlim(filter_range)
+            pl.ylim([np.nanmin(median_sky_spectrum),
+                     np.nanmax(median_sky_spectrum) * 1.1])
+            pl.legend()
+            pl.show()
 
-    ##     if show:
-    ##         import pylab as pl
-    ##         for iline in range(np.size(sky_lines_nm_shift)):
-    ##             pl.axvline(x=sky_lines_nm_shift[iline], alpha=0.5,
-    ##                        color='0.', linestyle=':')
-    ##         pl.plot(self.nm_axis, sky_median_spectrum, color='0.5',
-    ##                 label = 'sky spectrum')
-    ##         pl.plot(self.nm_axis, fit['fitted-vector'], color='0.',
-    ##                 linewidth=2., label='fit')
-    ##         pl.legend()
-    ##         pl.show()
+        return median_sky_spectrum , fit_params, err_params
 
-    ##     err_params = np.nan
-    ##     return sky_median_spectrum, fit_params, err_params
-        
             
     def extract_lines_maps(self, lines, lines_velocity,
                            lines_fwhm, filter_range,
@@ -1138,22 +1547,9 @@ class SpectralCube(Cube):
         lines += orb.utils.line_shift(lines_velocity, lines,
                                       wavenumber=wavenumber)
 
-        if calibration_laser_map_path is None:
-            calibration_laser_map = np.ones((self.dimx, self.dimy),
-                                            dtype=float)
-            nm_laser = 1.
-            calibration_coeff_map = np.copy(calibration_laser_map)
-        else:
-            calibration_laser_map = self.read_fits(
-                calibration_laser_map_path)
-            if (calibration_laser_map.shape[0] != self.dimx):
-                calibration_laser_map = orb.utils.interpolate_map(
-                    calibration_laser_map, self.dimx, self.dimy)
-            if nm_laser is None:
-                self._print_error('If a calibration laser map path is given the wavelength of the calibration laser used must also be given. Please set nm_laser option.')
-            calibration_coeff_map = calibration_laser_map / nm_laser
-                
-        
+        calibration_coeff_map = self._get_calibration_coeff_map(
+            calibration_laser_map_path, nm_laser)
+            
         # Extract median sky spectrum
         if sky_regions_file_path is not None:
             self._print_msg("Extracting sky median vector")
@@ -1206,7 +1602,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, results[iline][0],
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Height Map %d"%line_name))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'HEI'))
 
@@ -1217,7 +1613,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, results[iline][4],
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Height Map Error %d"%line_name))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'HEI_ERR'))
             
@@ -1227,7 +1623,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, results[iline][1],
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Amplitude Map %d"%line_name))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'AMP'))
 
@@ -1238,7 +1634,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, results[iline][5],
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Amplitude Map Error%d"%line_name))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'AMP_ERR'))
             
@@ -1249,7 +1645,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, fwhm_map,
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "FWHM Map %d"%line_name,
                     comment='in {}'.format(unit)))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'FWHM'))
@@ -1262,7 +1658,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, fwhm_map,
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "FWHM Map Error %d"%line_name,
                     comment='in {}'.format(unit)))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'FWHM_ERR'))
@@ -1279,7 +1675,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, velocity,
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Velocity Map %d"%line_name,
                     comment='in km/s'))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'VEL'))
@@ -1298,7 +1694,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, velocity,
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Velocity Map Error %d"%line_name,
                     comment='in km/s'))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'VEL_ERR'))
@@ -1309,7 +1705,7 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, results[iline][9],
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "SNR Map %d"%line_name))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'SNR'))
 
@@ -1319,166 +1715,315 @@ class SpectralCube(Cube):
             self.write_fits(
                 map_path, results[iline][8],
                 overwrite=self.overwrite,
-                fits_header=self._get_fits_header(
+                fits_header=self._get_frame_header(
                     "Reduced chi-square Map %d"%line_name))
             maps_list.write(map_path + ' %d %s\n'%(line_name, 'CHI'))
                 
 
-    ## def extract_integrated_spectra(self, regions_file_path,
-    ##                                sky_regions_file_path=None,
-    ##                                median=False, poly_order=None,
-    ##                                observation_params=None,
-    ##                                signal_range=None, plot=True,
-    ##                                auto_sky_extraction=True,
-    ##                                sky_size_coeff=2.):
+    def extract_integrated_spectra(self, regions_file_path,
+                                   lines, lines_velocity,
+                                   lines_fwhm, filter_range,
+                                   wavenumber, step, order,
+                                   poly_order=0,
+                                   calibration_laser_map_path=None,
+                                   nm_laser=None,
+                                   sky_regions_file_path=None,
+                                   cov_pos=True, cov_fwhm=True,
+                                   fix_fwhm=False,
+                                   fmodel='gaussian', 
+                                   plot=True,
+                                   auto_sky_extraction=False,
+                                   sky_size_coeff=2.):
+
+        """
+        Extract integrated spectra and their emission lines parameters.
+
+        All parameters of each emission line are mapped. So that for a
+        gaussian fit with 4 parameters (height, amplitude, shift,
+        fwhm) 4 maps are created for each fitted emission line in the
+        cube.
+
+        :param regions_file_path: Path to a ds9 reg file giving the
+          positions of the regions. Each region is considered as a
+          different region.
+
+        :param lines: Lines rest frame. Must be given in the unit of
+          the cube (cm-1 if wavenumber is True, nm if False)
+
+        :param lines_velocity: Mean Lines velocity in km.s-1.
+
+        :param lines_fwhm: Expected FWHM of the lines. Must be given
+          in the unit of the cube (cm-1 if wavenumber is True, nm if
+          False)
+
+        :param filter_range: A tuple giving the min and max
+          wavelength/wavenumber of the filter bandpass. Must be given
+          in the unit of the cube (cm-1 if wavenumber is True, nm if
+          False)
+
+        :param wavenumber: If True the cube is in wavenumber else it
+          is in wavelength.
+
+        :param step: Step size in nm
+
+        :param order: Folding order
+
+        :param poly_order: Order of the polynomial used to fit
+          continuum.
+
+        :param calibration_laser_map_path: (Optional) If not None the
+          cube is considered to be uncalibrated in wavelength. In this
+          case the calibration laser wavelength (nm_laser) must also
+          be given (default None).
+
+        :param nm_laser: (Optional) Calibration laser wavelentgh. Must
+          be given if calibration_laser_map_path is not None (default
+          None).
+
+        :sky_regions_file_path: (Optional) Path to a ds9 region file
+          giving the pixels where the sky spectrum has to be
+          extracted. This spectrum will be substracted to the spectral
+          cube before it is fitted (default None).
+
+        :param fix_fwhm: If True fix FWHM to its guess (default
+          False).
+
+        :param fmodel: (Optional) Type of line to fit. Can be
+          'gaussian' or 'sinc' (default 'gaussian').
+
+        :param cov_pos: (Optional) Lines positions in each spectrum
+          are shifted by the same value.
+
+        :param cov_fwhm: (Optional) FWHM is the same for all the lines
+          in each spectrum.
+
+        :param plot: (Optional) If True, plot each intergrated spectrum along
+          with the its fit (default True).
+
+        :param auto_sky_extraction: (Optional) If True and if no sky
+          region file path is given the sky is taken around the region
+          and substracted. The radius of the region around is
+          controlled with sky_size_coeff. Note that this extraction
+          only works for circular regions (default False).
+
+        :param sky_size_coeff: (Optional) Coefficient ofthe
+          external radius of the sky region (defautl 2.).
+        """
+        self._print_msg("Extracting integrated spectra", color=True)
+
+        rest_frame_lines = np.copy(lines)
+        lines += orb.utils.line_shift(lines_velocity, lines,
+                                      wavenumber=wavenumber)
+
+        calibration_coeff_map = self._get_calibration_coeff_map(
+            calibration_laser_map_path, nm_laser)
         
-    ##     if poly_order is None:
-    ##         poly_order = self.poly_order
+        # Create parameters file
+        paramsfile = orb.core.ParamsFile(
+            self._get_integrated_spectra_fit_params_path())
 
-
-    ##     # Create parameters file
-    ##     paramsfile = orb.core.ParamsFile(
-    ##         self._get_integrated_spectra_fit_params_path())
-        
-    ##     # Extract sky spectrum
-    ##     if sky_regions_file_path is not None:
-    ##         self._print_msg("Extracting sky median vector")
-    ##         reg_mask = orb.utils.get_mask_from_ds9_region_file(
-    ##                 sky_regions_file_path,
-    ##                 x_range=[0, self.dimx],
-    ##                 y_range=[0, self.dimy])
-
-    ##         median_sky_spectrum = self._extract_spectrum_from_region(
-    ##             reg_mask)
-    ##     else: median_sky_spectrum = None
+        # Extract median sky spectrum
+        if sky_regions_file_path is not None:
+            self._print_msg("Extracting sky median vector")
+            median_sky_spectrum = self._extract_spectrum_from_region(
+                orb.utils.get_mask_from_ds9_region_file(
+                    sky_regions_file_path,
+                    x_range=[0, self.dimx],
+                    y_range=[0, self.dimy]),
+                calibration_coeff_map,
+                wavenumber, step, order)
+        else:
+            median_sky_spectrum = np.zeros(self.dimz, dtype=float)
             
+        # extract regions
+        integ_spectra = list()
 
-    ##     # extract regions
-    ##     integ_spectra = list()
-    ##     with open(regions_file_path, 'r') as f:
-    ##         region_index = 0
-    ##         for ireg in f:
-    ##             if len(ireg) > 3 and '#' not in ireg:
-    ##                 region = orb.utils.get_mask_from_ds9_region_line(
-    ##                     ireg,
-    ##                     x_range=[0, self.dimx],
-    ##                     y_range=[0, self.dimy])
-    ##                 if len(region[0]) > 0:
-    ##                     if auto_sky_extraction:
-    ##                         # get sky around region
-    ##                         reg_bary = (np.mean(region[0]),
-    ##                                     np.mean(region[1]))
-    ##                         reg_size = max(np.max(region[0])
-    ##                                        - np.min(region[0]),
-    ##                                        np.max(region[1])
-    ##                                        - np.min(region[1]))
+        if wavenumber:
+            cm1_axis = orb.utils.create_cm1_axis(
+                self.dimz, step, order, corr=1.)
+            fwhm_guess_pix = orb.utils.cm12pix(
+                cm1_axis, cm1_axis[0] + lines_fwhm)
+            filter_range_pix = orb.utils.cm12pix(cm1_axis, filter_range)
+            axis = cm1_axis
+            
+        else:
+            nm_axis = orb.utils.create_nm_axis(
+                self.dimz, step, order, corr=1.)
+            fwhm_guess_pix = orb.utils.nm2pix(
+                nm_axis, nm_axis[0] + lines_fwhm)
+            filter_range_pix = orb.utils.nm2pix(nm_axis, filter_range)
+            axis = nm_axis
 
-    ##                         sky_size = reg_size * sky_size_coeff
-    ##                         x_min, x_max, y_min, y_max = (
-    ##                             orb.utils.get_box_coords(
-    ##                                 reg_bary[0], reg_bary[1], sky_size,
-    ##                                 0, self.dimx, 0, self.dimy))
+        with open(regions_file_path, 'r') as f:
+            region_index = -1
+            for ireg in f:
+                if len(ireg) > 3:
+                    region = orb.utils.get_mask_from_ds9_region_line(
+                        ireg,
+                        x_range=[0, self.dimx],
+                        y_range=[0, self.dimy])
+                    if len(region[0]) > 0:
+                        region_index += 1
+                        if auto_sky_extraction:
+                            self._print_error('Not implemented yet')
+                            # get sky around region
+                            ## reg_bary = (np.mean(region[0]),
+                            ##             np.mean(region[1]))
+                            ## reg_size = max(np.max(region[0])
+                            ##                - np.min(region[0]),
+                            ##                np.max(region[1])
+                            ##                - np.min(region[1]))
 
-    ##                         x_sky = list()
-    ##                         y_sky = list()
-    ##                         for ipix in range(int(x_min), int(x_max)):
-    ##                             for jpix in range(int(y_min), int(y_max)):
-    ##                                 if ((math.sqrt((ipix - reg_bary[0])**2.
-    ##                                                + (jpix - reg_bary[1])**2.)
-    ##                                      <= round(sky_size / 2.))):
-    ##                                     x_sky.append(ipix)
-    ##                                     y_sky.append(jpix)
+                            ## sky_size = reg_size * sky_size_coeff
+                            ## x_min, x_max, y_min, y_max = (
+                            ##     orb.utils.get_box_coords(
+                            ##         reg_bary[0], reg_bary[1], sky_size,
+                            ##         0, self.dimx, 0, self.dimy))
 
-    ##                         sky = list([x_sky, y_sky])
-    ##                         mask = np.zeros((self.dimx, self.dimy))
-    ##                         mask[sky] = 1
-    ##                         mask[region] = 0
-    ##                         sky = np.nonzero(mask)
-                            
-    ##                         median_sky_spectrum = (
-    ##                             self._extract_spectrum_from_region(
-    ##                                 sky, median=True, silent=True))
-                            
-    ##                     # extract spectrum
-    ##                     spectrum = self._extract_spectrum_from_region(
-    ##                         region, substract_spectrum=median_sky_spectrum,
-    ##                         median=median, silent=True)
+                            ## x_sky = list()
+                            ## y_sky = list()
+                            ## for ipix in range(int(x_min), int(x_max)):
+                            ##     for jpix in range(int(y_min), int(y_max)):
+                            ##         if ((math.sqrt((ipix - reg_bary[0])**2.
+                            ##                        + (jpix - reg_bary[1])**2.)
+                            ##              <= round(sky_size / 2.))):
+                            ##             x_sky.append(ipix)
+                            ##             y_sky.append(jpix)
 
-    ##                     pix_center = int(self.nm_axis.shape[0]/2.)
-    ##                     shift_guess = (
-    ##                         orb.utils.nm2pix(
-    ##                             self.nm_axis,
-    ##                             self.nm_axis[pix_center] + self.lines_shift)
-    ##                         - pix_center)
+                            ## sky = list([x_sky, y_sky])
+                            ## mask = np.zeros((self.dimx, self.dimy))
+                            ## mask[sky] = 1
+                            ## mask[region] = 0
+                            ## sky = np.nonzero(mask)
 
-    ##                     # fit spectrum
-    ##                     fit = orb.utils.fit_lines_in_vector(
-    ##                         spectrum,
-    ##                         orb.utils.nm2pix(self.nm_axis, self.lines_nm),
-    ##                         fwhm_guess=self._get_fwhm_pix(),
-    ##                         cont_guess=None,
-    ##                         shift_guess=shift_guess,
-    ##                         fix_cont=False,
-    ##                         poly_order=poly_order,
-    ##                         cov_pos=True,
-    ##                         cov_fwhm=True,
-    ##                         fix_fwhm=False,
-    ##                         fmodel='gaussian',
-    ##                         interpolation_params=observation_params,
-    ##                         signal_range=self._get_signal_range(),
-    ##                         return_fitted_vector=True)
-
-    ##                     if fit != []:
-    ##                         fit_params = fit['lines-params']
-    ##                         err_params = fit['lines-params-err']
-    ##                         real_lines_nm = orb.utils.pix2nm(
-    ##                             self.nm_axis, fit_params[:, 2])
-
-    ##                         velocities = utils.compute_radial_velocity(
-    ##                             real_lines_nm,
-    ##                             self.lines_nm)
-
-    ##                         err_lines_nm = orb.utils.pix2nm(
-    ##                             self.nm_axis, err_params[:, 2])
-
-    ##                         velocities_err = utils.compute_radial_velocity(
-    ##                             err_lines_nm, self.nm_axis[0])
-                            
-    ##                         for iline in range(fit_params.shape[0]):
-    ##                             snr = abs(fit_params[iline, 1]
-    ##                                       / err_params[iline, 1])
-    ##                             fit_results = {
-    ##                                 'reg_index': region_index,
-    ##                                 'line_name': self.lines.get_line_name(
-    ##                                     self.lines_nm[iline]),
-    ##                                 'h': fit_params[iline, 0],
-    ##                                 'a': fit_params[iline, 1],
-    ##                                 'v': velocities[iline],
-    ##                                 'fwhm': fit_params[iline, 3],
-    ##                                 'h_err': err_params[iline, 0],
-    ##                                 'a_err': err_params[iline, 1],
-    ##                                 'v_err': velocities_err[iline],
-    ##                                 'fwhm_err': err_params[iline, 3],
-    ##                                 'snr': snr}
-
-    ##                             paramsfile.append(fit_results)
-    ##                             print paramsfile[-1]
-
-    ##                     if plot:
-    ##                         import pylab as pl
-    ##                         pl.plot(self.nm_axis, spectrum,
-    ##                                 label='orig spectrum')
-    ##                         if fit != []:
-    ##                             pl.plot(self.nm_axis, fit['fitted-vector'],
-    ##                                     label='fit')
-    ##                         pl.legend()
-    ##                         pl.show()
-                            
-    ##                     integ_spectra.append(spectrum)
                         
-    ##             region_index += 1
+                            ## median_sky_spectrum = (
+                            ##     self._extract_spectrum_from_region(
+                            ##         sky, median=True, silent=True))
+                            
+                        # extract spectrum
+                        spectrum = self._extract_spectrum_from_region(
+                            region, calibration_coeff_map,
+                            wavenumber, step, order)
+                        
+                        if median_sky_spectrum is not None:
+                             spectrum -= median_sky_spectrum
+
+                        if wavenumber:
+                            lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+                        else:
+                            lines_pix = orb.utils.nm2pix(nm_axis, lines)
+
+                        
+                        # fit spectrum
+                        fit = orb.utils.fit_lines_in_vector(
+                            spectrum,
+                            lines_pix,
+                            fwhm_guess=fwhm_guess_pix,
+                            cont_guess=None,
+                            fix_cont=False,
+                            poly_order=poly_order,
+                            cov_pos=cov_pos,
+                            cov_fwhm=cov_fwhm,
+                            fix_fwhm=fix_fwhm,
+                            fmodel=fmodel,
+                            observation_params=[step, order],
+                            signal_range=filter_range_pix,
+                            return_fitted_vector=True,
+                            wavenumber=wavenumber)
+
+
+                        if fit != []:
+                            
+                            # write spectrum and fit
+                            if wavenumber:
+                                spectrum_header = (
+                                    self._get_integrated_spectrum_header(
+                                    region_index, cm1_axis, wavenumber))
+                            else:
+                                spectrum_header = (
+                                    self._get_integrated_spectrum_header(
+                                    region_index, nm_axis, wavenumber))
+                                
+                            self.write_fits(
+                                self._get_integrated_spectrum_path(
+                                    region_index),
+                                spectrum, fits_header=spectrum_header,
+                                overwrite=self.overwrite)
+                            self.write_fits(
+                                self._get_integrated_spectrum_fit_path(
+                                    region_index),
+                                fit['fitted-vector'],
+                                fits_header=spectrum_header,
+                                overwrite=self.overwrite)
+
+                            fit_params, err_params = self._convert_fit_result(
+                                fit, wavenumber, step, order, axis)
+
+                            # convert velocity to km.s-1
+                            velocities = utils.compute_radial_velocity(
+                                fit_params[:, 2], rest_frame_lines,
+                                wavenumber=wavenumber)
+
+                            if wavenumber:
+                                velocities_err = utils.compute_radial_velocity(
+                                    err_params[:, 2] + cm1_axis[0],
+                                    cm1_axis[0])
+                            else:
+                                velocities_err = utils.compute_radial_velocity(
+                                    err_params[:, 2] + nm_axis[0],
+                                    nm_axis[0])
+
+                            for iline in range(fit_params.shape[0]):
+                                snr = abs(fit_params[iline, 1]
+                                          / err_params[iline, 1])
+                                if wavenumber:
+                                    line_name = Lines().round_nm2ang(
+                                        orb.utils.cm12nm(
+                                            rest_frame_lines[iline]))
+                                else:
+                                    line_name = Lines().round_nm2ang(
+                                        rest_frame_lines[iline])
+                                    
+
+                                fit_results = {
+                                    'reg_index': region_index,
+                                    'line_name': line_name,
+                                    'h': fit_params[iline, 0],
+                                    'a': fit_params[iline, 1],
+                                    'x': fit_params[iline, 2],
+                                    'v': velocities[iline],
+                                    'fwhm': fit_params[iline, 3],
+                                    'h_err': err_params[iline, 0],
+                                    'a_err': err_params[iline, 1],
+                                    'x_err': err_params[iline, 2],
+                                    'v_err': velocities[iline],
+                                    'fwhm_err': err_params[iline, 3],
+                                    'snr': snr}
+
+                                paramsfile.append(fit_results)
+
+                        if plot:
+                            import pylab as pl
+                            if wavenumber:
+                                pl.plot(cm1_axis, spectrum,
+                                        label='orig spectrum')
+                                if fit != []:
+                                    pl.plot(cm1_axis, fit['fitted-vector'],
+                                            label='fit')
+                            else:
+                                pl.plot(nm_axis, spectrum,
+                                        label='orig spectrum')
+                                if fit != []:
+                                    pl.plot(nm_axis, fit['fitted-vector'],
+                                            label='fit')
+                                    
+                            pl.legend()
+                            pl.show()
+                            
+                        integ_spectra.append(spectrum)
                     
-    ##     return integ_spectra
+        return integ_spectra
         
 
     ## def get_fitted_cube(self, x_range=None, y_range=None):
@@ -1538,59 +2083,172 @@ class SpectralCube(Cube):
                     
     ##     return fitted_cube
 
-    ## def extract_raw_lines_maps(self):
-    ##     """Raw extraction of a portion of the spectral cube. Return
-    ##     the median of the slice.
+    def extract_raw_lines_maps(self, lines, lines_velocity,
+                               lines_fwhm, step, order, wavenumber,
+                               calibration_laser_map_path=None,
+                               nm_laser=None):
+        """Raw extraction of a portion of the spectral cube. Return
+        the mean of the slice.
 
-    ##     :param line_nm: Wavelength in nm of the line to extract. Can
-    ##       be a float or a string recognized by ORB (see
-    ##       :py:class:`orb.core.Lines`)
+        :param lines: Lines rest frame. Must be given in the unit of
+          the cube (cm-1 if wavenumber is True, nm if False)
 
-    ##     .. note: Shift in the option file is taken into account
-    ##     """
-    ##     lines_nm = self.lines_nm + self.lines_shift
-    ##     lines_pix = orb.utils.nm2pix(self.nm_axis, lines_nm)
+        :param lines_velocity: Mean Lines velocity in km.s-1.
+
+        :param lines_fwhm: Expected FWHM of the lines. Must be given
+          in the unit of the cube (cm-1 if wavenumber is True, nm if
+          False)
+
+        :param step: Step size in nm
+
+        :param order: Folding order
+
+        :param wavenumber: If True the cube is in wavenumber else it
+          is in wavelength.
+          
+        :param calibration_laser_map_path: (Optional) If not None the
+          cube is considered to be uncalibrated in wavelength. In this
+          case the calibration laser wavelength (nm_laser) must also
+          be given (default None).
+          
+        :param nm_laser: (Optional) Calibration laser wavelentgh. Must
+          be given if calibration_laser_map_path is not None (default
+          None).
+        """
+
+        def _extract_raw_lines_in_column(data, step, order,
+                                         calib_map_col, lines, slice_size,
+                                         wavenumber):
+
+            col = np.empty((data.shape[0], len(lines)), dtype=float)
+            # convert lines wavelength/wavenumber into calibrated
+            # positions
+            if np.all(calib_map_col == 1.):
+                if wavenumber:
+                    cm1_axis = orb.utils.create_cm1_axis(
+                        data.shape[1], step, order, corr=1.)
+                    lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+                else:
+                    nm_axis = orb.utils.create_nm_axis(
+                        data.shape[1], step, order)
+                    lines_pix = orb.utils.nm2pix(nm_axis, lines)
+
+            for ij in range(data.shape[0]):
+                if calib_map_col[ij] != 1.:
+                    # convert lines wavelength/wavenumber into
+                    # uncalibrated positions
+                    if wavenumber:
+                        cm1_axis = orb.utils.create_cm1_axis(
+                            data.shape[1], step, order,
+                            corr=calib_map_col[ij])
+                        lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+                    else:
+                        nm_axis = orb.utils.create_nm_axis(
+                            data.shape[1], step, order,
+                            corr=calib_map_col[ij])
+                        lines_pix = orb.utils.nm2pix(nm_axis, lines)
+                        
+                for iline in range(len(lines_pix)):
+                    pix_min = int(lines_pix[iline] - slice_size/2.)
+                    pix_max = pix_min + slice_size + 1.
+                    col[ij, iline] = np.mean(data[ij, pix_min:pix_max])
+
+            return col
+
+        FWHM_COEFF = 2.5
+
+        raw_maps = np.empty((self.dimx, self.dimy, len(lines)), dtype=float)
+        raw_maps.fill(np.nan)
+
+        rest_frame_lines = np.copy(lines)
+        lines += orb.utils.line_shift(lines_velocity, lines,
+                                      wavenumber=wavenumber)
+
+        if wavenumber:
+            axis = orb.utils.create_cm1_axis(self.dimz, step, order)
+        else:
+            axis = orb.utils.create_nm_axis(self.dimz, step, order)
+
+        axis_mean = (axis[0] + axis[-1]) / 2.
         
-    ##     fwhm_pix = self._get_fwhm_pix()
-    ##     min_pix = np.floor(lines_pix - fwhm_pix)
-    ##     min_pix[np.nonzero(min_pix < 0)] = 0
-    ##     max_pix = np.ceil(lines_pix + fwhm_pix) + 1
-    ##     max_pix[np.nonzero(max_pix >= self.dimz)] = self.dimz - 1
-
-    ##     # get continuum map
-    ##     mask_vector = np.ones(self.dimz, dtype=float)
-    ##     for iline in range(len(lines_pix)):
-    ##         mask_vector[min_pix[iline]:max_pix[iline]] = 0
-
-    ##     cont_map = np.nanmean(np.squeeze(
-    ##         self.data[:,:,np.nonzero(mask_vector)]), axis=2)
-
-    ##     cont_map_std = np.nanstd(np.squeeze(
-    ##         self.data[:,:,np.nonzero(mask_vector)]), axis=2)
-        
-    ##     # write maps
-    ##     for iline in range(len(lines_pix)):
-    ##         line_map = (bn.nanmean(
-    ##             self.data[:,:,min_pix[iline]:max_pix[iline]], axis=2)
-    ##                     - cont_map)
-    ##         err_map = cont_map_std / math.sqrt(max_pix[iline] - min_pix[iline])
-    
-    ##         raw_path = self._get_raw_line_map_path(
-    ##             int(round(self.lines_nm[iline]*10.)))
-    ##         raw_header = self._get_fits_header(
-    ##                 'RAW LINE MAP {:d}'.format(int(round(
-    ##                 self.lines_nm[iline]*10.))))
-
-    ##         err_path = self._get_raw_err_map_path(
-    ##             int(round(self.lines_nm[iline]*10.)))
-    ##         err_header = self._get_fits_header(
-    ##                 'RAW ERR MAP {:d}'.format(int(round(
-    ##                 self.lines_nm[iline]*10.))))
+        if wavenumber:
+            slice_min = orb.utils.cm12pix(
+                axis, axis_mean-FWHM_COEFF/2.*lines_fwhm)
+            slice_max = orb.utils.cm12pix(
+                axis, axis_mean+FWHM_COEFF/2.*lines_fwhm) + 1
+        else:
+            slice_min = orb.utils.nm2pix(
+                axis, axis_mean - FWHM_COEFF/2. * lines_fwhm)
+            slice_max = orb.utils.nm2pix(
+                axis, axis_mean + FWHM_COEFF/2. * lines_fwhm) + 1
             
-    ##         self.write_fits(raw_path, line_map, overwrite=self.overwrite,
-    ##             fits_header=raw_header)
-    ##         self.write_fits(err_path, err_map, overwrite=self.overwrite,
-    ##             fits_header=err_header)
+        slice_size = math.floor(slice_max - slice_min)
+
+        self._print_msg('Slice size: {} pixels'.format(slice_size))
+
+
+        calibration_coeff_map = self._get_calibration_coeff_map(
+            calibration_laser_map_path, nm_laser)
+
+        for iquad in range(0, self.QUAD_NB):
+            x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
+            iquad_data = self.get_data(x_min, x_max, y_min, y_max, 
+                                       0, self.dimz)
+
+            # multi-processing server init
+            job_server, ncpus = self._init_pp_server()
+            progress = ProgressBar(x_max - x_min)
+            for ii in range(0, x_max - x_min, ncpus):
+                # no more jobs than columns
+                if (ii + ncpus >= x_max - x_min): 
+                    ncpus = x_max - x_min - ii
+                
+                # jobs creation
+                jobs = [(ijob, job_server.submit(
+                    _extract_raw_lines_in_column,
+                    args=(iquad_data[ii+ijob,:,:],
+                          step, order,
+                          calibration_coeff_map[x_min + ii + ijob,
+                                                y_min:y_max],
+                          lines, slice_size, wavenumber), 
+                    modules=("import numpy as np", 
+                             "import orb.utils",
+                             "import orcs.utils as utils")))
+                        for ijob in range(ncpus)]
+            
+                for ijob, job in jobs:
+                    raw_maps[x_min+ii+ijob,y_min:y_max,:] = job()
+                
+                progress.update(ii, info="column : {}/{}".format(
+                    ii, self.dimx))
+                
+            self._close_pp_server(job_server)
+            progress.end()
+        
+        
+        # write maps
+        for iline in range(len(lines)):
+            if wavenumber:
+                line_name = Lines().round_nm2ang(
+                    orb.utils.cm12nm(rest_frame_lines[iline]))
+                unit = 'cm-1'
+            else:
+                line_name = Lines().round_nm2ang(rest_frame_lines[iline])
+                unit = 'nm'
+                
+            raw_path = self._get_raw_line_map_path(line_name)
+            raw_header = self._get_frame_header(
+                    'RAW LINE MAP {:d} {}'.format(line_name, unit))
+
+            ## err_path = self._get_raw_err_map_path(line_name)
+            ## err_header = self._get_frame_header(
+            ##         'RAW ERR MAP {:d} {}'.format(line_name, unit))
+            
+            self.write_fits(raw_path, raw_maps[:,:,iline],
+                            overwrite=self.overwrite,
+                            fits_header=raw_header)
+            ## self.write_fits(err_path, err_map, overwrite=self.overwrite,
+            ##     fits_header=err_header)
         
         
         

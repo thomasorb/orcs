@@ -20,9 +20,25 @@ Major architecture changes to respect ORBS concept.
 
 * Modification of the option file keywords
 
-* Creation of the executable script **orcs** which run the extraction
+* Creation of the executable script **orcs** which runs the extraction
   process directly
 
 .. note:: Up to the v1.0 some secondaries functionalities have been
-   deactivated for they have to be rewritten because of the
-   architecture change . We will add them on the next release.
+   deactivated because they have to be rewritten to account for the
+   architecture change. They will be added on next releases.
+
+v0.91
+-----
+
+Recoded methods:
+~~~~~~~~~~~~~~~~
+
+* py:meth:`orcs.orcs.SpectralCube.extract_raw_lines_maps` and its
+  wrapper py:meth:`orcs.orcs.Orcs.extract_raw_lines_maps`.
+
+
+bug fix:
+~~~~~~~~
+
+* conversion of the fwhm from cm-1/nm to pixels before fit
+

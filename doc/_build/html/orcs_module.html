@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Orcs module &mdash; Orcs 0.9 documentation</title>
+    <title>Orcs module &mdash; Orcs 0.91 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.9',
+        VERSION:     '0.91',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/logo.ico"/>
-    <link rel="top" title="Orcs 0.9 documentation" href="index.html" />
+    <link rel="top" title="Orcs 0.91 documentation" href="index.html" />
     <link rel="next" title="RVCorrect module" href="rvcorrect_module.html" />
     <link rel="prev" title="Quick start Guide" href="quick_start.html" /> 
   </head>
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="quick_start.html" title="Quick start Guide"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Orcs 0.91 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -214,6 +214,53 @@ created FITS files.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.orcs.Orcs.extract_integrated_spectra">
+<tt class="descname">extract_integrated_spectra</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.extract_integrated_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract integrated spectra.</p>
+<p>This is a wrapper around
+<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></tt>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.Orcs.extract_lines_maps">
+<tt class="descname">extract_lines_maps</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.extract_lines_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract lines maps.</p>
+<p>This is a wrapper around
+<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></tt>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.Orcs.extract_raw_lines_maps">
+<tt class="descname">extract_raw_lines_maps</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.extract_raw_lines_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract raw lines maps.</p>
+<p>This is a wrapper around
+<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></tt>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.Orcs.get_helio_velocity">
+<tt class="descname">get_helio_velocity</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_helio_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return heliocentric velocity in km.s-1</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orcs.rvcorrect.RVCorrect</span></tt> a
+translation in Python of the IRAF function RVCORRECT.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.orcs.Orcs.get_lines_fwhm">
 <tt class="descname">get_lines_fwhm</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_fwhm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the expected value of the lines FWHM in nm or in
@@ -236,13 +283,14 @@ on the cube axis unit.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="orcs.orcs.Orcs.get_lsr_velocity">
-<tt class="descname">get_lsr_velocity</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_lsr_velocity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return LSR velocity in km.s-1</p>
+<dt id="orcs.orcs.Orcs.get_sky_radial_velocity">
+<tt class="descname">get_sky_radial_velocity</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_sky_radial_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return sky radial velocity</p>
+<p>This is a wrapper around
+<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></tt>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orcs.rvcorrect.RVCorrect</span></tt> a
-translation in Python of the IRAF function RVCORRECT.</p>
+<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></tt></p>
 </div>
 </dd></dl>
 
@@ -257,6 +305,44 @@ translation in Python of the IRAF function RVCORRECT.</p>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Cube</span></tt></p>
 <p>ORCS spectral cube processing class.</p>
 <p>Fit and/or extract spectra.</p>
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube._add_wcs_header">
+<tt class="descname">_add_wcs_header</tt><big>(</big><em>hdr</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._add_wcs_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add WCS header keywords to a header.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hdr</strong> &#8211; Header to update</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube._convert_fit_result">
+<tt class="descname">_convert_fit_result</tt><big>(</big><em>fit_result</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>axis</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._convert_fit_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the result from
+<tt class="xref py py-meth docutils literal"><span class="pre">orb.utils.fit_lines_in_vector()</span></tt> in
+wavelength/wavenumber.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fit_result</strong> &#8211; Result from fit</li>
+<li><strong>wavenumber</strong> &#8211; If True the spectrum is in wavenumber else it
+is in wavelength.</li>
+<li><strong>step</strong> &#8211; Step size in nm</li>
+<li><strong>order</strong> &#8211; Folding order</li>
+<li><strong>axis</strong> &#8211; Axis of the spectrum in wavelength or wavenumber.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._extract_spectrum_from_region">
 <tt class="descname">_extract_spectrum_from_region</tt><big>(</big><em>region</em>, <em>calibration_coeff_map</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>substract_spectrum=None</em>, <em>median=False</em>, <em>silent=False</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._extract_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
@@ -343,9 +429,67 @@ in each spectrum.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.orcs.SpectralCube._get_calibration_coeff_map">
+<tt class="descname">_get_calibration_coeff_map</tt><big>(</big><em>calibration_laser_map_path</em>, <em>nm_laser</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_calibration_coeff_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the calibration coeff map based on the calibration
+laser map and the laser wavelength.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>calibration_laser_map_path</strong> &#8211; Path to the calibration
+laser map. If None, the returned calibration laser map will
+be a map full of ones.</li>
+<li><strong>nm_laser</strong> &#8211; calibration laser wavelength in nm.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube._get_frame_header">
+<tt class="descname">_get_frame_header</tt><big>(</big><em>file_type</em>, <em>comment=None</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_frame_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return frame header</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file_type</strong> &#8211; Type of file</li>
+<li><strong>comment</strong> &#8211; (Optional) Comments on the file type (default
+None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_fwhm_pix">
 <tt class="descname">_get_fwhm_pix</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_fwhm_pix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return fwhm in channels from default lines FWHM</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube._get_integrated_spectrum_header">
+<tt class="descname">_get_integrated_spectrum_header</tt><big>(</big><em>region_name</em>, <em>axis</em>, <em>wavenumber</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_integrated_spectrum_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return integrated spectrum header</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axis</strong> &#8211; Axis of the spectrum</li>
+<li><strong>region_name</strong> &#8211; Region name</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -375,6 +519,76 @@ False).</li>
 <dt id="orcs.orcs.SpectralCube._get_maps_list_path">
 <tt class="descname">_get_maps_list_path</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_maps_list_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the list of extacted emission lines maps</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube.extract_integrated_spectra">
+<tt class="descname">extract_integrated_spectra</tt><big>(</big><em>regions_file_path</em>, <em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>sky_regions_file_path=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>plot=True</em>, <em>auto_sky_extraction=False</em>, <em>sky_size_coeff=2.0</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_integrated_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract integrated spectra and their emission lines parameters.</p>
+<p>All parameters of each emission line are mapped. So that for a
+gaussian fit with 4 parameters (height, amplitude, shift,
+fwhm) 4 maps are created for each fitted emission line in the
+cube.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regions_file_path</strong> &#8211; Path to a ds9 reg file giving the
+positions of the regions. Each region is considered as a
+different region.</li>
+<li><strong>lines</strong> &#8211; Lines rest frame. Must be given in the unit of
+the cube (cm-1 if wavenumber is True, nm if False)</li>
+<li><strong>lines_velocity</strong> &#8211; Mean Lines velocity in km.s-1.</li>
+<li><strong>lines_fwhm</strong> &#8211; Expected FWHM of the lines. Must be given
+in the unit of the cube (cm-1 if wavenumber is True, nm if
+False)</li>
+<li><strong>filter_range</strong> &#8211; A tuple giving the min and max
+wavelength/wavenumber of the filter bandpass. Must be given
+in the unit of the cube (cm-1 if wavenumber is True, nm if
+False)</li>
+<li><strong>wavenumber</strong> &#8211; If True the cube is in wavenumber else it
+is in wavelength.</li>
+<li><strong>step</strong> &#8211; Step size in nm</li>
+<li><strong>order</strong> &#8211; Folding order</li>
+<li><strong>poly_order</strong> &#8211; Order of the polynomial used to fit
+continuum.</li>
+<li><strong>calibration_laser_map_path</strong> &#8211; (Optional) If not None the
+cube is considered to be uncalibrated in wavelength. In this
+case the calibration laser wavelength (nm_laser) must also
+be given (default None).</li>
+<li><strong>nm_laser</strong> &#8211; (Optional) Calibration laser wavelentgh. Must
+be given if calibration_laser_map_path is not None (default
+None).</li>
+<li><strong>fix_fwhm</strong> &#8211; If True fix FWHM to its guess (default
+False).</li>
+<li><strong>fmodel</strong> &#8211; (Optional) Type of line to fit. Can be
+&#8216;gaussian&#8217; or &#8216;sinc&#8217; (default &#8216;gaussian&#8217;).</li>
+<li><strong>cov_pos</strong> &#8211; (Optional) Lines positions in each spectrum
+are shifted by the same value.</li>
+<li><strong>cov_fwhm</strong> &#8211; (Optional) FWHM is the same for all the lines
+in each spectrum.</li>
+<li><strong>plot</strong> &#8211; (Optional) If True, plot each intergrated spectrum along
+with the its fit (default True).</li>
+<li><strong>auto_sky_extraction</strong> &#8211; (Optional) If True and if no sky
+region file path is given the sky is taken around the region
+and substracted. The radius of the region around is
+controlled with sky_size_coeff. Note that this extraction
+only works for circular regions (default False).</li>
+<li><strong>sky_size_coeff</strong> &#8211; (Optional) Coefficient ofthe
+external radius of the sky region (defautl 2.).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(Optional) Path to a ds9 region file
+giving the pixels where the sky spectrum has to be
+extracted. This spectrum will be substracted to the spectral
+cube before it is fitted (default None).</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -439,6 +653,92 @@ cube before it is fitted (default None).</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube.extract_raw_lines_maps">
+<tt class="descname">extract_raw_lines_maps</tt><big>(</big><em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>step</em>, <em>order</em>, <em>wavenumber</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_raw_lines_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw extraction of a portion of the spectral cube. Return
+the mean of the slice.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lines</strong> &#8211; Lines rest frame. Must be given in the unit of
+the cube (cm-1 if wavenumber is True, nm if False)</li>
+<li><strong>lines_velocity</strong> &#8211; Mean Lines velocity in km.s-1.</li>
+<li><strong>lines_fwhm</strong> &#8211; Expected FWHM of the lines. Must be given
+in the unit of the cube (cm-1 if wavenumber is True, nm if
+False)</li>
+<li><strong>step</strong> &#8211; Step size in nm</li>
+<li><strong>order</strong> &#8211; Folding order</li>
+<li><strong>wavenumber</strong> &#8211; If True the cube is in wavenumber else it
+is in wavelength.</li>
+<li><strong>calibration_laser_map_path</strong> &#8211; (Optional) If not None the
+cube is considered to be uncalibrated in wavelength. In this
+case the calibration laser wavelength (nm_laser) must also
+be given (default None).</li>
+<li><strong>nm_laser</strong> &#8211; (Optional) Calibration laser wavelentgh. Must
+be given if calibration_laser_map_path is not None (default
+None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.orcs.SpectralCube.get_sky_radial_velocity">
+<tt class="descname">get_sky_radial_velocity</tt><big>(</big><em>sky_regions_file_path</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>show=True</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.get_sky_radial_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sky radial velocity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Path to a ds9 region file giving the
+pixels where the sky spectrum has to be extracted.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lines_fwhm</strong> &#8211; Expected FWHM of the lines. Must be given
+in the unit of the cube (cm-1 if wavenumber is True, nm if
+False)</li>
+<li><strong>filter_range</strong> &#8211; A tuple giving the min and max
+wavelength/wavenumber of the filter bandpass. Must be given
+in the unit of the cube (cm-1 if wavenumber is True, nm if
+False)</li>
+<li><strong>wavenumber</strong> &#8211; If True the cube is in wavenumber else it
+is in wavelength.</li>
+<li><strong>step</strong> &#8211; Step size in nm</li>
+<li><strong>order</strong> &#8211; Folding order</li>
+<li><strong>poly_order</strong> &#8211; Order of the polynomial used to fit
+continuum.</li>
+<li><strong>calibration_laser_map_path</strong> &#8211; (Optional) If not None the
+cube is considered to be uncalibrated in wavelength. In this
+case the calibration laser wavelength (nm_laser) must also
+be given (default None).</li>
+<li><strong>nm_laser</strong> &#8211; (Optional) Calibration laser wavelentgh. Must
+be given if calibration_laser_map_path is not None (default
+None).</li>
+<li><strong>fix_fwhm</strong> &#8211; If True fix FWHM to its guess (default
+False).</li>
+<li><strong>fmodel</strong> &#8211; (Optional) Type of line to fit. Can be
+&#8216;gaussian&#8217; or &#8216;sinc&#8217; (default &#8216;gaussian&#8217;).</li>
+<li><strong>show</strong> &#8211; (Optional) If True, show the sky spectrum and the
+fitted function (default True).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Use <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></tt> to get the sky lines
+to fit.</p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -465,7 +765,7 @@ cube before it is fitted (default None).</p>
         <li class="right" >
           <a href="quick_start.html" title="Quick start Guide"
              >previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Orcs 0.91 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
