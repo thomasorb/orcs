@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,15 +8,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Orcs module &mdash; Orcs 0.91 documentation</title>
+    <title>Orcs module &mdash; Orcs 0.9.2 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.91',
+        URL_ROOT:    '',
+        VERSION:     '0.9.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +27,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/logo.ico"/>
-    <link rel="top" title="Orcs 0.91 documentation" href="index.html" />
+    <link rel="top" title="Orcs 0.9.2 documentation" href="index.html" />
     <link rel="next" title="RVCorrect module" href="rvcorrect_module.html" />
     <link rel="prev" title="Quick start Guide" href="quick_start.html" /> 
   </head>
@@ -45,7 +47,7 @@
         <li class="right" >
           <a href="quick_start.html" title="Quick start Guide"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Orcs 0.91 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -132,42 +134,42 @@ POLY_ORDER 0 # Order of the polynomial used to fit continuum</pre>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">INCLUDE:</th><td class="field-body">Include another option file. Note that the already
+<tr class="field-odd field"><th class="field-name">Include :</th><td class="field-body">Include another option file. Note that the already
 existing keywords will be overriden. This keyword is thus best
 placed at the very beginning of a file. All the keywords (but
 the &#8216;protected ones&#8217;) contained it the included file can be
 overriden by setting the same keyword after the include (see
 <tt class="xref py py-class docutils literal"><span class="pre">orb.core.OptionFile</span></tt>).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">DIRSPEC:</th><td class="field-body">Path to the folder containing the spectrum cube</td>
+<tr class="field-even field"><th class="field-name">Dirspec :</th><td class="field-body">Path to the folder containing the spectrum cube</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">LINES:</th><td class="field-body">Wavelength (in nm) of the lines to extract separated by a
+<tr class="field-odd field"><th class="field-name">Lines :</th><td class="field-body">Wavelength (in nm) of the lines to extract separated by a
 comma. Their full name can also be given but it must respect the list
 of recorded lines by <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></tt>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">OBJECT_VELOCITY:</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Object_velocity :</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body">(Optional) Mean velocity of the observed object
 in km.s-1. This is used to guess the mean shift of the lines.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">POLY_ORDER:</th><td class="field-body">(Optional) Order of the polynomial used to fit
+<tr class="field-odd field"><th class="field-name">Poly_order :</th><td class="field-body">(Optional) Order of the polynomial used to fit
 continuum. Be extremely careful with high order polynomials.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">ROI:</th><td class="field-body">(Optional) Region of interest Xmin,Xmax,Ymin,Ymax (in
+<tr class="field-even field"><th class="field-name">Roi :</th><td class="field-body">(Optional) Region of interest Xmin,Xmax,Ymin,Ymax (in
 pixels). Must be intergers separated by a comma, e.g.:
 175,250,165,245</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">SKY_REG:</th><td class="field-body">(Optional) Path to a ds9 region file defining the sky pixels.</td>
+<tr class="field-odd field"><th class="field-name">Sky_reg :</th><td class="field-body">(Optional) Path to a ds9 region file defining the sky pixels.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">CALIBMAP:</th><td class="field-body">(Optional) Path to the calibration laser map. Must be
+<tr class="field-even field"><th class="field-name">Calibmap :</th><td class="field-body">(Optional) Path to the calibration laser map. Must be
 given if the cube has not been wavelength calibrated.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orbs.orbs.Orbs</span></tt></p>
 </div>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orb.core.OptionFile</span></tt></p>
 </div>
@@ -219,7 +221,7 @@ created FITS files.</p>
 <dd><p>Extract integrated spectra.</p>
 <p>This is a wrapper around
 <tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></tt></p>
 </div>
@@ -231,7 +233,7 @@ created FITS files.</p>
 <dd><p>Extract lines maps.</p>
 <p>This is a wrapper around
 <tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></tt></p>
 </div>
@@ -243,7 +245,7 @@ created FITS files.</p>
 <dd><p>Extract raw lines maps.</p>
 <p>This is a wrapper around
 <tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></tt></p>
 </div>
@@ -253,7 +255,7 @@ created FITS files.</p>
 <dt id="orcs.orcs.Orcs.get_helio_velocity">
 <tt class="descname">get_helio_velocity</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_helio_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return heliocentric velocity in km.s-1</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orcs.rvcorrect.RVCorrect</span></tt> a
 translation in Python of the IRAF function RVCORRECT.</p>
@@ -265,7 +267,7 @@ translation in Python of the IRAF function RVCORRECT.</p>
 <tt class="descname">get_lines_fwhm</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_fwhm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the expected value of the lines FWHM in nm or in
 cm-1 depending on the cube axis unit.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="utils_module.html#utils.compute_line_fwhm" title="utils.compute_line_fwhm"><tt class="xref py py-meth docutils literal"><span class="pre">utils.compute_line_fwhm()</span></tt></a></p>
 </div>
@@ -276,7 +278,7 @@ cm-1 depending on the cube axis unit.</p>
 <tt class="descname">get_lines_shift</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_shift" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the expected line shift in nm or in cm-1 depending
 on the cube axis unit.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="utils_module.html#utils.compute_line_shift" title="utils.compute_line_shift"><tt class="xref py py-meth docutils literal"><span class="pre">utils.compute_line_shift()</span></tt></a></p>
 </div>
@@ -288,7 +290,7 @@ on the cube axis unit.</p>
 <dd><p>Return sky radial velocity</p>
 <p>This is a wrapper around
 <tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></tt></p>
 </div>
@@ -370,7 +372,7 @@ False).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Substract_spectrum:</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Substract_spectrum :</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">Remove the given spectrum from the
 extracted spectrum before fitting parameters. Useful
 to remove sky spectrum. Both spectra must have the same size.</p>
@@ -580,7 +582,7 @@ external radius of the sky region (defautl 2.).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path :</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(Optional) Path to a ds9 region file
 giving the pixels where the sky spectrum has to be
 extracted. This spectrum will be substracted to the spectral
@@ -642,7 +644,7 @@ extraction must be done.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path :</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(Optional) Path to a ds9 region file
 giving the pixels where the sky spectrum has to be
 extracted. This spectrum will be substracted to the spectral
@@ -695,7 +697,7 @@ None).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Sky_regions_file_path :</th></tr>
 <tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Path to a ds9 region file giving the
 pixels where the sky spectrum has to be extracted.</p>
 </td>
@@ -765,12 +767,12 @@ to fit.</p>
         <li class="right" >
           <a href="quick_start.html" title="Quick start Guide"
              >previous</a> |</li>
-        <li><a href="index.html">Orcs 0.91 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

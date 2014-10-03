@@ -348,7 +348,8 @@ class Orcs(Tools):
         
         ## Init spectral cube
         self.spectralcube = SpectralCube(
-            self.options['spectrum_list_path'],
+            self.options['spectrum_lis
+           t_path'],
             data_prefix=self._get_data_prefix(),
             project_header=self._get_project_fits_header(),
             wcs_header = self.wcs_header,

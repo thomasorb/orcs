@@ -27,8 +27,8 @@ Major architecture changes to respect ORBS concept.
    deactivated because they have to be rewritten to account for the
    architecture change. They will be added on next releases.
 
-v0.91
------
+v0.9.1
+------
 
 Recoded methods:
 ~~~~~~~~~~~~~~~~
@@ -40,5 +40,12 @@ Recoded methods:
 bug fix:
 ~~~~~~~~
 
-* conversion of the fwhm from cm-1/nm to pixels before fit
+* Conversion of the fwhm from cm-1/nm to pixels before fit
 
+v0.9.2
+------
+
+bug fix:
+~~~~~~~~
+
+* treat cubes without astrometrical calibration
