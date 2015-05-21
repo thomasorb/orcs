@@ -20,18 +20,18 @@
 ## along with ORCS.  If not, see <http://www.gnu.org/licenses/>.
 
 ####################################################
-############ ORBS reduction script #################
+############ ORCS Command Line #####################
 ####################################################
 
-# Note that this script is aimed to run the data extraction
+# This script is aimed to run the data extraction
 
 # To run this script simply use the following command :
-# $ ./orcs option_file.opt
+# $ ./orcs option_file.opt start
 # Remember : for any help please refer to the documentation
 
 import sys, os, time
-import getopt
-
+import argparse
+from argparse import ArgumentParser
 import numpy as np
 
 # Defining the path to ORCS module from script location
@@ -44,98 +44,121 @@ from orb.core import Tools
 import orcs
 from orcs.orcs import Orcs
 
+def get_config_file_name(args):
+    
+    if args.mode == 'sitelle':
+        return 'config.sitelle.orb'
+        
+    elif args.mode == 'spiomm':
+        return 'config.spiomm.orb'
+    
 
-def usage(): 
-    print """usage: orcs [OPTIONS]... OPTION_FILE...
+def start(args, info):
+    """Start extraction
 
-    Run data extraction.
-
-    Options
-    -------
-
-    -i : Extact only the integrated spectra. The keyword
-       INTEG_REG_PATH must be set to the path to a ds9 region file.
-
-    -v : Extract the sky spectrum and fit its lines to get the sky
-       velocity. SKY_REG keyword must be set to the path to a ds9
-       region file.
-
-    --info : Only print values computed at the beginning of the
-       extraction process.
-
-  ORCS version: {}, ORB version: {}
-  Author: Thomas Martin (thomas.martin.1@ulaval.ca)  
-""".format(orcs.version.__version__, orb.version.__version__)
-    sys.exit(2)
-
-def main():
-
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "iv", ['info'])
-    except getopt.GetoptError, err:
-        print str(err)
-        usage()
-
-    # defining default options
-    integ = False
-    sky_radial_velocity = False
-    info = False
+    :param args: Namespace object containing the passed argments
+      returned by the function ArgParse.parse_args().
+    """
     
     start_time = time.time()
 
-    if (len(args) > 0):
-        if not os.path.exists(args[0]):
-            raise Exception('Option file %s does not exist'%args[0])
-        to = Tools(logfile_name=os.path.basename(str(args[0])) + '.log')
-    else:
-        usage()
+    to = Tools(logfile_name=os.path.basename(args.option_file_path) + '.log',
+               config_file_name=get_config_file_name(args))
+
+    if not info:
+        # special modes are mutually exclusive
+        if np.sum([args.sky, args.regions]) > 1:
+            print_error("only one special extraction mode (regions or sky) can be choosen")
+            sys.exit(2)
         
-    #################
-    # Check options #
-    #################
-    
-    for opt, arg in opts:
-        
-        if opt == "-i":
-            integ = True
-
-        if opt == "-v":
-            sky_radial_velocity = True
-
-        if opt == '--info':
-            info = True
-
-    # check that no more than one extraction mode is asked at the same time
-    if np.sum(np.array([integ, sky_radial_velocity, info])) > 1:
-        to._print_error('{} cannot be used at the same time'.format(
-            np.array(['-i', '-v', '--info'])[np.nonzero(np.array([integ, sky_radial_velocity, info]))]))
 
     ###################################
     # Run ORCS with the given options #
     ###################################
     
-    if (len(args) > 0):
-        to._print_msg("Option file : %s"%str(args[0]), color=True)
-        
-        orcs = Orcs(str(args[0]), overwrite=True)
+    to._print_msg("Start extraction : %s"%str(args.option_file_path),
+                  color=True)
+    
+    orcs = Orcs(args.option_file_path, overwrite=True)
 
-        if info:
-            pass
-        elif integ:
-            orcs.extract_integrated_spectra()
-        elif sky_radial_velocity:
-            orcs.get_sky_radial_velocity()
-        else:
-            orcs.extract_lines_maps()
+    if info:
+        pass
+    elif args.regions:
+        orcs.extract_integrated_spectra()
+    elif args.sky:
+        orcs.get_sky_radial_velocity()
+    else:
+        orcs.extract_lines_maps()
         
         
-        end_time = time.time()
-        to._print_msg("Script finished at : " + time.ctime(end_time), color=True)
-        to._print_msg("Total time : " + str((end_time - start_time) / 3600.) + " hours", color=True)         
-    else: usage()
+    end_time = time.time()
+    to._print_msg("Script finished at : " + time.ctime(end_time), color=True)
+    to._print_msg("Total time : " + str((end_time - start_time) / 3600.) + " hours", color=True)         
+
+
+
+
+####################################
+#### MAIN ##########################
+####################################
+
 
 if __name__ == "__main__":
-    main()
+    """Main entrance of the script.
+    
+    Parse arguments and launch the extraction process.
+    """
+
+    parser = ArgumentParser(
+        prog='orcs',
+        version=('ORCS-version: {}, ORB-version: {}'.format(
+            orcs.version.__version__, orb.core.__version__)),
+        description="Run the extraction process.")
+
+    parser.add_argument('option_file_path',
+                        action='store',
+                        help="Path to the ORCS option file.")
+
+    parser.add_argument('--mode', dest='mode', choices=['spiomm', 'sitelle'],
+                        action='store', default='spiomm',
+                        help="Reduction mode. Force the use of the reduction file of a particular instrument. Mode is set to 'spiomm' by default.")
+
+    subparsers = parser.add_subparsers(help='operation type', dest='subparser_name')
+
+    parser_start = subparsers.add_parser('start', help='Start the extraction process.')
+
+    group_target = parser_start.add_argument_group('Extraction modes', '')
+    
+    group_target.add_argument('--regions', dest='regions',
+                              action='store_true',
+                              default=False,
+                              help="Extract the integrated spectra of the regions defined in a ds9 region file. Note that the keyword INTEG_REG_PATH in the option file must be set to the path of a ds9 region file.")
+
+    group_target.add_argument('--sky', dest='sky',
+                              action='store_true',
+                              default=False,
+                              help="Extract a sky spectrum and fit its lines to return the sky velocity. Note that the SKY_REG keyword in the option file must be set to the path of a ds9 region file.")
+    
+    parser_info = subparsers.add_parser('info', help='Print values computed at the beginning of the extraction process.')
+
+    
+
+    if len(sys.argv) < 2:
+        parser.print_usage()
+        sys.exit(2)
+        
+    args = parser.parse_args()
+
+    # check option file existence
+    if not os.path.exists(args.option_file_path):
+        raise Exception('Option file %s does not exist'%args.option_file_path)
+
+    ####################
+    # start extraction #
+    ####################
+
+    start(args, args.subparser_name == 'info')
+
 
 
 

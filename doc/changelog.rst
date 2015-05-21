@@ -23,9 +23,9 @@ Major architecture changes to respect ORBS concept.
 * Creation of the executable script **orcs** which runs the extraction
   process directly
 
-.. note:: Up to the v1.0 some secondaries functionalities have been
-   deactivated because they have to be rewritten to account for the
-   architecture change. They will be added on next releases.
+.. note:: Up to v1.0 some secondaries functionalities have been
+   deactivated because they have to be rewritten since the
+   architecture change. They will be added on future releases.
 
 v0.9.1
 ------
@@ -45,7 +45,15 @@ bug fix:
 v0.9.2
 ------
 
-bug fix:
-~~~~~~~~
+bug fix: Treat cubes without astrometrical calibration
 
-* treat cubes without astrometrical calibration
+
+v0.9.3
+------
+
+**scripts/orcs**: Command line call changed in order to switch from
+the deprecated getopt module to the argparse module and make it
+similar to the **orbs** script of ORBS.
+
+bug fix: WCS headers of the original cube is transfered to the output
+maps.

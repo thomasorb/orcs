@@ -21,8 +21,8 @@
 ## along with ORCS.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-ORCS (Outils de Réduction de Cubes Spectraux) base processing module
-provides tools to fix WCS and extract data from ORBS spectral cubes.
+ORCS (Outils de Réduction de Cubes Spectraux) provides tools to
+extract data from ORBS spectral cubes.
 
 .. note:: ORCS is built over ORB so that ORB must be installed.
 """
@@ -226,7 +226,7 @@ class Orcs(Tools):
             wcs_optional = True
         else:
             wcs_optional = False  
-            
+        
         store_option_parameter('target_ra', 'TARGETR', str, ':',
                                post_cast=float, optional=wcs_optional)
         store_option_parameter('target_dec', 'TARGETD', str, ':',
@@ -315,7 +315,7 @@ class Orcs(Tools):
                 helio_velocity))
         else:
             helio_velocity = 0.
-
+        
         # Total mean velocity
         self.options['mean_velocity'] = (
             self.options['object_velocity']
@@ -339,13 +339,11 @@ class Orcs(Tools):
         ## Get WCS header
         cube = Cube(self.options['spectrum_list_path'],
                     silent_init=True)
-        if self.options['wcs']:
-            if float(cube.get_frame_header(0)['CROTA1']) != 0.:
-                self.wcs = pywcs.WCS(cube.get_frame_header(0))
-                self.wcs_header = self.wcs.to_header()
-            else:
-                self.wcs_header = None
         
+        if self.options['wcs']:
+            self.wcs = pywcs.WCS(cube.get_frame_header(0))
+            self.wcs_header = self.wcs.to_header()
+          
         ## Init spectral cube
         self.spectralcube = SpectralCube(
             self.options['spectrum_list_path'],
@@ -378,9 +376,9 @@ class Orcs(Tools):
         """Return the expected value of the lines FWHM in nm or in
         cm-1 depending on the cube axis unit.  
           
-        .. seealso:: :py:meth:`utils.compute_line_fwhm`
+        .. seealso:: :py:meth:`orb.utils.compute_line_fwhm`
         """
-        return utils.compute_line_fwhm(
+        return orb.utils.compute_line_fwhm(
             self.options['step_nb'], self.options['step'],
             self.options['order'], apod_coeff=self.options['apodization'],
             wavenumber=self.options['wavenumber'])
@@ -418,9 +416,9 @@ class Orcs(Tools):
         """Return the expected line shift in nm or in cm-1 depending
         on the cube axis unit.
 
-        .. seealso:: :py:meth:`utils.compute_line_shift`
+        .. seealso:: :py:meth:`orb.utils.compute_line_shift`
         """
-        return utils.compute_line_shift(
+        return orb.utils.compute_line_shift(
             self.options['mean_velocity'],
             self.options['step_nb'], self.options['step'],
             self.options['order'],
@@ -1014,22 +1012,26 @@ class SpectralCube(Cube):
                     max_range -= RANGE_BORDER_PIX
 
                     ## FIT
-                    result_fit = orb.utils.fit_lines_in_vector(
-                        data[ij,:],
-                        lines_pix,
-                        fwhm_guess=fwhm_guess_pix,
-                        cont_guess=None,
-                        fix_cont=False,
-                        poly_order=poly_order,
-                        cov_pos=cov_pos,
-                        cov_fwhm=cov_fwhm,
-                        fix_fwhm=fix_fwhm,
-                        fmodel=fmodel,
-                        observation_params=[step, order],
-                        signal_range=[min_range, max_range],
-                        return_fitted_vector=False,
-                        wavenumber=wavenumber)
-                    
+                    try:
+                        result_fit = orb.utils.fit_lines_in_vector(
+                            data[ij,:],
+                            lines_pix,
+                            fwhm_guess=fwhm_guess_pix,
+                            cont_guess=None,
+                            fix_cont=False,
+                            poly_order=poly_order,
+                            cov_pos=cov_pos,
+                            cov_fwhm=cov_fwhm,
+                            fix_fwhm=fix_fwhm,
+                            fmodel=fmodel,
+                            observation_params=[step, order],
+                            signal_range=[min_range, max_range],
+                            return_fitted_vector=False,
+                            wavenumber=wavenumber)
+                    except Exception, e:
+                        warnings.warn('Exception occured during fit: {}'.format(e))
+                        result_fit = []
+                        
                 else: result_fit = []
 
 
@@ -1177,7 +1179,8 @@ class SpectralCube(Cube):
                           cov_pos, cov_fwhm, substract), 
                     modules=("import numpy as np", 
                              "import orb.utils",
-                             "import orcs.utils as utils"),
+                             "import orcs.utils as utils",
+                             "import warnings"),
                     depfuncs=(orb.utils.fit_lines_in_vector,)))
                         for ijob in range(ncpus)]
             
@@ -1429,16 +1432,16 @@ class SpectralCube(Cube):
                 fit, wavenumber, step, order, axis)
 
             # convert velocity to km.s-1
-            velocities = utils.compute_radial_velocity(
+            velocities = orb.utils.compute_radial_velocity(
                 fit_params[:, 2], lines,
                 wavenumber=wavenumber)
             
             if wavenumber:
-                velocities_err = utils.compute_radial_velocity(
+                velocities_err = orb.utils.compute_radial_velocity(
                     err_params[:, 2] + cm1_axis[0],
                     cm1_axis[0])
             else:
-                velocities_err = utils.compute_radial_velocity(
+                velocities_err = orb.utils.compute_radial_velocity(
                     err_params[:, 2] + nm_axis[0],
                     nm_axis[0])
 
@@ -1699,7 +1702,7 @@ class SpectralCube(Cube):
 
             # write velocity map
                 
-            velocity = utils.compute_radial_velocity(
+            velocity = orb.utils.compute_radial_velocity(
                 results[iline][2], rest_frame_lines[iline],
                 wavenumber=wavenumber)
   
@@ -1716,7 +1719,7 @@ class SpectralCube(Cube):
             # write velocity map err
             # compute radial velocity from shift
 
-            velocity = np.abs(utils.compute_radial_velocity(
+            velocity = np.abs(orb.utils.compute_radial_velocity(
                 rest_frame_lines[iline] + results[iline][6],
                 rest_frame_lines[iline],
                 wavenumber=wavenumber))
@@ -1994,16 +1997,16 @@ class SpectralCube(Cube):
                                 fit, wavenumber, step, order, axis)
 
                             # convert velocity to km.s-1
-                            velocities = utils.compute_radial_velocity(
+                            velocities = orb.utils.compute_radial_velocity(
                                 fit_params[:, 2], rest_frame_lines,
                                 wavenumber=wavenumber)
 
                             if wavenumber:
-                                velocities_err = utils.compute_radial_velocity(
+                                velocities_err = orb.utils.compute_radial_velocity(
                                     err_params[:, 2] + cm1_axis[0],
                                     cm1_axis[0])
                             else:
-                                velocities_err = utils.compute_radial_velocity(
+                                velocities_err = orb.utils.compute_radial_velocity(
                                     err_params[:, 2] + nm_axis[0],
                                     nm_axis[0])
 

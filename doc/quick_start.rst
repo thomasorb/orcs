@@ -58,4 +58,4 @@ Step 2: Run it
 
 .. code-block:: console
 
-  orcs option_file.orc
+  orcs option_file.orc start

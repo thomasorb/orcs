@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &mdash; Orcs 0.9.2 documentation</title>
+    <title>Changelog &mdash; Orcs 0.9.3 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,13 +23,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/logo.ico"/>
-    <link rel="top" title="Orcs 0.9.2 documentation" href="index.html" />
+    <link rel="top" title="Orcs 0.9.3 documentation" href="index.html" />
     <link rel="prev" title="Utils module" href="utils_module.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,10 +41,10 @@
         <li class="right" >
           <a href="utils_module.html" title="Utils module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Orcs 0.9.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/logo.png" alt="Logo"/>
@@ -60,10 +58,8 @@
 <li><a class="reference internal" href="#bug-fix">bug fix:</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#v0-9-2">v0.9.2</a><ul>
-<li><a class="reference internal" href="#id1">bug fix:</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#v0-9-2">v0.9.2</a></li>
+<li><a class="reference internal" href="#v0-9-3">v0.9.3</a></li>
 </ul>
 </li>
 </ul>
@@ -73,12 +69,14 @@
   <h4>Previous topic</h4>
   <p class="topless"><a href="utils_module.html"
                         title="previous chapter">Utils module</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/changelog.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/changelog.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -97,7 +95,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
@@ -105,9 +103,9 @@
 <h2>v0.9 ORCS integration to ORB suite<a class="headerlink" href="#v0-9-orcs-integration-to-orb-suite" title="Permalink to this headline">¶</a></h2>
 <p>Major architecture changes to respect ORBS concept.</p>
 <ul class="simple">
-<li>creation of <a class="reference internal" href="orcs_module.html#orcs.orcs.Orcs" title="orcs.orcs.Orcs"><tt class="xref py py-class docutils literal"><span class="pre">orcs.orcs.Orcs</span></tt></a> as a user-interface</li>
-<li><a class="reference internal" href="orcs_module.html#orcs.orcs.SpectralCube" title="orcs.orcs.SpectralCube"><tt class="xref py py-class docutils literal"><span class="pre">orcs.orcs.SpectralCube</span></tt></a> becomes a processing class based on
-<tt class="xref py py-class docutils literal"><span class="pre">orb.core.Cube</span></tt>.</li>
+<li>creation of <a class="reference internal" href="orcs_module.html#orcs.orcs.Orcs" title="orcs.orcs.Orcs"><code class="xref py py-class docutils literal"><span class="pre">orcs.orcs.Orcs</span></code></a> as a user-interface</li>
+<li><a class="reference internal" href="orcs_module.html#orcs.orcs.SpectralCube" title="orcs.orcs.SpectralCube"><code class="xref py py-class docutils literal"><span class="pre">orcs.orcs.SpectralCube</span></code></a> becomes a processing class based on
+<code class="xref py py-class docutils literal"><span class="pre">orb.core.Cube</span></code>.</li>
 <li>wavenumber / wavelength and calibrated / uncalibrated
 extraction. The best extraction is thus based on a wavenumber
 uncalibrated spectrum cube which spectra have never been
@@ -119,9 +117,9 @@ process directly</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Up to the v1.0 some secondaries functionalities have been
-deactivated because they have to be rewritten to account for the
-architecture change. They will be added on next releases.</p>
+<p class="last">Up to v1.0 some secondaries functionalities have been
+deactivated because they have to be rewritten since the
+architecture change. They will be added on future releases.</p>
 </div>
 <div class="section" id="v0-9-1">
 <h3>v0.9.1<a class="headerlink" href="#v0-9-1" title="Permalink to this headline">¶</a></h3>
@@ -141,12 +139,15 @@ wrapper py:meth:<cite>orcs.orcs.Orcs.extract_raw_lines_maps</cite>.</li>
 </div>
 <div class="section" id="v0-9-2">
 <h3>v0.9.2<a class="headerlink" href="#v0-9-2" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id1">
-<h4>bug fix:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li>treat cubes without astrometrical calibration</li>
-</ul>
+<p>bug fix: Treat cubes without astrometrical calibration</p>
 </div>
+<div class="section" id="v0-9-3">
+<h3>v0.9.3<a class="headerlink" href="#v0-9-3" title="Permalink to this headline">¶</a></h3>
+<p><strong>scripts/orcs</strong>: Command line call changed in order to switch from
+the deprecated getopt module to the argparse module and make it
+similar to the <strong>orbs</strong> script of ORBS.</p>
+<p>bug fix: WCS headers of the original cube is transfered to the output
+maps.</p>
 </div>
 </div>
 </div>
@@ -157,7 +158,7 @@ wrapper py:meth:<cite>orcs.orcs.Orcs.extract_raw_lines_maps</cite>.</li>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -169,12 +170,12 @@ wrapper py:meth:<cite>orcs.orcs.Orcs.extract_raw_lines_maps</cite>.</li>
         <li class="right" >
           <a href="utils_module.html" title="Utils module"
              >previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Orcs 0.9.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

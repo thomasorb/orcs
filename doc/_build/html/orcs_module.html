@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Orcs module &mdash; Orcs 0.9.2 documentation</title>
+    <title>Orcs module &mdash; Orcs 0.9.3 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/logo.ico"/>
-    <link rel="top" title="Orcs 0.9.2 documentation" href="index.html" />
+    <link rel="top" title="Orcs 0.9.3 documentation" href="index.html" />
     <link rel="next" title="RVCorrect module" href="rvcorrect_module.html" />
     <link rel="prev" title="Quick start Guide" href="quick_start.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -47,10 +45,10 @@
         <li class="right" >
           <a href="quick_start.html" title="Quick start Guide"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Orcs 0.9.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/logo.png" alt="Logo"/>
@@ -70,12 +68,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="rvcorrect_module.html"
                         title="next chapter">RVCorrect module</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/orcs_module.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/orcs_module.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -94,7 +94,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="orcs-module">
 <h1><a class="toc-backref" href="#id1">Orcs module</a><a class="headerlink" href="#orcs-module" title="Permalink to this headline">¶</a></h1>
@@ -112,70 +112,71 @@
 <h2><a class="toc-backref" href="#id2">Orcs class</a><a class="headerlink" href="#orcs-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="orcs.orcs.Orcs">
-<em class="property">class </em><tt class="descclassname">orcs.orcs.</tt><tt class="descname">Orcs</tt><big>(</big><em>option_file_path</em>, <em>config_file_name='config.orb'</em>, <em>overwrite=True</em><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></tt></p>
+<em class="property">class </em><code class="descclassname">orcs.orcs.</code><code class="descname">Orcs</code><span class="sig-paren">(</span><em>option_file_path</em>, <em>config_file_name='config.orb'</em>, <em>overwrite=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
 <p>ORCS user-interface.</p>
 <p>Manage the option file and the file system. This is the equivalent
-in ORCS of <tt class="xref py py-meth docutils literal"><span class="pre">orbs.Orbs()</span></tt> for ORBS.</p>
+in ORCS of <code class="xref py py-meth docutils literal"><span class="pre">orbs.Orbs()</span></code> for ORBS.</p>
 <p>Most of the keywords used by ORBS are also used by ORCS. In
 general it is easier to include the option file used for the
 reduction of the data (using the keyword &#8216;INCLUDE&#8217; followed by the
 path to the option file to include) and set the options which are
 special to ORCS. e.g.:</p>
-<div class="highlight-python"><pre>INCLUDE /path/to/orbs.opt # include the ORBS option file
+<div class="highlight-python"><div class="highlight"><pre>INCLUDE /path/to/orbs.opt # include the ORBS option file
 
 DIRSPEC /path/to/CALIBRATED_SPECTRUM # Path to the spectrum cube folder
 LINES [NII]6548,Halpha,[NII]6583,[SII]6716,[SII]6731 # Lines to extract
 OBJECT_VELOCITY 170 # in km.s-1, mean velocity of the object
-POLY_ORDER 0 # Order of the polynomial used to fit continuum</pre>
+POLY_ORDER 0 # Order of the polynomial used to fit continuum
+</pre></div>
 </div>
-<p>ORCS keywords (for the other keywords see <tt class="xref py py-class docutils literal"><span class="pre">orbs.orbs.Orbs</span></tt>):</p>
+<p>ORCS keywords (for the other keywords see <code class="xref py py-class docutils literal"><span class="pre">orbs.orbs.Orbs</span></code>):</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Include :</th><td class="field-body">Include another option file. Note that the already
+<tr class="field-odd field"><th class="field-name">INCLUDE:</th><td class="field-body">Include another option file. Note that the already
 existing keywords will be overriden. This keyword is thus best
 placed at the very beginning of a file. All the keywords (but
 the &#8216;protected ones&#8217;) contained it the included file can be
 overriden by setting the same keyword after the include (see
-<tt class="xref py py-class docutils literal"><span class="pre">orb.core.OptionFile</span></tt>).</td>
+<code class="xref py py-class docutils literal"><span class="pre">orb.core.OptionFile</span></code>).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Dirspec :</th><td class="field-body">Path to the folder containing the spectrum cube</td>
+<tr class="field-even field"><th class="field-name">DIRSPEC:</th><td class="field-body">Path to the folder containing the spectrum cube</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Lines :</th><td class="field-body">Wavelength (in nm) of the lines to extract separated by a
+<tr class="field-odd field"><th class="field-name">LINES:</th><td class="field-body">Wavelength (in nm) of the lines to extract separated by a
 comma. Their full name can also be given but it must respect the list
-of recorded lines by <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></tt>.</td>
+of recorded lines by <code class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></code>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Object_velocity :</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">OBJECT_VELOCITY:</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body">(Optional) Mean velocity of the observed object
 in km.s-1. This is used to guess the mean shift of the lines.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Poly_order :</th><td class="field-body">(Optional) Order of the polynomial used to fit
+<tr class="field-odd field"><th class="field-name">POLY_ORDER:</th><td class="field-body">(Optional) Order of the polynomial used to fit
 continuum. Be extremely careful with high order polynomials.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Roi :</th><td class="field-body">(Optional) Region of interest Xmin,Xmax,Ymin,Ymax (in
+<tr class="field-even field"><th class="field-name">ROI:</th><td class="field-body">(Optional) Region of interest Xmin,Xmax,Ymin,Ymax (in
 pixels). Must be intergers separated by a comma, e.g.:
 175,250,165,245</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Sky_reg :</th><td class="field-body">(Optional) Path to a ds9 region file defining the sky pixels.</td>
+<tr class="field-odd field"><th class="field-name">SKY_REG:</th><td class="field-body">(Optional) Path to a ds9 region file defining the sky pixels.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Calibmap :</th><td class="field-body">(Optional) Path to the calibration laser map. Must be
+<tr class="field-even field"><th class="field-name">CALIBMAP:</th><td class="field-body">(Optional) Path to the calibration laser map. Must be
 given if the cube has not been wavelength calibrated.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orbs.orbs.Orbs</span></tt></p>
+<p class="last"><code class="xref py py-class docutils literal"><span class="pre">orbs.orbs.Orbs</span></code></p>
 </div>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orb.core.OptionFile</span></tt></p>
+<p class="last"><code class="xref py py-class docutils literal"><span class="pre">orb.core.OptionFile</span></code></p>
 </div>
 <dl class="method">
 <dt id="orcs.orcs.Orcs.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>option_file_path</em>, <em>config_file_name='config.orb'</em>, <em>overwrite=True</em><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>option_file_path</em>, <em>config_file_name='config.orb'</em>, <em>overwrite=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Init Orcs class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -184,7 +185,7 @@ given if the cube has not been wavelength calibrated.</td>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>option_file_path</strong> &#8211; Path to the option file.</li>
 <li><strong>config_file_name</strong> &#8211; (Optional) name of the config file to
-use. Must be located in <tt class="docutils literal"><span class="pre">orb/data/</span></tt></li>
+use. Must be located in <code class="docutils literal"><span class="pre">orb/data/</span></code></li>
 <li><strong>overwrite</strong> &#8211; (Optional) If True, any existing FITS file
 created by Orcs will be overwritten during the reduction
 process (default False).</li>
@@ -197,102 +198,102 @@ process (default False).</li>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs._get_data_prefix">
-<tt class="descname">_get_data_prefix</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs._get_data_prefix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_data_prefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs._get_data_prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return prefix path to stored data</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs._get_project_dir">
-<tt class="descname">_get_project_dir</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs._get_project_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_project_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs._get_project_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the path to the project directory depending on 
 the project name.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs._get_project_fits_header">
-<tt class="descname">_get_project_fits_header</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs._get_project_fits_header" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_project_fits_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs._get_project_fits_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the header of the project that can be added to the
 created FITS files.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.extract_integrated_spectra">
-<tt class="descname">extract_integrated_spectra</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.extract_integrated_spectra" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_integrated_spectra</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.extract_integrated_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract integrated spectra.</p>
 <p>This is a wrapper around
-<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></tt>.</p>
-<div class="admonition-see-also admonition seealso">
+<code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></code>.</p>
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></tt></p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_integrated_spectra()</span></code></p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.extract_lines_maps">
-<tt class="descname">extract_lines_maps</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.extract_lines_maps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_lines_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.extract_lines_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract lines maps.</p>
 <p>This is a wrapper around
-<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></tt>.</p>
-<div class="admonition-see-also admonition seealso">
+<code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></code>.</p>
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></tt></p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_lines_maps()</span></code></p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.extract_raw_lines_maps">
-<tt class="descname">extract_raw_lines_maps</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.extract_raw_lines_maps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_raw_lines_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.extract_raw_lines_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract raw lines maps.</p>
 <p>This is a wrapper around
-<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></tt>.</p>
-<div class="admonition-see-also admonition seealso">
+<code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></code>.</p>
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></tt></p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.extract_raw_lines_maps()</span></code></p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.get_helio_velocity">
-<tt class="descname">get_helio_velocity</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_helio_velocity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_helio_velocity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.get_helio_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return heliocentric velocity in km.s-1</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">orcs.rvcorrect.RVCorrect</span></tt> a
+<p class="last"><code class="xref py py-class docutils literal"><span class="pre">orcs.rvcorrect.RVCorrect</span></code> a
 translation in Python of the IRAF function RVCORRECT.</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.get_lines_fwhm">
-<tt class="descname">get_lines_fwhm</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_fwhm" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_lines_fwhm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_fwhm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the expected value of the lines FWHM in nm or in
 cm-1 depending on the cube axis unit.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="utils_module.html#utils.compute_line_fwhm" title="utils.compute_line_fwhm"><tt class="xref py py-meth docutils literal"><span class="pre">utils.compute_line_fwhm()</span></tt></a></p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">orb.utils.compute_line_fwhm()</span></code></p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.get_lines_shift">
-<tt class="descname">get_lines_shift</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_shift" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_lines_shift</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.get_lines_shift" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the expected line shift in nm or in cm-1 depending
 on the cube axis unit.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="utils_module.html#utils.compute_line_shift" title="utils.compute_line_shift"><tt class="xref py py-meth docutils literal"><span class="pre">utils.compute_line_shift()</span></tt></a></p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">orb.utils.compute_line_shift()</span></code></p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.Orcs.get_sky_radial_velocity">
-<tt class="descname">get_sky_radial_velocity</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.Orcs.get_sky_radial_velocity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_sky_radial_velocity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.Orcs.get_sky_radial_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return sky radial velocity</p>
 <p>This is a wrapper around
-<tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></tt>.</p>
-<div class="admonition-see-also admonition seealso">
+<code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></code>.</p>
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></tt></p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">orcs.SpectralCube.get_sky_radial_velocity()</span></code></p>
 </div>
 </dd></dl>
 
@@ -303,13 +304,13 @@ on the cube axis unit.</p>
 <h2><a class="toc-backref" href="#id3">SpectralCube class</a><a class="headerlink" href="#spectralcube-class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="orcs.orcs.SpectralCube">
-<em class="property">class </em><tt class="descclassname">orcs.orcs.</tt><tt class="descname">SpectralCube</tt><big>(</big><em>image_list_path</em>, <em>data_prefix='temp_data_'</em>, <em>config_file_name='config.orb'</em>, <em>project_header=</em><span class="optional">[</span><span class="optional">]</span>, <em>wcs_header=</em><span class="optional">[</span><span class="optional">]</span>, <em>calibration_laser_header=</em><span class="optional">[</span><span class="optional">]</span>, <em>overwrite=False</em>, <em>silent_init=False</em>, <em>no_log=False</em>, <em>tuning_parameters={}</em>, <em>indexer=None</em>, <em>logfile_name=None</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Cube</span></tt></p>
+<em class="property">class </em><code class="descclassname">orcs.orcs.</code><code class="descname">SpectralCube</code><span class="sig-paren">(</span><em>image_list_path</em>, <em>image_mode='classic'</em>, <em>chip_index=1</em>, <em>binning=1</em>, <em>data_prefix='./temp/data.'</em>, <em>config_file_name='config.orb'</em>, <em>project_header=[]</em>, <em>wcs_header=[]</em>, <em>calibration_laser_header=[]</em>, <em>overwrite=False</em>, <em>silent_init=False</em>, <em>no_log=False</em>, <em>tuning_parameters={}</em>, <em>indexer=None</em>, <em>logfile_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.Cube</span></code></p>
 <p>ORCS spectral cube processing class.</p>
 <p>Fit and/or extract spectra.</p>
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._add_wcs_header">
-<tt class="descname">_add_wcs_header</tt><big>(</big><em>hdr</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._add_wcs_header" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_add_wcs_header</code><span class="sig-paren">(</span><em>hdr</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._add_wcs_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add WCS header keywords to a header.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -323,9 +324,9 @@ on the cube axis unit.</p>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._convert_fit_result">
-<tt class="descname">_convert_fit_result</tt><big>(</big><em>fit_result</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>axis</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._convert_fit_result" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_convert_fit_result</code><span class="sig-paren">(</span><em>fit_result</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>axis</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._convert_fit_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert the result from
-<tt class="xref py py-meth docutils literal"><span class="pre">orb.utils.fit_lines_in_vector()</span></tt> in
+<code class="xref py py-meth docutils literal"><span class="pre">orb.utils.fit_lines_in_vector()</span></code> in
 wavelength/wavenumber.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -347,7 +348,7 @@ is in wavelength.</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._extract_spectrum_from_region">
-<tt class="descname">_extract_spectrum_from_region</tt><big>(</big><em>region</em>, <em>calibration_coeff_map</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>substract_spectrum=None</em>, <em>median=False</em>, <em>silent=False</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._extract_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_extract_spectrum_from_region</code><span class="sig-paren">(</span><em>region</em>, <em>calibration_coeff_map</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>substract_spectrum=None</em>, <em>median=False</em>, <em>silent=False</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._extract_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the mean spectrum from a region of the cube.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -372,7 +373,7 @@ False).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Substract_spectrum :</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Substract_spectrum:</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">Remove the given spectrum from the
 extracted spectrum before fitting parameters. Useful
 to remove sky spectrum. Both spectra must have the same size.</p>
@@ -384,7 +385,7 @@ to remove sky spectrum. Both spectra must have the same size.</p>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._fit_lines_in_cube">
-<tt class="descname">_fit_lines_in_cube</tt><big>(</big><em>lines</em>, <em>step</em>, <em>order</em>, <em>fwhm_guess</em>, <em>wavenumber</em>, <em>calibration_coeff_map</em>, <em>poly_order</em>, <em>filter_range</em>, <em>x_range=None</em>, <em>y_range=None</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>substract=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._fit_lines_in_cube" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_fit_lines_in_cube</code><span class="sig-paren">(</span><em>lines</em>, <em>step</em>, <em>order</em>, <em>fwhm_guess</em>, <em>wavenumber</em>, <em>calibration_coeff_map</em>, <em>poly_order</em>, <em>filter_range</em>, <em>x_range=None</em>, <em>y_range=None</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>substract=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._fit_lines_in_cube" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines in a spectral cube.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -432,7 +433,7 @@ in each spectrum.</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_calibration_coeff_map">
-<tt class="descname">_get_calibration_coeff_map</tt><big>(</big><em>calibration_laser_map_path</em>, <em>nm_laser</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_calibration_coeff_map" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_calibration_coeff_map</code><span class="sig-paren">(</span><em>calibration_laser_map_path</em>, <em>nm_laser</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._get_calibration_coeff_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the calibration coeff map based on the calibration
 laser map and the laser wavelength.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -453,7 +454,7 @@ be a map full of ones.</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_frame_header">
-<tt class="descname">_get_frame_header</tt><big>(</big><em>file_type</em>, <em>comment=None</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_frame_header" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_frame_header</code><span class="sig-paren">(</span><em>file_type</em>, <em>comment=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._get_frame_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return frame header</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -472,13 +473,13 @@ None).</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_fwhm_pix">
-<tt class="descname">_get_fwhm_pix</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_fwhm_pix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_fwhm_pix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._get_fwhm_pix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return fwhm in channels from default lines FWHM</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_integrated_spectrum_header">
-<tt class="descname">_get_integrated_spectrum_header</tt><big>(</big><em>region_name</em>, <em>axis</em>, <em>wavenumber</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_integrated_spectrum_header" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_integrated_spectrum_header</code><span class="sig-paren">(</span><em>region_name</em>, <em>axis</em>, <em>wavenumber</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._get_integrated_spectrum_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return integrated spectrum header</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -496,7 +497,7 @@ None).</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_map_path">
-<tt class="descname">_get_map_path</tt><big>(</big><em>line_name</em>, <em>err=False</em>, <em>param='amplitude'</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_map_path" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_map_path</code><span class="sig-paren">(</span><em>line_name</em>, <em>err=False</em>, <em>param='amplitude'</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._get_map_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the path to a map of one gaussian fit parameter for
 one given emission line.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -519,13 +520,13 @@ False).</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube._get_maps_list_path">
-<tt class="descname">_get_maps_list_path</tt><big>(</big><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube._get_maps_list_path" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_get_maps_list_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube._get_maps_list_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the list of extacted emission lines maps</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube.extract_integrated_spectra">
-<tt class="descname">extract_integrated_spectra</tt><big>(</big><em>regions_file_path</em>, <em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>sky_regions_file_path=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>plot=True</em>, <em>auto_sky_extraction=False</em>, <em>sky_size_coeff=2.0</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_integrated_spectra" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_integrated_spectra</code><span class="sig-paren">(</span><em>regions_file_path</em>, <em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>sky_regions_file_path=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>plot=True</em>, <em>auto_sky_extraction=False</em>, <em>sky_size_coeff=2.0</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_integrated_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract integrated spectra and their emission lines parameters.</p>
 <p>All parameters of each emission line are mapped. So that for a
 gaussian fit with 4 parameters (height, amplitude, shift,
@@ -582,7 +583,7 @@ external radius of the sky region (defautl 2.).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path :</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(Optional) Path to a ds9 region file
 giving the pixels where the sky spectrum has to be
 extracted. This spectrum will be substracted to the spectral
@@ -595,7 +596,7 @@ cube before it is fitted (default None).</p>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube.extract_lines_maps">
-<tt class="descname">extract_lines_maps</tt><big>(</big><em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>sky_regions_file_path=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>x_range=None</em>, <em>y_range=None</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_lines_maps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_lines_maps</code><span class="sig-paren">(</span><em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>sky_regions_file_path=None</em>, <em>cov_pos=True</em>, <em>cov_fwhm=True</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>x_range=None</em>, <em>y_range=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_lines_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract emission lines parameters maps from a fit.</p>
 <p>All parameters of each emission line are mapped. So that for a
 gaussian fit with 4 parameters (height, amplitude, shift,
@@ -644,7 +645,7 @@ extraction must be done.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path :</th></tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
 <tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">(Optional) Path to a ds9 region file
 giving the pixels where the sky spectrum has to be
 extracted. This spectrum will be substracted to the spectral
@@ -657,7 +658,7 @@ cube before it is fitted (default None).</p>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube.extract_raw_lines_maps">
-<tt class="descname">extract_raw_lines_maps</tt><big>(</big><em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>step</em>, <em>order</em>, <em>wavenumber</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_raw_lines_maps" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extract_raw_lines_maps</code><span class="sig-paren">(</span><em>lines</em>, <em>lines_velocity</em>, <em>lines_fwhm</em>, <em>step</em>, <em>order</em>, <em>wavenumber</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube.extract_raw_lines_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raw extraction of a portion of the spectral cube. Return
 the mean of the slice.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -691,13 +692,13 @@ None).</li>
 
 <dl class="method">
 <dt id="orcs.orcs.SpectralCube.get_sky_radial_velocity">
-<tt class="descname">get_sky_radial_velocity</tt><big>(</big><em>sky_regions_file_path</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>show=True</em><big>)</big><a class="headerlink" href="#orcs.orcs.SpectralCube.get_sky_radial_velocity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_sky_radial_velocity</code><span class="sig-paren">(</span><em>sky_regions_file_path</em>, <em>lines_fwhm</em>, <em>filter_range</em>, <em>wavenumber</em>, <em>step</em>, <em>order</em>, <em>poly_order=0</em>, <em>calibration_laser_map_path=None</em>, <em>nm_laser=None</em>, <em>fix_fwhm=False</em>, <em>fmodel='gaussian'</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.orcs.SpectralCube.get_sky_radial_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the sky radial velocity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Sky_regions_file_path :</th></tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Sky_regions_file_path:</th></tr>
 <tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">Path to a ds9 region file giving the
 pixels where the sky spectrum has to be extracted.</p>
 </td>
@@ -736,7 +737,7 @@ fitted function (default True).</li>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Use <tt class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></tt> to get the sky lines
+<p class="last">Use <code class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></code> to get the sky lines
 to fit.</p>
 </div>
 </dd></dl>
@@ -752,7 +753,7 @@ to fit.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -767,12 +768,12 @@ to fit.</p>
         <li class="right" >
           <a href="quick_start.html" title="Quick start Guide"
              >previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Orcs 0.9.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

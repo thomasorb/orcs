@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Quick start Guide &mdash; Orcs 0.9.2 documentation</title>
+    <title>Quick start Guide &mdash; Orcs 0.9.3 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.9.2',
+        URL_ROOT:    './',
+        VERSION:     '0.9.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/logo.ico"/>
-    <link rel="top" title="Orcs 0.9.2 documentation" href="index.html" />
+    <link rel="top" title="Orcs 0.9.3 documentation" href="index.html" />
     <link rel="next" title="Orcs module" href="orcs_module.html" />
     <link rel="prev" title="ORCS Documentation" href="index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -47,10 +45,10 @@
         <li class="right" >
           <a href="index.html" title="ORCS Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Orcs 0.9.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/logo.png" alt="Logo"/>
@@ -73,12 +71,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="orcs_module.html"
                         title="next chapter">Orcs module</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/quick_start.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/quick_start.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -97,7 +97,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="quick-start-guide">
 <h1><a class="toc-backref" href="#id1">Quick start Guide</a><a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
@@ -138,42 +138,42 @@ en example.</p>
 </div>
 <div class="section" id="required-parameters">
 <h3><a class="toc-backref" href="#id3"><strong>REQUIRED</strong> parameters</a><a class="headerlink" href="#required-parameters" title="Permalink to this headline">¶</a></h3>
-<p><em class="xref std std-option">INCLUDE</em> Include ORBS option file.</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">INCLUDE</span></code> Include ORBS option file.</p>
 <dl class="docutils">
-<dt><em class="xref std std-option">DIRSPEC</em> Path to the spectrum directory. This directory can</dt>
+<dt><code class="xref std std-option docutils literal"><span class="pre">DIRSPEC</span></code> Path to the spectrum directory. This directory can</dt>
 <dd>be created from a full 3d cube by using the &#8216;orb-unstack&#8217;
 function of ORB.</dd>
-<dt><em class="xref std std-option">WAVENUMBER</em> Must be 0 if the cube axis is in wavelength or 1</dt>
+<dt><code class="xref std std-option docutils literal"><span class="pre">WAVENUMBER</span></code> Must be 0 if the cube axis is in wavelength or 1</dt>
 <dd>if the cube axis is in wavenumber.</dd>
-<dt><em class="xref std std-option">WAVE_CALIB</em> Must be 0 if the cube is not wavelength</dt>
+<dt><code class="xref std std-option docutils literal"><span class="pre">WAVE_CALIB</span></code> Must be 0 if the cube is not wavelength</dt>
 <dd>calibrated and 1 if the cube is wavelength calibrated.</dd>
 </dl>
-<p><em class="xref std std-option">APOD</em> Give the apodization (1.0 for unapodized cube)</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">APOD</span></code> Give the apodization (1.0 for unapodized cube)</p>
 <dl class="docutils">
-<dt><em class="xref std std-option">LINES</em> Emission Lines names, enter an integer or a float to</dt>
+<dt><code class="xref std std-option docutils literal"><span class="pre">LINES</span></code> Emission Lines names, enter an integer or a float to</dt>
 <dd>use a non_recorded emission line. See
-<tt class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></tt> to get a list of the available
+<code class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></code> to get a list of the available
 lines.</dd>
-<dt><em class="xref std std-option">COV_LINES</em> Covarying lines. Give the same number to the lines</dt>
+<dt><code class="xref std std-option docutils literal"><span class="pre">COV_LINES</span></code> Covarying lines. Give the same number to the lines</dt>
 <dd>from the same atom, or more generally for the lines of the
 same velocity.</dd>
 </dl>
-<p><em class="xref std std-option">OBJECT_VELOCITY</em>  Object velocity in km.s-1</p>
-<p><em class="xref std std-option">POLY_ORDER</em> Order of the polynomial used to fit continuum</p>
-<p><em class="xref std std-option">ROI</em> Region of interest : Xmin,Xmax,Ymin,Ymax. Must be integers.</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">OBJECT_VELOCITY</span></code>  Object velocity in km.s-1</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">POLY_ORDER</span></code> Order of the polynomial used to fit continuum</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">ROI</span></code> Region of interest : Xmin,Xmax,Ymin,Ymax. Must be integers.</p>
 <dl class="docutils">
-<dt><em class="xref std std-option">SKY_REG</em> Sky regions ds9 file path (Regions border must be in</dt>
+<dt><code class="xref std std-option docutils literal"><span class="pre">SKY_REG</span></code> Sky regions ds9 file path (Regions border must be in</dt>
 <dd>pixel coordinates, region shape can be a circle, a box or a
 polygon)</dd>
 </dl>
-<p><em class="xref std std-option">CALIBMAP</em> Calibration map path</p>
-<p><em class="xref std std-option">DATE</em> Observation date (UT)</p>
-<p><em class="xref std std-option">HOUR_UT</em> Observation hour (UT)</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">CALIBMAP</span></code> Calibration map path</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">DATE</span></code> Observation date (UT)</p>
+<p><code class="xref std std-option docutils literal"><span class="pre">HOUR_UT</span></code> Observation hour (UT)</p>
 </div>
 </div>
 <div class="section" id="step-2-run-it">
 <h2><a class="toc-backref" href="#id4">Step 2: Run it</a><a class="headerlink" href="#step-2-run-it" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">orcs option_file.orc</span>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">orcs option_file.orc start</span>
 </pre></div>
 </div>
 </div>
@@ -185,7 +185,7 @@ polygon)</dd>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -200,12 +200,12 @@ polygon)</dd>
         <li class="right" >
           <a href="index.html" title="ORCS Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">Orcs 0.9.2 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Orcs 0.9.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2014, Thomas Martin (thomas.martin.1@ulaval.ca).
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

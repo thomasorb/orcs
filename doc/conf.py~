@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Orbs documentation build configuration file, created by
+# Orcs documentation build configuration file, created by
 # sphinx-quickstart on Sat May 26 01:02:35 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -17,7 +17,7 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('.'))
-sys.path.append(os.path.expanduser("~/Astro/Python/Orbs/orbs/"))
+sys.path.append(os.path.expanduser("~/Astro/Python/Orcs/orcs/"))
 
 
 # -- General configuration -----------------------------------------------------
@@ -47,7 +47,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Orbs'
+project = u'Orcs'
 copyright = u'2014, Thomas Martin (thomas.martin.1@ulaval.ca)'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -173,7 +173,7 @@ html_use_opensearch = ''
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Orbsdoc'
+htmlhelp_basename = 'Orcsdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -187,7 +187,7 @@ htmlhelp_basename = 'Orbsdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Orbs.tex', u'Orbs Documentation',
+  ('index', 'Orcs.tex', u'Orcs Documentation',
    u'Thomas Martin', 'manual'),
 ]
 
@@ -220,6 +220,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'orbs', u'Orbs Documentation',
+    ('index', 'orcs', u'Orcs Documentation',
      [u'Thomas Martin'], 1)
 ]
