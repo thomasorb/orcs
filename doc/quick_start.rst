@@ -16,26 +16,18 @@ en example.
 ~~~~~~~~~~~~~~~~~~~~~~~
 :option:`INCLUDE` Include ORBS option file.
 
-:option:`DIRSPEC` Path to the spectrum directory. This directory can
-        be created from a full 3d cube by using the 'orb-unstack'
-        function of ORB.
+:option:`CUBEPATH` Path to the hdf5 cube spectral cube.
 
-:option:`WAVENUMBER` Must be 0 if the cube axis is in wavelength or 1
-        if the cube axis is in wavenumber.
+:option:`WAVENUMBER` Must be 0 if the cube axis is in wavelength or 1 if the cube axis is in wavenumber.
 
-:option:`WAVE_CALIB` Must be 0 if the cube is not wavelength
-        calibrated and 1 if the cube is wavelength calibrated.
+:option:`WAVE_CALIB` Must be 0 if the cube is not wavelength calibrated and 1 if the cube is wavelength calibrated.
 
 :option:`APOD` Give the apodization (1.0 for unapodized cube)
 
-:option:`LINES` Emission Lines names, enter an integer or a float to
-        use a non_recorded emission line. See
-        :py:class:`orb.core.Lines` to get a list of the available
-        lines.
+:option:`LINES` Emission Lines names, enter an integer or a float to use a non_recorded emission line (line wavelength must be
+        given in nm). See :py:class:`orb.core.Lines` to get a list of the available lines.
 
-:option:`COV_LINES` Covarying lines. Give the same number to the lines
-        from the same atom, or more generally for the lines of the
-        same velocity.
+:option:`COV_LINES` Covarying lines. Give the same number to the lines from the same atom, or more generally for the lines of the same velocity.
 
 :option:`OBJECT_VELOCITY`  Object velocity in km.s-1
 
@@ -43,9 +35,7 @@ en example.
 
 :option:`ROI` Region of interest : Xmin,Xmax,Ymin,Ymax. Must be integers.
 
-:option:`SKY_REG` Sky regions ds9 file path (Regions border must be in
-        pixel coordinates, region shape can be a circle, a box or a
-        polygon)
+:option:`SKY_REG` Sky regions ds9 file path (Regions border must be in pixel coordinates, region shape can be a circle, a box or a polygon)
 
 :option:`CALIBMAP` Calibration map path
 
@@ -59,3 +49,9 @@ Step 2: Run it
 .. code-block:: console
 
   orcs option_file.orc start
+
+For SITELLE don't forget to add the --mode sitelle option, i.e.:
+
+.. code-block:: console
+
+  orcs option_file.orc --mode sitelle start

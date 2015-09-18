@@ -3,7 +3,7 @@
 # Author: Thomas Martin <thomas.martin.1@ulaval.ca>
 # File: orcs.py
 
-## Copyright (c) 2010-2014 Thomas Martin <thomas.martin.1@ulaval.ca>
+## Copyright (c) 2010-2015 Thomas Martin <thomas.martin.1@ulaval.ca>
 ## 
 ## This file is part of ORCS
 ##
@@ -42,8 +42,9 @@ import bottleneck as bn
 
 # import ORB
 try:
-    from orb.core import (Tools, OptionFile, Lines,
-                          ProgressBar, ParamsFile, Cube)
+    from orb.core import (
+        Tools, OptionFile, Lines,
+        ProgressBar, ParamsFile, Cube, HDFCube)
     import orb.utils
 
 except IOError, e:
@@ -72,7 +73,7 @@ class Orcs(Tools):
 
       INCLUDE /path/to/orbs.opt # include the ORBS option file
       
-      DIRSPEC /path/to/CALIBRATED_SPECTRUM # Path to the spectrum cube folder
+      CUBEPATH /path/to/CALIBRATED_SPECTRUM # Path to the spectrum cube (hdf5 format)
       LINES [NII]6548,Halpha,[NII]6583,[SII]6716,[SII]6731 # Lines to extract
       OBJECT_VELOCITY 170 # in km.s-1, mean velocity of the object
       POLY_ORDER 0 # Order of the polynomial used to fit continuum
@@ -87,11 +88,12 @@ class Orcs(Tools):
       overriden by setting the same keyword after the include (see
       :py:class:`orb.core.OptionFile`).
     
-    :DIRSPEC: Path to the folder containing the spectrum cube
+    :CUBEPATH: Path to the spectrum cube (hdf5 format)
     
     :LINES: Wavelength (in nm) of the lines to extract separated by a
-      comma. Their full name can also be given but it must respect the list
-      of recorded lines by :py:class:`orb.core.Lines`.
+      comma. Their full name can also be given but it must respect the
+      list of recorded lines by :py:class:`orb.core.Lines`. A line
+      wavelentgh in nm can also be given.
       
     :OBJECT_VELOCITY: (Optional) Mean velocity of the observed object
       in km.s-1. This is used to guess the mean shift of the lines.
@@ -169,7 +171,6 @@ class Orcs(Tools):
         self.config_file_name = config_file_name
         self.overwrite = overwrite
         self.__version__ = version.__version__
-        self._logfile_name =  os.path.basename(option_file_path) + '.log'
 
         ## get config parameters
         store_config_parameter('OBS_LAT', float)
@@ -189,12 +190,10 @@ class Orcs(Tools):
             + '_' + self.options['filter_name']
             + '_' + str(self.options['apodization'])
             + '.ORCS')
-        store_option_parameter('spectrum_list_path', 'DIRSPEC', str,
-                               folder=True)
+        store_option_parameter('spectrum_cube_path', 'CUBEPATH', str)
         
         store_option_parameter('step', 'SPESTEP', float)
         store_option_parameter('order', 'SPEORDR', int)
-        store_option_parameter('step_nb', 'SPESTNB', int)
 
         # wavenumber
         self.options['wavenumber'] = False
@@ -219,13 +218,32 @@ class Orcs(Tools):
             self._print_msg('Cube is NOT CALIBRATED in wavelength')
             store_option_parameter('calibration_laser_map_path',
                                    'CALIBMAP', str)
+            self._print_msg('Calibration laser map used: {}'.format(
+                self.options['calibration_laser_map_path']))
+            
         # WCS
         self.options['wcs'] = True
         store_option_parameter('wcs', 'WCS', bool, optional=True)
         if not self.options['wcs']:
             wcs_optional = True
         else:
-            wcs_optional = False  
+            wcs_optional = False
+
+        ## Get WCS header
+        cube = HDFCube(self.options['spectrum_cube_path'],
+                       silent_init=True)
+        
+        if self.options['wcs']:
+            self.wcs = pywcs.WCS(cube.get_frame_header(0))
+            self.wcs_header = self.wcs.to_header()
+
+        # get ZPD index
+        self.options['step_nb'] = cube.dimz
+        if 'ZPDINDEX' in cube.get_cube_header():
+            self.zpd_index = cube.get_cube_header()['ZPDINDEX']
+        else:
+            self._print_error('ZPDINDEX not in cube header. Please run again the last step of ORBS reduction process.')
+
         
         store_option_parameter('target_ra', 'TARGETR', str, ':',
                                post_cast=float, optional=wcs_optional)
@@ -336,22 +354,13 @@ class Orcs(Tools):
             'Order of the polynomial used to fit continuum: {}'.format(
                 self.options['poly_order']))
 
-        ## Get WCS header
-        cube = Cube(self.options['spectrum_list_path'],
-                    silent_init=True)
-        
-        if self.options['wcs']:
-            self.wcs = pywcs.WCS(cube.get_frame_header(0))
-            self.wcs_header = self.wcs.to_header()
-          
         ## Init spectral cube
         self.spectralcube = SpectralCube(
-            self.options['spectrum_list_path'],
+            self.options['spectrum_cube_path'],
             data_prefix=self._get_data_prefix(),
             project_header=self._get_project_fits_header(),
             wcs_header = self.wcs_header,
-            overwrite=self.overwrite,
-            logfile_name = self._logfile_name)
+            overwrite=self.overwrite)
 
     def _get_project_dir(self):
         """Return the path to the project directory depending on 
@@ -378,8 +387,10 @@ class Orcs(Tools):
           
         .. seealso:: :py:meth:`orb.utils.compute_line_fwhm`
         """
+        step_nb = max(self.options['step_nb'] - self.zpd_index, self.zpd_index)
+        
         return orb.utils.compute_line_fwhm(
-            self.options['step_nb'], self.options['step'],
+            step_nb, self.options['step'],
             self.options['order'], apod_coeff=self.options['apodization'],
             wavenumber=self.options['wavenumber'])
 
@@ -443,7 +454,7 @@ class Orcs(Tools):
             fmodel = 'sinc'
         else:
             fmodel = 'gaussian'
-        
+            
         self.spectralcube.extract_lines_maps(
             self.options['lines'],
             self.options['mean_velocity'],
@@ -552,7 +563,7 @@ class Orcs(Tools):
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
-class SpectralCube(Cube):
+class SpectralCube(HDFCube):
 
     """ORCS spectral cube processing class.
 
@@ -931,7 +942,6 @@ class SpectralCube(Cube):
         :param cov_fwhm: (Optional) FWHM is the same for all the lines
           in each spectrum.
         """
-        
         def _fit_lines_in_column(data, calib_map_col, mask_col,
                                  lines, fwhm_guess_pix, filter_range,
                                  poly_order, fix_fwhm, fmodel,
@@ -975,9 +985,11 @@ class SpectralCube(Cube):
                             cm1_axis = orb.utils.create_cm1_axis(
                                 data.shape[1], step, order,
                                 corr=calib_map_col[ij])
+
                             lines_pix = orb.utils.cm12pix(cm1_axis, lines)
                             filter_range_pix = orb.utils.cm12pix(
                                 cm1_axis, filter_range)
+                            
                             # interpolate and substract
                             if substract is not None:
                                 cm1_axis_base = orb.utils.create_cm1_axis(
@@ -985,6 +997,7 @@ class SpectralCube(Cube):
                                 data[ij,:] -= orb.utils.interpolate_axis(
                                    substract, cm1_axis, 5,
                                    old_axis=cm1_axis_base)
+                                
                         else:
                             nm_axis = orb.utils.create_nm_axis(
                                 data.shape[1], step, order,
@@ -1006,11 +1019,11 @@ class SpectralCube(Cube):
                         data[ij,:] - substract
 
                     # get signal range
-                    min_range = np.min(filter_range_pix)
-                    max_range = np.max(filter_range_pix)
+                    min_range = np.nanmin(filter_range_pix)
+                    max_range = np.nanmax(filter_range_pix)
                     min_range += RANGE_BORDER_PIX
                     max_range -= RANGE_BORDER_PIX
-
+                    
                     ## FIT
                     try:
                         result_fit = orb.utils.fit_lines_in_vector(
@@ -1107,6 +1120,10 @@ class SpectralCube(Cube):
         chisq_image.fill(np.nan)
         snr_image = np.empty_like(hei_image)
         snr_image.fill(np.nan)
+
+
+        # check substract spectrum
+        if np.all(substract == 0.): substract = None
         
         # Defining computation mask
         if x_range is not None:
@@ -1140,7 +1157,14 @@ class SpectralCube(Cube):
         mask = np.zeros((self.dimx, self.dimy), dtype=bool)
         mask[x_min:x_max, y_min:y_max] = True
 
-
+        # get min and max of mask (not useful now but preparing the
+        # use of a ds9 made mask)
+        masked_pixels = np.nonzero(mask)
+        x_min_mask = np.nanmin(masked_pixels[0])
+        x_max_mask = np.nanmax(masked_pixels[0])
+        y_min_mask = np.nanmin(masked_pixels[1])
+        y_max_mask = np.nanmax(masked_pixels[1])
+    
         # convert fwhm in pixels
         if wavenumber:
             cm1_axis = orb.utils.create_cm1_axis(self.dimz, step, order)
@@ -1155,59 +1179,67 @@ class SpectralCube(Cube):
             # note that x_min, x_max ... are redefined as the quadrant
             # boundaries
             x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
-            iquad_data = self.get_data(x_min, x_max, y_min, y_max, 
-                                       0, self.dimz)
 
-            # multi-processing server init
-            job_server, ncpus = self._init_pp_server()
-            progress = ProgressBar(x_max - x_min)
-            for ii in range(0, x_max - x_min, ncpus):
-                # no more jobs than columns
-                if (ii + ncpus >= x_max - x_min): 
-                    ncpus = x_max - x_min - ii
-                
-                # jobs creation
-                jobs = [(ijob, job_server.submit(
-                    _fit_lines_in_column,
-                    args=(iquad_data[ii+ijob,:,:],
-                          calibration_coeff_map[x_min + ii + ijob,
-                                                y_min:y_max],
-                          mask[x_min + ii + ijob, y_min:y_max],
-                          lines, fwhm_guess_pix, filter_range,
-                          poly_order, fix_fwhm, fmodel,
-                          step, order, wavenumber,
-                          cov_pos, cov_fwhm, substract), 
-                    modules=("import numpy as np", 
-                             "import orb.utils",
-                             "import orcs.utils as utils",
-                             "import warnings"),
-                    depfuncs=(orb.utils.fit_lines_in_vector,)))
-                        for ijob in range(ncpus)]
-            
-                for ijob, job in jobs:
-                    (fit, err, chi) = job()
-                    hei_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,0]
-                    amp_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,1]
-                    shi_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,2]
-                    wid_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,3]
-                    hei_image_err[x_min+ii+ijob,
-                                  y_min:y_max,:] = err[:,:,0]
-                    amp_image_err[x_min+ii+ijob,
-                                  y_min:y_max,:] = err[:,:,1]
-                    shi_image_err[x_min+ii+ijob,
-                                  y_min:y_max,:] = err[:,:,2]
-                    wid_image_err[x_min+ii+ijob,
-                                  y_min:y_max,:] = err[:,:,3]
-                    chisq_image[x_min+ii+ijob,
-                                y_min:y_max,:] = chi[:,:,0]
-                    snr_image[x_min+ii+ijob,
-                              y_min:y_max,:] = chi[:,:,1]
-                
-                progress.update(ii, info="column : {}/{}".format(
-                    ii, int(self.dimx/float(self.DIV_NB))))
-                
-            self._close_pp_server(job_server)
-            progress.end()
+            # avoid loading quad with no pixel to fit in it
+            if ((x_min_mask in range(x_min, x_max)
+                 or x_max_mask in range(x_min, x_max))
+                and
+                (y_min_mask in range(y_min, y_max)
+                 or y_max_mask in range(y_min, y_max))):
+
+                iquad_data = self.get_data(x_min, x_max, y_min, y_max, 
+                                           0, self.dimz)
+
+                # multi-processing server init
+                job_server, ncpus = self._init_pp_server()
+                progress = ProgressBar(x_max - x_min)
+                for ii in range(0, x_max - x_min, ncpus):
+                    # no more jobs than columns
+                    if (ii + ncpus >= x_max - x_min): 
+                        ncpus = x_max - x_min - ii
+
+                    # jobs creation
+                    jobs = [(ijob, job_server.submit(
+                        _fit_lines_in_column,
+                        args=(iquad_data[ii+ijob,:,:],
+                              calibration_coeff_map[x_min + ii + ijob,
+                                                    y_min:y_max],
+                              mask[x_min + ii + ijob, y_min:y_max],
+                              lines, fwhm_guess_pix, filter_range,
+                              poly_order, fix_fwhm, fmodel,
+                              step, order, wavenumber,
+                              cov_pos, cov_fwhm, substract), 
+                        modules=("import numpy as np", 
+                                 "import orb.utils",
+                                 "import orcs.utils as utils",
+                                 "import warnings"),
+                        depfuncs=(orb.utils.fit_lines_in_vector,)))
+                            for ijob in range(ncpus)]
+
+                    for ijob, job in jobs:
+                        (fit, err, chi) = job()
+                        hei_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,0]
+                        amp_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,1]
+                        shi_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,2]
+                        wid_image[x_min+ii+ijob,y_min:y_max,:] = fit[:,:,3]
+                        hei_image_err[x_min+ii+ijob,
+                                      y_min:y_max,:] = err[:,:,0]
+                        amp_image_err[x_min+ii+ijob,
+                                      y_min:y_max,:] = err[:,:,1]
+                        shi_image_err[x_min+ii+ijob,
+                                      y_min:y_max,:] = err[:,:,2]
+                        wid_image_err[x_min+ii+ijob,
+                                      y_min:y_max,:] = err[:,:,3]
+                        chisq_image[x_min+ii+ijob,
+                                    y_min:y_max,:] = chi[:,:,0]
+                        snr_image[x_min+ii+ijob,
+                                  y_min:y_max,:] = chi[:,:,1]
+
+                    progress.update(ii, info="column : {}/{}".format(
+                        ii, int(self.dimx/float(self.DIV_NB))))
+
+                self._close_pp_server(job_server)
+                progress.end()
     
         results_list = list()
         for iline in range(len(lines)):
@@ -1578,7 +1610,6 @@ class SpectralCube(Cube):
           extraction must be done.
         """
         self._print_msg("Extracting lines data", color=True)
-
         rest_frame_lines = np.copy(lines)
         lines += orb.utils.line_shift(lines_velocity, lines,
                                       wavenumber=wavenumber)

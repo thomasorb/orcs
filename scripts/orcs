@@ -62,8 +62,7 @@ def start(args, info):
     
     start_time = time.time()
 
-    to = Tools(logfile_name=os.path.basename(args.option_file_path) + '.log',
-               config_file_name=get_config_file_name(args))
+    to = Tools(config_file_name=get_config_file_name(args))
 
     if not info:
         # special modes are mutually exclusive
@@ -79,7 +78,8 @@ def start(args, info):
     to._print_msg("Start extraction : %s"%str(args.option_file_path),
                   color=True)
     
-    orcs = Orcs(args.option_file_path, overwrite=True)
+    orcs = Orcs(args.option_file_path, overwrite=True,
+                config_file_name=get_config_file_name(args))
 
     if info:
         pass

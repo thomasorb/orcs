@@ -57,3 +57,15 @@ similar to the **orbs** script of ORBS.
 
 bug fix: WCS headers of the original cube is transfered to the output
 maps.
+
+v0.9.4
+------
+
+* ORCS now handles HDF5 cubes only (the last ORBS reduction step must
+  thus be redone)
+
+* keyword DIRSPEC has been changed to CUBEPATH 
+
+* bug fix: a lorentzian function was added to a sinc function since
+  v0.9.2 resulting in poorer fit and a bad SNR (roughly divided by
+  2). This is no more the case.
