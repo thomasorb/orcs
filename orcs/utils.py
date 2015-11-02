@@ -31,7 +31,7 @@ import orb.utils
 import orb.astrometry
 import orb.constants
 
-import pyfits
+import astropy.io.fits as pyfits
 import numpy as np
 import math
 from scipy import optimize

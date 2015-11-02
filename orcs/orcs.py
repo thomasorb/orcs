@@ -39,13 +39,18 @@ import numpy as np
 import astropy.wcs as pywcs
 import astropy.io.fits as pyfits
 import bottleneck as bn
+import warnings
 
 # import ORB
 try:
     from orb.core import (
         Tools, OptionFile, Lines,
-        ProgressBar, ParamsFile, Cube, HDFCube)
-    import orb.utils
+        ProgressBar, HDFCube)
+    import orb.utils.spectrum
+    import orb.utils.image
+    import orb.utils.stats
+    import orb.utils.filters
+    
 
 except IOError, e:
     print "ORB could not be found !"
@@ -53,7 +58,6 @@ except IOError, e:
     sys.exit(2)
 
 from rvcorrect import RVCorrect
-import utils
 
 ##################################################
 #### CLASS Orcs ##################################
@@ -280,18 +284,30 @@ class Orcs(Tools):
                                optional=True)
 
         # filter boundaries
-        self.options['filter_range'] = orb.utils.read_filter_file(
+        self.options['filter_range'] = orb.utils.filters.read_filter_file(
             self._get_filter_file_path(self.options['filter_name']))[2:]
         if self.options['wavenumber']:
-            self.options['filter_range'] = orb.utils.nm2cm1(
+            self.options['filter_range'] = orb.utils.spectrum.nm2cm1(
                 self.options['filter_range'])
-            
+
+        # print some info about the cube parameters
+        self._print_msg('Step size: {} nm'.format(
+            self.options['step']))
+        
+        self._print_msg('Folding order: {}'.format(
+            self.options['order']))
+
+        self._print_msg('Step number: {}'.format(
+            self.options['step_nb']))
+        
         ## Get lines parameters
         # Lines nm
         if self.options['wavenumber']:
-            nm_min = orb.utils.cm12nm(np.max(self.options['filter_range']))
-            nm_max = orb.utils.cm12nm(np.min(self.options['filter_range']))
-            delta_nm =  orb.utils.fwhm_cm12nm(
+            nm_min = orb.utils.spectrum.cm12nm(
+                np.max(self.options['filter_range']))
+            nm_max = orb.utils.spectrum.cm12nm(
+                np.min(self.options['filter_range']))
+            delta_nm =  orb.utils.spectrum.fwhm_cm12nm(
                 self.get_lines_fwhm(),
                 (np.min(self.options['filter_range'])
                  + np.max(self.options['filter_range']))/2.)
@@ -305,7 +321,8 @@ class Orcs(Tools):
         self._print_msg('Searched lines (in nm): {}'.format(
             self.options['lines']))
         if self.options['wavenumber']:
-            self.options['lines'] = orb.utils.nm2cm1(self.options['lines'])
+            self.options['lines'] = orb.utils.spectrum.nm2cm1(
+                self.options['lines'])
             self._print_msg('Searched lines (in {}): {}'.format(
                 unit, self.options['lines']))
        
@@ -385,11 +402,11 @@ class Orcs(Tools):
         """Return the expected value of the lines FWHM in nm or in
         cm-1 depending on the cube axis unit.  
           
-        .. seealso:: :py:meth:`orb.utils.compute_line_fwhm`
+        .. seealso:: :py:meth:`orb.utils.spectrum.compute_line_fwhm`
         """
         step_nb = max(self.options['step_nb'] - self.zpd_index, self.zpd_index)
         
-        return orb.utils.compute_line_fwhm(
+        return orb.utils.spectrum.compute_line_fwhm(
             step_nb, self.options['step'],
             self.options['order'], apod_coeff=self.options['apodization'],
             wavenumber=self.options['wavenumber'])
@@ -427,13 +444,24 @@ class Orcs(Tools):
         """Return the expected line shift in nm or in cm-1 depending
         on the cube axis unit.
 
-        .. seealso:: :py:meth:`orb.utils.compute_line_shift`
+        .. seealso:: :py:meth:`orb.utils.spectrum.compute_line_shift`
         """
-        return orb.utils.compute_line_shift(
+        if self.options['wavenumber']:
+            axis = orb.utils.spectrum.create_cm1_axis(
+                self.options['step_nb'], self.options['step'],
+                self.options['order'])
+        else:
+            axis = orb.utils.spectrum.create_nm_axis(
+                self.options['step_nb'], self.options['step'],
+                self.options['order'])
+            
+        w_mean = (axis[-1] + axis[0]) / 2
+
+        return orb.utils.spectrum.line_shift(
             self.options['mean_velocity'],
-            self.options['step_nb'], self.options['step'],
-            self.options['order'],
+            w_mean,
             wavenumber=self.options['wavenumber'])
+    
             
     def extract_lines_maps(self):
         """Extract lines maps.
@@ -703,8 +731,27 @@ class SpectralCube(HDFCube):
 
     def _get_fwhm_pix(self):
         """Return fwhm in channels from default lines FWHM"""
-        return orb.utils.nm2pix(self.nm_axis,
-                                self.nm_axis[0] + self.lines_fwhm)
+        return orb.utils.spectrum.nm2pix(
+            self.nm_axis, self.nm_axis[0] + self.lines_fwhm)
+
+
+    def _get_calibration_laser_map(self, calibration_laser_map_path):
+        """Return the calibration laser map.
+
+        :param calibration_laser_map_path: Path to the calibration
+          laser map. If None, the returned calibration laser map will
+          be a map full of ones.
+        """
+        if calibration_laser_map_path is None:
+            return np.ones((self.dimx, self.dimy), dtype=float)
+        
+        else:
+            calibration_laser_map = self.read_fits(
+                calibration_laser_map_path)
+            if (calibration_laser_map.shape[0] != self.dimx):
+                calibration_laser_map = orb.utils.image.interpolate_map(
+                    calibration_laser_map, self.dimx, self.dimy)
+            return calibration_laser_map
 
     def _get_calibration_coeff_map(self, calibration_laser_map_path, nm_laser):
         """Return the calibration coeff map based on the calibration
@@ -718,16 +765,10 @@ class SpectralCube(HDFCube):
         """
         if calibration_laser_map_path is None:
             return np.ones((self.dimx, self.dimy), dtype=float)
-        
         else:
-            calibration_laser_map = self.read_fits(
+            return (self._get_calibration_laser_map(
                 calibration_laser_map_path)
-            if (calibration_laser_map.shape[0] != self.dimx):
-                calibration_laser_map = orb.utils.interpolate_map(
-                    calibration_laser_map, self.dimx, self.dimy)
-            if nm_laser is None:
-                self._print_error('If a calibration laser map path is given the wavelength of the calibration laser used must also be given. Please set nm_laser option.')
-            return calibration_laser_map / nm_laser
+                    / nm_laser)
     
     def _extract_spectrum_from_region(self, region,
                                       calibration_coeff_map,
@@ -771,15 +812,15 @@ class SpectralCube(HDFCube):
                 corr = calib_coeff_col[icol]
                 if mask_col[icol]:
                     if wavenumber:
-                        corr_axis = orb.utils.create_cm1_axis(
+                        corr_axis = orb.utils.spectrum.create_cm1_axis(
                             data_col.shape[1], step, order, corr=corr)
-                        data_col[icol, :] = orb.utils.interpolate_axis(
+                        data_col[icol, :] = orb.utils.vector.interpolate_axis(
                             data_col[icol, :], base_axis, 5,
                             old_axis=corr_axis)
                     else:
-                        corr_axis = orb.utils.create_nm_axis_ireg(
+                        corr_axis = orb.utils.spectrum.create_nm_axis_ireg(
                             data_col.shape[1], step, order, corr=1./corr)
-                        data_col[icol, :] = orb.utils.interpolate_axis(
+                        data_col[icol, :] = orb.utils.vector.interpolate_axis(
                             data_col[icol, :], base_axis, 5,
                             old_axis=corr_axis)
                 else:
@@ -822,10 +863,10 @@ class SpectralCube(HDFCube):
 
         if np.any(calibration_coeff_map != 1.):
             if wavenumber:
-                base_axis = orb.utils.create_cm1_axis(
+                base_axis = orb.utils.spectrum.create_cm1_axis(
                     self.dimz, step, order, corr=1.)
             else:
-                base_axis  = orb.utils.create_nm_axis_ireg(
+                base_axis  = orb.utils.spectrum.create_nm_axis_ireg(
                     self.dimz, step, order, corr=1.)
 
             for iquad in range(0, QUAD_NB):
@@ -887,7 +928,7 @@ class SpectralCube(HDFCube):
         return spectrum
         
     def _fit_lines_in_cube(self, lines, step, order, fwhm_guess,
-                           wavenumber, calibration_coeff_map,
+                           wavenumber, calibration_laser_map, nm_laser,
                            poly_order, filter_range,
                            x_range=None, y_range=None, fix_fwhm=False,
                            fmodel='gaussian', substract=None,
@@ -942,8 +983,8 @@ class SpectralCube(HDFCube):
         :param cov_fwhm: (Optional) FWHM is the same for all the lines
           in each spectrum.
         """
-        def _fit_lines_in_column(data, calib_map_col, mask_col,
-                                 lines, fwhm_guess_pix, filter_range,
+        def _fit_lines_in_column(data, calib_map_col, nm_laser, mask_col,
+                                 lines, fwhm_guess, filter_range,
                                  poly_order, fix_fwhm, fmodel,
                                  step, order, wavenumber,
                                  cov_pos, cov_fwhm, substract):
@@ -960,56 +1001,37 @@ class SpectralCube(HDFCube):
             res = np.empty((data.shape[0], len(lines), 2),
                            dtype=float)
             res.fill(np.nan)
-            # convert lines wavelength/wavenumber into calibrated
-            # positions
-            if np.all(calib_map_col == 1.):
-                if wavenumber:
-                    cm1_axis = orb.utils.create_cm1_axis(
-                        data.shape[1], step, order, corr=1.)
-                    lines_pix = orb.utils.cm12pix(cm1_axis, lines)
-                    filter_range_pix = orb.utils.cm12pix(
-                        cm1_axis, filter_range)
-                else:
-                    nm_axis = orb.utils.create_nm_axis(
-                        data.shape[1], step, order)
-                    lines_pix = orb.utils.nm2pix(nm_axis, lines)
-                    filter_range_pix = orb.utils.nm2pix(
-                        nm_axis, filter_range)
+            
 
             for ij in range(data.shape[0]):
                 if mask_col[ij]:
-                    if calib_map_col[ij] != 1.:
+
+                    ## SUBSTRACT SPECTRUM #############
+                    
+                    if calib_map_col[ij] != nm_laser:
                         # convert lines wavelength/wavenumber into
                         # uncalibrated positions
                         if wavenumber:
-                            cm1_axis = orb.utils.create_cm1_axis(
+                            cm1_axis = orb.utils.spectrum.create_cm1_axis(
                                 data.shape[1], step, order,
-                                corr=calib_map_col[ij])
-
-                            lines_pix = orb.utils.cm12pix(cm1_axis, lines)
-                            filter_range_pix = orb.utils.cm12pix(
-                                cm1_axis, filter_range)
+                                corr=calib_map_col[ij]/nm_laser)
                             
                             # interpolate and substract
                             if substract is not None:
-                                cm1_axis_base = orb.utils.create_cm1_axis(
-                                    data.shape[1], step, order, corr=1.)
-                                data[ij,:] -= orb.utils.interpolate_axis(
+                                cm1_axis_base = orb.utils.spectrum.create_cm1_axis(data.shape[1], step, order, corr=1.)
+                                data[ij,:] -= orb.utils.vector.interpolate_axis(
                                    substract, cm1_axis, 5,
                                    old_axis=cm1_axis_base)
                                 
                         else:
-                            nm_axis = orb.utils.create_nm_axis(
+                            nm_axis = orb.utils.spectrum.create_nm_axis(
                                 data.shape[1], step, order,
-                                corr=calib_map_col[ij])
-                            lines_pix = orb.utils.nm2pix(nm_axis, lines)
-                            filter_range_pix = orb.utils.nm2pix(
-                                nm_axis, filter_range)
+                                corr=calib_map_col[ij]/nm_laser)
+                           
                             # interpolate and substract
                             if substract is not None:
-                                nm_axis_base = orb.utils.create_nm_axis(
-                                    data.shape[1], step, order, corr=1.)
-                                data[ij,:] -= orb.utils.interpolate_axis(
+                                nm_axis_base = orb.utils.spectrum.create_nm_axis(data.shape[1], step, order, corr=1.)
+                                data[ij,:] -= orb.utils.vector.interpolate_axis(
                                    substract, nm_axis, 5,
                                    old_axis=nm_axis_base)
                                 
@@ -1018,29 +1040,37 @@ class SpectralCube(HDFCube):
                     elif substract is not None:
                         data[ij,:] - substract
 
+                   
+                    ## FIT #############################
+                        
                     # get signal range
-                    min_range = np.nanmin(filter_range_pix)
-                    max_range = np.nanmax(filter_range_pix)
-                    min_range += RANGE_BORDER_PIX
-                    max_range -= RANGE_BORDER_PIX
+                    min_range = np.nanmin(filter_range)
+                    max_range = np.nanmax(filter_range)
                     
-                    ## FIT
+                    if fmodel == 'sinc':
+                        fit_function = orb.utils.spectrum.robust_fit_sinc_lines_in_spectrum
+                    else:
+                        fit_function = orb.utils.spectrum.fit_lines_in_spectrum
+                        
                     try:
-                        result_fit = orb.utils.fit_lines_in_vector(
+                        result_fit = fit_function(
                             data[ij,:],
-                            lines_pix,
-                            fwhm_guess=fwhm_guess_pix,
+                            lines,
+                            step, order,
+                            nm_laser,
+                            calib_map_col[ij],
+                            fwhm_guess=fwhm_guess,
                             cont_guess=None,
                             fix_cont=False,
                             poly_order=poly_order,
                             cov_pos=cov_pos,
                             cov_fwhm=cov_fwhm,
-                            fix_fwhm=fix_fwhm,
+                            fix_fwhm=fix_fwhm, 
                             fmodel=fmodel,
-                            observation_params=[step, order],
                             signal_range=[min_range, max_range],
                             return_fitted_vector=False,
                             wavenumber=wavenumber)
+                        
                     except Exception, e:
                         warnings.warn('Exception occured during fit: {}'.format(e))
                         result_fit = []
@@ -1062,16 +1092,16 @@ class SpectralCube(HDFCube):
                         # return the wavelength/wavenumber instead of
                         # the position in the vector
                         if wavenumber:
-                            err[ij,iline,2] = orb.utils.pix2cm1(
+                            err[ij,iline,2] = orb.utils.spectrum.pix2cm1(
                                 cm1_axis, err[ij,iline,2] + fit[ij,iline,2])
-                            fit[ij,iline,2] = orb.utils.pix2cm1(
+                            fit[ij,iline,2] = orb.utils.spectrum.pix2cm1(
                                 cm1_axis, fit[ij,iline,2])
                             err[ij,iline,2] -= fit[ij,iline,2]
                             
                         else:
-                            err[ij,iline,2] = orb.utils.pix2nm(
+                            err[ij,iline,2] = orb.utils.spectrum.pix2nm(
                                 nm_axis, err[ij,iline,2] + fit[ij,iline,2])
-                            fit[ij,iline,2] = orb.utils.pix2nm(
+                            fit[ij,iline,2] = orb.utils.spectrum.pix2nm(
                                 nm_axis, fit[ij,iline,2])
                             err[ij,iline,2] -= fit[ij,iline,2]
                             
@@ -1164,16 +1194,6 @@ class SpectralCube(HDFCube):
         x_max_mask = np.nanmax(masked_pixels[0])
         y_min_mask = np.nanmin(masked_pixels[1])
         y_max_mask = np.nanmax(masked_pixels[1])
-    
-        # convert fwhm in pixels
-        if wavenumber:
-            cm1_axis = orb.utils.create_cm1_axis(self.dimz, step, order)
-            fwhm_guess_pix = orb.utils.cm12pix(
-                cm1_axis, cm1_axis[0] + fwhm_guess)
-        else:
-            nm_axis = orb.utils.create_nm_axis(self.dimz, step, order)
-            fwhm_guess_pix = orb.utils.nm2pix(
-                nm_axis, nm_axis[0] + fwhm_guess)
             
         for iquad in range(0, self.QUAD_NB):
             # note that x_min, x_max ... are redefined as the quadrant
@@ -1202,18 +1222,20 @@ class SpectralCube(HDFCube):
                     jobs = [(ijob, job_server.submit(
                         _fit_lines_in_column,
                         args=(iquad_data[ii+ijob,:,:],
-                              calibration_coeff_map[x_min + ii + ijob,
+                              calibration_laser_map[x_min + ii + ijob,
                                                     y_min:y_max],
+                              nm_laser,
                               mask[x_min + ii + ijob, y_min:y_max],
-                              lines, fwhm_guess_pix, filter_range,
+                              lines, fwhm_guess, filter_range,
                               poly_order, fix_fwhm, fmodel,
                               step, order, wavenumber,
                               cov_pos, cov_fwhm, substract), 
                         modules=("import numpy as np", 
-                                 "import orb.utils",
+                                 "import orb.utils.spectrum",
                                  "import orcs.utils as utils",
                                  "import warnings"),
-                        depfuncs=(orb.utils.fit_lines_in_vector,)))
+                        depfuncs=(orb.utils.spectrum.fit_lines_in_spectrum,
+                                  orb.utils.spectrum.robust_fit_sinc_lines_in_spectrum)))
                             for ijob in range(ncpus)]
 
                     for ijob, job in jobs:
@@ -1267,7 +1289,7 @@ class SpectralCube(HDFCube):
     ##       ('region/save regions') using the default parameters
     ##       ('format : ds9', 'Coordinates system : physical').
     ##     """
-    ##     sky_regions = orb.utils.get_mask_from_ds9_region_file(
+    ##     sky_regions = orb.utils.misc.get_mask_from_ds9_region_file(
     ##         sky_regions_file_path,
     ##         x_range=[0, self.dimx],
     ##         y_range=[0, self.dimy])
@@ -1295,7 +1317,7 @@ class SpectralCube(HDFCube):
     def _convert_fit_result(self, fit_result, wavenumber, step, order,
                             axis):
         """Convert the result from
-        :py:meth:`orb.utils.fit_lines_in_vector` in
+        :py:meth:`orb.utils.spectrum.fit_lines_in_vector` in
         wavelength/wavenumber.
 
         :param fit_result: Result from fit
@@ -1313,33 +1335,33 @@ class SpectralCube(HDFCube):
         err_params = np.copy(fit_result['lines-params-err'])
         # convert position and fwhm to wavelength/wavenumber
         if wavenumber:
-            fit_params[:, 2] = orb.utils.pix2cm1(
+            fit_params[:, 2] = orb.utils.spectrum.pix2cm1(
                 axis, fit_params[:, 2])
             err_params[:, 2] = (
-                orb.utils.pix2cm1(axis, err_params[:, 2]
+                orb.utils.spectrum.pix2cm1(axis, err_params[:, 2]
                                   + fit_result['lines-params'][:, 2])
                 - fit_params[:, 2])
             fit_params[:, 3] = (
-                orb.utils.pix2cm1(axis, fit_params[:, 3]
+                orb.utils.spectrum.pix2cm1(axis, fit_params[:, 3]
                                   + fit_result['lines-params'][:, 2])
                 - fit_params[:, 2])
             err_params[:, 3] = (
-                orb.utils.pix2cm1(axis, err_params[:, 3]
+                orb.utils.spectrum.pix2cm1(axis, err_params[:, 3]
                                   + fit_result['lines-params'][:, 2])
                 - fit_params[:, 2])
         else:
-            fit_params[:, 2] = orb.utils.pix2nm(
+            fit_params[:, 2] = orb.utils.spectrum.pix2nm(
                 axis, fit_params[:, 2])
             err_params[:, 2] = (
-                orb.utils.pix2nm(axis, err_params[:, 2]
+                orb.utils.spectrum.pix2nm(axis, err_params[:, 2]
                                  + fit_result['lines-params'][:, 2])
                 - fit_params[:, 2])
             fit_params[:, 3] = (
-                orb.utils.pix2nm(axis, fit_params[:, 3]
+                orb.utils.spectrum.pix2nm(axis, fit_params[:, 3]
                                  + fit_result['lines-params'][:, 2])
                 - fit_params[:, 2])
             err_params[:, 3] = (
-                orb.utils.pix2nm(axis, err_params[:, 3]
+                orb.utils.spectrum.pix2nm(axis, err_params[:, 3]
                                  + fit_result['lines-params'][:, 2])
                 - fit_params[:, 2])
             
@@ -1404,7 +1426,7 @@ class SpectralCube(HDFCube):
                 
         self._print_msg("Extracting sky median vector")
         median_sky_spectrum = self._extract_spectrum_from_region(
-            orb.utils.get_mask_from_ds9_region_file(
+            orb.utils.misc.get_mask_from_ds9_region_file(
                 sky_regions_file_path,
                 x_range=[0, self.dimx],
                 y_range=[0, self.dimy]),
@@ -1412,14 +1434,14 @@ class SpectralCube(HDFCube):
             wavenumber, step, order)
         
         if wavenumber:
-            cm1_axis = orb.utils.create_cm1_axis(
+            cm1_axis = orb.utils.spectrum.create_cm1_axis(
                 self.dimz, step, order, corr=1.)
-            filter_min_nm = orb.utils.cm12nm(np.max(filter_range))
-            filter_max_nm = orb.utils.cm12nm(np.min(filter_range))
-            lines_fwhm_nm = orb.utils.fwhm_cm12nm(
+            filter_min_nm = orb.utils.spectrum.cm12nm(np.max(filter_range))
+            filter_max_nm = orb.utils.spectrum.cm12nm(np.min(filter_range))
+            lines_fwhm_nm = orb.utils.spectrum.fwhm_cm12nm(
                 lines_fwhm, (cm1_axis[0] + cm1_axis[-1])/2.)
         else:
-            nm_axis = orb.utils.create_nm_axis(
+            nm_axis = orb.utils.spectrum.create_nm_axis(
                 self.dimz, step, order, corr=1.)
             filter_min_nm = np.min(filter_range)
             filter_max_nm = np.max(filter_range)
@@ -1429,20 +1451,23 @@ class SpectralCube(HDFCube):
             filter_min_nm, filter_max_nm, lines_fwhm_nm, get_names=True)
    
         if wavenumber:
-            lines = orb.utils.nm2cm1(lines)
-            fwhm_guess_pix = orb.utils.cm12pix(
+            lines = orb.utils.spectrum.nm2cm1(lines)
+            fwhm_guess_pix = orb.utils.spectrum.cm12pix(
                 cm1_axis, cm1_axis[0] + lines_fwhm)
-            filter_range_pix = orb.utils.cm12pix(cm1_axis, filter_range)
-            lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+            filter_range_pix = orb.utils.spectrum.cm12pix(
+                cm1_axis, filter_range)
+            lines_pix = orb.utils.spectrum.cm12pix(cm1_axis, lines)
             axis = cm1_axis
         else:
-            fwhm_guess_pix = orb.utils.nm2pix(
+            fwhm_guess_pix = orb.utils.spectrum.nm2pix(
                 nm_axis, nm_axis[0] + lines_fwhm)
-            filter_range_pix = orb.utils.nm2pix(nm_axis, filter_range)
-            lines_pix = orb.utils.nm2pix(nm_axis, lines)
+            filter_range_pix = orb.utils.spectrum.nm2pix(nm_axis, filter_range)
+            lines_pix = orb.utils.spectrum.nm2pix(nm_axis, lines)
             axis = nm_axis
 
-        fit = orb.utils.fit_lines_in_vector(
+        raise Exception('Must be reimplemented')
+
+        fit = orb.utils.spectrum.fit_lines_in_vector(
             median_sky_spectrum,
             lines_pix,
             fwhm_guess=fwhm_guess_pix,
@@ -1464,16 +1489,16 @@ class SpectralCube(HDFCube):
                 fit, wavenumber, step, order, axis)
 
             # convert velocity to km.s-1
-            velocities = orb.utils.compute_radial_velocity(
+            velocities = orb.utils.spectrum.compute_radial_velocity(
                 fit_params[:, 2], lines,
                 wavenumber=wavenumber)
             
             if wavenumber:
-                velocities_err = orb.utils.compute_radial_velocity(
+                velocities_err = orb.utils.spectrum.compute_radial_velocity(
                     err_params[:, 2] + cm1_axis[0],
                     cm1_axis[0])
             else:
-                velocities_err = orb.utils.compute_radial_velocity(
+                velocities_err = orb.utils.spectrum.compute_radial_velocity(
                     err_params[:, 2] + nm_axis[0],
                     nm_axis[0])
 
@@ -1487,9 +1512,9 @@ class SpectralCube(HDFCube):
             
             if wavenumber:
                 filter_range = filter_range[::-1]
-                #axis = orb.utils.cm12nm(axis)
-                #lines = orb.utils.cm12nm(lines)
-                #filter_range = orb.utils.cm12nm(filter_range)
+                #axis = orb.utils.spectrum.cm12nm(axis)
+                #lines = orb.utils.spectrum.cm12nm(lines)
+                #filter_range = orb.utils.spectrum.cm12nm(filter_range)
             ylim = [np.nanmin(median_sky_spectrum),
                     np.nanmax(median_sky_spectrum) * 1.1]
             
@@ -1513,7 +1538,7 @@ class SpectralCube(HDFCube):
                 if 'MEAN' in s: s = s[5:-1]
                 
                 print r'({})&{}&{:.2f}&{:.2f}\\'.format(
-                    iline, s, orb.utils.cm12nm(lines[iline]),
+                    iline, s, orb.utils.spectrum.cm12nm(lines[iline]),
                     lines[iline])
                 t = ax.text(lines[iline], text_height,
                             r'({}) $\lambda${:.2f}'.format(
@@ -1611,8 +1636,11 @@ class SpectralCube(HDFCube):
         """
         self._print_msg("Extracting lines data", color=True)
         rest_frame_lines = np.copy(lines)
-        lines += orb.utils.line_shift(lines_velocity, lines,
+        lines += orb.utils.spectrum.line_shift(lines_velocity, lines,
                                       wavenumber=wavenumber)
+
+        calibration_laser_map = self._get_calibration_laser_map(
+            calibration_laser_map_path)
 
         calibration_coeff_map = self._get_calibration_coeff_map(
             calibration_laser_map_path, nm_laser)
@@ -1621,7 +1649,7 @@ class SpectralCube(HDFCube):
         if sky_regions_file_path is not None:
             self._print_msg("Extracting sky median vector")
             median_sky_spectrum = self._extract_spectrum_from_region(
-                orb.utils.get_mask_from_ds9_region_file(
+                orb.utils.misc.get_mask_from_ds9_region_file(
                     sky_regions_file_path,
                     x_range=[0, self.dimx],
                     y_range=[0, self.dimy]),
@@ -1634,7 +1662,7 @@ class SpectralCube(HDFCube):
         self._print_msg("Fitting data")
         results = self._fit_lines_in_cube(
             lines, step, order, lines_fwhm,
-            wavenumber, calibration_coeff_map,
+            wavenumber, calibration_laser_map, nm_laser,
             poly_order, filter_range,
             x_range=x_range,
             y_range=y_range,
@@ -1648,16 +1676,16 @@ class SpectralCube(HDFCube):
         maps_list = self.open_file(maps_list_path, 'w')
 
         if wavenumber:
-            axis = orb.utils.create_cm1_axis(self.dimz, step, order)
+            axis = orb.utils.spectrum.create_cm1_axis(self.dimz, step, order)
         else:
-            axis = orb.utils.create_nm_axis(self.dimz, step, order)
+            axis = orb.utils.spectrum.create_nm_axis(self.dimz, step, order)
     
         delta = abs(axis[1] - axis[0])
 
         for iline in range(np.size(lines)):
             if wavenumber:
                 line_name = Lines().round_nm2ang(
-                    orb.utils.cm12nm(rest_frame_lines[iline]))
+                    orb.utils.spectrum.cm12nm(rest_frame_lines[iline]))
                 unit = 'cm-1'
             else:
                 line_name = Lines().round_nm2ang(rest_frame_lines[iline])
@@ -1733,7 +1761,7 @@ class SpectralCube(HDFCube):
 
             # write velocity map
                 
-            velocity = orb.utils.compute_radial_velocity(
+            velocity = orb.utils.spectrum.compute_radial_velocity(
                 results[iline][2], rest_frame_lines[iline],
                 wavenumber=wavenumber)
   
@@ -1750,7 +1778,7 @@ class SpectralCube(HDFCube):
             # write velocity map err
             # compute radial velocity from shift
 
-            velocity = np.abs(orb.utils.compute_radial_velocity(
+            velocity = np.abs(orb.utils.spectrum.compute_radial_velocity(
                 rest_frame_lines[iline] + results[iline][6],
                 rest_frame_lines[iline],
                 wavenumber=wavenumber))
@@ -1879,7 +1907,7 @@ class SpectralCube(HDFCube):
         self._print_msg("Extracting integrated spectra", color=True)
 
         rest_frame_lines = np.copy(lines)
-        lines += orb.utils.line_shift(lines_velocity, lines,
+        lines += orb.utils.spectrum.line_shift(lines_velocity, lines,
                                       wavenumber=wavenumber)
 
         calibration_coeff_map = self._get_calibration_coeff_map(
@@ -1893,7 +1921,7 @@ class SpectralCube(HDFCube):
         if sky_regions_file_path is not None:
             self._print_msg("Extracting sky median vector")
             median_sky_spectrum = self._extract_spectrum_from_region(
-                orb.utils.get_mask_from_ds9_region_file(
+                orb.utils.misc.get_mask_from_ds9_region_file(
                     sky_regions_file_path,
                     x_range=[0, self.dimx],
                     y_range=[0, self.dimy]),
@@ -1906,26 +1934,26 @@ class SpectralCube(HDFCube):
         integ_spectra = list()
 
         if wavenumber:
-            cm1_axis = orb.utils.create_cm1_axis(
+            cm1_axis = orb.utils.spectrum.create_cm1_axis(
                 self.dimz, step, order, corr=1.)
-            fwhm_guess_pix = orb.utils.cm12pix(
+            fwhm_guess_pix = orb.utils.spectrum.cm12pix(
                 cm1_axis, cm1_axis[0] + lines_fwhm)
-            filter_range_pix = orb.utils.cm12pix(cm1_axis, filter_range)
+            filter_range_pix = orb.utils.spectrum.cm12pix(cm1_axis, filter_range)
             axis = cm1_axis
             
         else:
-            nm_axis = orb.utils.create_nm_axis(
+            nm_axis = orb.utils.spectrum.create_nm_axis(
                 self.dimz, step, order, corr=1.)
-            fwhm_guess_pix = orb.utils.nm2pix(
+            fwhm_guess_pix = orb.utils.spectrum.nm2pix(
                 nm_axis, nm_axis[0] + lines_fwhm)
-            filter_range_pix = orb.utils.nm2pix(nm_axis, filter_range)
+            filter_range_pix = orb.utils.spectrum.nm2pix(nm_axis, filter_range)
             axis = nm_axis
 
         with open(regions_file_path, 'r') as f:
             region_index = -1
             for ireg in f:
                 if len(ireg) > 3:
-                    region = orb.utils.get_mask_from_ds9_region_line(
+                    region = orb.utils.misc.get_mask_from_ds9_region_line(
                         ireg,
                         x_range=[0, self.dimx],
                         y_range=[0, self.dimy])
@@ -1943,7 +1971,7 @@ class SpectralCube(HDFCube):
 
                             ## sky_size = reg_size * sky_size_coeff
                             ## x_min, x_max, y_min, y_max = (
-                            ##     orb.utils.get_box_coords(
+                            ##     orb.utils.image.get_box_coords(
                             ##         reg_bary[0], reg_bary[1], sky_size,
                             ##         0, self.dimx, 0, self.dimy))
 
@@ -1977,13 +2005,15 @@ class SpectralCube(HDFCube):
                              spectrum -= median_sky_spectrum
 
                         if wavenumber:
-                            lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+                            lines_pix = orb.utils.spectrum.cm12pix(
+                                cm1_axis, lines)
                         else:
-                            lines_pix = orb.utils.nm2pix(nm_axis, lines)
+                            lines_pix = orb.utils.spectrum.nm2pix(
+                                nm_axis, lines)
 
                         
                         # fit spectrum
-                        fit = orb.utils.fit_lines_in_vector(
+                        fit = orb.utils.spectrum.fit_lines_in_vector(
                             spectrum,
                             lines_pix,
                             fwhm_guess=fwhm_guess_pix,
@@ -2028,16 +2058,16 @@ class SpectralCube(HDFCube):
                                 fit, wavenumber, step, order, axis)
 
                             # convert velocity to km.s-1
-                            velocities = orb.utils.compute_radial_velocity(
+                            velocities = orb.utils.spectrum.compute_radial_velocity(
                                 fit_params[:, 2], rest_frame_lines,
                                 wavenumber=wavenumber)
 
                             if wavenumber:
-                                velocities_err = orb.utils.compute_radial_velocity(
+                                velocities_err = orb.utils.spectrum.compute_radial_velocity(
                                     err_params[:, 2] + cm1_axis[0],
                                     cm1_axis[0])
                             else:
-                                velocities_err = orb.utils.compute_radial_velocity(
+                                velocities_err = orb.utils.spectrum.compute_radial_velocity(
                                     err_params[:, 2] + nm_axis[0],
                                     nm_axis[0])
 
@@ -2046,7 +2076,7 @@ class SpectralCube(HDFCube):
                                           / err_params[iline, 1])
                                 if wavenumber:
                                     line_name = Lines().round_nm2ang(
-                                        orb.utils.cm12nm(
+                                        orb.utils.spectrum.cm12nm(
                                             rest_frame_lines[iline]))
                                 else:
                                     line_name = Lines().round_nm2ang(
@@ -2109,11 +2139,11 @@ class SpectralCube(HDFCube):
             
     ##     results = self._fit_lines_in_cube(
     ##         self.data,
-    ##         searched_lines = orb.utils.nm2pix(
+    ##         searched_lines = orb.utils.spectrum.nm2pix(
     ##             self.nm_axis, lines_nm),
-    ##         signal_range=[orb.utils.nm2pix(self.nm_axis,
+    ##         signal_range=[orb.utils.spectrum.nm2pix(self.nm_axis,
     ##                                        self.filter_min),
-    ##                       orb.utils.nm2pix(self.nm_axis,
+    ##                       orb.utils.spectrum.nm2pix(self.nm_axis,
     ##                                        self.filter_max)],
     ##         x_range=x_range,
     ##         y_range=y_range,
@@ -2141,7 +2171,7 @@ class SpectralCube(HDFCube):
     ##                 ## fit_max = int(dx + 3 * fwhm + 1)
     ##                 ## if fit_min < 0: fit_min = 0
     ##                 ## if fit_max >= self.dimz: fit_max = self.dimz - 1
-    ##                 gauss_line = orb.utils.gaussian1d(
+    ##                 gauss_line = orb.utils.spectrum.gaussian1d(
     ##                     np.arange(self.dimz),
     ##                     0., amp, dx, fwhm)
     ##                 fitted_spectrum += gauss_line
@@ -2192,28 +2222,28 @@ class SpectralCube(HDFCube):
             # positions
             if np.all(calib_map_col == 1.):
                 if wavenumber:
-                    cm1_axis = orb.utils.create_cm1_axis(
+                    cm1_axis = orb.utils.spectrum.create_cm1_axis(
                         data.shape[1], step, order, corr=1.)
-                    lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+                    lines_pix = orb.utils.spectrum.cm12pix(cm1_axis, lines)
                 else:
-                    nm_axis = orb.utils.create_nm_axis(
+                    nm_axis = orb.utils.spectrum.create_nm_axis(
                         data.shape[1], step, order)
-                    lines_pix = orb.utils.nm2pix(nm_axis, lines)
+                    lines_pix = orb.utils.spectrum.nm2pix(nm_axis, lines)
 
             for ij in range(data.shape[0]):
                 if calib_map_col[ij] != 1.:
                     # convert lines wavelength/wavenumber into
                     # uncalibrated positions
                     if wavenumber:
-                        cm1_axis = orb.utils.create_cm1_axis(
+                        cm1_axis = orb.utils.spectrum.create_cm1_axis(
                             data.shape[1], step, order,
                             corr=calib_map_col[ij])
-                        lines_pix = orb.utils.cm12pix(cm1_axis, lines)
+                        lines_pix = orb.utils.spectrum.cm12pix(cm1_axis, lines)
                     else:
-                        nm_axis = orb.utils.create_nm_axis(
+                        nm_axis = orb.utils.spectrum.create_nm_axis(
                             data.shape[1], step, order,
                             corr=calib_map_col[ij])
-                        lines_pix = orb.utils.nm2pix(nm_axis, lines)
+                        lines_pix = orb.utils.spectrum.nm2pix(nm_axis, lines)
                         
                 for iline in range(len(lines_pix)):
                     pix_min = int(lines_pix[iline] - slice_size/2.)
@@ -2228,25 +2258,25 @@ class SpectralCube(HDFCube):
         raw_maps.fill(np.nan)
 
         rest_frame_lines = np.copy(lines)
-        lines += orb.utils.line_shift(lines_velocity, lines,
+        lines += orb.utils.spectrum.line_shift(lines_velocity, lines,
                                       wavenumber=wavenumber)
 
         if wavenumber:
-            axis = orb.utils.create_cm1_axis(self.dimz, step, order)
+            axis = orb.utils.spectrum.create_cm1_axis(self.dimz, step, order)
         else:
-            axis = orb.utils.create_nm_axis(self.dimz, step, order)
+            axis = orb.utils.spectrum.create_nm_axis(self.dimz, step, order)
 
         axis_mean = (axis[0] + axis[-1]) / 2.
         
         if wavenumber:
-            slice_min = orb.utils.cm12pix(
+            slice_min = orb.utils.spectrum.cm12pix(
                 axis, axis_mean-FWHM_COEFF/2.*lines_fwhm)
-            slice_max = orb.utils.cm12pix(
+            slice_max = orb.utils.spectrum.cm12pix(
                 axis, axis_mean+FWHM_COEFF/2.*lines_fwhm) + 1
         else:
-            slice_min = orb.utils.nm2pix(
+            slice_min = orb.utils.spectrum.nm2pix(
                 axis, axis_mean - FWHM_COEFF/2. * lines_fwhm)
-            slice_max = orb.utils.nm2pix(
+            slice_max = orb.utils.spectrum.nm2pix(
                 axis, axis_mean + FWHM_COEFF/2. * lines_fwhm) + 1
             
         slice_size = math.floor(slice_max - slice_min)
@@ -2279,7 +2309,7 @@ class SpectralCube(HDFCube):
                                                 y_min:y_max],
                           lines, slice_size, wavenumber), 
                     modules=("import numpy as np", 
-                             "import orb.utils",
+                             "import orb.utils.spectrum",
                              "import orcs.utils as utils")))
                         for ijob in range(ncpus)]
             
@@ -2297,7 +2327,7 @@ class SpectralCube(HDFCube):
         for iline in range(len(lines)):
             if wavenumber:
                 line_name = Lines().round_nm2ang(
-                    orb.utils.cm12nm(rest_frame_lines[iline]))
+                    orb.utils.spectrum.cm12nm(rest_frame_lines[iline]))
                 unit = 'cm-1'
             else:
                 line_name = Lines().round_nm2ang(rest_frame_lines[iline])
