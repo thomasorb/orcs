@@ -40,7 +40,7 @@ import astropy.wcs as pywcs
 import astropy.io.fits as pyfits
 import bottleneck as bn
 import warnings
-
+import orb.utils.misc
 # import ORB
 try:
     from orb.core import (
@@ -50,6 +50,7 @@ try:
     import orb.utils.image
     import orb.utils.stats
     import orb.utils.filters
+    import orb.utils.misc
     
 
 except IOError, e:
@@ -895,7 +896,7 @@ class SpectralCube(HDFCube):
                               median, wavenumber, base_axis, step, order), 
                         modules=('import bottleneck as bn',
                                  'import numpy as np',
-                                 'import orb.utils'),
+                                 'import orb.utils.spectrum'),
                         depfuncs=()))
                             for ijob in range(ncpus)]
                     for ijob, job in jobs:
@@ -1431,7 +1432,7 @@ class SpectralCube(HDFCube):
                 x_range=[0, self.dimx],
                 y_range=[0, self.dimy]),
             calibration_coeff_map,
-            wavenumber, step, order)
+            wavenumber, step, order, median=True)
         
         if wavenumber:
             cm1_axis = orb.utils.spectrum.create_cm1_axis(
@@ -1654,7 +1655,7 @@ class SpectralCube(HDFCube):
                     x_range=[0, self.dimx],
                     y_range=[0, self.dimy]),
                 calibration_coeff_map,
-                wavenumber, step, order)
+                wavenumber, step, order, median=True)
         else:
             median_sky_spectrum = np.zeros(self.dimz, dtype=float)
 
@@ -1926,7 +1927,7 @@ class SpectralCube(HDFCube):
                     x_range=[0, self.dimx],
                     y_range=[0, self.dimy]),
                 calibration_coeff_map,
-                wavenumber, step, order)
+                wavenumber, step, order, median=True)
         else:
             median_sky_spectrum = np.zeros(self.dimz, dtype=float)
             
