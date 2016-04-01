@@ -1018,7 +1018,8 @@ class SpectralCube(HDFCube):
                             
                             # interpolate and substract
                             if substract is not None:
-                                cm1_axis_base = orb.utils.spectrum.create_cm1_axis(data.shape[1], step, order, corr=1.)
+                                cm1_axis_base = orb.utils.spectrum.create_cm1_axis(
+                                    data.shape[1], step, order, corr=1.)
                                 data[ij,:] -= orb.utils.vector.interpolate_axis(
                                    substract, cm1_axis, 5,
                                    old_axis=cm1_axis_base)
@@ -1030,7 +1031,8 @@ class SpectralCube(HDFCube):
                            
                             # interpolate and substract
                             if substract is not None:
-                                nm_axis_base = orb.utils.spectrum.create_nm_axis(data.shape[1], step, order, corr=1.)
+                                nm_axis_base = orb.utils.spectrum.create_nm_axis(
+                                    data.shape[1], step, order, corr=1.)
                                 data[ij,:] -= orb.utils.vector.interpolate_axis(
                                    substract, nm_axis, 5,
                                    old_axis=nm_axis_base)
@@ -1046,12 +1048,12 @@ class SpectralCube(HDFCube):
                     # get signal range
                     min_range = np.nanmin(filter_range)
                     max_range = np.nanmax(filter_range)
-                    
-                    if fmodel == 'sinc':
-                        fit_function = orb.utils.spectrum.robust_fit_sinc_lines_in_spectrum
-                    else:
-                        fit_function = orb.utils.spectrum.fit_lines_in_spectrum
-                        
+                
+                    fit_function = orb.utils.spectrum.fit_lines_in_spectrum
+
+                    # adjust fwhm with incident angle
+                    ifwhm_guess = fwhm_guess * calib_map_col[ij] / nm_laser
+                    print 'cm1', fwhm_guess, ifwhm_guess, fwhm_guess - ifwhm_guess 
                     try:
                         result_fit = fit_function(
                             data[ij,:],
@@ -1059,7 +1061,7 @@ class SpectralCube(HDFCube):
                             step, order,
                             nm_laser,
                             calib_map_col[ij],
-                            fwhm_guess=fwhm_guess,
+                            fwhm_guess=ifwhm_guess,
                             cont_guess=None,
                             fix_cont=False,
                             poly_order=poly_order,
@@ -1068,7 +1070,7 @@ class SpectralCube(HDFCube):
                             fix_fwhm=fix_fwhm, 
                             fmodel=fmodel,
                             signal_range=[min_range, max_range],
-                            return_fitted_vector=False,
+                            return_fitted_vector=True,
                             wavenumber=wavenumber)
                         
                     except Exception, e:
@@ -1081,9 +1083,15 @@ class SpectralCube(HDFCube):
                 if result_fit != []: # reject fit with no associated error
                     if not 'lines-params-err' in result_fit:
                         result_fit = []
-                    
+                
                 for iline in range(len(lines)):
                     if result_fit != []:
+                        ## import pylab as pl
+                        ## pl.plot(data[ij,:])
+                        ## pl.plot(result_fit['fitted-vector'])
+                        ## pl.show()
+                        print result_fit['sigma']
+                        print result_fit['lines-params']
                         fit[ij,iline,:] = result_fit[
                             'lines-params'][iline, :]
                         err[ij,iline,:] = result_fit[
@@ -1151,7 +1159,13 @@ class SpectralCube(HDFCube):
         snr_image = np.empty_like(hei_image)
         snr_image.fill(np.nan)
 
-
+        # save
+        outf = self.open_hdf5('orcs.save.hdf5', 'w')
+        if 'amp_image' in outf:del outf['amp_image']
+        outf['amp_image'] = amp_image
+       
+            
+        
         # check substract spectrum
         if np.all(substract == 0.): substract = None
         
@@ -1233,9 +1247,8 @@ class SpectralCube(HDFCube):
                         modules=("import numpy as np", 
                                  "import orb.utils.spectrum",
                                  "import orcs.utils as utils",
-                                 "import warnings"),
-                        depfuncs=(orb.utils.spectrum.fit_lines_in_spectrum,
-                                  orb.utils.spectrum.robust_fit_sinc_lines_in_spectrum)))
+                                 "import warnings", 'import math'),
+                        depfuncs=(orb.utils.spectrum.fit_lines_in_spectrum, )))
                             for ijob in range(ncpus)]
 
                     for ijob, job in jobs:
@@ -1256,6 +1269,9 @@ class SpectralCube(HDFCube):
                                     y_min:y_max,:] = chi[:,:,0]
                         snr_image[x_min+ii+ijob,
                                   y_min:y_max,:] = chi[:,:,1]
+
+                        ## if 'amp_image' in outf: del outf['amp_image']
+                        ## outf['amp_image'] = amp_image
 
                     progress.update(ii, info="column : {}/{}".format(
                         ii, int(self.dimx/float(self.DIV_NB))))
@@ -2346,7 +2362,5 @@ class SpectralCube(HDFCube):
                             fits_header=raw_header)
             ## self.write_fits(err_path, err_map, overwrite=self.overwrite,
             ##     fits_header=err_header)
-        
-        
         
         

@@ -45,11 +45,10 @@ import orcs
 from orcs.orcs import Orcs
 
 def get_config_file_name(args):
-    
-    if args.mode == 'sitelle':
+    if args.instrument == 'sitelle':
         return 'config.sitelle.orb'
         
-    elif args.mode == 'spiomm':
+    elif args.instrument == 'spiomm':
         return 'config.spiomm.orb'
     
 
@@ -78,7 +77,7 @@ def start(args, info):
     to._print_msg("Start extraction : %s"%str(args.option_file_path),
                   color=True)
     
-    orcs = Orcs(args.option_file_path, overwrite=True,
+    orcs = Orcs(args.option_file_path,
                 config_file_name=get_config_file_name(args))
 
     if info:
@@ -115,13 +114,15 @@ if __name__ == "__main__":
             orcs.version.__version__, orb.core.__version__)),
         description="Run the extraction process.")
 
+
+    parser.add_argument('instrument', choices=['spiomm', 'sitelle'],
+                        action='store', default='spiomm',
+                        help="Reduction mode. Force the use of the reduction file of a particular instrument. Mode is set to 'spiomm' by default.")
+
     parser.add_argument('option_file_path',
                         action='store',
                         help="Path to the ORCS option file.")
 
-    parser.add_argument('--mode', dest='mode', choices=['spiomm', 'sitelle'],
-                        action='store', default='spiomm',
-                        help="Reduction mode. Force the use of the reduction file of a particular instrument. Mode is set to 'spiomm' by default.")
 
     subparsers = parser.add_subparsers(help='operation type', dest='subparser_name')
 
