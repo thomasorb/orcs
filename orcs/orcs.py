@@ -200,7 +200,9 @@ class Orcs(Tools):
             spectrum_cube_path = self.options['spectrum_cube_path']
 
         # load cube
-        cube = HDFCube(spectrum_cube_path)
+        cube = HDFCube(spectrum_cube_path,
+                       ncpus=self.ncpus,
+                       config_file_name=self.config_file_name)
         self.header = cube.get_cube_header()
         
         # Observation parameters
@@ -245,7 +247,9 @@ class Orcs(Tools):
         
         ## Get WCS header
         cube = HDFCube(self.options['spectrum_cube_path'],
-                       silent_init=True)
+                       silent_init=True,
+                       ncpus=self.ncpus,
+                       config_file_name=self.config_file_name)
         
         self.wcs = pywcs.WCS(self.header)
         self.wcs_header = self.wcs.to_header()
@@ -386,7 +390,8 @@ class Orcs(Tools):
             project_header=self._get_project_fits_header(),
             wcs_header = self.wcs_header,
             overwrite=self.overwrite,
-            config_file_name=self.config_file_name)
+            config_file_name=self.config_file_name,
+            ncpus=self.ncpus)
         
     def _get_project_dir(self):
         """Return the path to the project directory depending on 
@@ -1071,7 +1076,8 @@ class SpectralCube(HDFCube):
                             project_header=self._project_header,
                             wcs_header=self._wcs_header,
                             config_file_name=self.config_file_name,
-                            data_prefix=self._data_prefix) 
+                            data_prefix=self._data_prefix,
+                            ncpus=self.ncpus) 
         
         # check subtract spectrum
         if np.all(subtract == 0.): subtract = None

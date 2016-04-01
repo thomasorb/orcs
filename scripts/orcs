@@ -61,7 +61,7 @@ def start(args, info):
     
     start_time = time.time()
 
-    to = Tools(config_file_name=get_config_file_name(args))
+    to = Tools(config_file_name=get_config_file_name(args), ncpus=args.ncpus)
 
     if not info:
         # special modes are mutually exclusive
@@ -78,7 +78,8 @@ def start(args, info):
                   color=True)
     
     orcs = Orcs(args.option_file_path,
-                config_file_name=get_config_file_name(args))
+                config_file_name=get_config_file_name(args),
+                ncpus=args.ncpus)
 
     if info:
         pass
@@ -118,6 +119,13 @@ if __name__ == "__main__":
     parser.add_argument('instrument', choices=['spiomm', 'sitelle'],
                         action='store', default='spiomm',
                         help="Reduction mode. Force the use of the reduction file of a particular instrument. Mode is set to 'spiomm' by default.")
+
+    parser.add_argument(
+        '--ncpus', dest='ncpus', action='store',
+        default=None,
+        type=int,
+        help="Number of CPUs to use for parallel processing (default set in config file)")
+
 
     parser.add_argument('option_file_path',
                         action='store',
