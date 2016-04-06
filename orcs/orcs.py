@@ -2129,6 +2129,9 @@ class SpectralCube(HDFCube):
         
 
 
+##################################################
+#### CLASS LineMaps ##############################
+##################################################
 
 class LineMaps(Tools):
     """Manage line parameters maps"""
@@ -2157,7 +2160,7 @@ class LineMaps(Tools):
         
         # Create dataset
         if np.size(lines) == 1:
-            self.lines = [lines]
+            self.lines = np.array([np.squeeze(lines)])
         else:
             self.lines = lines
 
@@ -2170,12 +2173,16 @@ class LineMaps(Tools):
                 self.lines)
             self.unit = 'nm'
 
+        if np.size(self.line_names) == 1:
+            self.line_names = np.array([np.squeeze(self.line_names)])
+
         self.data = dict()
         base_array =  np.empty((self.dimx, self.dimy, len(lines)),
                                dtype=float)
         base_array.fill(np.nan)
         for iparam in self.params:
             self.data[iparam] = np.copy(base_array)
+
 
     def _get_map_path(self, line_name, param):
         """Return the path to a map of one gaussian fit parameter for
