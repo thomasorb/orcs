@@ -52,7 +52,7 @@ def get_config_file_name(args):
         return 'config.spiomm.orb'
     
 
-def start(args, info):
+def start(args):
     """Start extraction
 
     :param args: Namespace object containing the passed argments
@@ -62,34 +62,43 @@ def start(args, info):
     start_time = time.time()
 
     to = Tools(config_file_name=get_config_file_name(args), ncpus=args.ncpus)
-
-    if not info:
-        # special modes are mutually exclusive
-        if np.sum([args.sky, args.regions]) > 1:
-            print_error("only one special extraction mode (regions or sky) can be choosen")
-            sys.exit(2)
         
 
     ###################################
     # Run ORCS with the given options #
     ###################################
     
-    to._print_msg("Start extraction : %s"%str(args.option_file_path),
-                  color=True)
+    print "Start extraction : %s"%str(args.option_file_path)
     
     orcs = Orcs(args.option_file_path,
                 config_file_name=get_config_file_name(args),
                 ncpus=args.ncpus)
 
-    if info:
-        pass
-    elif args.regions:
-        orcs.extract_integrated_spectra()
-    elif args.sky:
-        orcs.get_sky_radial_velocity()
-    else:
-        orcs.extract_lines_maps()
+    if args.subparser_name == 'start':
+        # special modes are mutually exclusive
+        if np.sum([args.sky, args.regions]) > 1:
+            print_error("only one special extraction mode (regions or sky) can be choosen")
+            sys.exit(2)
+
+        if args.regions:
+            orcs.extract_integrated_spectra()
+        elif args.sky:
+            orcs.get_sky_radial_velocity()
+        else:
+            orcs.extract_lines_maps()
         
+    elif args.subparser_name == 'calib':
+        INTEG_FILE_PATH = '.orcs.calib.reg'
+        with open(INTEG_FILE_PATH, 'w') as f:
+            f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
+                float(args.calib_x),
+                float(args.calib_y),
+                float(args.calib_r)))
+            
+        orcs.options['integ_reg_path'] = INTEG_FILE_PATH
+        orcs.options['plot'] = not args.noplot
+        orcs.extract_integrated_spectra()
+    
         
     end_time = time.time()
     to._print_msg("Script finished at : " + time.ctime(end_time), color=True)
@@ -150,7 +159,29 @@ if __name__ == "__main__":
     
     parser_info = subparsers.add_parser('info', help='Print values computed at the beginning of the extraction process.')
 
+    parser_calib = subparsers.add_parser('calib', help='Calibrate the extraction process on a small region around a given pixel. Can be used to test the fitting process onto a high SNR spectrum before a complete extraction.')
+
+    parser_calib.add_argument('calib_x',
+                        action='store',
+                              help="X center of the calibration region.",
+                              type=int)
+
     
+    parser_calib.add_argument('calib_y',
+                        action='store',
+                              help="Y center of the calibration region.",
+                              type=int)
+    
+    parser_calib.add_argument('calib_r',
+                        action='store',
+                              help="Radius of the calibration region in pixels.",
+                              type=int)
+
+    
+    parser_calib.add_argument('--noplot', dest='noplot',
+                              action='store_true',
+                              help="Do not plot fit result",
+                              default=False)
 
     if len(sys.argv) < 2:
         parser.print_usage()
@@ -165,8 +196,7 @@ if __name__ == "__main__":
     ####################
     # start extraction #
     ####################
-
-    start(args, args.subparser_name == 'info')
+    start(args)
 
 
 

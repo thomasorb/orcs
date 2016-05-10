@@ -69,3 +69,20 @@ v0.9.4
 * bug fix: a lorentzian function was added to a sinc function since
   v0.9.2 resulting in poorer fit and a bad SNR (roughly divided by
   2). This is no more the case.
+
+
+v0.10 New fit class
+*******************
+
+A new fit module has been designed in ORB (orb/fit.py). ORCS has been
+changed to use this new module.
+
+Most of the changes are related to this major upgrade.
+
+v0.10.0
+-------
+
+* new operation in orcs command: 'calib', to calibrate the fitting
+  process. THe idea is to select a small region with high SNR to test
+  if the fitting procedure works as expected before launching a long
+  fit process on a larger region. 
