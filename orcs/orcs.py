@@ -211,6 +211,7 @@ class Orcs(Tools):
         store_option_parameter('object_name', 'OBJECT', str)
         store_option_parameter('filter_name', 'FILTER', str)
         store_option_parameter('apodization', 'APODIZ', float)
+        self._print_msg('Apodization: {}'.format(self.options['apodization']))
        
         self.options['project_name'] = (
             self.options['object_name']
@@ -237,10 +238,10 @@ class Orcs(Tools):
         store_option_parameter('wavelength_calibration', 'WAVCALIB', bool,
                                optional=True)
         if self.options['wavelength_calibration']:
-            self._print_msg('Cube is CALIBRATED in wavelength')
+            self._print_msg('Cube is CALIBRATED')
             self.options['calibration_laser_map_path'] = None
         else:
-            self._print_msg('Cube is NOT CALIBRATED in wavelength')
+            self._print_msg('Cube is NOT CALIBRATED')
             store_option_parameter('calibration_laser_map_path',
                                    'CALIBMAP', str)
             self._print_msg('Calibration laser map used: {}'.format(
@@ -399,6 +400,15 @@ class Orcs(Tools):
             'Order of the polynomial used to fit continuum: {}'.format(
                 self.options['poly_order']))
 
+        # Force lines fitting model
+        store_option_parameter('fmodel', 'FMODEL', str,
+                               optional=True)
+        if 'fmodel' in self.options:
+            self.options['fmodel'] =  self.options['fmodel'].lower()
+            self._print_msg(
+                'Lines model: {}'.format(
+                    self.options['fmodel']))
+
         ## Init spectral cube
         self.spectralcube = SpectralCube(
             self.options['spectrum_cube_path'],
@@ -491,7 +501,27 @@ class Orcs(Tools):
             self.options['mean_velocity'],
             w_mean,
             wavenumber=self.options['wavenumber'])
-    
+
+    def _get_fmodel(self):
+        """Return the line fitting model to use based on passed
+        options.
+        """
+        if self.options['apodization'] == 1.0:
+            fmodel = 'sincgauss' # fmodel = 'sinc'
+        else:
+            fmodel = 'gaussian'
+
+        if 'fmodel' in self.options:
+            fmodel = self.options['fmodel']
+
+        return fmodel
+
+    def _get_fix_fwhm(self):
+        """Return True if FWHM must be fixed."""
+        if self._get_fmodel() == 'sincgauss':
+            return True
+        else:
+            return False
             
     def extract_lines_maps(self):
         """Extract lines maps.
@@ -501,11 +531,7 @@ class Orcs(Tools):
 
         .. seealso:: :py:meth:`orcs.SpectralCube.extract_lines_maps`
         """       
-        if self.options['apodization'] == 1.0:
-            fmodel = 'sinc'
-        else:
-            fmodel = 'gaussian'
-        
+            
         if 'signal_range' in self.options:
             signal_range = self.options['signal_range']
         else:
@@ -526,7 +552,8 @@ class Orcs(Tools):
                 'calibration_laser_map_path'],
             nm_laser = self.config['CALIB_NM_LASER'],
             sky_regions_file_path=self.options.get('sky_regions_path'),
-            fmodel=fmodel,
+            fmodel=self._get_fmodel(),
+            fix_fwhm=self._get_fix_fwhm(),
             cov_pos=self.cov_pos)
 
     def get_sky_radial_velocity(self):
@@ -537,10 +564,6 @@ class Orcs(Tools):
 
         .. seealso:: :py:meth:`orcs.SpectralCube.get_sky_radial_velocity`
         """
-        if self.options['apodization'] == 1.0:
-            fmodel = 'sinc'
-        else:
-            fmodel = 'gaussian'
         
         self.spectralcube.get_sky_radial_velocity(
             self.options.get('sky_regions_path'),
@@ -553,7 +576,8 @@ class Orcs(Tools):
             calibration_laser_map_path=self.options[
                 'calibration_laser_map_path'],
             nm_laser = self.config['CALIB_NM_LASER'],
-            fmodel=fmodel)
+            fmodel=self._get_fmodel(),
+            fix_fwhm=self._get_fix_fwhm())
         
     def extract_raw_lines_maps(self):
         """Extract raw lines maps.
@@ -583,11 +607,6 @@ class Orcs(Tools):
         .. seealso:: :py:meth:`orcs.SpectralCube.extract_integrated_spectra`
 
         """
-        if self.options['apodization'] == 1.0:
-            fmodel = 'sinc'
-        else:
-            fmodel = 'gaussian'
-        
         self.spectralcube.extract_integrated_spectra(
             self.options['integ_reg_path'],
             self.options['lines'],
@@ -602,7 +621,8 @@ class Orcs(Tools):
                 'calibration_laser_map_path'],
             nm_laser = self.config['CALIB_NM_LASER'],
             sky_regions_file_path=self.options.get('sky_regions_path'),
-            fmodel=fmodel,
+            fmodel=self._get_fmodel(),
+            fix_fwhm=self._get_fix_fwhm(),
             cov_pos=self.cov_pos,
             plot=self.options['plot'],
             auto_sky_extraction=self.options['auto_sky_extraction'],
@@ -981,11 +1001,11 @@ class SpectralCube(HDFCube):
                                  shift_guess):
             RANGE_BORDER_PIX = 3
 
-            fit = np.empty((data.shape[0], len(lines), 4),
+            fit = np.empty((data.shape[0], len(lines), 5),
                            dtype=float)
             fit.fill(np.nan)
             
-            err = np.empty((data.shape[0], len(lines), 4),
+            err = np.empty((data.shape[0], len(lines), 5),
                            dtype=float)
             err.fill(np.nan)
             
@@ -1021,7 +1041,7 @@ class SpectralCube(HDFCube):
                     
                     # adjust fwhm with incident angle
                     ifwhm_guess = fwhm_guess * calib_map_col[ij] / nm_laser
-                        
+    
                     try:
                         result_fit = orb.fit.fit_lines_in_spectrum(
                             data[ij,:],
@@ -1039,7 +1059,7 @@ class SpectralCube(HDFCube):
                             fmodel=fmodel,
                             signal_range=[min_range, max_range],
                             wavenumber=wavenumber)
-                        
+        
                     except Exception, e:
                         warnings.warn('Exception occured during fit: {}'.format(e))
                         import traceback
@@ -1056,7 +1076,6 @@ class SpectralCube(HDFCube):
                 
                 for iline in range(len(lines)):
                     if result_fit != []:
-                        
                         # print result_fit['velocity']
                         # import pylab as pl
                         # pl.plot(data[ij,:])
@@ -1068,6 +1087,7 @@ class SpectralCube(HDFCube):
                             'lines-params'][iline, :]
                         err[ij,iline,:] = result_fit[
                             'lines-params-err'][iline, :]
+                        
                         fit[ij,iline,2] = result_fit[
                             'velocity'][iline]
                         err[ij,iline,2] = result_fit[
@@ -1079,10 +1099,13 @@ class SpectralCube(HDFCube):
                             
                     else:
                         fit[ij,iline,:] = [float('NaN'), float('NaN'),
-                                           float('NaN'), float('NaN')]
+                                           float('NaN'), float('NaN'),
+                                           float('NaN')]
                         err[ij,iline,:] = [float('NaN'), float('NaN'),
-                                           float('NaN'), float('NaN')]
+                                           float('NaN'), float('NaN'),
+                                           float('Nan')]
                         res[ij,iline,:] = [float('NaN'), float('NaN')]
+                
 
             return fit, err, res
 
@@ -1148,6 +1171,8 @@ class SpectralCube(HDFCube):
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('fwhm', fit[:,:,3],
                                          x_range=x_range, y_range=y_range)
+                        linemaps.set_map('sigma', fit[:,:,4],
+                                         x_range=x_range, y_range=y_range)
                         linemaps.set_map('height-err', err[:,:,0],
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('amplitude-err', err[:,:,1],
@@ -1156,11 +1181,14 @@ class SpectralCube(HDFCube):
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('fwhm-err', err[:,:,3],
                                          x_range=x_range, y_range=y_range)
+                        linemaps.set_map('sigma-err', err[:,:,4],
+                                         x_range=x_range, y_range=y_range)
                         linemaps.set_map('chi-square', chi[:,:,0],
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('snr', chi[:,:,1],
                                          x_range=x_range, y_range=y_range)
-
+                     
+                        
                     progress.update(ii, info="column : {}/{}".format(
                         ii, int(self.dimx/float(self.DIV_NB))))
 
@@ -1630,7 +1658,6 @@ class SpectralCube(HDFCube):
         # Create parameters file
         paramsfile = orb.core.ParamsFile(
             self._get_integrated_spectra_fit_params_path())
-        print 
         
         # Extract median sky spectrum
         if sky_regions_file_path is not None:
@@ -1688,8 +1715,8 @@ class SpectralCube(HDFCube):
                         max_range = np.nanmax(filter_range)
                     
                         # adjust fwhm with incident angle
-                        ilines_fwhm = lines_fwhm * icorr
-                   
+                        ilines_fwhm = lines_fwhm * icalib/nm_laser
+
                         # fit spectrum                            
                         try:
                             result_fit = orb.fit.fit_lines_in_spectrum(
@@ -2026,7 +2053,7 @@ class LineMaps(Tools):
 
     params = ('height', 'height-err', 'amplitude', 'amplitude-err',
               'velocity', 'velocity-err', 'fwhm', 'fwhm-err',
-              'chi-square', 'snr')
+              'chi-square', 'snr', 'sigma', 'sigma-err')
 
     _wcs_header = None
 
