@@ -87,17 +87,15 @@ def start(args):
         else:
             orcs.extract_lines_maps()
         
-    elif args.subparser_name == 'calib':
-        INTEG_FILE_PATH = '.orcs.calib.reg'
-        with open(INTEG_FILE_PATH, 'w') as f:
-            f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
-                float(args.calib_x),
-                float(args.calib_y),
-                float(args.calib_r)))
-            
-        orcs.options['integ_reg_path'] = INTEG_FILE_PATH
-        orcs.options['plot'] = not args.noplot
-        orcs.extract_integrated_spectra()
+    elif args.subparser_name == 'check':
+        orcs.extract_integrated_spectrum(
+            args.check_x, args.check_y, args.check_r,
+            plot=not args.noplot)
+        
+        
+    elif args.subparser_name == 'mapsky':
+        orcs.map_sky_velocity()
+
     
         
     end_time = time.time()
@@ -159,29 +157,33 @@ if __name__ == "__main__":
     
     parser_info = subparsers.add_parser('info', help='Print values computed at the beginning of the extraction process.')
 
-    parser_calib = subparsers.add_parser('calib', help='Calibrate the extraction process on a small region around a given pixel. Can be used to test the fitting process onto a high SNR spectrum before a complete extraction.')
+    parser_check = subparsers.add_parser('check', help='Fit the integrated spectrum of a small circular region around a given pixel. Can be used to test the fitting process onto a high SNR spectrum before a complete extraction.')
 
-    parser_calib.add_argument('calib_x',
+    parser_check.add_argument('check_x',
                         action='store',
-                              help="X center of the calibration region.",
-                              type=int)
-
-    
-    parser_calib.add_argument('calib_y',
-                        action='store',
-                              help="Y center of the calibration region.",
-                              type=int)
-    
-    parser_calib.add_argument('calib_r',
-                        action='store',
-                              help="Radius of the calibration region in pixels.",
-                              type=int)
+                              help="X center of the region.",
+                              type=float)
 
     
-    parser_calib.add_argument('--noplot', dest='noplot',
+    parser_check.add_argument('check_y',
+                        action='store',
+                              help="Y center of the region.",
+                              type=float)
+    
+    parser_check.add_argument('check_r',
+                        action='store',
+                              help="Radius of the region in pixels.",
+                              type=float)
+
+    
+    parser_check.add_argument('--noplot', dest='noplot',
                               action='store_true',
-                              help="Do not plot fit result",
+                              help="Do not plot fit results",
                               default=False)
+
+    parser_map_sky = subparsers.add_parser(
+        'mapsky', help='Map the sky lines velocity')
+
 
     if len(sys.argv) < 2:
         parser.print_usage()

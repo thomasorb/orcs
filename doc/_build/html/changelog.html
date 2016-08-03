@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Changelog &mdash; Orcs 0.9.4 documentation</title>
+  <title>Changelog &mdash; Orcs 0.10.0 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
   
 
   
-    <link rel="top" title="Orcs 0.9.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 0.10.0 documentation" href="index.html"/>
         <link rel="prev" title="Utils module" href="utils_module.html"/> 
 
   
@@ -46,20 +46,30 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-nav-search">
-        
-
-        
-          <a href="index.html" class="icon icon-home"> Orcs
-        
-
-        
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
           
-          <img src="_static/logo.png" class="logo" />
-        
-        </a>
 
-        
+          
+            <a href="index.html" class="icon icon-home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.10.0
+              </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -68,37 +78,23 @@
   </form>
 </div>
 
-        
-      </div>
+          
+        </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-          
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick start Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="quick_start.html#step-1-create-your-option-file">Step 1: Create your option file</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="quick_start.html#required-parameters"><strong>REQUIRED</strong> parameters</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="quick_start.html#step-2-run-it">Step 2: Run it</a></li>
-</ul>
-</li>
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="orcs_module.html">Orcs module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="orcs_module.html#orcs-class">Orcs class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="orcs_module.html#spectralcube-class">SpectralCube class</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="rvcorrect_module.html#rvcorrect-class">RVCorrect class</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="orcs_module.html">Orcs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Changelog</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#v0-9-orcs-integration-to-orb-suite">v0.9 ORCS integration to ORB suite</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#v0-9-1">v0.9.1</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#recoded-methods">Recoded methods:</a></li>
@@ -110,14 +106,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#v0-9-4">v0.9.4</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-10-new-fit-class">v0.10 New fit class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#v0-10-0">v0.10.0</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#new-operations">New operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#binning">Binning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#velocity-range">Velocity range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multiple-fit">Multiple fit</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
+            
           
-        
+        </div>
       </div>
-      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -132,7 +138,13 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
@@ -147,7 +159,8 @@
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
@@ -213,9 +226,61 @@ v0.9.2 resulting in poorer fit and a bad SNR (roughly divided by
 </ul>
 </div>
 </div>
+<div class="section" id="v0-10-new-fit-class">
+<h2>v0.10 New fit class<a class="headerlink" href="#v0-10-new-fit-class" title="Permalink to this headline">¶</a></h2>
+<p>A new fit module has been designed in ORB (orb/fit.py). ORCS has been
+changed to use this new module.</p>
+<p>Most of the changes are related to this major upgrade.</p>
+<div class="section" id="v0-10-0">
+<h3>v0.10.0<a class="headerlink" href="#v0-10-0" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="new-operations">
+<h4>New operations<a class="headerlink" href="#new-operations" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li>new operation in orcs command: <strong>&#8216;check&#8217;</strong>, to fit the integrated
+spectrum of one region. The idea is to select a small region with
+high SNR to test if the fitting procedure works as expected before
+launching a long fit process on a larger region.</li>
+<li>new operation in orcs command: <strong>&#8216;skymap&#8217;</strong> : fit the sky velocity
+on a high number of points and returns an interpolated map of the
+velocity zero point.</li>
+</ul>
+</div>
+<div class="section" id="binning">
+<h4>Binning<a class="headerlink" href="#binning" title="Permalink to this headline">¶</a></h4>
+<p>Binning before a fit is now possible. The cube does not have to be
+binned, ORCS does it on the fly. Created binned maps are used by ORCS
+to fit a cube with a smaller binning. For example it can be more
+robust to start the first fit with a high binning value (e.g. 10x10)
+and lower the binning down to 1x1 (e.g. 10x10 then 6x6 then 3x3 then
+1x1). This way the last computed parameters (especially the velocity)
+will be used in the next fit: 10x10 parameters will be used by the 6x6
+fit, then 6x6 parameters will be used by the 3x3 fit etc.</p>
+</div>
+<div class="section" id="velocity-range">
+<h4>Velocity range<a class="headerlink" href="#velocity-range" title="Permalink to this headline">¶</a></h4>
+<p>A brute force procedure can be run on each spectrum to guess the real
+velocity in a certain range around the object mean velocity. Works
+very well on spectrum with a good SNR (&gt; 10). But may be wrong on low
+SNR spectra. This function is best used with binned fit.</p>
+<p>Note that if the velocity has already been computed with a higher
+binning, this value will be used as an initial guess and the velocity
+range won&#8217;t be taken into account. This way, using the velocity range
+with a 10x10 binning is the best way to recover the general velocity
+profile of a galaxy and use it as an initial guess fot a smaller
+binning fit.</p>
+</div>
+<div class="section" id="multiple-fit">
+<h4>Multiple fit<a class="headerlink" href="#multiple-fit" title="Permalink to this headline">¶</a></h4>
+<p>Multiple fits can be done. The newly fitted pixels will replace the
+previous ones and the other pixels will be kept. This way multiple
+regions with different velocities can be fitted one after the other.</p>
+</div>
+</div>
+</div>
 </div>
 
 
+           </div>
           </div>
           <footer>
   
@@ -232,9 +297,10 @@ v0.9.2 resulting in poorer fit and a bad SNR (roughly divided by
   <div role="contentinfo">
     <p>
         &copy; Copyright 2015, Thomas Martin (thomas.martin.1@ulaval.ca).
+
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -252,7 +318,7 @@ v0.9.2 resulting in poorer fit and a bad SNR (roughly divided by
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.4',
+            VERSION:'0.10.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

@@ -82,7 +82,51 @@ Most of the changes are related to this major upgrade.
 v0.10.0
 -------
 
-* new operation in orcs command: 'calib', to calibrate the fitting
-  process. THe idea is to select a small region with high SNR to test
-  if the fitting procedure works as expected before launching a long
-  fit process on a larger region. 
+New operations
+~~~~~~~~~~~~~~
+
+* new operation in orcs command: **'check'**, to fit the integrated
+  spectrum of one region. The idea is to select a small region with
+  high SNR to test if the fitting procedure works as expected before
+  launching a long fit process on a larger region.
+
+* new operation in orcs command: **'skymap'** : fit the sky velocity
+  on a high number of points and returns an interpolated map of the
+  velocity zero point.
+
+
+Binning
+~~~~~~~
+
+Binning before a fit is now possible. The cube does not have to be
+binned, ORCS does it on the fly. Created binned maps are used by ORCS
+to fit a cube with a smaller binning. For example it can be more
+robust to start the first fit with a high binning value (e.g. 10x10)
+and lower the binning down to 1x1 (e.g. 10x10 then 6x6 then 3x3 then
+1x1). This way the last computed parameters (especially the velocity)
+will be used in the next fit: 10x10 parameters will be used by the 6x6
+fit, then 6x6 parameters will be used by the 3x3 fit etc.
+
+
+Velocity range
+~~~~~~~~~~~~~~
+
+A brute force procedure can be run on each spectrum to guess the real
+velocity in a certain range around the object mean velocity. Works
+very well on spectrum with a good SNR (> 10). But may be wrong on low
+SNR spectra. This function is best used with binned fit.
+
+Note that if the velocity has already been computed with a higher
+binning, this value will be used as an initial guess and the velocity
+range won't be taken into account. This way, using the velocity range
+with a 10x10 binning is the best way to recover the general velocity
+profile of a galaxy and use it as an initial guess fot a smaller
+binning fit.
+
+
+Multiple fit
+~~~~~~~~~~~~
+
+Multiple fits can be done. The newly fitted pixels will replace the
+previous ones and the other pixels will be kept. This way multiple
+regions with different velocities can be fitted one after the other.

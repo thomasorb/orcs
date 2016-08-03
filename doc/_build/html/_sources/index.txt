@@ -8,8 +8,8 @@ ORCS Documentation
 ##################
 
 
-.. image:: orcs.png
-   :width: 25%
+.. image:: logo.*
+   :width: 50%
    :align: center
 
 .. topic:: Welcome to ORCS documentation !

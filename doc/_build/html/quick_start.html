@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Quick start Guide &mdash; Orcs 0.9.4 documentation</title>
+  <title>Quick Start Guide &mdash; Orcs 0.10.0 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
   
 
   
-    <link rel="top" title="Orcs 0.9.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 0.10.0 documentation" href="index.html"/>
         <link rel="next" title="Orcs module" href="orcs_module.html"/>
         <link rel="prev" title="ORCS Documentation" href="index.html"/> 
 
@@ -47,20 +47,30 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-nav-search">
-        
-
-        
-          <a href="index.html" class="icon icon-home"> Orcs
-        
-
-        
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
           
-          <img src="_static/logo.png" class="logo" />
-        
-        </a>
 
-        
+          
+            <a href="index.html" class="icon icon-home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.10.0
+              </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -69,56 +79,40 @@
   </form>
 </div>
 
-        
-      </div>
+          
+        </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-          
-              <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Quick start Guide</a><ul>
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#step-1-create-your-option-file">Step 1: Create your option file</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#required-parameters"><strong>REQUIRED</strong> parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-parameters">Optional parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-of-available-lines">List of available lines</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#step-2-run-it">Step 2: Run it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-sanity-checks">Step 2: Sanity Checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-run-it">Step 3: Run it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-check-the-results">Step 4: Check the results</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="orcs_module.html">Orcs module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="orcs_module.html#orcs-class">Orcs class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="orcs_module.html#spectralcube-class">SpectralCube class</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="rvcorrect_module.html#rvcorrect-class">RVCorrect class</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="orcs_module.html">Orcs module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog.html#v0-9-orcs-integration-to-orb-suite">v0.9 ORCS integration to ORB suite</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#v0-9-1">v0.9.1</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="changelog.html#recoded-methods">Recoded methods:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="changelog.html#bug-fix">bug fix:</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#v0-9-2">v0.9.2</a></li>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#v0-9-3">v0.9.3</a></li>
-<li class="toctree-l3"><a class="reference internal" href="changelog.html#v0-9-4">v0.9.4</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
+            
           
-        
+        </div>
       </div>
-      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -133,11 +127,17 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>Quick start Guide</li>
+    <li>Quick Start Guide</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -148,79 +148,265 @@
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="quick-start-guide">
-<h1><a class="toc-backref" href="#id1">Quick start Guide</a><a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id3">Quick Start Guide</a><a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#quick-start-guide" id="id1">Quick start Guide</a><ul>
-<li><a class="reference internal" href="#step-1-create-your-option-file" id="id2">Step 1: Create your option file</a><ul>
-<li><a class="reference internal" href="#required-parameters" id="id3"><strong>REQUIRED</strong> parameters</a></li>
+<li><a class="reference internal" href="#quick-start-guide" id="id3">Quick Start Guide</a><ul>
+<li><a class="reference internal" href="#step-1-create-your-option-file" id="id4">Step 1: Create your option file</a><ul>
+<li><a class="reference internal" href="#required-parameters" id="id5"><strong>REQUIRED</strong> parameters</a></li>
+<li><a class="reference internal" href="#optional-parameters" id="id6">Optional parameters</a></li>
+<li><a class="reference internal" href="#list-of-available-lines" id="id7">List of available lines</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#step-2-run-it" id="id4">Step 2: Run it</a></li>
+<li><a class="reference internal" href="#step-2-sanity-checks" id="id8">Step 2: Sanity Checks</a></li>
+<li><a class="reference internal" href="#step-3-run-it" id="id9">Step 3: Run it</a></li>
+<li><a class="reference internal" href="#step-4-check-the-results" id="id10">Step 4: Check the results</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="step-1-create-your-option-file">
-<h2><a class="toc-backref" href="#id2">Step 1: Create your option file</a><a class="headerlink" href="#step-1-create-your-option-file" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Step 1: Create your option file</a><a class="headerlink" href="#step-1-create-your-option-file" title="Permalink to this headline">¶</a></h2>
 <p>Like ORBS, ORCS uses option files to load all the parameters. Here&#8217;s
 en example.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># option_file.orc</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># option_file.orc</span>
 
-<span class="c">## ORCS option file</span>
+<span class="c1">## ORCS option file</span>
 
-<span class="n">INCLUDE</span> <span class="o">/</span><span class="n">Path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">ORBS_option_file</span><span class="o">.</span><span class="n">opt</span>
-<span class="n">CUBEPATH</span> <span class="o">/</span><span class="n">Path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">spectrum</span><span class="o">/</span><span class="n">cube</span><span class="o">.</span><span class="n">hdf5</span>
-<span class="n">WAVENUMBER</span> <span class="mi">1</span>
-<span class="n">WAVE_CALIB</span> <span class="mi">0</span>
-<span class="n">APOD</span> <span class="mf">2.0</span>
-<span class="n">LINES</span> <span class="p">[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6548</span><span class="p">,</span><span class="n">Halpha</span><span class="p">,[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6583</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6716</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6731</span>
-<span class="n">COV_LINES</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span>
-<span class="n">OBJECT_VELOCITY</span> <span class="mi">180</span>
+<span class="c1"># Cube path</span>
+<span class="n">CUBEPATH</span> <span class="o">/</span><span class="n">cube</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">NGC000_SN3</span><span class="o">.</span><span class="n">merged</span><span class="o">.</span><span class="n">cm1</span><span class="o">.</span><span class="mf">1.0</span><span class="o">.</span><span class="n">hdf5</span>
+
+<span class="c1"># Calibration map path</span>
+<span class="n">CALIBMAP</span> <span class="o">/</span><span class="n">calibration</span><span class="o">/</span><span class="nb">map</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">calibration_laser_map</span><span class="o">.</span><span class="n">fits</span>
+
+<span class="c1"># Emission-lines parameters</span>
+<span class="n">LINES</span> <span class="p">[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6548</span><span class="p">,</span><span class="n">Halpha</span><span class="p">,[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6583</span><span class="p">,</span><span class="n">HeI6678</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6716</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6731</span> <span class="c1"># 1</span>
+
+<span class="c1"># (Optional) Velocity groups (same symbol for same group)</span>
+<span class="n">COV_LINES</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span>
+
+<span class="c1"># (Optional) Broadening groups (same symbol for same group)</span>
+<span class="n">COV_SIGMA</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span>
+
+<span class="c1"># Object mean velocity in km.s-1</span>
+<span class="n">OBJECT_VELOCITY</span> <span class="mi">500</span>
+
+<span class="c1"># (Optional) Velocity range to check for the initial guess</span>
+<span class="n">VELOCITY_RANGE</span> <span class="mi">1000</span>
+
+<span class="c1"># Path to a ds9 region file (with pixel coordinates) defining the</span>
+<span class="c1"># fitting region</span>
+<span class="n">OBJ_REG</span> <span class="n">m51</span><span class="o">.</span><span class="n">reg</span>
+
+<span class="c1"># Order of the polynomial used to fit continuum</span>
 <span class="n">POLY_ORDER</span> <span class="mi">0</span>
-<span class="n">ROI</span> <span class="mi">165</span><span class="p">,</span><span class="mi">260</span><span class="p">,</span><span class="mi">155</span><span class="p">,</span><span class="mi">255</span> <span class="c">#Xmin,Xmax,Ymin,Ymax</span>
-<span class="n">SKY_REG</span> <span class="n">sky</span><span class="o">.</span><span class="n">reg</span> 
-<span class="n">CALIBMAP</span> <span class="o">/</span><span class="n">Path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">calibration_laser_map</span><span class="o">.</span><span class="n">fits</span>
+
+<span class="c1"># (Optional) Sky regions ds9 file path</span>
+<span class="n">SKY_REG</span> <span class="n">m57</span><span class="o">-</span><span class="n">sky</span><span class="o">.</span><span class="n">reg</span>
+
+<span class="c1"># (Optional) &#39;on the fly&#39; binning of the data</span>
+<span class="n">BINNING</span> <span class="mi">10</span>
 </pre></div>
 </div>
 <div class="section" id="required-parameters">
-<h3><a class="toc-backref" href="#id3"><strong>REQUIRED</strong> parameters</a><a class="headerlink" href="#required-parameters" title="Permalink to this headline">¶</a></h3>
-<p><code class="xref std std-option docutils literal"><span class="pre">INCLUDE</span></code> Include ORBS option file.</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">CUBEPATH</span></code> Path to the hdf5 cube spectral cube.</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">WAVENUMBER</span></code> Must be 0 if the cube axis is in wavelength or 1 if the cube axis is in wavenumber.</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">WAVE_CALIB</span></code> Must be 0 if the cube is not wavelength calibrated and 1 if the cube is wavelength calibrated.</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">APOD</span></code> Give the apodization (1.0 for unapodized cube)</p>
-<dl class="docutils">
-<dt><code class="xref std std-option docutils literal"><span class="pre">LINES</span></code> Emission Lines names, enter an integer or a float to use a non_recorded emission line (line wavelength must be</dt>
-<dd>given in nm). See <code class="xref py py-class docutils literal"><span class="pre">orb.core.Lines</span></code> to get a list of the available lines.</dd>
-</dl>
-<p><code class="xref std std-option docutils literal"><span class="pre">COV_LINES</span></code> Covarying lines. Give the same number to the lines from the same atom, or more generally for the lines of the same velocity.</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">OBJECT_VELOCITY</span></code>  Object velocity in km.s-1</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">POLY_ORDER</span></code> Order of the polynomial used to fit continuum</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">ROI</span></code> Region of interest : Xmin,Xmax,Ymin,Ymax. Must be integers.</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">SKY_REG</span></code> Sky regions ds9 file path (Regions border must be in pixel coordinates, region shape can be a circle, a box or a polygon)</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">CALIBMAP</span></code> Calibration map path</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">DATE</span></code> Observation date (UT)</p>
-<p><code class="xref std std-option docutils literal"><span class="pre">HOUR_UT</span></code> Observation hour (UT)</p>
+<h3><a class="toc-backref" href="#id5"><strong>REQUIRED</strong> parameters</a><a class="headerlink" href="#required-parameters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">CUBEPATH</span></code>: Path to the hdf5 cube spectral cube.</li>
+<li><code class="docutils literal"><span class="pre">CALIBMAP</span></code>: Calibration map path</li>
+<li><code class="docutils literal"><span class="pre">LINES</span></code>: Emission Lines namesenter an integer or a float to use a
+non_recorded emission line (line wavelength must be given in
+nm). See <a class="reference internal" href="#list-lines"><span class="std std-ref">List of available lines</span></a> to get a list of the available lines.</li>
+<li><code class="docutils literal"><span class="pre">OBJECT_VELOCITY</span></code>: Mean object velocity in km.s-1. This parameter
+is very important and must be known precisely. If the object have a</li>
+</ul>
+<p>large velocity range, use velocity_range option.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">OBJ_REG</span></code>: Path to a ds9 region path defining the region of the
+cube which must be fitted (region parameters must be recorded in pixel
+coordinates, region shape can be a circle, a box or a polygon). The
+sky spectrum will be removed from the fitted spectra</li>
+<li><code class="docutils literal"><span class="pre">POLY_ORDER</span></code>: Order of the polynomial used to fit continuum</li>
+</ul>
+</div>
+<div class="section" id="optional-parameters">
+<h3><a class="toc-backref" href="#id6">Optional parameters</a><a class="headerlink" href="#optional-parameters" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">COV_LINES</span></code>: Lines velocity groups. Give the same number to the
+lines with the same expected velocity (e.g. same atom). If nothing
+is given all the lines are considered to have the same velocity.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">COV_SIGMA</span></code>: Lines broadening groups. Give the same number to the
+lines with the same expected broadening (e.g. same atom). If nothing
+is given all the lines are considered to have the same broadening.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">VELOCITY_RANGE</span></code>: A brute force procedure can be run on each
+spectrum to guess the real velocity in a certain range around the
+object mean velocity. Works very well on spectrum with a good SNR (&gt;
+10). But may be wrong on low SNR spectra. This function is best used
+with binned fit (see <code class="docutils literal"><span class="pre">BINNING</span></code> option below).</p>
+<p>Note that if the velocity has already been computed with a higher
+binning, this value will be used as an initial guess and the
+velocity range won&#8217;t be taken into account. This way, using the
+velocity range with a 10x10 binning is the best way to recover the
+general velocity profile of a galaxy and use it as an initial guess
+fot a smaller binning fit.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">SKY_REG</span></code>: Path to a ds9 region path defining the region of the
+cube which is integrated to create the sky spectrum (regions
+parameters must be recorded in pixel coordinates, region shape can
+be a circle, a box or a polygon). The sky spectrum will be removed
+from the fitted spectra.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">BINNING</span></code>: Data can be binned &#8216;on the fly&#8217; before being
+fitted. This option can be used to enhance the SNR of the
+spectra. Created binned maps are used by ORCS to fit a cube with a
+smaller binning. For example it can be more robust to start the
+first fit with a high binning value (e.g. 10x10) and lower the
+binning down to 1x1 (e.g. 10x10 then 6x6 then 3x3 then 1x1). This
+way the last computed parameters (especially the velocity) will be
+used in the next fit: 10x10 parameters will be used by the 6x6 fit,
+then 6x6 parameters will be used by the 3x3 fit etc. <em>This fitting
+procedure is especially useful for objects with a large velocity
+range (e.g. nearly edge-on galaxies)</em>.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="list-of-available-lines">
+<span id="list-lines"></span><h3><a class="toc-backref" href="#id7">List of available lines</a><a class="headerlink" href="#list-of-available-lines" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">NAME</th>
+<th class="head">Air Wavelength</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[OII]3726</td>
+<td>372.603</td>
+</tr>
+<tr class="row-odd"><td>[OII]3729</td>
+<td>372.882</td>
+</tr>
+<tr class="row-even"><td>[NeIII]3869</td>
+<td>386.875</td>
+</tr>
+<tr class="row-odd"><td>Hepsilon</td>
+<td>397.007</td>
+</tr>
+<tr class="row-even"><td>Hdelta</td>
+<td>410.176</td>
+</tr>
+<tr class="row-odd"><td>Hgamma</td>
+<td>434.047</td>
+</tr>
+<tr class="row-even"><td>[OIII]4363</td>
+<td>436.321</td>
+</tr>
+<tr class="row-odd"><td>Hbeta</td>
+<td>486.133</td>
+</tr>
+<tr class="row-even"><td>[OIII]4959</td>
+<td>495.891</td>
+</tr>
+<tr class="row-odd"><td>[OIII]5007</td>
+<td>500.684</td>
+</tr>
+<tr class="row-even"><td>HeI5876</td>
+<td>587.567</td>
+</tr>
+<tr class="row-odd"><td>[OI]6300</td>
+<td>630.030</td>
+</tr>
+<tr class="row-even"><td>[SIII]6312</td>
+<td>631.21</td>
+</tr>
+<tr class="row-odd"><td>[NII]6548</td>
+<td>654.803</td>
+</tr>
+<tr class="row-even"><td>Halpha</td>
+<td>656.280</td>
+</tr>
+<tr class="row-odd"><td>[NII]6583</td>
+<td>658.341</td>
+</tr>
+<tr class="row-even"><td>HeI6678</td>
+<td>667.815</td>
+</tr>
+<tr class="row-odd"><td>[SII]6716</td>
+<td>671.647</td>
+</tr>
+<tr class="row-even"><td>[SII]6731</td>
+<td>673.085</td>
+</tr>
+<tr class="row-odd"><td>HeI7065</td>
+<td>706.528</td>
+</tr>
+<tr class="row-even"><td>[ArIII]7136</td>
+<td>713.578</td>
+</tr>
+<tr class="row-odd"><td>[OII]7120</td>
+<td>731.965</td>
+</tr>
+<tr class="row-even"><td>[OII]7130</td>
+<td>733.016</td>
+</tr>
+<tr class="row-odd"><td>[ArIII]7751</td>
+<td>775.112</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div class="section" id="step-2-run-it">
-<h2><a class="toc-backref" href="#id4">Step 2: Run it</a><a class="headerlink" href="#step-2-run-it" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">orcs option_file.orc start</span>
+<div class="section" id="step-2-sanity-checks">
+<h2><a class="toc-backref" href="#id8">Step 2: Sanity Checks</a><a class="headerlink" href="#step-2-sanity-checks" title="Permalink to this headline">¶</a></h2>
+<p>Before running a 12 hours fitting procedure it can be safe to check if
+the fitting parameters are correct. You can try a fit on a spectrum
+integrated over a small circular aperture with the option: <strong>check</strong>.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">orcs sitelle option_file.orc check X Y R</span>
 </pre></div>
 </div>
-<p>For SITELLE don&#8217;t forget to add the &#8211;mode sitelle option, i.e.:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">orcs option_file.orc --mode sitelle start</span>
+<p>X, Y being respectively the center of the region (in pixels) along X
+and Y and R being the radius of the region (in pixels).</p>
+<p>This command will output a plot of the spectrum and its fit. Use it
+first over a high SNR region. If the fit does not work maybe the
+velocity is not well defined. Try the option <code class="docutils literal"><span class="pre">VELOCITY_RANGE</span></code> to
+give a larger fit range and look for the parameter <code class="docutils literal"><span class="pre">v</span></code> in the terminal output.</p>
+<p>Another sanity check can be done by defining a small region in the
+region file (OBJ_REG) and testing the fitting procedure (see step 3).</p>
+<p>Finally, the <code class="docutils literal"><span class="pre">BINNING</span></code> option can be used to try a fit over a binned
+cube (e.g. 3x3) which reduces a lot the fitting time (approximately by
+the square of the binning).</p>
+</div>
+<div class="section" id="step-3-run-it">
+<h2><a class="toc-backref" href="#id9">Step 3: Run it</a><a class="headerlink" href="#step-3-run-it" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">orcs sitelle option_file.orc start</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="step-4-check-the-results">
+<h2><a class="toc-backref" href="#id10">Step 4: Check the results</a><a class="headerlink" href="#step-4-check-the-results" title="Permalink to this headline">¶</a></h2>
+<p>Maps of the parameters of the fit can be found in the directory
+created by ORCS: <code class="docutils literal"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
+<p>Each line has 5 parameters (which gives 5 maps): height, amplitude,
+velocity, fwhm, sigma. Height and amplitude are given in
+ergs/cm^2/s/A. Velocity and broadening are given in km/s. FWHM is
+given in cm^-1.</p>
+<p>Each fitted parameter is associated an uncertainty (<a href="#id1"><span class="problematic" id="id2">*</span></a>_err maps) given
+in the same unit.</p>
+<a class="reference internal image-reference" href="_images/emission-line-params.png"><img alt="_images/emission-line-params.png" class="align-center" src="_images/emission-line-params.png" style="width: 70%;" /></a>
 </div>
 </div>
 
 
+           </div>
           </div>
           <footer>
   
@@ -239,9 +425,10 @@ en example.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2015, Thomas Martin (thomas.martin.1@ulaval.ca).
+
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -259,7 +446,7 @@ en example.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.9.4',
+            VERSION:'0.10.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
