@@ -5,9 +5,6 @@
 # Cube path
 CUBEPATH /cube/path/NGC000_SN3.merged.cm1.1.0.hdf5
 
-# Calibration map path
-CALIBMAP /calibration/map/path/calibration_laser_map.fits
-
 # Emission-lines parameters
 LINES [NII]6548,Halpha,[NII]6583,HeI6678,[SII]6716,[SII]6731 # 1
 
@@ -25,13 +22,13 @@ VELOCITY_RANGE 1000
 
 # Path to a ds9 region file (with pixel coordinates) defining the
 # fitting region
-OBJ_REG m51.reg
+OBJ_REG ngc000.reg
 
 # Order of the polynomial used to fit continuum
 POLY_ORDER 0
 
 # (Optional) Sky regions ds9 file path
-SKY_REG m57-sky.reg
+SKY_REG ngc000-sky.reg
 
 # (Optional) 'on the fly' binning of the data
 BINNING 10

@@ -123,6 +123,9 @@ with a 10x10 binning is the best way to recover the general velocity
 profile of a galaxy and use it as an initial guess fot a smaller
 binning fit.
 
+The guess of a higher binning fit wil be used only if its uncertainty
+is small enough (around 1/5 of the resolution)
+
 
 Multiple fit
 ~~~~~~~~~~~~
@@ -130,3 +133,14 @@ Multiple fit
 Multiple fits can be done. The newly fitted pixels will replace the
 previous ones and the other pixels will be kept. This way multiple
 regions with different velocities can be fitted one after the other.
+
+Miscellaneous
+~~~~~~~~~~~~~
+
+* ORCS uses the internal calibration map of the HDF5 cube by default.
+  If it exists CALIB_MAP keyword is not used, so in general this
+  keyword can be removed if the cube has been exported recently.
+
+* SNR and CHI2 maps have been removed
+
+* FLUX maps are computed and written in output

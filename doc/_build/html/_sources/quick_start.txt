@@ -3,6 +3,52 @@ Quick Start Guide
 
 .. contents::
 
+
+A few words on ORCS
+-------------------
+
+ORCS is a fitting engine for SpIOMM and SITELLE's data. It is designed
+to fit each spectrum with a model in a parallel. The core fitting
+procedure relies on a classical least-square Levenberg-Marquardt
+algorithm. Which means that the statistical paradigm of ORCS is
+frequentist.
+
+ORCS has been built to accept any number of models (even grid
+models). Up to now only three models are available (and used by
+default):
+
+- Emission lines (sinc convoluted with a Gaussian giving a certain
+  broadening to the sinc)
+
+.. image:: images/emission-line-params.png
+   :width: 70%
+   :align: center
+  
+- Background (treated as a polynomial)
+    
+- Filter
+
+Emission lines and background model parameters are defined in an
+'option file' which is described below. Emission line model can be
+constrained in velocity and broadening: multiple groups of lines can
+share the same velocity and/or the same broadening.
+
+.. image:: images/sky-spectrum.png
+   :width: 100%
+   :align: center
+
+
+The uncertainties on the returned parameters are based on the
+assumption that noise distribution is Gaussian and that there are not
+correlated. I have checked those assumptions by analyzing the
+distribution of the posterior probability on each parameter with a
+Monte-Carlo-Markov-Chain algorithm and found that they are very
+reasonable. The uncertainties returned by the MCMC algorithm are also
+very close to the one returned by our algorithm (less than a few
+percents).
+
+
+   
 Step 1: Create your option file
 -------------------------------
 
@@ -17,34 +63,41 @@ en example.
 
 - ``CUBEPATH``: Path to the hdf5 cube spectral cube.
 
-- ``CALIBMAP``: Calibration map path
-
-- ``LINES``: Emission Lines namesenter an integer or a float to use a
-  non_recorded emission line (line wavelength must be given in
-  nm). See :ref:`list-lines` to get a list of the available lines.
+- ``LINES``: Emission Lines names. Enter an integer or a float to use
+  a non_recorded emission line (line wavelength must be given in
+  nm). See :ref:`list-lines` to get a list of the available lines. Sky
+  lines can be added with SKY (be careful with fitting skylines, it's
+  incredibly longer and generally not useful as they can be simply
+  removed). The same line can appear multiple time if ha a different
+  velocity (but it must be assigned a different velocity group with
+  the keyword ``COV_SIGMA``)
 
 - ``OBJECT_VELOCITY``: Mean object velocity in km.s-1. This parameter
   is very important and must be known precisely. If the object have a
-large velocity range, use velocity_range option.
+  large velocity range, use velocity_range option.
 
-- ``OBJ_REG``: Path to a ds9 region path defining the region of the
-  cube which must be fitted (region parameters must be recorded in pixel
-  coordinates, region shape can be a circle, a box or a polygon). The
-  sky spectrum will be removed from the fitted spectra
+- ``OBJ_REG``: Path to a ds9 region path defining the regions of the
+  cube which have to be fitted (region parameters must be recorded in
+  pixel coordinates, region shape can be a circle, a box or a
+  polygon). Multiple regions can be defined at the same time. To
+  remove a particular region its line can be commented (with a '#') in
+  the region file.
 
-- ``POLY_ORDER``: Order of the polynomial used to fit continuum
+- ``POLY_ORDER``: Order of the polynomial used to fit continuum (avoid
+  high order polynomials : 0, 1 or 2 are generally enough, to remove
+  the sky it is better to use the keyword ``SKY_REG``)
 
 
 Optional parameters
 ~~~~~~~~~~~~~~~~~~~
 
 - ``COV_LINES``: Lines velocity groups. Give the same number to the
-  lines with the same expected velocity (e.g. same atom). If nothing
-  is given all the lines are considered to have the same velocity.
+  lines with the same expected velocity (e.g. same atom). **If nothing
+  is given all the lines are considered to have the same velocity**.
 
 - ``COV_SIGMA``: Lines broadening groups. Give the same number to the
-  lines with the same expected broadening (e.g. same atom). If nothing
-  is given all the lines are considered to have the same broadening.
+  lines with the same expected broadening (e.g. same atom). **If nothing
+  is given all the lines are considered to have the same broadening**.
 
 - ``VELOCITY_RANGE``: A brute force procedure can be run on each
   spectrum to guess the real velocity in a certain range around the
@@ -156,9 +209,8 @@ velocity, fwhm, sigma. Height and amplitude are given in
 ergs/cm^2/s/A. Velocity and broadening are given in km/s. FWHM is
 given in cm^-1.
 
+The flux map is also computed (from fwhm, amplitude and sigma
+parameters) and given in ergs/cm^2/s.
+
 Each fitted parameter is associated an uncertainty (*_err maps) given
 in the same unit.
-
-.. image:: images/emission-line-params.png
-   :width: 70%
-   :align: center

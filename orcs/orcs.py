@@ -46,7 +46,7 @@ import scipy.interpolate
 try:
     from orb.core import (
         Tools, OptionFile, Lines,
-        ProgressBar, HDFCube)
+        ProgressBar, HDFCube, Header)
     import orb.utils.spectrum
     import orb.utils.image
     import orb.utils.stats
@@ -238,8 +238,18 @@ class Orcs(Tools):
         store_option_parameter(
             'wavelength_calibration', 'WAVCALIB', bool,
             optional=True)
-        store_option_parameter(
-            'calibration_laser_map_path', 'CALIBMAP', str)
+
+        # get internal calibration map
+        calib_map = cube.get_calibration_laser_map()       
+        if calib_map is not None:
+            calib_map_path = self._get_calibration_laser_map_path()
+            self.write_fits(
+                calib_map_path, calib_map, overwrite=True)
+            self.options[
+                'calibration_laser_map_path'] = calib_map_path
+        else:
+            store_option_parameter(
+                'calibration_laser_map_path', 'CALIBMAP', str)
         
         self._print_msg('Calibration laser map used: {}'.format(
             self.options['calibration_laser_map_path']))
@@ -249,12 +259,7 @@ class Orcs(Tools):
         else:
             self._print_msg('Cube is NOT CALIBRATED')
             
-        ## Get WCS header
-        cube = HDFCube(self.options['spectrum_cube_path'],
-                       silent_init=True,
-                       ncpus=self.ncpus,
-                       config_file_name=self.config_file_name)
-        
+        ## Get WCS header        
         self.wcs = pywcs.WCS(self.header, naxis=2)
         self.wcs_header = self.wcs.to_header()
 
@@ -694,6 +699,10 @@ class Orcs(Tools):
         """
         return self._get_data_prefix() + 'skymap.fits'
 
+    def _get_calibration_laser_map_path(self):
+        """Return path to calibration laser map
+        """
+        return self._get_data_prefix() + 'calibration_laser_map.fits'
 
     def extract_integrated_spectrum(self, x, y, r, plot=True):
         """Extract and fit the integrated spectrum of a given region.
@@ -1232,18 +1241,13 @@ class SpectralCube(HDFCube):
             data= data_col
             RANGE_BORDER_PIX = 3
 
-            fit = np.empty((data.shape[0], len(lines), 5),
+            fit = np.empty((data.shape[0], len(lines), 6),
                            dtype=float)
             fit.fill(np.nan)
             
-            err = np.empty((data.shape[0], len(lines), 5),
+            err = np.empty((data.shape[0], len(lines), 6),
                            dtype=float)
             err.fill(np.nan)
-            
-            res = np.empty((data.shape[0], len(lines), 2),
-                           dtype=float)
-            res.fill(np.nan)
-
                         
             for ij in range(data.shape[0]):
                 if mask_col[ij]:
@@ -1334,12 +1338,12 @@ class SpectralCube(HDFCube):
                         ## pl.plot(result_fit['fitted-vector'])
                         ## pl.show()
                         ## quit()
-                        
-                        fit[ij,iline,:] = result_fit[
+                    
+                        fit[ij,iline,:5] = result_fit[
                             'lines-params'][iline, :]
                        
                         if 'lines-params-err' in result_fit:
-                            err[ij,iline,:] = result_fit[
+                            err[ij,iline,:5] = result_fit[
                                 'lines-params-err'][iline, :]
                         else:
                             err[ij,iline,:] = np.nan
@@ -1358,27 +1362,26 @@ class SpectralCube(HDFCube):
                             err[ij,iline,4] = result_fit[
                                 'broadening-err'][iline]
                         else:
-                            err[ij,iline,2] = np.nan
+                            err[ij,iline,4] = np.nan
 
-                        if 'snr' in result_fit:
-                            res[ij,iline,:] = [
-                                result_fit['reduced-chi-square'],
-                                result_fit['snr'][iline]]
+                        fit[ij,iline,5] = result_fit[
+                            'flux'][iline]
+                        if 'flux-err' in result_fit:
+                            err[ij,iline,5] = result_fit[
+                                'flux-err'][iline]
                         else:
-                            res[ij,iline,:] = np.nan
+                            err[ij,iline,5] = np.nan
+                        
                             
                     else:
                         fit[ij,iline,:] = [float('NaN'), float('NaN'),
                                            float('NaN'), float('NaN'),
-                                           float('NaN')]
+                                           float('NaN'), float('NaN')]
                         err[ij,iline,:] = [float('NaN'), float('NaN'),
                                            float('NaN'), float('NaN'),
-                                           float('Nan')]
-                        res[ij,iline,:] = [float('NaN'), float('NaN')]
-                
+                                           float('Nan'), float('NaN')]                
 
-            return fit, err, res
-
+            return fit, err
         
         def _get_binned_dims(index, dimx, dimy, quad_nb, binning):
             div_nb = math.sqrt(quad_nb)
@@ -1390,8 +1393,7 @@ class SpectralCube(HDFCube):
             x_max = long((index_x + 1) * quad_dimx)
             y_min = long(index_y * quad_dimy)
             y_max = long((index_y + 1) * quad_dimy)
-            return x_min, x_max, y_min, y_max
-            
+            return x_min, x_max, y_min, y_max        
 
         ## init LineMaps object    
         linemaps = LineMaps(self.dimx, self.dimy, lines, wavenumber,
@@ -1401,7 +1403,21 @@ class SpectralCube(HDFCube):
                             config_file_name=self.config_file_name,
                             data_prefix=self._data_prefix,
                             ncpus=self.ncpus)
-
+        
+        # compute max uncertainty on velocity and sigma to use it as
+        # an initial guess.
+        if wavenumber:
+            resolution = (
+                orb.cutils.get_cm1_axis_max(self.dimz, step, order)
+                / fwhm_guess)
+        else:
+            resolution = (
+                orb.cutils.get_nm_axis_max(self.dimz, step, order)
+                / fwhm_guess)
+            
+        max_vel_err = (orb.constants.LIGHT_VEL_KMS / resolution) / 4.
+        max_sig_err = max_vel_err / 2.
+        
         # load velocity maps of binned maps
         init_velocity_map = linemaps.get_map('velocity')
         init_velocity_map_err = linemaps.get_map('velocity-err')
@@ -1411,13 +1427,17 @@ class SpectralCube(HDFCube):
 
         # create mean velocity map
         # mean map is weighted by the square of the error on the parameter
+        init_velocity_map[
+            np.nonzero(np.abs(init_velocity_map_err) > max_vel_err)] = np.nan
         vel_map_w = (1. / (init_velocity_map_err**2.))
         init_velocity_map *= vel_map_w
         init_velocity_map = np.nansum(init_velocity_map, axis=2)
         init_velocity_map /= np.nansum(vel_map_w, axis=2)
-
+        
         # create mean sigma map
         # mean map is weighted by the square of the error on the parameter
+        init_sigma_map[
+            np.nonzero(np.abs(init_sigma_map_err) > max_sig_err)] = np.nan
         sig_map_w = (1. / (init_sigma_map_err**2.))
         init_sigma_map *= sig_map_w
         init_sigma_map = np.nansum(init_sigma_map, axis=2)
@@ -1491,7 +1511,7 @@ class SpectralCube(HDFCube):
                             for ijob in range(ncpus)]
 
                     for ijob, job in jobs:
-                        (fit, err, chi) = job()
+                        (fit, err) = job()
                         x_range = ((x_min+ii+ijob*binning)/binning, (x_min+ii+(ijob+1)*binning)/binning)
                         y_range = (y_min/binning, y_max/binning)
                         linemaps.set_map('height', fit[:,:,0],
@@ -1504,6 +1524,9 @@ class SpectralCube(HDFCube):
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('sigma', fit[:,:,4],
                                          x_range=x_range, y_range=y_range)
+                        linemaps.set_map('flux', fit[:,:,5],
+                                         x_range=x_range, y_range=y_range)
+                        
                         linemaps.set_map('height-err', err[:,:,0],
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('amplitude-err', err[:,:,1],
@@ -1514,11 +1537,9 @@ class SpectralCube(HDFCube):
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('sigma-err', err[:,:,4],
                                          x_range=x_range, y_range=y_range)
-                        linemaps.set_map('chi-square', chi[:,:,0],
+                        linemaps.set_map('flux-err', err[:,:,5],
                                          x_range=x_range, y_range=y_range)
-                        linemaps.set_map('snr', chi[:,:,1],
-                                         x_range=x_range, y_range=y_range)
-                     
+                        
                         
                     progress.update(ii, info="column : {}/{}".format(
                         ii, int(self.dimx/float(self.DIV_NB))))
@@ -2453,7 +2474,7 @@ class LineMaps(Tools):
 
     params = ('height', 'height-err', 'amplitude', 'amplitude-err',
               'velocity', 'velocity-err', 'fwhm', 'fwhm-err',
-              'chi-square', 'snr', 'sigma', 'sigma-err')
+              'sigma', 'sigma-err', 'flux', 'flux-err')
 
     _wcs_header = None
 
@@ -2548,6 +2569,8 @@ class LineMaps(Tools):
                + self._project_header
                + self._get_basic_frame_header(self.dimx, self.dimy))
         hdr = self._add_wcs_header(hdr)
+        hdr = Header(hdr)
+        hdr.bin_wcs(self.binning)
         return hdr
 
     

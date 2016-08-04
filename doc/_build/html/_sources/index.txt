@@ -14,13 +14,14 @@ ORCS Documentation
 
 .. topic:: Welcome to ORCS documentation !
 
-   **ORCS** (*Outils de Réduction de Cubes Spectraux*) is a data
-    extraction software for cubes reduced with ORBS. It is aimed to
-    produce parameter maps for all the lines present in the spectrum
-    cube.
+**ORCS** (*Outils de Réduction de Cubes Spectraux*) is a data
+extraction software for cubes reduced with ORBS. It is aimed to
+produce parameter maps for all the lines present in the spectrum cube.
 
-.. warning:: This is still a development version of ORCS. You might see bugs
- or strange behaviours !
+.. warning:: This is still a development version of ORCS. You might
+ see bugs or strange behaviours ! You might also want desperatly to
+ have new features. In all cases please send me an email:
+ thomas.martin.1@ulaval.ca
 
 Table of contents
 -----------------
