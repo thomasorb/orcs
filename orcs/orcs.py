@@ -291,8 +291,8 @@ class Orcs(Tools):
 
 
         # Integrated spectra
-        ## store_option_parameter('integ_reg_path', 'INTEG_REG_PATH', str,
-        ##                        optional=True)
+        store_option_parameter('integ_reg_path', 'INTEG_REG_PATH', str,
+                               optional=True)
         
         self.options['auto_sky_extraction'] = False
         ## store_option_parameter('auto_sky_extraction', 'INTEG_AUTO_SKY', bool,
@@ -394,6 +394,14 @@ class Orcs(Tools):
 
         if 'cov_sigma' in self.options:
             self.cov_sigma = self.options['cov_sigma']
+            if 'SKY' in _lines:
+                # get symbol associated with SKY keyword
+                sym_sky_index = _lines.index('SKY')
+                sym_sky = self.cov_sigma[sym_sky_index]
+                cov_sigma = list(self.cov_sigma)
+                cov_sigma.pop(sym_sky_index)
+                cov_sigma = cov_sigma[:sym_sky_index] + list([sym_sky]) * (len(self.options['lines']) - len(_lines) + 1) + cov_sigma[sym_sky_index:]
+                self.cov_sigma = cov_sigma
         else:
             self.cov_sigma = True
 
@@ -647,7 +655,6 @@ class Orcs(Tools):
     def extract_integrated_spectra(self, verbose=True):
         """Extract integrated spectra.
 
-
         :param verbose: (Optional) If True, print the fit results
           (default True).
 
@@ -725,7 +732,8 @@ class Orcs(Tools):
         self.options['plot'] = plot
         self.extract_integrated_spectra()
 
-    def map_sky_velocity(self, div_nb=15, plot=True):
+    def map_sky_velocity(self, div_nb=20, plot=True, x_range=None, y_range=None,
+                         exclude_reg_file_path=None):
         """Map the sky velocity on rectangular grid and interpolate it
         to return a map of the velocity zero point that can be
         subtracted to the returned velocity map of the cube fit.
@@ -743,15 +751,41 @@ class Orcs(Tools):
         integ_file_path = self._get_temp_reg_path()
         dimx = self.spectralcube.dimx
         dimy = self.spectralcube.dimy
-        r = min(dimx, dimy) / float(div_nb + 2) / 4.
-        r = min(r, MAX_R)
         regions = list()
+        
+        if x_range is not None:
+            xmin = int(np.min(x_range))
+            xmax = int(np.max(x_range))
+        else:
+            xmin = 0 ; xmax = dimx
+        if y_range is not None:
+            ymin = int(np.min(y_range))
+            ymax = int(np.max(y_range))
+        else:
+            ymin = 0 ; ymax = dimy
+            
+        self._print_msg('X range: {} {}, Y range: {} {}'.format(xmin, xmax, ymin, ymax))
+
+        r = min((xmax - xmin), (ymax - ymin)) / float(div_nb + 2) / 4.
+        r = min(r, MAX_R)
+        self._print_msg('Radius: {}'.format(r))
+
+        exclude_mask = np.zeros((dimx, dimy), dtype=bool)
+        if exclude_reg_file_path is not None:
+            exclude_mask[orb.utils.misc.get_mask_from_ds9_region_file(
+                exclude_reg_file_path,
+                [0, dimx], [0, dimy])] = True
+
+            
         with open(integ_file_path, 'w') as f:
-            for ix in np.linspace(0, dimx, div_nb + 2)[1:-1]:
-                for iy in np.linspace(0, dimy, div_nb + 2)[1:-1]:
-                    regions.append((ix, iy, r))
-                    f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
-                        ix, iy, r))
+            for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
+                for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
+                    if not exclude_mask[ix, iy]:
+                        regions.append((ix, iy, r))
+                        f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
+                            ix, iy, r))
+
+        self._print_msg('{} regions to extract'.format(len(regions)))
             
         self.options['integ_reg_path'] = integ_file_path
         self.options['plot'] = False
@@ -759,15 +793,15 @@ class Orcs(Tools):
         lines_nb = len(self.options['lines'])
 
         # fit sky spectra
-        paramsfile = self.extract_integrated_spectra(verbose=False)
+        #paramsfile = self.extract_integrated_spectra(verbose=False)
 
         # write results
-        with open(self._get_skymap_file_path(), 'w') as f:
-            for ireg in range(len(regions)):
-                iv = paramsfile[ireg*lines_nb]['v']
-                iv_err = paramsfile[ireg*lines_nb]['v_err']
-                f.write('{} {} {} {}\n'.format(
-                    regions[ireg][0], regions[ireg][1], iv, iv_err))
+        ## with open(self._get_skymap_file_path(), 'w') as f:
+        ##     for ireg in range(len(regions)):
+        ##         iv = paramsfile[ireg*lines_nb]['v']
+        ##         iv_err = paramsfile[ireg*lines_nb]['v_err']
+        ##         f.write('{} {} {} {}\n'.format(
+        ##             regions[ireg][0], regions[ireg][1], iv, iv_err))
 
         # create map
         with open(self._get_skymap_file_path(), 'r') as f:
@@ -792,7 +826,7 @@ class Orcs(Tools):
 
         # create weights map
         w = 1./(vel_err**2.)
-        w /= np.nanmax(w)
+        #w /= np.nanmax(w)
         w[np.isnan(w)] = 1e-35
 
         # interpolate map
@@ -818,8 +852,8 @@ class Orcs(Tools):
             ## vel -= np.nanmean(Z)
             ## Z -= np.nanmean(Z)
 
-            vmin = orb.cutils.part_value(Z.flatten(), 0.05)
-            vmax = orb.cutils.part_value(Z.flatten(), 0.95)
+            vmin = orb.cutils.part_value(Z.flatten(), 0.03)
+            vmax = orb.cutils.part_value(Z.flatten(), 0.97)
             
             pl.scatter(x, y, c=vel, vmin=vmin, vmax=vmax)
             pl.imshow(Z.T, vmin=vmin, vmax=vmax)
@@ -874,10 +908,10 @@ class SpectralCube(HDFCube):
             new_hdr.extend(self._wcs_header, strip=True,
                            update=True, end=True)
 
-            del new_hdr['RESTFRQ']
-            del new_hdr['RESTWAV']
-            del new_hdr['LONPOLE']
-            del new_hdr['LATPOLE']
+            if 'RESTFRQ' in new_hdr: del new_hdr['RESTFRQ']
+            if 'RESTWAV' in new_hdr: del new_hdr['RESTWAV']
+            if 'LONPOLE' in new_hdr: del new_hdr['LONPOLE']
+            if 'LATPOLE' in new_hdr: del new_hdr['LATPOLE']
 
             return new_hdr
         else:
@@ -1134,14 +1168,15 @@ class SpectralCube(HDFCube):
                         ii, int(self.dimx/float(DIV_NB))))
             self._close_pp_server(job_server)
             if not silent: progress.end()
-            spectrum /= counts
-
-
+        
+        spectrum /= counts
+                    
         if subtract_spectrum is not None:
             spectrum -= subtract_spectrum
 
         spectrum_function = scipy.interpolate.UnivariateSpline(
-            base_axis, spectrum, s=0, k=1, ext=1)
+            base_axis[~np.isnan(spectrum)], spectrum[~np.isnan(spectrum)],
+            s=0, k=1, ext=1)
          
         return spectrum_function
         
@@ -1332,7 +1367,7 @@ class SpectralCube(HDFCube):
 
                 for iline in range(len(lines)):
                     if result_fit != []:
-                        ## print result_fit['velocity']
+                        ## print result_fit['velocity'], result_fit['velocity-err']
                         ## import pylab as pl
                         ## pl.plot(data[ij,:])
                         ## pl.plot(result_fit['fitted-vector'])
@@ -1651,8 +1686,8 @@ class SpectralCube(HDFCube):
         median_sky_spectrum = self._extract_spectrum_from_region(
             orb.utils.misc.get_mask_from_ds9_region_file(
                 sky_regions_file_path,
-                x_range=[0, self.dimx],
-                y_range=[0, self.dimy]),
+                [0, self.dimx],
+                [0, self.dimy]),
             calibration_coeff_map,
             wavenumber, step, order)
         
@@ -1888,8 +1923,8 @@ class SpectralCube(HDFCube):
             self._print_msg("Extracting sky median vector")
             sky_region = orb.utils.misc.get_mask_from_ds9_region_file(
                     sky_regions_file_path,
-                    x_range=[0, self.dimx],
-                    y_range=[0, self.dimy])
+                    [0, self.dimx],
+                    [0, self.dimy])
             median_sky_spectrum = self._extract_spectrum_from_region(
                 sky_region,
                 calibration_coeff_map,
@@ -1908,8 +1943,8 @@ class SpectralCube(HDFCube):
         self._print_msg("Fitting data")
         region = orb.utils.misc.get_mask_from_ds9_region_file(
                     object_regions_file_path,
-                    x_range=[0, self.dimx],
-                    y_range=[0, self.dimy])
+                    [0, self.dimx],
+                    [0, self.dimy])
 
         linemaps = self._fit_lines_in_cube(
             region, lines, step, order, lines_fwhm,
@@ -2063,175 +2098,174 @@ class SpectralCube(HDFCube):
             median_sky_spectrum = self._extract_spectrum_from_region(
                 orb.utils.misc.get_mask_from_ds9_region_file(
                     sky_regions_file_path,
-                    x_range=[0, self.dimx],
-                    y_range=[0, self.dimy]),
+                    [0, self.dimx],
+                    [0, self.dimy]),
                 calibration_coeff_map,
-                wavenumber, step, order)
+                wavenumber, step, order, median=True)
         else:
             median_sky_spectrum = None
             
         # extract regions
         integ_spectra = list()
+        
+        regions = orb.utils.misc.get_mask_from_ds9_region_file(
+            regions_file_path,
+            [0, self.dimx],
+            [0, self.dimy],
+            integrate=False)
+        
+        region_index = -1
+        for region in regions:
 
-        with open(regions_file_path, 'r') as f:
-            region_index = -1
-            for ireg in f:
-                if len(ireg) > 3:
-                    region = orb.utils.misc.get_mask_from_ds9_region_line(
-                        ireg,
-                        x_range=[0, self.dimx],
-                        y_range=[0, self.dimy])
-                    
-                    if len(region[0]) > 0:
-                        region_index += 1
-                        icorr = np.nanmean(calibration_coeff_map[region])
-                        icalib = np.nanmean(calibration_laser_map[region])
-                        
-                        if wavenumber:
-                            axis = orb.utils.spectrum.create_cm1_axis(
-                                self.dimz, step, order, corr=icorr)
-                        else:
-                            axis = orb.utils.spectrum.create_nm_axis(
-                                self.dimz, step, order, corr=icorr)
+            region_index += 1
+            icorr = np.nanmean(calibration_coeff_map[region])
+            icalib = np.nanmean(calibration_laser_map[region])
 
-                        if auto_sky_extraction:
-                            # subtract sky around region
-                            self._print_error('Not implemented yet')              
-                            
-                        # extract spectrum
-                        spectrum = self._extract_spectrum_from_region(
-                            region, calibration_coeff_map,
-                            wavenumber, step, order)
-                        # interpolate
-                        spectrum = spectrum(axis.astype(float))
-                        
-                        if median_sky_spectrum is not None:
-                             spectrum -= median_sky_spectrum(axis.astype(float))
+            if wavenumber:
+                axis = orb.utils.spectrum.create_cm1_axis(
+                    self.dimz, step, order, corr=icorr)
+            else:
+                axis = orb.utils.spectrum.create_nm_axis(
+                    self.dimz, step, order, corr=icorr)
+
+            if auto_sky_extraction:
+                # subtract sky around region
+                self._print_error('Not implemented yet')              
+
+            # extract spectrum
+            spectrum = self._extract_spectrum_from_region(
+                region, calibration_coeff_map,
+                wavenumber, step, order)
+            
+            # interpolate
+            spectrum = spectrum(axis.astype(float))
+
+            if median_sky_spectrum is not None:
+                spectrum -= median_sky_spectrum(axis.astype(float))
+
+            # get signal range
+            min_range = np.nanmin(filter_range)
+            max_range = np.nanmax(filter_range)
+
+            # adjust fwhm with incident angle
+
+            ilines_fwhm = lines_fwhm * icorr
+
+            # fit spectrum                            
+            try:
+                result_fit = orb.fit.fit_lines_in_spectrum(
+                    spectrum,
+                    lines,
+                    step, order,
+                    nm_laser,
+                    icorr * nm_laser,
+                    fwhm_guess=ilines_fwhm,
+                    shift_guess=lines_velocity,
+                    cont_guess=None,
+                    poly_order=poly_order,
+                    cov_pos=cov_pos,
+                    cov_sigma=cov_sigma,
+                    cov_fwhm=cov_fwhm,
+                    fix_fwhm=fix_fwhm,
+                    fmodel=fmodel,
+                    signal_range=[min_range, max_range],
+                    wavenumber=wavenumber,
+                    apodization=apodization,
+                    velocity_range=velocity_range)
+
+            except Exception, e:
+                warnings.warn('Exception occured during fit: {}'.format(e))
+                import traceback
+                print traceback.format_exc()
+
+                result_fit = []
 
 
-                        # get signal range
-                        min_range = np.nanmin(filter_range)
-                        max_range = np.nanmax(filter_range)
-                    
-                        # adjust fwhm with incident angle
-                        
-                        ilines_fwhm = lines_fwhm * icorr
+            if result_fit != []:
 
-                        # fit spectrum                            
-                        try:
-                            result_fit = orb.fit.fit_lines_in_spectrum(
-                                spectrum,
-                                lines,
-                                step, order,
-                                nm_laser,
-                                icorr * nm_laser,
-                                fwhm_guess=ilines_fwhm,
-                                shift_guess=lines_velocity,
-                                cont_guess=None,
-                                poly_order=poly_order,
-                                cov_pos=cov_pos,
-                                cov_sigma=cov_sigma,
-                                cov_fwhm=cov_fwhm,
-                                fix_fwhm=fix_fwhm,
-                                fmodel=fmodel,
-                                signal_range=[min_range, max_range],
-                                wavenumber=wavenumber,
-                                apodization=apodization,
-                                velocity_range=velocity_range)
-                            
-                        except Exception, e:
-                            warnings.warn('Exception occured during fit: {}'.format(e))
-                            import traceback
-                            print traceback.format_exc()
-                            
-                            result_fit = []
-                        
+                # write spectrum and fit
+                spectrum_header = (
+                    self._get_integrated_spectrum_header(
+                        region_index, axis, wavenumber))
 
-                        if result_fit != []:
-                            
-                            # write spectrum and fit
-                            spectrum_header = (
-                                self._get_integrated_spectrum_header(
-                                    region_index, axis, wavenumber))
-                                
-                            self.write_fits(
-                                self._get_integrated_spectrum_path(
-                                    region_index),
-                                spectrum, fits_header=spectrum_header,
-                                overwrite=self.overwrite)
-                            self.write_fits(
-                                self._get_integrated_spectrum_fit_path(
-                                    region_index),
-                                result_fit['fitted-vector'],
-                                fits_header=spectrum_header,
-                                overwrite=self.overwrite)
+                self.write_fits(
+                    self._get_integrated_spectrum_path(
+                        region_index),
+                    spectrum, fits_header=spectrum_header,
+                    overwrite=self.overwrite)
+                self.write_fits(
+                    self._get_integrated_spectrum_fit_path(
+                        region_index),
+                    result_fit['fitted-vector'],
+                    fits_header=spectrum_header,
+                    overwrite=self.overwrite)
 
-                            fit_params = result_fit['lines-params']
-                            if 'lines-params-err' in result_fit:
-                                err_params = result_fit['lines-params-err']
-                                snr = result_fit['snr']
-                                
-                            else:
-                                err_params = np.empty_like(fit_params)
-                                err_params.fill(np.nan)
-                                snr = np.empty(fit_params.shape[0])
-                                snr.fill(np.nan)
-                                
-                            velocities = result_fit['velocity']
-                            if 'velocity-err' in result_fit:
-                                velocities_err = result_fit['velocity-err']
-                            else:
-                                velocities_err = np.empty_like(velocities)
-                                velocities_err.fill(np.nan)                       
-                            
-                            for iline in range(fit_params.shape[0]):
-                                if wavenumber:
-                                    line_name = Lines().round_nm2ang(
-                                        orb.utils.spectrum.cm12nm(
-                                            lines[iline]))
-                                else:
-                                    line_name = Lines().round_nm2ang(
-                                        lines[iline])
+                fit_params = result_fit['lines-params']
+                if 'lines-params-err' in result_fit:
+                    err_params = result_fit['lines-params-err']
+                    snr = result_fit['snr']
 
-                                fit_results = {
-                                    'reg_index': region_index,
-                                    'line_name': line_name,
-                                    'h': fit_params[iline, 0],
-                                    'a': fit_params[iline, 1],
-                                    'x': fit_params[iline, 2],
-                                    'v': velocities[iline],
-                                    'fwhm': fit_params[iline, 3],
-                                    'sigma': fit_params[iline, 4],
-                                    'h_err': err_params[iline, 0],
-                                    'a_err': err_params[iline, 1],
-                                    'x_err': err_params[iline, 2],
-                                    'v_err': velocities_err[iline],
-                                    'fwhm_err': err_params[iline, 3],
-                                    'sigma_err': err_params[iline, 4],
-                                    'snr': snr[iline]}
+                else:
+                    err_params = np.empty_like(fit_params)
+                    err_params.fill(np.nan)
+                    snr = np.empty(fit_params.shape[0])
+                    snr.fill(np.nan)
 
-                                paramsfile.append(fit_results)
+                velocities = result_fit['velocity']
+                if 'velocity-err' in result_fit:
+                    velocities_err = result_fit['velocity-err']
+                else:
+                    velocities_err = np.empty_like(velocities)
+                    velocities_err.fill(np.nan)                       
 
-                                if verbose:
-                                    self._print_msg(
-                                        'Line: {} ----'.format(
-                                            line_name))
-                                    for ikey in fit_results:
-                                        self._print_msg(
-                                            '{}: {}'.format(
-                                                ikey, fit_results[ikey]))
-                                    
-                            if plot:
-                                import pylab as pl
-                                pl.plot(axis, spectrum,
-                                        label='orig spectrum')
-                                pl.plot(axis, result_fit['fitted-vector'],
-                                        label='fit')
-                                pl.grid()
-                                pl.legend()
-                                pl.show()
-                            
-                        integ_spectra.append(spectrum)
+                for iline in range(fit_params.shape[0]):
+                    if wavenumber:
+                        line_name = Lines().round_nm2ang(
+                            orb.utils.spectrum.cm12nm(
+                                lines[iline]))
+                    else:
+                        line_name = Lines().round_nm2ang(
+                            lines[iline])
+
+                    fit_results = {
+                        'reg_index': region_index,
+                        'line_name': line_name,
+                        'h': fit_params[iline, 0],
+                        'a': fit_params[iline, 1],
+                        'x': fit_params[iline, 2],
+                        'v': velocities[iline],
+                        'fwhm': fit_params[iline, 3],
+                        'sigma': fit_params[iline, 4],
+                        'h_err': err_params[iline, 0],
+                        'a_err': err_params[iline, 1],
+                        'x_err': err_params[iline, 2],
+                        'v_err': velocities_err[iline],
+                        'fwhm_err': err_params[iline, 3],
+                        'sigma_err': err_params[iline, 4],
+                        'snr': snr[iline]}
+
+                    paramsfile.append(fit_results)
+
+                    if verbose:
+                        self._print_msg(
+                            'Line: {} ----'.format(
+                                line_name))
+                        for ikey in fit_results:
+                            self._print_msg(
+                                '{}: {}'.format(
+                                    ikey, fit_results[ikey]))
+
+                if plot:
+                    import pylab as pl
+                    pl.plot(axis, spectrum,
+                            label='orig spectrum')
+                    pl.plot(axis, result_fit['fitted-vector'],
+                            label='fit')
+                    pl.grid()
+                    pl.legend()
+                    pl.show()
+
+            integ_spectra.append(spectrum)
                     
         return paramsfile
         
@@ -2586,11 +2620,11 @@ class LineMaps(Tools):
 
             new_hdr.extend(self._wcs_header, strip=True,
                            update=True, end=True)
-
-            del new_hdr['RESTFRQ']
-            del new_hdr['RESTWAV']
-            del new_hdr['LONPOLE']
-            del new_hdr['LATPOLE']
+            
+            if 'RESTFRQ' in new_hdr: del new_hdr['RESTFRQ']
+            if 'RESTWAV' in new_hdr: del new_hdr['RESTWAV']
+            if 'LONPOLE' in new_hdr: del new_hdr['LONPOLE']
+            if 'LATPOLE' in new_hdr: del new_hdr['LATPOLE']
 
             return new_hdr
         else:

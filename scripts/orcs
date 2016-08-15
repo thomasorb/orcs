@@ -94,7 +94,9 @@ def start(args):
         
         
     elif args.subparser_name == 'mapsky':
-        orcs.map_sky_velocity()
+        orcs.map_sky_velocity(x_range=args.x_range,
+                              y_range=args.y_range,
+                              exclude_reg_file_path=args.exclude_reg)
 
     
         
@@ -183,6 +185,24 @@ if __name__ == "__main__":
 
     parser_map_sky = subparsers.add_parser(
         'mapsky', help='Map the sky lines velocity')
+
+    parser_map_sky.add_argument('-x', dest='x_range',
+                                action='store',
+                                nargs=2,
+                                help="X range: min max",
+                                default=None, type=float)
+
+    parser_map_sky.add_argument('-y', dest='y_range',
+                                action='store',
+                                nargs=2,
+                                help="Y range: min max",
+                                default=None, type=float)
+
+    parser_map_sky.add_argument('--exclude', dest='exclude_reg',
+                                action='store',
+                                help="Region to exclude (a ds9 reg file)",
+                                default=None, type=str)
+
 
 
     if len(sys.argv) < 2:

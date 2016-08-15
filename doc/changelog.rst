@@ -71,7 +71,7 @@ v0.9.4
   2). This is no more the case.
 
 
-v0.10 New fit class
+v1.0 New fit class
 *******************
 
 A new fit module has been designed in ORB (orb/fit.py). ORCS has been
@@ -79,7 +79,7 @@ changed to use this new module.
 
 Most of the changes are related to this major upgrade.
 
-v0.10.0
+v1.0.0
 -------
 
 New operations
@@ -144,3 +144,20 @@ Miscellaneous
 * SNR and CHI2 maps have been removed
 
 * FLUX maps are computed and written in output
+
+
+v1.0.1
+-------
+
+* added X and Y range options when computing velocity maps (options -x
+  and -y)
+
+* added exclusion region when computing sky velocity maps (option
+  --exclude)
+
+* bug with SIG_COV corrected when defining a different broadening group
+  for sky lines.
+
+* call to :py:meth:`orb.utils.misc.get_mask_from_ds9_region_file`
+  modified to follow the update of ORB which now uses pyregion.
+
