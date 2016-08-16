@@ -793,15 +793,15 @@ class Orcs(Tools):
         lines_nb = len(self.options['lines'])
 
         # fit sky spectra
-        #paramsfile = self.extract_integrated_spectra(verbose=False)
+        paramsfile = self.extract_integrated_spectra(verbose=False)
 
         # write results
-        ## with open(self._get_skymap_file_path(), 'w') as f:
-        ##     for ireg in range(len(regions)):
-        ##         iv = paramsfile[ireg*lines_nb]['v']
-        ##         iv_err = paramsfile[ireg*lines_nb]['v_err']
-        ##         f.write('{} {} {} {}\n'.format(
-        ##             regions[ireg][0], regions[ireg][1], iv, iv_err))
+        with open(self._get_skymap_file_path(), 'w') as f:
+            for ireg in range(len(regions)):
+                iv = paramsfile[ireg*lines_nb]['v']
+                iv_err = paramsfile[ireg*lines_nb]['v_err']
+                f.write('{} {} {} {}\n'.format(
+                    regions[ireg][0], regions[ireg][1], iv, iv_err))
 
         # create map
         with open(self._get_skymap_file_path(), 'r') as f:
