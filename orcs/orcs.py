@@ -2256,7 +2256,15 @@ class SpectralCube(HDFCube):
                     broadening_err = result_fit['broadening-err']
                 else:
                     broadening_err = np.empty_like(broadening)
-                    broadening_err.fill(np.nan)                       
+                    broadening_err.fill(np.nan)
+
+                
+                flux = result_fit['flux']
+                if 'flux-err' in result_fit:
+                    flux_err = result_fit['flux-err']
+                else:
+                    flux_err = np.empty_like(flux)
+                    flux_err.fill(np.nan)
 
                     
                 for iline in range(fit_params.shape[0]):
@@ -2267,7 +2275,6 @@ class SpectralCube(HDFCube):
                     else:
                         line_name = Lines().round_nm2ang(
                             lines[iline])
-
                     fit_results = {
                         'reg_index': region_index,
                         'line_name': line_name,
@@ -2278,6 +2285,7 @@ class SpectralCube(HDFCube):
                         'fwhm': fit_params[iline, 3],
                         'sigma': fit_params[iline, 4],
                         'broadening': broadening[iline],
+                        'flux': flux[iline],
                         'h_err': err_params[iline, 0],
                         'a_err': err_params[iline, 1],
                         'x_err': err_params[iline, 2],
@@ -2285,7 +2293,8 @@ class SpectralCube(HDFCube):
                         'broadening_err': broadening_err[iline],
                         'fwhm_err': err_params[iline, 3],
                         'sigma_err': err_params[iline, 4],
-                        'snr': snr[iline]}
+                        'snr': snr[iline],
+                        'flux_err': flux_err[iline]}
 
 
                     paramsfile.append(fit_results)
