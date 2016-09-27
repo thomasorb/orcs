@@ -307,9 +307,12 @@ class Orcs(Tools):
         ##                        optional=True)
 
         # filter boundaries
-        self.options['filter_range'] = orb.utils.filters.read_filter_file(
-            self._get_filter_file_path(self.options['filter_name']))[2:]
-        
+        store_option_parameter('filter_range', 'RANGE_NM', str, ',',
+                               post_cast=float, optional=True)
+        if 'filter_range' not in self.options:
+            self.options['filter_range'] = orb.utils.filters.read_filter_file(
+                self._get_filter_file_path(self.options['filter_name']))[2:]
+
         if self.options['wavenumber']:
             self.options['filter_range'] = orb.utils.spectrum.nm2cm1(
                 self.options['filter_range'])
@@ -352,8 +355,11 @@ class Orcs(Tools):
        
         # Lines shift
         self.options['object_velocity'] = 0.
-        store_option_parameter('object_velocity', 'OBJECT_VELOCITY', float,
-                               optional=True)
+        store_option_parameter('object_velocity', 'OBJECT_VELOCITY', str, ',',
+                               optional=True, post_cast=float)
+        self.options['object_velocity'] = np.array(
+            self.options['object_velocity'], dtype=float)
+        
         self._print_msg('Mean object velocity: {} km.s-1'.format(
             self.options['object_velocity']))
 
@@ -361,7 +367,8 @@ class Orcs(Tools):
         self.options['velocity_range'] = None
         store_option_parameter('velocity_range', 'VELOCITY_RANGE', float,
                                optional=True)
-        self._print_msg('Velocity range: {} km/s'.format(self.options['velocity_range']))
+        self._print_msg('Velocity range: {} km/s'.format(
+            self.options['velocity_range']))
 
 
         # cov lines
@@ -550,7 +557,7 @@ class Orcs(Tools):
         w_mean = (axis[-1] + axis[0]) / 2
 
         return orb.utils.spectrum.line_shift(
-            self.options['mean_velocity'],
+            self.options['mean_velocity'][0],
             w_mean,
             wavenumber=self.options['wavenumber'])
 
@@ -777,31 +784,31 @@ class Orcs(Tools):
                 [0, dimx], [0, dimy])] = True
 
             
-        with open(integ_file_path, 'w') as f:
-            for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
-                for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
-                    if not exclude_mask[ix, iy]:
-                        regions.append((ix, iy, r))
-                        f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
-                            ix, iy, r))
+        ## with open(integ_file_path, 'w') as f:
+        ##     for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
+        ##         for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
+        ##             if not exclude_mask[ix, iy]:
+        ##                 regions.append((ix, iy, r))
+        ##                 f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
+        ##                     ix, iy, r))
 
-        self._print_msg('{} regions to extract'.format(len(regions)))
+        ## self._print_msg('{} regions to extract'.format(len(regions)))
             
-        self.options['integ_reg_path'] = integ_file_path
-        self.options['plot'] = False
-        self.options['sky_regions_path'] = None
-        lines_nb = len(self.options['lines'])
+        ## self.options['integ_reg_path'] = integ_file_path
+        ## self.options['plot'] = False
+        ## self.options['sky_regions_path'] = None
+        ## lines_nb = len(self.options['lines'])
 
-        # fit sky spectra
-        paramsfile = self.extract_integrated_spectra(verbose=False)
+        ## # fit sky spectra
+        ## paramsfile = self.extract_integrated_spectra(verbose=False)
 
-        # write results
-        with open(self._get_skymap_file_path(), 'w') as f:
-            for ireg in range(len(regions)):
-                iv = paramsfile[ireg*lines_nb]['v']
-                iv_err = paramsfile[ireg*lines_nb]['v_err']
-                f.write('{} {} {} {}\n'.format(
-                    regions[ireg][0], regions[ireg][1], iv, iv_err))
+        ## # write results
+        ## with open(self._get_skymap_file_path(), 'w') as f:
+        ##     for ireg in range(len(regions)):
+        ##         iv = paramsfile[ireg*lines_nb]['v']
+        ##         iv_err = paramsfile[ireg*lines_nb]['v_err']
+        ##         f.write('{} {} {} {}\n'.format(
+        ##             regions[ireg][0], regions[ireg][1], iv, iv_err))
 
         # create map
         with open(self._get_skymap_file_path(), 'r') as f:
@@ -824,10 +831,35 @@ class Orcs(Tools):
         vel_err = np.array(vel_err)
         vel_err[vel_err == 0.] = np.nan
 
+        vel_err[vel_err > (
+            np.nanmedian(vel_err) + 2.5 * np.std(
+                orb.utils.stats.sigmacut(
+                    vel_err, sigma=2.)))] = np.nan
+
         # create weights map
-        w = 1./(vel_err**2.)
+        w = 1./(vel_err)
         #w /= np.nanmax(w)
-        w[np.isnan(w)] = 1e-35
+        #w[np.isnan(w)] = 1e-35
+        x = x[~np.isnan(w)]
+        y = y[~np.isnan(w)]
+        vel = vel[~np.isnan(w)]
+        w = w[~np.isnan(w)]
+
+        vel[vel < np.nanpercentile(vel, 16)] = np.nan
+        vel[vel > np.nanpercentile(vel, 84)] = np.nan
+        x = x[~np.isnan(vel)]
+        y = y[~np.isnan(vel)]
+        w = w[~np.isnan(vel)]
+
+        vel = vel[~np.isnan(vel)]
+
+
+        import pylab as pl
+        pl.scatter(x,y,c=vel)
+        pl.show()
+        quit()
+
+
 
         # interpolate map
         s = None
@@ -1941,11 +1973,12 @@ class SpectralCube(HDFCube):
     
         ## FIT ###
         self._print_msg("Fitting data")
+        #if object_regions_file_path is None:
+    
         region = orb.utils.misc.get_mask_from_ds9_region_file(
                     object_regions_file_path,
                     [0, self.dimx],
                     [0, self.dimy])
-
         linemaps = self._fit_lines_in_cube(
             region, lines, step, order, lines_fwhm,
             wavenumber, calibration_coeff_map,
@@ -2216,8 +2249,16 @@ class SpectralCube(HDFCube):
                     velocities_err = result_fit['velocity-err']
                 else:
                     velocities_err = np.empty_like(velocities)
-                    velocities_err.fill(np.nan)                       
+                    velocities_err.fill(np.nan)
 
+                broadening = result_fit['broadening']
+                if 'broadening-err' in result_fit:
+                    broadening_err = result_fit['broadening-err']
+                else:
+                    broadening_err = np.empty_like(broadening)
+                    broadening_err.fill(np.nan)                       
+
+                    
                 for iline in range(fit_params.shape[0]):
                     if wavenumber:
                         line_name = Lines().round_nm2ang(
@@ -2236,13 +2277,16 @@ class SpectralCube(HDFCube):
                         'v': velocities[iline],
                         'fwhm': fit_params[iline, 3],
                         'sigma': fit_params[iline, 4],
+                        'broadening': broadening[iline],
                         'h_err': err_params[iline, 0],
                         'a_err': err_params[iline, 1],
                         'x_err': err_params[iline, 2],
                         'v_err': velocities_err[iline],
+                        'broadening_err': broadening_err[iline],
                         'fwhm_err': err_params[iline, 3],
                         'sigma_err': err_params[iline, 4],
                         'snr': snr[iline]}
+
 
                     paramsfile.append(fit_results)
 
@@ -2251,9 +2295,8 @@ class SpectralCube(HDFCube):
                             'Line: {} ----'.format(
                                 line_name))
                         for ikey in fit_results:
-                            self._print_msg(
-                                '{}: {}'.format(
-                                    ikey, fit_results[ikey]))
+                            print '{}: {}'.format(
+                                ikey, fit_results[ikey])
 
                 if plot:
                     import pylab as pl
