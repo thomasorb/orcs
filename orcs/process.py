@@ -240,8 +240,9 @@ class SpectralCubeFitter(HDFCube):
             mask_col[mask_col > 0] = 1
             data_col = np.empty((data.shape[1]/binning, data.shape[2]))
             for iz in range(data.shape[2]):
+                # bin and convert mean binning to sum binning
                 data_col[:,iz] = orb.utils.image.nanbin_image(
-                    data[:,:,iz], binning)
+                    data[:,:,iz], binning) * binning**2
             data = data_col
             
             fit = np.empty((data.shape[0], len(lines), 6),
