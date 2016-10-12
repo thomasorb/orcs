@@ -23,7 +23,7 @@
 ############ ORCS Command Line #####################
 ####################################################
 
-# This script is aimed to run the data extraction
+# This script is aimed to run the data fitting
 
 # To run this script simply use the following command :
 # $ ./orcs option_file.opt start
@@ -52,9 +52,9 @@ def get_config_file_name(args):
         return 'config.spiomm.orb'
     
 
-def start(args):
-    """Start extraction
-
+def main(args):
+    """Main process
+    
     :param args: Namespace object containing the passed argments
       returned by the function ArgParse.parse_args().
     """
@@ -68,7 +68,7 @@ def start(args):
     # Run ORCS with the given options #
     ###################################
     
-    print "Start extraction : %s"%str(args.option_file_path)
+    print "Start data fitting: %s"%str(args.option_file_path)
     
     orcs = Orcs(args.option_file_path,
                 config_file_name=get_config_file_name(args),
@@ -77,18 +77,18 @@ def start(args):
     if args.subparser_name == 'start':
         # special modes are mutually exclusive
         if np.sum([args.sky, args.regions]) > 1:
-            print_error("only one special extraction mode (regions or sky) can be choosen")
+            print_error("only one special fitting mode (regions or sky) can be choosen")
             sys.exit(2)
 
         if args.regions:
-            orcs.extract_integrated_spectra()
+            orcs.fit_integrated_spectra()
         elif args.sky:
             orcs.get_sky_radial_velocity()
         else:
-            orcs.extract_lines_maps()
+            orcs.fit_lines_maps()
         
     elif args.subparser_name == 'check':
-        orcs.extract_integrated_spectrum(
+        orcs.fit_integrated_spectrum(
             args.check_x, args.check_y, args.check_r,
             plot=not args.noplot)
         
@@ -115,14 +115,14 @@ def start(args):
 if __name__ == "__main__":
     """Main entrance of the script.
     
-    Parse arguments and launch the extraction process.
+    Parse arguments and launch the fitting process.
     """
 
     parser = ArgumentParser(
         prog='orcs',
         version=('ORCS-version: {}, ORB-version: {}'.format(
             orcs.version.__version__, orb.core.__version__)),
-        description="Run the extraction process.")
+        description="Run the fitting process.")
 
 
     parser.add_argument('instrument', choices=['spiomm', 'sitelle'],
@@ -143,23 +143,23 @@ if __name__ == "__main__":
 
     subparsers = parser.add_subparsers(help='operation type', dest='subparser_name')
 
-    parser_start = subparsers.add_parser('start', help='Start the extraction process.')
+    parser_start = subparsers.add_parser('start', help='Start the fitting process.')
 
-    group_target = parser_start.add_argument_group('Extraction modes', '')
+    group_target = parser_start.add_argument_group('Fitting modes', '')
     
     group_target.add_argument('--regions', dest='regions',
                               action='store_true',
                               default=False,
-                              help="Extract the integrated spectra of the regions defined in a ds9 region file. Note that the keyword INTEG_REG_PATH in the option file must be set to the path of a ds9 region file.")
+                              help="Fit the integrated spectra of the regions defined in a ds9 region file. Note that the keyword INTEG_REG_PATH in the option file must be set to the path of a ds9 region file.")
 
     group_target.add_argument('--sky', dest='sky',
                               action='store_true',
                               default=False,
-                              help="Extract a sky spectrum and fit its lines to return the sky velocity. Note that the SKY_REG keyword in the option file must be set to the path of a ds9 region file.")
+                              help="Fit a sky spectrum and fit its lines to return the sky velocity. Note that the SKY_REG keyword in the option file must be set to the path of a ds9 region file.")
     
-    parser_info = subparsers.add_parser('info', help='Print values computed at the beginning of the extraction process.')
+    parser_info = subparsers.add_parser('info', help='Print values computed at the beginning of the fitting process.')
 
-    parser_check = subparsers.add_parser('check', help='Fit the integrated spectrum of a small circular region around a given pixel. Can be used to test the fitting process onto a high SNR spectrum before a complete extraction.')
+    parser_check = subparsers.add_parser('check', help='Fit the integrated spectrum of a small circular region around a given pixel. Can be used to test the fitting process onto a high SNR spectrum before running a fit on a large region.')
 
     parser_check.add_argument('check_x',
                         action='store',
@@ -215,10 +215,7 @@ if __name__ == "__main__":
     if not os.path.exists(args.option_file_path):
         raise Exception('Option file %s does not exist'%args.option_file_path)
 
-    ####################
-    # start extraction #
-    ####################
-    start(args)
+    main(args)
 
 
 
