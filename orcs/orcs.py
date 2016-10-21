@@ -53,7 +53,7 @@ import orb.utils.spectrum
 import orb.utils.stats
 import orb.utils.filters
 import orb.utils.misc
-    
+import orb.data as od    
 
 from rvcorrect import RVCorrect
 
@@ -582,6 +582,15 @@ class Orcs(OrcsBase):
         return self._get_data_prefix() + 'skymap.fits'
 
 
+    def _get_calibration_laser_map_path(self):
+        """Return path to the calibration map computed when fitting
+        sky lines. Can be used instead of the original calibration
+        map.
+        """
+        return self._get_data_prefix() + 'calibration_laser_map.fits'
+
+
+
     def fit_integrated_spectrum(self, x, y, r, plot=True):
         """Extract and fit the integrated spectrum of a given region.
 
@@ -616,6 +625,12 @@ class Orcs(OrcsBase):
         :param plot: (Optional) If True, plot the result (default
           True)
         """
+        BINNING = 6
+        calib_laser_nm = self.config['CALIB_NM_LASER']
+        pixel_size = self.config['PIX_SIZE_CAM1']
+        calib_laser_map = self.read_fits(
+            self.options['calibration_laser_map_path'])
+
         if div_nb < 2:
             self._print_error('div_nb must be >= 2')
         MAX_R = 150
@@ -648,20 +663,20 @@ class Orcs(OrcsBase):
                 [0, dimx], [0, dimy])] = True
 
             
-        ## with open(integ_file_path, 'w') as f:
-        ##     for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
-        ##         for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
-        ##             if not exclude_mask[ix, iy]:
-        ##                 regions.append((ix, iy, r))
-        ##                 f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
-        ##                     ix, iy, r))
+        with open(integ_file_path, 'w') as f:
+            for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
+                for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
+                    if not exclude_mask[ix, iy]:
+                        regions.append((ix, iy, r))
+                        f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
+                            ix, iy, r))
 
-        ## self._print_msg('{} regions to fit'.format(len(regions)))
+        self._print_msg('{} regions to fit'.format(len(regions)))
             
-        ## self.options['integ_reg_path'] = integ_file_path
-        ## self.options['plot'] = False
-        ## self.options['sky_regions_path'] = None
-        ## lines_nb = len(self.options['lines'])
+        self.options['integ_reg_path'] = integ_file_path
+        self.options['plot'] = False
+        self.options['sky_regions_path'] = None
+        lines_nb = len(self.options['lines'])
 
         ## # fit sky spectra
         ## paramsfile = self.fit_integrated_spectra(verbose=False)
@@ -709,22 +724,169 @@ class Orcs(OrcsBase):
         vel = vel[~np.isnan(w)]
         w = w[~np.isnan(w)]
 
-        vel[vel < np.nanpercentile(vel, 16)] = np.nan
-        vel[vel > np.nanpercentile(vel, 84)] = np.nan
+        vel[vel < np.nanpercentile(vel, 5)] = np.nan
+        vel[vel > np.nanpercentile(vel, 95)] = np.nan
         x = x[~np.isnan(vel)]
         y = y[~np.isnan(vel)]
         w = w[~np.isnan(vel)]
-
+        vel_err = vel_err[~np.isnan(vel)]
         vel = vel[~np.isnan(vel)]
 
 
-        import pylab as pl
-        pl.scatter(x,y,c=vel)
-        pl.show()
+        ## import pylab as pl
+        ## pl.scatter(x,y,c=vel)
+        ## pl.colorbar()
+        ## pl.show()
+        ## quit()
+
+
+        # transform velocity error in calibration error (v = dl/l with
+        # l = 543.5 nm)
+        vel = od.array(vel, vel_err)
+        dl = orb.utils.spectrum.line_shift(vel, calib_laser_nm)
+        
+        ## # fit calibration map to get model + wavefront
+        ## (orig_params,
+        ##  orig_fit_map,
+        ##  orig_model) = orb.utils.image.fit_calibration_laser_map(
+        ##     calib_laser_map, calib_laser_nm, pixel_size=pixel_size,
+        ##     return_model_fit=True)
+        ## wf = orig_fit_map - orig_model
+
+        ## self.write_fits('orig_fit_map.fits', orig_fit_map, overwrite=True)
+        ## self.write_fits('orig_model.fits', orig_model, overwrite=True)
+        ## self.write_fits('wf.fits', wf, overwrite=True)
+
+        orig_params = [2.37822267e+05,
+                       -3.13632074e-01,
+                       1.54482638e+01,
+                       -6.21992348e+00,
+                       2.28938414e+00,
+                       8.41218339e-01,
+                       1.54403551e+01]
+
+        orig_fit_map = self.read_fits('orig_fit_map.fits')
+        orig_model = self.read_fits('orig_model.fits')
+        wf = orig_fit_map - orig_model
+
+        orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
+        orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
+        wf_bin = orb.utils.image.nanbin_image(wf, BINNING)
+        pixel_size_bin = pixel_size * float(BINNING)
+        x_bin = x / float(BINNING)
+        y_bin = y / float(BINNING)
+        
+        def model(p, wf, pixel_size, orig_fit_map, x, y):
+            # 0: mirror_distance
+            # 1: theta_cx
+            # 2: theta_cy
+            # 3: phi_x
+            # 4: phi_y
+            # 5: phi_r
+            # 6: calib_laser_nm
+            new_map = (orb.utils.image.simulate_calibration_laser_map(
+                wf.shape[0], wf.shape[1], pixel_size,
+                p[0], p[1], p[2], p[3], p[4], p[5], p[6])
+                    + wf)
+            dl_map = new_map - orig_fit_map
+            dl_mod = list()
+            for i in range(len(x)):
+                dl_mod.append(dl_map[int(x[i]), int(y[i])])
+            return np.array(dl_mod)
+
+        def get_p(p_var, p_fix, p_ind):
+            """p_ind = 0: variable parameter, index=1: fixed parameter
+            """
+            p_all = np.empty_like(p_ind, dtype=float)
+            p_all[np.nonzero(p_ind == 0.)] = p_var
+            p_all[np.nonzero(p_ind > 0.)] = p_fix
+            return p_all
+
+        
+        def diff(p_var, p_fix, p_ind, wf, pixel_size, orig_fit_map, x, y,
+                 dl):
+            p = get_p(p_var, p_fix, p_ind)
+            dl_mod = model(p, wf, pixel_size, orig_fit_map, x, y)
+
+            res = ((dl_mod - dl.dat)/dl.err).astype(float)
+            return res[~np.isnan(res)]
+
+
+        # first fit to find the real calib_laser_nm        
+        p_var = [calib_laser_nm]
+        p_fix = orig_params[:-1]
+        p_ind = np.array([1,1,1,1,1,1,0])
+        fit = scipy.optimize.leastsq(diff,
+                                     p_var,
+                                     args=(p_fix, p_ind, wf_bin,
+                                           pixel_size_bin,
+                                           orig_fit_map_bin,
+                                           x_bin, y_bin, dl),
+                                     full_output=True)
+
+        # second fit with all the parameters
+        p_var = get_p(fit[0], p_fix, p_ind)
+        p_fix = []
+        p_ind = np.array([0,0,0,0,0,0,0])
+        fit = scipy.optimize.leastsq(diff,
+                                     p_var,
+                                     args=(p_fix, p_ind, wf_bin,
+                                           pixel_size_bin,
+                                           orig_fit_map_bin,
+                                           x_bin, y_bin, dl),
+                                     full_output=True)
+        p = fit[0]
+
+        # get fit stats
+        new_dl = model(p, wf, pixel_size, orig_fit_map, x, y)
+        new_vel = orb.utils.spectrum.compute_radial_velocity(
+            calib_laser_nm + new_dl, calib_laser_nm,
+            wavenumber=False)
+
+        print 'fit residual std (in km/s):', np.nanstd(new_vel - vel.dat)
+        print 'median error on the data (in km/s)', np.nanmedian(vel.err)
+        
+        ## import pylab as pl
+        ## ## pl.figure(4)
+        ## ## pl.hist((new_vel - vel.dat), bins=30)
+        ## pl.figure(0)
+        ## pl.scatter(x,y,c=vel.dat)
+        ## pl.colorbar()
+        ## pl.figure(1)
+        ## pl.scatter(x,y,c=new_vel)
+        ## pl.colorbar()
+        ## pl.figure(2)
+        ## pl.scatter(x,y,c=new_vel - vel.dat)
+        ## pl.colorbar()
+        ## pl.show()
+
+
+        # compute new calibration laser map
+        new_calib_map = (orb.utils.image.simulate_calibration_laser_map(
+            wf.shape[0], wf.shape[1], pixel_size,
+            p[0], p[1], p[2], p[3], p[4], p[5], p[6])
+                         + wf)
+
+        # write new calibration laser map
+        self.write_fits(
+            self._get_calibration_laser_map_path(),
+            new_calib_map, overwrite=True)
+
+        # compute new velocity correction map
+        new_dl_map = new_calib_map - orig_fit_map
+        new_vel_map = orb.utils.spectrum.compute_radial_velocity(
+            calib_laser_nm + new_dl_map, calib_laser_nm,
+            wavenumber=False)
+
+        # write new velocity correction map
+        self.write_fits(
+            self._get_skymap_fits_path(),
+            new_vel_map, overwrite=True)
+
         quit()
 
 
-
+        quit()
         # interpolate map
         s = None
         k = 3

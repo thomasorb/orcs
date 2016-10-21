@@ -561,7 +561,8 @@ class OrcsBase(Tools):
         self._store_config_parameter('OBS_LAT', float)
         self._store_config_parameter('OBS_LON', float)
         self._store_config_parameter('OBS_ALT', float)
-        self._store_config_parameter("CALIB_NM_LASER", float)        
+        self._store_config_parameter("CALIB_NM_LASER", float)
+        self._store_config_parameter("PIX_SIZE_CAM1", float)
 
         # load cube
         cube = HDFCube(
