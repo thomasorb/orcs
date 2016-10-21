@@ -612,7 +612,7 @@ class Orcs(OrcsBase):
         self.options['plot'] = plot
         self.fit_integrated_spectra()
 
-    def map_sky_velocity(self, div_nb=20, plot=True, x_range=None, y_range=None,
+    def map_sky_velocity(self, div_nb=25, plot=True, x_range=None, y_range=None,
                          exclude_reg_file_path=None):
         """Map the sky velocity on rectangular grid and interpolate it
         to return a map of the velocity zero point that can be
@@ -678,16 +678,16 @@ class Orcs(OrcsBase):
         self.options['sky_regions_path'] = None
         lines_nb = len(self.options['lines'])
 
-        ## # fit sky spectra
-        ## paramsfile = self.fit_integrated_spectra(verbose=False)
+        # fit sky spectra
+        paramsfile = self.fit_integrated_spectra(verbose=False)
 
-        ## # write results
-        ## with open(self._get_skymap_file_path(), 'w') as f:
-        ##     for ireg in range(len(regions)):
-        ##         iv = paramsfile[ireg*lines_nb]['v']
-        ##         iv_err = paramsfile[ireg*lines_nb]['v_err']
-        ##         f.write('{} {} {} {}\n'.format(
-        ##             regions[ireg][0], regions[ireg][1], iv, iv_err))
+        # write results
+        with open(self._get_skymap_file_path(), 'w') as f:
+            for ireg in range(len(regions)):
+                iv = paramsfile[ireg*lines_nb]['v']
+                iv_err = paramsfile[ireg*lines_nb]['v_err']
+                f.write('{} {} {} {}\n'.format(
+                    regions[ireg][0], regions[ireg][1], iv, iv_err))
 
         # create map
         with open(self._get_skymap_file_path(), 'r') as f:
@@ -745,29 +745,28 @@ class Orcs(OrcsBase):
         vel = od.array(vel, vel_err)
         dl = orb.utils.spectrum.line_shift(vel, calib_laser_nm)
         
-        ## # fit calibration map to get model + wavefront
-        ## (orig_params,
-        ##  orig_fit_map,
-        ##  orig_model) = orb.utils.image.fit_calibration_laser_map(
-        ##     calib_laser_map, calib_laser_nm, pixel_size=pixel_size,
-        ##     return_model_fit=True)
-        ## wf = orig_fit_map - orig_model
+        # fit calibration map to get model + wavefront
+        (orig_params,
+         orig_fit_map,
+         orig_model) = orb.utils.image.fit_calibration_laser_map(
+            calib_laser_map, calib_laser_nm, pixel_size=pixel_size,
+            return_model_fit=True)
+        wf = orig_fit_map - orig_model
 
         ## self.write_fits('orig_fit_map.fits', orig_fit_map, overwrite=True)
         ## self.write_fits('orig_model.fits', orig_model, overwrite=True)
         ## self.write_fits('wf.fits', wf, overwrite=True)
+        ## orig_params = [2.37822267e+05,
+        ##                -3.13632074e-01,
+        ##                1.54482638e+01,
+        ##                -6.21992348e+00,
+        ##                2.28938414e+00,
+        ##                8.41218339e-01,
+        ##                1.54403551e+01]
 
-        orig_params = [2.37822267e+05,
-                       -3.13632074e-01,
-                       1.54482638e+01,
-                       -6.21992348e+00,
-                       2.28938414e+00,
-                       8.41218339e-01,
-                       1.54403551e+01]
-
-        orig_fit_map = self.read_fits('orig_fit_map.fits')
-        orig_model = self.read_fits('orig_model.fits')
-        wf = orig_fit_map - orig_model
+        ## orig_fit_map = self.read_fits('orig_fit_map.fits')
+        ## orig_model = self.read_fits('orig_model.fits')
+        ## wf = orig_fit_map - orig_model
 
         orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
         orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)

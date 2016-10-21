@@ -1045,66 +1045,30 @@ class SpectralCubeFitter(HDFCube):
           velocities in km/s where the lines can be found (e.g. for a
           galaxy, default None)    
         """
-        if verbose:
-            self._print_msg("Extracting integrated spectra", color=True)
-        
-        calibration_coeff_map = self._get_calibration_coeff_map(
-            calibration_laser_map_path, nm_laser,
-            wavelength_calibration, axis_corr=axis_corr)
+        def fit_region(region_index, lines, nm_laser, lines_velocity,
+                       poly_order, cov_pos, cov_sigma, cov_fwhm,
+                       fix_fwhm, fmodel, apodization, velocity_range,
+                       spectrum, calibration_coeff_map,
+                       calibration_laser_map, region, dimz, wavenumber,
+                       step, order, auto_sky_extraction,
+                       median_sky_spectrum, filter_range, lines_fwhm):
+            warnings.simplefilter('ignore', RuntimeWarning)
 
-        calibration_laser_map = self._get_calibration_laser_map(
-            calibration_laser_map_path, nm_laser, False,
-            axis_corr=axis_corr)
-                
-        # Create parameters file
-        paramsfile = orb.core.ParamsFile(
-            self._get_integrated_spectra_fit_params_path())
-        
-        # Extract median sky spectrum
-        if sky_regions_file_path is not None:
-            if verbose:
-                self._print_msg("Extracting sky median vector")
-            median_sky_spectrum = self._extract_spectrum_from_region(
-                orb.utils.misc.get_mask_from_ds9_region_file(
-                    sky_regions_file_path,
-                    [0, self.dimx],
-                    [0, self.dimy]),
-                calibration_coeff_map,
-                wavenumber, step, order, median=True)
-        else:
-            median_sky_spectrum = None
-            
-        # extract regions
-        integ_spectra = list()
-        
-        regions = orb.utils.misc.get_mask_from_ds9_region_file(
-            regions_file_path,
-            [0, self.dimx],
-            [0, self.dimy],
-            integrate=False)
-        
-        region_index = -1
-        for region in regions:
 
-            region_index += 1
             icorr = np.nanmean(calibration_coeff_map[region])
             icalib = np.nanmean(calibration_laser_map[region])
-
+                        
             if wavenumber:
                 axis = orb.utils.spectrum.create_cm1_axis(
-                    self.dimz, step, order, corr=icorr)
+                    dimz, step, order, corr=icorr)
             else:
                 axis = orb.utils.spectrum.create_nm_axis(
-                    self.dimz, step, order, corr=icorr)
+                    dimz, step, order, corr=icorr)
 
             if auto_sky_extraction:
                 # subtract sky around region
-                self._print_error('Not implemented yet')              
+                raise Exception('Not implemented yet')              
 
-            # extract spectrum
-            spectrum = self._extract_spectrum_from_region(
-                region, calibration_coeff_map,
-                wavenumber, step, order)
             
             # interpolate
             spectrum = spectrum(axis.astype(float))
@@ -1152,23 +1116,6 @@ class SpectralCubeFitter(HDFCube):
 
             if result_fit != []:
 
-                # write spectrum and fit
-                spectrum_header = (
-                    self._get_integrated_spectrum_header(
-                        region_index, axis, wavenumber))
-
-                self.write_fits(
-                    self._get_integrated_spectrum_path(
-                        region_index),
-                    spectrum, fits_header=spectrum_header,
-                    overwrite=self.overwrite)
-                self.write_fits(
-                    self._get_integrated_spectrum_fit_path(
-                        region_index),
-                    result_fit['fitted-vector'],
-                    fits_header=spectrum_header,
-                    overwrite=self.overwrite)
-
                 fit_params = result_fit['lines-params']
                 if 'lines-params-err' in result_fit:
                     err_params = result_fit['lines-params-err']
@@ -1202,7 +1149,7 @@ class SpectralCubeFitter(HDFCube):
                     flux_err = np.empty_like(flux)
                     flux_err.fill(np.nan)
 
-                    
+                all_fit_results = list()
                 for iline in range(fit_params.shape[0]):
                     if wavenumber:
                         line_name = orb.core.Lines().round_nm2ang(
@@ -1231,14 +1178,106 @@ class SpectralCubeFitter(HDFCube):
                         'sigma_err': err_params[iline, 4],
                         'snr': snr[iline],
                         'flux_err': flux_err[iline]}
+                    all_fit_results.append(fit_results)
+            return all_fit_results, spectrum, result_fit['fitted-vector'], axis
 
 
+        if verbose:
+            self._print_msg("Extracting integrated spectra", color=True)
+        
+        calibration_coeff_map = self._get_calibration_coeff_map(
+            calibration_laser_map_path, nm_laser,
+            wavelength_calibration, axis_corr=axis_corr)
+
+        calibration_laser_map = self._get_calibration_laser_map(
+            calibration_laser_map_path, nm_laser, False,
+            axis_corr=axis_corr)
+                
+        # Create parameters file
+        paramsfile = orb.core.ParamsFile(
+            self._get_integrated_spectra_fit_params_path())
+        
+        # Extract median sky spectrum
+        if sky_regions_file_path is not None:
+            if verbose:
+                self._print_msg("Extracting sky median vector")
+            median_sky_spectrum = self._extract_spectrum_from_region(
+                orb.utils.misc.get_mask_from_ds9_region_file(
+                    sky_regions_file_path,
+                    [0, self.dimx],
+                    [0, self.dimy]),
+                calibration_coeff_map,
+                wavenumber, step, order, median=True)
+        else:
+            median_sky_spectrum = None
+            
+        # extract regions
+        integ_spectra = list()
+        
+        regions = orb.utils.misc.get_mask_from_ds9_region_file(
+            regions_file_path,
+            [0, self.dimx],
+            [0, self.dimy],
+            integrate=False)
+        
+        job_server, ncpus = self._init_pp_server()
+        progress = orb.core.ProgressBar(len(regions))
+        for iregion in range(0, len(regions), ncpus):
+            progress.update(
+                iregion,
+                info="region %d/%d"%(iregion, len(regions)))
+            if iregion + ncpus >= len(regions):
+                ncpus = len(regions) - iregion
+
+            jobs = [(ijob, job_server.submit(
+                fit_region, 
+                args=(iregion + ijob, lines, nm_laser, lines_velocity,
+                      poly_order, cov_pos, cov_sigma, cov_fwhm,
+                      fix_fwhm, fmodel, apodization, velocity_range,
+                      self._extract_spectrum_from_region(
+                          regions[iregion+ijob], calibration_coeff_map,
+                          wavenumber, step, order, silent=True),
+                      calibration_coeff_map,
+                      calibration_laser_map, regions[iregion+ijob],
+                      self.dimz, wavenumber, step, order,
+                      auto_sky_extraction,
+                      median_sky_spectrum, filter_range,
+                      lines_fwhm),
+                modules=("import numpy as np",
+                         "import orb.utils.spectrum",
+                         "import orb.utils.image",
+                         "import orb.fit",
+                         "import warnings",
+                         "import orb.core")))
+                    for ijob in range(ncpus)]
+
+            for ijob, job in jobs:
+                all_fit_results, spectrum, fitted_vector, axis = job()
+                # write spectrum and fit
+                region_index = iregion + ijob
+                spectrum_header = (
+                    self._get_integrated_spectrum_header(
+                        region_index, axis, wavenumber))
+
+                self.write_fits(
+                    self._get_integrated_spectrum_path(
+                        region_index),
+                    spectrum, fits_header=spectrum_header,
+                    overwrite=self.overwrite, silent=True)
+                self.write_fits(
+                    self._get_integrated_spectrum_fit_path(
+                        region_index),
+                    fitted_vector,
+                    fits_header=spectrum_header,
+                    overwrite=self.overwrite, silent=True)
+                
+                for fit_results in all_fit_results:
                     paramsfile.append(fit_results)
-
+                    
                     if verbose:
                         self._print_msg(
                             'Line: {} ----'.format(
-                                line_name))
+                                fit_results['line_name']))
                         for ikey in fit_results:
                             print '{}: {}'.format(
                                 ikey, fit_results[ikey])
@@ -1247,13 +1286,16 @@ class SpectralCubeFitter(HDFCube):
                     import pylab as pl
                     pl.plot(axis, spectrum,
                             label='orig spectrum')
-                    pl.plot(axis, result_fit['fitted-vector'],
+                    pl.plot(axis, fitted_vector,
                             label='fit')
                     pl.grid()
                     pl.legend()
                     pl.show()
 
-            integ_spectra.append(spectrum)
+                integ_spectra.append(spectrum)
+        self._close_pp_server(job_server)
+        progress.end()
+
                     
         return paramsfile
         

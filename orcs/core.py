@@ -423,10 +423,10 @@ class HDFCube(orb.core.HDFCube):
                 # x_min, x_max, y_min, y_max are now used for quadrants boundaries
                 x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
             iquad_data = self.get_data(x_min, x_max, y_min, y_max, 
-                                       0, self.dimz)
+                                       0, self.dimz, silent=silent)
 
             # multi-processing server init
-            job_server, ncpus = self._init_pp_server()
+            job_server, ncpus = self._init_pp_server(silent=silent)
             if not silent: progress = orb.core.ProgressBar(x_max - x_min)
             for ii in range(0, x_max - x_min, ncpus):
                 # no more jobs than columns
@@ -454,7 +454,7 @@ class HDFCube(orb.core.HDFCube):
                         counts += spec_nb
 
                 if not silent:
-                    progress.update(ii, info="column : {}/{}".format(
+                    progress.update(ii, info="ext column : {}/{}".format(
                         ii, int(self.dimx/float(DIV_NB))))
             self._close_pp_server(job_server)
             if not silent: progress.end()
