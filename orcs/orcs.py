@@ -753,21 +753,6 @@ class Orcs(OrcsBase):
             return_model_fit=True)
         wf = orig_fit_map - orig_model
 
-        ## self.write_fits('orig_fit_map.fits', orig_fit_map, overwrite=True)
-        ## self.write_fits('orig_model.fits', orig_model, overwrite=True)
-        ## self.write_fits('wf.fits', wf, overwrite=True)
-        ## orig_params = [2.37822267e+05,
-        ##                -3.13632074e-01,
-        ##                1.54482638e+01,
-        ##                -6.21992348e+00,
-        ##                2.28938414e+00,
-        ##                8.41218339e-01,
-        ##                1.54403551e+01]
-
-        ## orig_fit_map = self.read_fits('orig_fit_map.fits')
-        ## orig_model = self.read_fits('orig_model.fits')
-        ## wf = orig_fit_map - orig_model
-
         orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
         orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
         wf_bin = orb.utils.image.nanbin_image(wf, BINNING)
@@ -810,6 +795,22 @@ class Orcs(OrcsBase):
             res = ((dl_mod - dl.dat)/dl.err).astype(float)
             return res[~np.isnan(res)]
 
+        def print_params(params):
+            print ('    > New calibration laser map fit parameters:\n'
+                   + '    distance to mirror: {} cm\n'.format(
+                       params[0] * 1e-4)
+                   + '    X angle from the optical axis to the center: {} degrees\n'.format(
+                       math.fmod(float(params[1]),360))
+                   + '    Y angle from the optical axis to the center: {} degrees\n'.format(
+                       math.fmod(float(params[2]),360))
+                   + '    Tip-tilt angle of the detector along X: {} degrees\n'.format(
+                       math.fmod(float(params[3]),360))
+                   + '    Tip-tilt angle of the detector along Y: {} degrees\n'.format(
+                       math.fmod(float(params[4]),360))
+                   + '    Rotation angle of the detector: {} degrees\n'.format(
+                       math.fmod(float(params[5]),360))
+                   + '    Calibration laser wavelength: {} nm\n'.format(
+                       params[6]))
 
         # first fit to find the real calib_laser_nm        
         p_var = [calib_laser_nm]
@@ -836,6 +837,8 @@ class Orcs(OrcsBase):
                                      full_output=True)
         p = fit[0]
 
+        print_params(p)
+
         # get fit stats
         new_dl = model(p, wf, pixel_size, orig_fit_map, x, y)
         new_vel = orb.utils.spectrum.compute_radial_velocity(
@@ -844,20 +847,21 @@ class Orcs(OrcsBase):
 
         print 'fit residual std (in km/s):', np.nanstd(new_vel - vel.dat)
         print 'median error on the data (in km/s)', np.nanmedian(vel.err)
-        
-        ## import pylab as pl
-        ## ## pl.figure(4)
-        ## ## pl.hist((new_vel - vel.dat), bins=30)
-        ## pl.figure(0)
-        ## pl.scatter(x,y,c=vel.dat)
-        ## pl.colorbar()
-        ## pl.figure(1)
-        ## pl.scatter(x,y,c=new_vel)
-        ## pl.colorbar()
-        ## pl.figure(2)
-        ## pl.scatter(x,y,c=new_vel - vel.dat)
-        ## pl.colorbar()
-        ## pl.show()
+
+        if plot:
+            import pylab as pl
+            ## pl.figure(4)
+            ## pl.hist((new_vel - vel.dat), bins=30)
+            pl.figure(0)
+            pl.scatter(x,y,c=vel.dat)
+            pl.colorbar()
+            pl.figure(1)
+            pl.scatter(x,y,c=new_vel)
+            pl.colorbar()
+            pl.figure(2)
+            pl.scatter(x,y,c=new_vel - vel.dat)
+            pl.colorbar()
+            pl.show()
 
 
         # compute new calibration laser map
@@ -882,45 +886,6 @@ class Orcs(OrcsBase):
             self._get_skymap_fits_path(),
             new_vel_map, overwrite=True)
 
-        quit()
-
-
-        quit()
-        # interpolate map
-        s = None
-        k = 3
-        spl = scipy.interpolate.SmoothBivariateSpline(x, y, vel, w=w, s=s, kx=k, ky=k)
-        Z = spl(np.arange(dimx), np.arange(dimy))
-        vel[nans] = np.nan
-        Z[:int(np.nanmin(x[~np.isnan(vel)])),:] = np.nan
-        Z[int(np.nanmax(x[~np.isnan(vel)])):,:] = np.nan
-        Z[:,:int(np.nanmin(y[~np.isnan(vel)]))] = np.nan
-        Z[:,int(np.nanmax(y[~np.isnan(vel)])):] = np.nan
-
-        # write map
-        self.write_fits(
-            self._get_skymap_fits_path(),
-            Z, overwrite=True)
-        
-        # plot map
-        if plot:
-            import pylab as pl
-            ## # remove mean
-            ## vel -= np.nanmean(Z)
-            ## Z -= np.nanmean(Z)
-
-            vmin = orb.cutils.part_value(Z.flatten(), 0.03)
-            vmax = orb.cutils.part_value(Z.flatten(), 0.97)
-            
-            pl.scatter(x, y, c=vel, vmin=vmin, vmax=vmax)
-            pl.imshow(Z.T, vmin=vmin, vmax=vmax)
-            pl.xlim((0, dimx))
-            pl.ylim((0, dimy))
-            pl.colorbar()
-            cs = pl.contour(np.arange(dimx), np.arange(dimy),
-                            Z.T, 10, colors='1.', linewidths=3.)
-            pl.clabel(cs)
-            pl.show()
     
         
 
