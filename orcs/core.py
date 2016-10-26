@@ -606,17 +606,21 @@ class OrcsBase(Tools):
             optional=True)
 
         # get internal calibration map
-        calib_map = cube.get_calibration_laser_map()       
-        if calib_map is not None:
-            calib_map_path = self._get_calibration_laser_map_path()
-            self.write_fits(
-                calib_map_path, calib_map, overwrite=True)
-            self.options[
-                'calibration_laser_map_path'] = calib_map_path
-        else:
-            self._store_option_parameter(
-                'calibration_laser_map_path', 'CALIBMAP', str)
-        
+        self._store_option_parameter(
+            'calibration_laser_map_path', 'CALIBMAP',
+            str, optional=True)
+        if 'calibration_laser_map_path' not in self.options:
+            calib_map = cube.get_calibration_laser_map()
+            if calib_map is not None:
+                self.write_fits(
+                    self._get_calibration_laser_map_path(),
+                    calib_map, overwrite=True)
+                self.options['calibration_laser_map_path'] = (
+                    self._get_calibration_laser_map_path())
+            else:
+                self._print_error('Calibration map must be in the HDF5 cube or a path must be set in the option file (CALIBMAP)')
+            
+            
         self._print_msg('Calibration laser map used: {}'.format(
             self.options['calibration_laser_map_path']))
             

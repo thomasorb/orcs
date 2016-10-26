@@ -1105,7 +1105,6 @@ class SpectralCubeFitter(HDFCube):
                     wavenumber=wavenumber,
                     apodization=apodization,
                     velocity_range=velocity_range)
-
             except Exception, e:
                 warnings.warn('Exception occured during fit: {}'.format(e))
                 import traceback
@@ -1113,72 +1112,75 @@ class SpectralCubeFitter(HDFCube):
 
                 result_fit = []
 
+            # return if bad fit
+            if result_fit == []:
+                return list(), spectrum, np.zeros_like(spectrum), axis
 
-            if result_fit != []:
+            fit_params = result_fit['lines-params']
+            if 'lines-params-err' in result_fit:
+                err_params = result_fit['lines-params-err']
+                snr = result_fit['snr']
 
-                fit_params = result_fit['lines-params']
-                if 'lines-params-err' in result_fit:
-                    err_params = result_fit['lines-params-err']
-                    snr = result_fit['snr']
+            else:
+                err_params = np.empty_like(fit_params)
+                err_params.fill(np.nan)
+                snr = np.empty(fit_params.shape[0])
+                snr.fill(np.nan)
 
+            velocities = result_fit['velocity']
+            if 'velocity-err' in result_fit:
+                velocities_err = result_fit['velocity-err']
+            else:
+                velocities_err = np.empty_like(velocities)
+                velocities_err.fill(np.nan)
+
+            broadening = result_fit['broadening']
+            if 'broadening-err' in result_fit:
+                broadening_err = result_fit['broadening-err']
+            else:
+                broadening_err = np.empty_like(broadening)
+                broadening_err.fill(np.nan)
+
+
+            flux = result_fit['flux']
+            if 'flux-err' in result_fit:
+                flux_err = result_fit['flux-err']
+            else:
+                flux_err = np.empty_like(flux)
+                flux_err.fill(np.nan)
+
+            all_fit_results = list()
+            for iline in range(fit_params.shape[0]):
+                if wavenumber:
+                    line_name = orb.core.Lines().round_nm2ang(
+                        orb.utils.spectrum.cm12nm(
+                            lines[iline]))
                 else:
-                    err_params = np.empty_like(fit_params)
-                    err_params.fill(np.nan)
-                    snr = np.empty(fit_params.shape[0])
-                    snr.fill(np.nan)
+                    line_name = orb.core.Lines().round_nm2ang(
+                        lines[iline])
+                fit_results = {
+                    'reg_index': region_index,
+                    'line_name': line_name,
+                    'h': fit_params[iline, 0],
+                    'a': fit_params[iline, 1],
+                    'x': fit_params[iline, 2],
+                    'v': velocities[iline],
+                    'fwhm': fit_params[iline, 3],
+                    'sigma': fit_params[iline, 4],
+                    'broadening': broadening[iline],
+                    'flux': flux[iline],
+                    'h_err': err_params[iline, 0],
+                    'a_err': err_params[iline, 1],
+                    'x_err': err_params[iline, 2],
+                    'v_err': velocities_err[iline],
+                    'broadening_err': broadening_err[iline],
+                    'fwhm_err': err_params[iline, 3],
+                    'sigma_err': err_params[iline, 4],
+                    'snr': snr[iline],
+                    'flux_err': flux_err[iline]}
+                all_fit_results.append(fit_results)
 
-                velocities = result_fit['velocity']
-                if 'velocity-err' in result_fit:
-                    velocities_err = result_fit['velocity-err']
-                else:
-                    velocities_err = np.empty_like(velocities)
-                    velocities_err.fill(np.nan)
-
-                broadening = result_fit['broadening']
-                if 'broadening-err' in result_fit:
-                    broadening_err = result_fit['broadening-err']
-                else:
-                    broadening_err = np.empty_like(broadening)
-                    broadening_err.fill(np.nan)
-
-                
-                flux = result_fit['flux']
-                if 'flux-err' in result_fit:
-                    flux_err = result_fit['flux-err']
-                else:
-                    flux_err = np.empty_like(flux)
-                    flux_err.fill(np.nan)
-
-                all_fit_results = list()
-                for iline in range(fit_params.shape[0]):
-                    if wavenumber:
-                        line_name = orb.core.Lines().round_nm2ang(
-                            orb.utils.spectrum.cm12nm(
-                                lines[iline]))
-                    else:
-                        line_name = orb.core.Lines().round_nm2ang(
-                            lines[iline])
-                    fit_results = {
-                        'reg_index': region_index,
-                        'line_name': line_name,
-                        'h': fit_params[iline, 0],
-                        'a': fit_params[iline, 1],
-                        'x': fit_params[iline, 2],
-                        'v': velocities[iline],
-                        'fwhm': fit_params[iline, 3],
-                        'sigma': fit_params[iline, 4],
-                        'broadening': broadening[iline],
-                        'flux': flux[iline],
-                        'h_err': err_params[iline, 0],
-                        'a_err': err_params[iline, 1],
-                        'x_err': err_params[iline, 2],
-                        'v_err': velocities_err[iline],
-                        'broadening_err': broadening_err[iline],
-                        'fwhm_err': err_params[iline, 3],
-                        'sigma_err': err_params[iline, 4],
-                        'snr': snr[iline],
-                        'flux_err': flux_err[iline]}
-                    all_fit_results.append(fit_results)
+            
             return all_fit_results, spectrum, result_fit['fitted-vector'], axis
 
 
@@ -1284,12 +1286,20 @@ class SpectralCubeFitter(HDFCube):
 
                 if plot:
                     import pylab as pl
-                    pl.plot(axis, spectrum,
-                            label='orig spectrum')
-                    pl.plot(axis, fitted_vector,
-                            label='fit')
-                    pl.grid()
-                    pl.legend()
+                    ax1 = pl.subplot(211)
+                    ax1.plot(axis, spectrum, c= '0.3',
+                             ls='--', lw=1.5,
+                             label='orig spectrum')
+                    ax1.plot(axis, fitted_vector, c= '0.',
+                             ls='-', lw=1.5,
+                             label='fit')
+                    ax1.grid()
+                    ax1.legend()
+                    ax2 = pl.subplot(212, sharex=ax1)
+                    ax2.plot(axis, spectrum - fitted_vector, c= 'red',
+                             ls='-', lw=1.5, label='residual')
+                    ax2.grid()
+                    ax2.legend()
                     pl.show()
 
                 integ_spectra.append(spectrum)
