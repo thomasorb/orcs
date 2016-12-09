@@ -57,7 +57,6 @@ class OrcsTweak(OrcsBase):
     
         :param kwargs: Kwargs are :meth:`core.Tools` properties. 
         """
-
         OrcsBase.__init__(self, spectrum_cube_path, **kwargs)
         self.spectralcube = SpectralCubeTweaker(
             self.options['spectrum_cube_path'],
@@ -101,4 +100,21 @@ class OrcsTweak(OrcsBase):
             self.options['wavelength_calibration'],
             self.config['CALIB_NM_LASER'],
             axis_corr=self.options['axis_corr'])
+        
+
+    def detect_sources(self, signal_range=None, fast=True):
+
+        if signal_range is None:
+            signal_range = self.options['filter_range']
+
+        self.spectralcube.detect_sources(
+            self.options['wavenumber'],
+            self.options['step'],
+            self.options['order'],
+            self.options['calibration_laser_map_path'],
+            self.options['wavelength_calibration'],
+            self.config['CALIB_NM_LASER'],
+            signal_range,
+            axis_corr=self.options['axis_corr'],
+            fast=fast)
         

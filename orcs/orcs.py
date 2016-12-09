@@ -146,17 +146,6 @@ class Orcs(OrcsBase):
         ## self._store_option_parameter('plot', 'INTEG_PLOT', bool,
         ##                        optional=True)
 
-        # filter boundaries
-        self._store_option_parameter('filter_range', 'RANGE_NM', str, ',',
-                               post_cast=float, optional=True)
-        if 'filter_range' not in self.options:
-            self.options['filter_range'] = orb.utils.filters.read_filter_file(
-                self._get_filter_file_path(self.options['filter_name']))[2:]
-
-        if self.options['wavenumber']:
-            self.options['filter_range'] = orb.utils.spectrum.nm2cm1(
-                self.options['filter_range'])
-
         # print some info about the cube parameters
         self._print_msg('Step size: {} nm'.format(
             self.options['step']))
@@ -471,7 +460,7 @@ class Orcs(OrcsBase):
             self.options['order'],
             self.options['calibration_laser_map_path'],
             self.options['wavelength_calibration'],
-            self.config['CALIB_NM_LASER'],
+            self.get_calib_laser_nm(),
             axis_corr=self.options['axis_corr'],
             poly_order=self.options.get('poly_order'),
             sky_regions_file_path=self.options.get('sky_regions_path'),
@@ -502,7 +491,7 @@ class Orcs(OrcsBase):
             self.options['order'],
             self.options['calibration_laser_map_path'],
             self.options['wavelength_calibration'],
-            self.config['CALIB_NM_LASER'],
+            self.get_calib_laser_nm(),
             poly_order=self.options.get('poly_order'),
             fmodel=self._get_fmodel(),
             fix_fwhm=self._get_fix_fwhm(),
@@ -525,7 +514,7 @@ class Orcs(OrcsBase):
             self.options['wavenumber'],
             self.options['calibration_laser_map_path'],
             self.options['wavelength_calibration'],
-            self.config['CALIB_NM_LASER'])
+            self.get_calib_laser_nm())
             
     def fit_integrated_spectra(self, verbose=True):
         """Fit integrated spectra.
@@ -550,7 +539,7 @@ class Orcs(OrcsBase):
             self.options['order'],
             self.options['calibration_laser_map_path'],
             self.options['wavelength_calibration'],
-            self.config['CALIB_NM_LASER'],
+            self.get_calib_laser_nm(),
             poly_order=self.options.get('poly_order'),
             sky_regions_file_path=self.options.get('sky_regions_path'),
             fmodel=self._get_fmodel(),
@@ -684,7 +673,7 @@ class Orcs(OrcsBase):
                        params[6]))
 
         BINNING = 6
-        calib_laser_nm = self.config['CALIB_NM_LASER']
+        calib_laser_nm = self.get_calib_laser_nm()
         pixel_size = self.config['PIX_SIZE_CAM1']
         calib_laser_map = self.read_fits(
             self.options['calibration_laser_map_path'])
@@ -821,14 +810,14 @@ class Orcs(OrcsBase):
             calib_laser_map, new_calib_laser_nm, pixel_size=pixel_size,
             return_model_fit=True)
 
-        orb.utils.io.write_fits('orig_fit_map.fits', orig_fit_map,
-        overwrite=True)
-        orb.utils.io.write_fits('orig_model.fits', orig_model, overwrite=True)
-        orb.utils.io.write_fits('orig_params.fits', orig_params,
-        overwrite=True)
-        orig_fit_map = orb.utils.io.read_fits('orig_fit_map.fits')
-        orig_model = orb.utils.io.read_fits('orig_model.fits')
-        orig_params = orb.utils.io.read_fits('orig_params.fits')
+        ## orb.utils.io.write_fits('orig_fit_map.fits', orig_fit_map,
+        ## overwrite=True)
+        ## orb.utils.io.write_fits('orig_model.fits', orig_model, overwrite=True)
+        ## orb.utils.io.write_fits('orig_params.fits', orig_params,
+        ## overwrite=True)
+        ## orig_fit_map = orb.utils.io.read_fits('orig_fit_map.fits')
+        ## orig_model = orb.utils.io.read_fits('orig_model.fits')
+        ## orig_params = orb.utils.io.read_fits('orig_params.fits')
 
         orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
         orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
@@ -878,22 +867,6 @@ class Orcs(OrcsBase):
         print 'fit residual std (in km/s):', np.nanstd(new_vel - vel.dat)
         print 'median error on the data (in km/s)', np.nanmedian(vel.err)
 
-        if plot:
-            import pylab as pl
-            ## pl.figure(4)
-            ## pl.hist((new_vel - vel.dat), bins=30)
-            pl.figure(0)
-            pl.scatter(x,y,c=vel.dat)
-            pl.colorbar()
-            pl.figure(1)
-            pl.scatter(x,y,c=new_vel)
-            pl.colorbar()
-            pl.figure(2)
-            pl.scatter(x,y,c=new_vel - vel.dat)
-            pl.colorbar()
-            pl.show()
-
-
         # compute new calibration laser map
         new_calib_map = (orb.utils.image.simulate_calibration_laser_map(
             wf.shape[0], wf.shape[1], pixel_size,
@@ -928,6 +901,20 @@ class Orcs(OrcsBase):
             new_vel_map, overwrite=True)
 
     
-        
+        if plot:
+            import pylab as pl
+            ## pl.figure(4)
+            ## pl.hist((new_vel - vel.dat), bins=30)
+            pl.figure(0)
+            pl.scatter(x,y,c=vel.dat)
+            pl.colorbar()
+            pl.figure(1)
+            pl.scatter(x,y,c=new_vel)
+            pl.colorbar()
+            pl.figure(2)
+            pl.scatter(x,y,c=new_vel - vel.dat)
+            pl.colorbar()
+            pl.show()
+
 
 

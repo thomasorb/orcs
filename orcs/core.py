@@ -35,6 +35,8 @@ import numpy as np
 import astropy.io.fits as pyfits
 import astropy.wcs as pywcs
 import scipy.interpolate
+import marshal
+import time
 
 # import ORB
 try:
@@ -588,6 +590,8 @@ class OrcsBase(Tools):
         self._store_option_parameter('step', 'STEP', float)
         self._store_option_parameter('order', 'ORDER', int)
         self._store_option_parameter('axis_corr', 'AXISCORR', float)
+        self._store_option_parameter('nm_laser', 'CALIBNM', float)
+
 
         # wavenumber
         self._store_option_parameter('wavetype', 'WAVTYPE', str)
@@ -654,6 +658,27 @@ class OrcsBase(Tools):
         if 'hour_ut' not in self.options:
             self.options['hour_ut'] = (0.,0.,0.)
 
+        # filter boundaries
+        self._store_option_parameter('filter_range', 'RANGE_NM', str, split=',',
+                               post_cast=float, optional=True)
+        if 'filter_range' not in self.options:
+            self.options['filter_range'] = orb.utils.filters.read_filter_file(
+                self._get_filter_file_path(self.options['filter_name']))[2:]
+
+        if self.options['wavenumber']:
+            self.options['filter_range'] = orb.utils.spectrum.nm2cm1(
+                self.options['filter_range'])
+
+        
+
+
+    def get_calib_laser_nm(self):
+        """Return the calibration laser wavelength read from the cube
+        header if it exists. Else return the value found in the
+        configuration file.
+        """
+        if 'nm_laser' in self.options: return self.options['nm_laser']
+        else: return self.config['CALIB_NM_LASER']
 
     def _store_config_parameter(self, key, cast):
         """Store a configuration parameter
@@ -784,6 +809,17 @@ class LineMaps(Tools):
 
         if np.size(self.line_names) == 1:
             self.line_names = np.array([np.squeeze(self.line_names)])
+
+        # manage lines with same name
+        _line_names = list()
+        for line in self.line_names:
+            test_line = str(line)
+            index = 2
+            while test_line in _line_names:
+                test_line = str(line) + '_{}'.format(index)
+                index += 1
+            _line_names.append(test_line)
+        self.line_names = _line_names    
 
         self.data = dict()
         base_array =  np.empty((self.dimx, self.dimy, len(lines)),

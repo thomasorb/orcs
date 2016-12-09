@@ -76,6 +76,9 @@ def main(args):
     if args.subparser_name == 'subtract':
         orcs.subtract_spectrum(args.spectrum_file_path)
 
+    if args.subparser_name == 'detect':
+        orcs.detect_sources(signal_range=args.signal_range,
+                            fast=not args.slow)
 
 ####################################
 #### MAIN ##########################
@@ -123,6 +126,19 @@ if __name__ == "__main__":
                                 action='store',
                                 help="Path to the spectrum file")
 
+    parser_detect = subparsers.add_parser('detect', help='Detect emission-line sources.')
+
+    parser_detect.add_argument('--range', dest='signal_range',
+                               type=float,
+                               action='store',
+                               nargs=2,
+                               default=None,
+                               help="Signal range: min max. Must be given in wavenumber if the cube is in wavenumber.")
+    
+    parser_detect.add_argument('--slow', dest='slow',
+                               action='store_true',
+                               default=False,
+                               help="Use slow algorithm, much better on the borders and better around the stars because the background subtraction is based on a median. But much slower. Use the fast algorithm first to check if everything's ok before running the slow one.")
 
 
     if len(sys.argv) < 2:
