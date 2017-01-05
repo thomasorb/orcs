@@ -264,8 +264,8 @@ class Orcs(OrcsBase):
         self.options['mean_velocity'] = (
             self.options['object_velocity']
             - helio_velocity)
-        
-        self._print_msg('Mean velocity shift: {} km.s-1, {:.3f} {}'.format(
+
+        self._print_msg('Mean velocity shift: {} km.s-1, {} {}'.format(
             self.options['mean_velocity'], self.get_lines_shift(), self.unit))
 
         
