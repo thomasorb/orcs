@@ -1105,6 +1105,7 @@ class SpectralCubeFitter(HDFCube):
                     wavenumber=wavenumber,
                     apodization=apodization,
                     velocity_range=velocity_range)
+                
             except Exception, e:
                 warnings.warn('Exception occured during fit: {}'.format(e))
                 import traceback
@@ -1181,7 +1182,7 @@ class SpectralCubeFitter(HDFCube):
                 all_fit_results.append(fit_results)
 
             
-            return all_fit_results, spectrum, result_fit['fitted-vector'], axis
+            return all_fit_results, spectrum, result_fit['fitted-vector'], result_fit['fitted-models'], axis
 
 
         if verbose:
@@ -1254,7 +1255,7 @@ class SpectralCubeFitter(HDFCube):
                     for ijob in range(ncpus)]
 
             for ijob, job in jobs:
-                all_fit_results, spectrum, fitted_vector, axis = job()
+                all_fit_results, spectrum, fitted_vector, fitted_models, axis = job()
                 # write spectrum and fit
                 region_index = iregion + ijob
                 spectrum_header = (
@@ -1290,6 +1291,11 @@ class SpectralCubeFitter(HDFCube):
                     ax1.plot(axis, spectrum, c= '0.3',
                              ls='--', lw=1.5,
                              label='orig spectrum')
+                    
+                    for imod in range(len(fitted_models[0])):
+                        ax1.plot(axis, fitted_models[0][imod] + fitted_models[-2], c= '0.5',
+                                 ls='-', lw=1.5)
+
                     ax1.plot(axis, fitted_vector, c= '0.',
                              ls='-', lw=1.5,
                              label='fit')

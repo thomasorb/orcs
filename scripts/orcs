@@ -96,7 +96,8 @@ def main(args):
     elif args.subparser_name == 'mapsky':
         orcs.map_sky_velocity(x_range=args.x_range,
                               y_range=args.y_range,
-                              exclude_reg_file_path=args.exclude_reg)
+                              exclude_reg_file_path=args.exclude_reg,
+                              no_fit=args.no_fit)
 
     
         
@@ -202,6 +203,11 @@ if __name__ == "__main__":
                                 action='store',
                                 help="Region to exclude (a ds9 reg file)",
                                 default=None, type=str)
+    
+    parser_map_sky.add_argument('--nofit', dest='no_fit',
+                                action='store_true',
+                                help="Do not fit the sky velocity again, just recompute the sky map",
+                                default=False)
 
 
 

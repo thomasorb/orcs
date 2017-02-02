@@ -572,7 +572,6 @@ class OrcsBase(Tools):
             ncpus=self.ncpus,
             config_file_name=self.config_file_name)
         self.header = cube.get_cube_header()
-
         self.options['spectrum_cube_path'] = spectrum_cube_path
         
         # Observation parameters
