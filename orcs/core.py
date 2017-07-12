@@ -318,9 +318,12 @@ class HDFCube(orb.core.HDFCube):
                                       calibration_coeff_map,
                                       wavenumber, step, order,
                                       subtract_spectrum=None,
-                                      median=False, silent=False):
+                                      median=False,
+                                      mean_flux=False,
+                                      silent=False,
+                                      return_spec_nb=False):
         """
-        Extract the mean spectrum from a region of the cube.
+        Extract the integrated spectrum from a region of the cube.
         
         :param region: A list of the indices of the pixels integrated
           in the returned spectrum.
@@ -341,9 +344,17 @@ class HDFCube(orb.core.HDFCube):
           extracted spectrum before fitting parameters. Useful
           to remove sky spectrum. Both spectra must have the same size.
 
-        :param median: If True the integrated spectrum is the median
-          of the spectra. Else the integrated spectrum is the mean of
-          the spectra (Default False).
+        :param median: If True the integrated spectrum is computed
+          from the median of the spectra multiplied by the number of
+          pixels integrated. Else the integrated spectrum is the pure
+          sum of the spectra. In both cases the flux of the spectrum
+          is the total integrated flux (Default False).
+
+        :param mean_flux: (Optional) If True the flux of the spectrum
+          is the mean flux of the extracted region (default False).
+
+        :param return_spec_nb: (Optional) If True the number of
+          spectra integrated is returned (default False).
 
         :param silent: (Optional) If True, nothing is printed (default
           False).
@@ -373,12 +384,15 @@ class HDFCube(orb.core.HDFCube):
                     data_col[icol, :].fill(np.nan)
                     
             if median:
-                return bn.nanmedian(data_col, axis=0), 1
+                return (bn.nanmedian(data_col, axis=0) * np.nansum(mask_col),
+                        np.nansum(mask_col))
             else:
-                return bn.nansum(data_col, axis=0), np.nansum(mask_col)
+                return (bn.nansum(data_col, axis=0),
+                        np.nansum(mask_col))
             
             
-
+        if median:
+            self._print_warning('Median integration')
         mask = np.zeros((self.dimx, self.dimy), dtype=np.uint8)
         mask[region] = 1
 
@@ -460,17 +474,21 @@ class HDFCube(orb.core.HDFCube):
                         ii, int(self.dimx/float(DIV_NB))))
             self._close_pp_server(job_server)
             if not silent: progress.end()
-        
-        spectrum /= counts
                     
         if subtract_spectrum is not None:
-            spectrum -= subtract_spectrum
+            spectrum -= subtract_spectrum * counts
+
+        if mean_flux:
+            spectrum /= counts
 
         spectrum_function = scipy.interpolate.UnivariateSpline(
             base_axis[~np.isnan(spectrum)], spectrum[~np.isnan(spectrum)],
             s=0, k=1, ext=1)
-         
-        return spectrum_function
+
+        if return_spec_nb:
+            return spectrum_function, counts
+        else:
+            return spectrum_function
 
 
     def extract_integrated_spectrum(self, regions_file_path,
@@ -520,7 +538,7 @@ class HDFCube(orb.core.HDFCube):
                 [0, self.dimx],
                 [0, self.dimy]),
             calibration_coeff_map,
-            wavenumber, step, order, median=True)
+            wavenumber, step, order, median=False)
 
         median_spectrum = median_spectrum_spline(axis)
         

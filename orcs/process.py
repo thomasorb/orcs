@@ -42,6 +42,7 @@ import warnings
 import inspect
 import scipy.interpolate
 import marshal
+import gvar
 
 # import core
 from core import HDFCube, LineMaps, Tools
@@ -66,6 +67,34 @@ class SpectralCubeFitter(HDFCube):
     .. note:: parent class HDFCube is the ORCS implementation of
       HDFCube.
     """
+
+
+    def get_param(self, key):
+        """Get a fit parameter
+
+        :param key: parameter key
+        """
+        try:
+            self._fit_params
+        except AttributeError:
+            return None
+
+        if key in self._fit_params:
+            return self._fit_params[key]
+        else: raise KeyError('Parameter {} not set'.format(key))
+        
+
+    def set_param(self, key, value):
+        """Set a fit parameter
+
+        :param key: parameter key
+        """
+        try:
+            self._fit_params
+        except AttributeError:
+            self._fit_params = dict()
+
+        self._fit_params[key] = value
 
     def _get_maps_list_path(self):
         """Return path to the list of extacted emission lines maps"""
@@ -227,7 +256,8 @@ class SpectralCubeFitter(HDFCube):
                                  cov_pos, cov_fwhm, subtract,
                                  shift_guess, cov_sigma, binning,
                                  apodization, velocity_range,
-                                 init_velocity_map_col, init_sigma_map_col):
+                                 init_velocity_map_col, init_sigma_map_col,
+                                 sigma_sdev):
 
             RANGE_BORDER_PIX = 3
 
@@ -270,8 +300,9 @@ class SpectralCubeFitter(HDFCube):
                                 corr=coeff_map_col[ij]).astype(float)
                             
                         # interpolate and subtract                       
-                        data[ij,:] -= subtract(axis)
-                
+                        data[ij,:] -= subtract(axis) * binning**2.
+
+
                     ## FIT #############################
                         
                     # get signal range
@@ -300,18 +331,23 @@ class SpectralCubeFitter(HDFCube):
                         sigma_guess = init_sigma_map_col[ij]
                     else:
                         sigma_guess = 0.
-                        
-                    try:
-                        warnings.simplefilter('ignore')
-                        result_fit = orb.fit.fit_lines_in_spectrum(
+
+                    print sigma_sdev
+                    print shift_guess
+                    print sigma_guess
+                    shift_guess_gvar = gvar.gvar(shift_guess, np.ones_like(shift_guess) * 300)
+                    sigma_guess_gvar = gvar.gvar(sigma_guess, np.ones_like(sigma_guess) * sigma_sdev)
+
+                    def make_fit(_snr_guess, _sigma_guess, _shift_guess):
+                        return orb.fit.fit_lines_in_spectrum(
                             data[ij,:],
                             lines,
                             step, order,
                             nm_laser,
                             coeff_map_col[ij] * nm_laser,
                             fwhm_guess=ifwhm_guess,
-                            shift_guess=shift_guess,
-                            sigma_guess=sigma_guess,
+                            shift_guess=_shift_guess,
+                            sigma_guess=_sigma_guess,
                             cont_guess=None,
                             poly_order=poly_order,
                             cov_pos=cov_pos,
@@ -322,7 +358,12 @@ class SpectralCubeFitter(HDFCube):
                             signal_range=[min_range, max_range],
                             wavenumber=wavenumber,
                             apodization=apodization,
-                            velocity_range=ivelocity_range)
+                            velocity_range=ivelocity_range,
+                            snr_guess=_snr_guess)
+                    
+                    try:
+                        warnings.simplefilter('ignore')
+                        result_fit = make_fit(30, sigma_guess_gvar, shift_guess_gvar) 
                         warnings.simplefilter('default')
         
                     except Exception, e:
@@ -331,12 +372,25 @@ class SpectralCubeFitter(HDFCube):
                         print traceback.format_exc()
                         
                         result_fit = []
+
+                    if result_fit != []:
+                        snr_guess = np.nanmax(data[ij,:]) / np.nanstd(data[ij,:] - result_fit['fitted-vector'])
+                        try:
+                            warnings.simplefilter('ignore')
+                            result_fit = make_fit(snr_guess, sigma_guess_gvar, shift_guess_gvar)
+                            warnings.simplefilter('default')
+                            
+                        except Exception, e:
+                            warnings.warn('Exception occured during second fit: {}'.format(e))
+                            import traceback
+                            print traceback.format_exc()
+
                         
                 else: result_fit = []
 
                 for iline in range(len(lines)):
                     if result_fit != []:
-                        ## print result_fit['velocity'], result_fit['velocity-err']
+                        print result_fit['velocity'], result_fit['velocity-err']
                         ## import pylab as pl
                         ## pl.plot(data[ij,:])
                         ## pl.plot(result_fit['fitted-vector'])
@@ -460,7 +514,7 @@ class SpectralCubeFitter(HDFCube):
             else:
                 x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
 
-            # avoid loading quad with no pixel to fit in it
+            # avoid loading quad with no pixel to fit
             if np.any(mask[x_min:x_max, y_min:y_max]):
                 
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max, 
@@ -503,7 +557,8 @@ class SpectralCubeFitter(HDFCube):
                                   init_sigma_map[
                                       (x_min + ii + ijob*binning)/binning:
                                       (x_min + ii + (ijob+1)*binning)/binning,
-                                      y_min/binning:y_max/binning])),
+                                      y_min/binning:y_max/binning]),
+                              self.get_param('sigma_sdev')),
                         
                         modules=("import numpy as np",
                                  "import orb.fit",
@@ -511,7 +566,7 @@ class SpectralCubeFitter(HDFCube):
                                  "import orb.utils.spectrum",
                                  "import orcs.utils as utils",
                                  "import warnings", 'import math',
-                                 'import inspect')))
+                                 'import inspect', "import gvar")))
                             for ijob in range(ncpus)]
 
                     for ijob, job in jobs:
@@ -897,7 +952,7 @@ class SpectralCubeFitter(HDFCube):
             median_sky_spectrum = self._extract_spectrum_from_region(
                 sky_region,
                 calibration_coeff_map,
-                wavenumber, step, order)
+                wavenumber, step, order, mean_flux=True)
 
             ## import pylab as pl
             ## base_axis = orb.utils.spectrum.create_nm_axis(
@@ -1048,12 +1103,12 @@ class SpectralCubeFitter(HDFCube):
         def fit_region(region_index, lines, nm_laser, lines_velocity,
                        poly_order, cov_pos, cov_sigma, cov_fwhm,
                        fix_fwhm, fmodel, apodization, velocity_range,
-                       spectrum, calibration_coeff_map,
+                       (spectrum, counts), calibration_coeff_map,
                        calibration_laser_map, region, dimz, wavenumber,
                        step, order, auto_sky_extraction,
                        median_sky_spectrum, filter_range, lines_fwhm):
+            
             warnings.simplefilter('ignore', RuntimeWarning)
-
 
             icorr = np.nanmean(calibration_coeff_map[region])
             icalib = np.nanmean(calibration_laser_map[region])
@@ -1074,29 +1129,34 @@ class SpectralCubeFitter(HDFCube):
             spectrum = spectrum(axis.astype(float))
 
             if median_sky_spectrum is not None:
-                spectrum -= median_sky_spectrum(axis.astype(float))
+                spectrum -= median_sky_spectrum(axis.astype(float)) * counts
 
             # get signal range
             min_range = np.nanmin(filter_range)
             max_range = np.nanmax(filter_range)
 
             # adjust fwhm with incident angle
-
             ilines_fwhm = lines_fwhm * icorr
 
-            # fit spectrum                            
-            try:
-                result_fit = orb.fit.fit_lines_in_spectrum(
+            shift_guess = gvar.gvar(
+                lines_velocity, np.ones_like(lines_velocity) * self.get_param['shift_sdev'])
+            sigma_guess = gvar.gvar(
+                self.get_param['sigma_mean'], self.get_param['sigma_sdev'])
+
+            # fit spectrum
+            def make_fit(_snr_guess, _sigma_guess, _shift_guess):
+                return orb.fit.fit_lines_in_spectrum(
                     spectrum,
                     lines,
                     step, order,
                     nm_laser,
                     icorr * nm_laser,
                     fwhm_guess=ilines_fwhm,
-                    shift_guess=lines_velocity,
+                    shift_guess=_shift_guess,
                     cont_guess=None,
                     poly_order=poly_order,
                     cov_pos=cov_pos,
+                    sigma_guess=_sigma_guess,
                     cov_sigma=cov_sigma,
                     cov_fwhm=cov_fwhm,
                     fix_fwhm=fix_fwhm,
@@ -1104,18 +1164,34 @@ class SpectralCubeFitter(HDFCube):
                     signal_range=[min_range, max_range],
                     wavenumber=wavenumber,
                     apodization=apodization,
-                    velocity_range=velocity_range)
+                    velocity_range=velocity_range,
+                    snr_guess=_snr_guess)
+
+            try:
+                result_fit = make_fit(30, sigma_guess, shift_guess)
                 
             except Exception, e:
-                warnings.warn('Exception occured during fit: {}'.format(e))
+                warnings.warn('Exception occured during first fit: {}'.format(e))
                 import traceback
                 print traceback.format_exc()
 
                 result_fit = []
 
+            if result_fit != []:
+                snr_guess = np.nanmax(spectrum) / np.nanstd(spectrum - result_fit['fitted-vector'])
+                try:
+                    result_fit = make_fit(snr_guess, sigma_guess, shift_guess)
+                
+                except Exception, e:
+                    warnings.warn('Exception occured during second fit: {}'.format(e))
+                    import traceback
+                    print traceback.format_exc()
+
+
             # return if bad fit
             if result_fit == []:
-                return list(), spectrum, np.zeros_like(spectrum), axis
+                return ([dict() for _ in range(len(lines))], spectrum,
+                        np.zeros_like(spectrum), list(), axis)
 
             fit_params = result_fit['lines-params']
             if 'lines-params-err' in result_fit:
@@ -1197,8 +1273,7 @@ class SpectralCubeFitter(HDFCube):
             axis_corr=axis_corr)
                 
         # Create parameters file
-        paramsfile = orb.core.ParamsFile(
-            self._get_integrated_spectra_fit_params_path())
+        paramsfile = list()
         
         # Extract median sky spectrum
         if sky_regions_file_path is not None:
@@ -1210,7 +1285,8 @@ class SpectralCubeFitter(HDFCube):
                     [0, self.dimx],
                     [0, self.dimy]),
                 calibration_coeff_map,
-                wavenumber, step, order, median=True)
+                wavenumber, step, order,
+                mean_flux=True)
         else:
             median_sky_spectrum = None
             
@@ -1239,7 +1315,7 @@ class SpectralCubeFitter(HDFCube):
                       fix_fwhm, fmodel, apodization, velocity_range,
                       self._extract_spectrum_from_region(
                           regions[iregion+ijob], calibration_coeff_map,
-                          wavenumber, step, order, silent=True),
+                          wavenumber, step, order, silent=True, return_spec_nb=True),
                       calibration_coeff_map,
                       calibration_laser_map, regions[iregion+ijob],
                       self.dimz, wavenumber, step, order,
@@ -1251,11 +1327,14 @@ class SpectralCubeFitter(HDFCube):
                          "import orb.utils.image",
                          "import orb.fit",
                          "import warnings",
-                         "import orb.core")))
+                         "import orb.core",
+                         "import gvar")))
                     for ijob in range(ncpus)]
 
             for ijob, job in jobs:
-                all_fit_results, spectrum, fitted_vector, fitted_models, axis = job()
+                (all_fit_results, spectrum,
+                 fitted_vector, fitted_models, axis) = job()
+                
                 # write spectrum and fit
                 region_index = iregion + ijob
                 spectrum_header = (
@@ -1267,6 +1346,7 @@ class SpectralCubeFitter(HDFCube):
                         region_index),
                     spectrum, fits_header=spectrum_header,
                     overwrite=self.overwrite, silent=True)
+                    
                 self.write_fits(
                     self._get_integrated_spectrum_fit_path(
                         region_index),
@@ -1276,7 +1356,6 @@ class SpectralCubeFitter(HDFCube):
                 
                 for fit_results in all_fit_results:
                     paramsfile.append(fit_results)
-                    
                     if verbose:
                         self._print_msg(
                             'Line: {} ----'.format(
@@ -1285,7 +1364,8 @@ class SpectralCubeFitter(HDFCube):
                             print '{}: {}'.format(
                                 ikey, fit_results[ikey])
 
-                if plot:
+                if plot and len(fitted_models) > 0:
+                    
                     import pylab as pl
                     ax1 = pl.subplot(211)
                     ax1.plot(axis, spectrum, c= '0.3',
@@ -1566,8 +1646,6 @@ class SpectralCubeTweaker(HDFCube):
     def _get_detection_pos_frame_path(self):
         """Return path to the detection position frame"""
         return self._data_path_hdr + "detection_pos_frame.fits"
-
-
 
     def subtract_spectrum(self, spectrum, axis, wavenumber, step, order,
                           calibration_laser_map_path, wavelength_calibration,
