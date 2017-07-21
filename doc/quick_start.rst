@@ -7,11 +7,15 @@ Quick Start Guide
 A few words on ORCS
 -------------------
 
-ORCS is a fitting engine for SpIOMM and SITELLE's data. It is designed
-to fit each spectrum with a model in a parallel. The core fitting
-procedure relies on a classical least-square Levenberg-Marquardt
-algorithm. Which means that the statistical paradigm of ORCS is
-frequentist.
+ORCS is a Python module which gives you the keys to the analysis of
+your SITELLE data cube.
+
+It is composed of calibration methods, extracting tools and a powerful
+fitting engine specifically designed for interferometric data. When
+fitting spectra, both a classical (frequentist) and a Bayesian
+paradigm are available.
+
+
 
 ORCS has been built to accept any number of models (even grid
 models). Up to now only three models are available (and used by
@@ -163,39 +167,6 @@ HeI7065      706.528
 [OII]7130    733.016
 [ArIII]7751  775.112
 ============ ================
-
-Step 2: Sanity Checks
----------------------
-
-Before running a 12 hours fitting procedure it can be safe to check if
-the fitting parameters are correct. You can try a fit on a spectrum
-integrated over a small circular aperture with the option: **check**.
-
-.. code-block:: console
-
-  orcs sitelle option_file.orc check X Y R
-
-X, Y being respectively the center of the region (in pixels) along X
-and Y and R being the radius of the region (in pixels).
-
-This command will output a plot of the spectrum and its fit. Use it
-first over a high SNR region. If the fit does not work maybe the
-velocity is not well defined. Try the option ``VELOCITY_RANGE`` to
-give a larger fit range and look for the parameter ``v`` in the terminal output.
-
-Another sanity check can be done by defining a small region in the
-region file (OBJ_REG) and testing the fitting procedure (see step 3).
-
-Finally, the ``BINNING`` option can be used to try a fit over a binned
-cube (e.g. 3x3) which reduces a lot the fitting time (approximately by
-the square of the binning).
-
-Step 3: Run it
---------------
-
-.. code-block:: console
-
-  orcs sitelle option_file.orc start
 
 
 Step 4: Check the results

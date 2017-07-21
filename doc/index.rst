@@ -28,8 +28,11 @@ Table of contents
 
 .. contents::
 
+
 Quick Start
------------
+---------------------
+
+:download:`Example: fit a single spectrum <./script_example_fit_a_single_spectrum.html>`
 
 .. toctree::
    :maxdepth: 2
@@ -43,7 +46,9 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   orcs_module
+   core_module
+	   
+   process_module
 
    rvcorrect_module
 

@@ -1,4 +1,14 @@
 Core module
 ===========
 
+.. contents::
 
+
+HDFCube class
+-------------
+
+.. autoclass:: orcs.orcs.HDFCube
+   :members:
+   :private-members:
+   :show-inheritance:
+   :special-members:
