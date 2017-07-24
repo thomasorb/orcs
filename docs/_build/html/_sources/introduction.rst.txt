@@ -1,0 +1,57 @@
+Introduction
+============
+
+.. contents::
+   
+A few words on ORCS
+-------------------
+
+ORCS is a Python module which gives you the keys to the analysis of
+your SITELLE data cube.
+
+It is composed of calibration methods, extracting tools and a powerful
+fitting engine specifically designed for interferometric data. When
+fitting spectra, both a classical (frequentist) and a Bayesian
+paradigm are available.
+
+
+The fitting engine
+~~~~~~~~~~~~~~~~~~
+
+ORCS ftting engine has been built to accept any number of models (even grid
+models). Up to now only three models are available (and used by
+default):
+
+- Emission lines (sinc convoluted with a Gaussian giving a certain
+  broadening to the sinc)
+
+.. image:: images/emission-line-params.png
+   :width: 70%
+   :align: center
+  
+- Background (treated as a polynomial)
+    
+- Filter
+
+Emission lines and background model parameters are always defined via
+a list of keywords which must be passed to the fitting functions (see
+`Jupyter Examples`_). Emission line model can be constrained in
+velocity and broadening: multiple groups of lines can share the same
+velocity and/or the same broadening. They can also be constrained in
+amplitude ratio.
+
+.. image:: images/sky-spectrum.png
+   :width: 100%
+   :align: center
+
+
+The uncertainties on the returned parameters are based on the
+assumption that noise distribution is Gaussian and that there are not
+correlated. I have checked those assumptions by analyzing the
+distribution of the posterior probability on each parameter with a
+Monte-Carlo-Markov-Chain algorithm and found that they are very
+reasonable. The uncertainties returned by the MCMC algorithm are also
+very close to the one returned by our algorithm (less than a few
+percents).
+
+

@@ -1,0 +1,13 @@
+recursive-include orcs/ *.pyx
+
+
+#documentation
+recursive-include docs/_build/html *
+
+#Misc
+include LICENSE.txt
+include README.rst
+include requirements.txt
+
+recursive-exclude orcs/ *.c
+recursive-exclude orcs/ *.so

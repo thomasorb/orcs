@@ -1,0 +1,10 @@
+Installation
+============
+
+.. contents::
+
+ORCS_ depends on ORB_
+
+
+.. _ORB: https://github.com/thomasorb/orb
+.. _ORCS: https://github.com/thomasorb/orcs

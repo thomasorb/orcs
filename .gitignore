@@ -2,3 +2,9 @@
 *.py~
 *.pyx~
 *~
+*.so
+*.c
+dist/
+build/
+orcs.egg-info/
+.eggs/

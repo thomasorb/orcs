@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick Start Guide &mdash; Orcs 2.0.0b documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Orcs 2.0.0b documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Orcs</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick Start Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/quick_start.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+/* nice headers on first paragraph of info/warning boxes */
+.admonition .first {
+    margin: -12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    line-height: 1;
+    display: block;
+}
+.admonition.warning .first {
+    background: #f0b37e;
+}
+.admonition.note .first {
+    background: #6ab0de;
+}
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="quick-start-guide">
+<h1><a class="toc-backref" href="#id3">Quick Start Guide</a><a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#quick-start-guide" id="id3">Quick Start Guide</a><ul>
+<li><a class="reference internal" href="#a-few-words-on-orcs" id="id4">A few words on ORCS</a></li>
+<li><a class="reference internal" href="#step-1-create-your-option-file" id="id5">Step 1: Create your option file</a><ul>
+<li><a class="reference internal" href="#required-parameters" id="id6"><strong>REQUIRED</strong> parameters</a></li>
+<li><a class="reference internal" href="#optional-parameters" id="id7">Optional parameters</a></li>
+<li><a class="reference internal" href="#list-of-available-lines" id="id8">List of available lines</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#step-4-check-the-results" id="id9">Step 4: Check the results</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="a-few-words-on-orcs">
+<h2><a class="toc-backref" href="#id4">A few words on ORCS</a><a class="headerlink" href="#a-few-words-on-orcs" title="Permalink to this headline">¶</a></h2>
+<p>ORCS is a Python module which gives you the keys to the analysis of
+your SITELLE data cube.</p>
+<p>It is composed of calibration methods, extracting tools and a powerful
+fitting engine specifically designed for interferometric data. When
+fitting spectra, both a classical (frequentist) and a Bayesian
+paradigm are available.</p>
+<p>ORCS has been built to accept any number of models (even grid
+models). Up to now only three models are available (and used by
+default):</p>
+<ul class="simple">
+<li>Emission lines (sinc convoluted with a Gaussian giving a certain
+broadening to the sinc)</li>
+</ul>
+<a class="reference internal image-reference" href="_images/emission-line-params.png"><img alt="_images/emission-line-params.png" class="align-center" src="_images/emission-line-params.png" style="width: 70%;" /></a>
+<ul class="simple">
+<li>Background (treated as a polynomial)</li>
+<li>Filter</li>
+</ul>
+<p>Emission lines and background model parameters are defined in an
+&#8216;option file&#8217; which is described below. Emission line model can be
+constrained in velocity and broadening: multiple groups of lines can
+share the same velocity and/or the same broadening.</p>
+<a class="reference internal image-reference" href="_images/sky-spectrum.png"><img alt="_images/sky-spectrum.png" class="align-center" src="_images/sky-spectrum.png" style="width: 100%;" /></a>
+<p>The uncertainties on the returned parameters are based on the
+assumption that noise distribution is Gaussian and that there are not
+correlated. I have checked those assumptions by analyzing the
+distribution of the posterior probability on each parameter with a
+Monte-Carlo-Markov-Chain algorithm and found that they are very
+reasonable. The uncertainties returned by the MCMC algorithm are also
+very close to the one returned by our algorithm (less than a few
+percents).</p>
+</div>
+<div class="section" id="step-1-create-your-option-file">
+<h2><a class="toc-backref" href="#id5">Step 1: Create your option file</a><a class="headerlink" href="#step-1-create-your-option-file" title="Permalink to this headline">¶</a></h2>
+<p>Like ORBS, ORCS uses option files to load all the parameters. Here&#8217;s
+en example.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># option_file.orc</span>
+
+<span class="c1">## ORCS option file</span>
+
+<span class="c1"># Cube path</span>
+<span class="n">CUBEPATH</span> <span class="o">/</span><span class="n">cube</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">NGC000_SN3</span><span class="o">.</span><span class="n">merged</span><span class="o">.</span><span class="n">cm1</span><span class="o">.</span><span class="mf">1.0</span><span class="o">.</span><span class="n">hdf5</span>
+
+<span class="c1"># Emission-lines parameters</span>
+<span class="n">LINES</span> <span class="p">[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6548</span><span class="p">,</span><span class="n">Halpha</span><span class="p">,[</span><span class="n">NII</span><span class="p">]</span><span class="mi">6583</span><span class="p">,</span><span class="n">HeI6678</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6716</span><span class="p">,[</span><span class="n">SII</span><span class="p">]</span><span class="mi">6731</span> <span class="c1"># 1</span>
+
+<span class="c1"># (Optional) Velocity groups (same symbol for same group)</span>
+<span class="n">COV_LINES</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span>
+
+<span class="c1"># (Optional) Broadening groups (same symbol for same group)</span>
+<span class="n">COV_SIGMA</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span>
+
+<span class="c1"># Object mean velocity in km.s-1</span>
+<span class="n">OBJECT_VELOCITY</span> <span class="mi">500</span>
+
+<span class="c1"># (Optional) Velocity range to check for the initial guess</span>
+<span class="n">VELOCITY_RANGE</span> <span class="mi">1000</span>
+
+<span class="c1"># Path to a ds9 region file (with pixel coordinates) defining the</span>
+<span class="c1"># fitting region</span>
+<span class="n">OBJ_REG</span> <span class="n">ngc000</span><span class="o">.</span><span class="n">reg</span>
+
+<span class="c1"># Order of the polynomial used to fit continuum</span>
+<span class="n">POLY_ORDER</span> <span class="mi">0</span>
+
+<span class="c1"># (Optional) Sky regions ds9 file path</span>
+<span class="n">SKY_REG</span> <span class="n">ngc000</span><span class="o">-</span><span class="n">sky</span><span class="o">.</span><span class="n">reg</span>
+
+<span class="c1"># (Optional) &#39;on the fly&#39; binning of the data</span>
+<span class="n">BINNING</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<div class="section" id="required-parameters">
+<h3><a class="toc-backref" href="#id6"><strong>REQUIRED</strong> parameters</a><a class="headerlink" href="#required-parameters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">CUBEPATH</span></code>: Path to the hdf5 cube spectral cube.</li>
+<li><code class="docutils literal"><span class="pre">LINES</span></code>: Emission Lines names. Enter an integer or a float to use
+a non_recorded emission line (line wavelength must be given in
+nm). See <a class="reference internal" href="#list-lines"><span class="std std-ref">List of available lines</span></a> to get a list of the available lines. Sky
+lines can be added with SKY (be careful with fitting skylines, it&#8217;s
+incredibly longer and generally not useful as they can be simply
+removed). The same line can appear multiple time if ha a different
+velocity (but it must be assigned a different velocity group with
+the keyword <code class="docutils literal"><span class="pre">COV_SIGMA</span></code>)</li>
+<li><code class="docutils literal"><span class="pre">OBJECT_VELOCITY</span></code>: Mean object velocity in km.s-1. This parameter
+is very important and must be known precisely. If the object have a
+large velocity range, use velocity_range option.</li>
+<li><code class="docutils literal"><span class="pre">OBJ_REG</span></code>: Path to a ds9 region path defining the regions of the
+cube which have to be fitted (region parameters must be recorded in
+pixel coordinates, region shape can be a circle, a box or a
+polygon). Multiple regions can be defined at the same time. To
+remove a particular region its line can be commented (with a &#8216;#&#8217;) in
+the region file.</li>
+<li><code class="docutils literal"><span class="pre">POLY_ORDER</span></code>: Order of the polynomial used to fit continuum (avoid
+high order polynomials : 0, 1 or 2 are generally enough, to remove
+the sky it is better to use the keyword <code class="docutils literal"><span class="pre">SKY_REG</span></code>)</li>
+</ul>
+</div>
+<div class="section" id="optional-parameters">
+<h3><a class="toc-backref" href="#id7">Optional parameters</a><a class="headerlink" href="#optional-parameters" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">COV_LINES</span></code>: Lines velocity groups. Give the same number to the
+lines with the same expected velocity (e.g. same atom). <strong>If nothing
+is given all the lines are considered to have the same velocity</strong>.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">COV_SIGMA</span></code>: Lines broadening groups. Give the same number to the
+lines with the same expected broadening (e.g. same atom). <strong>If nothing
+is given all the lines are considered to have the same broadening</strong>.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">VELOCITY_RANGE</span></code>: A brute force procedure can be run on each
+spectrum to guess the real velocity in a certain range around the
+object mean velocity. Works very well on spectrum with a good SNR (&gt;
+10). But may be wrong on low SNR spectra. This function is best used
+with binned fit (see <code class="docutils literal"><span class="pre">BINNING</span></code> option below).</p>
+<p>Note that if the velocity has already been computed with a higher
+binning, this value will be used as an initial guess and the
+velocity range won&#8217;t be taken into account. This way, using the
+velocity range with a 10x10 binning is the best way to recover the
+general velocity profile of a galaxy and use it as an initial guess
+fot a smaller binning fit.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">SKY_REG</span></code>: Path to a ds9 region path defining the region of the
+cube which is integrated to create the sky spectrum (regions
+parameters must be recorded in pixel coordinates, region shape can
+be a circle, a box or a polygon). The sky spectrum will be removed
+from the fitted spectra.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">BINNING</span></code>: Data can be binned &#8216;on the fly&#8217; before being
+fitted. This option can be used to enhance the SNR of the
+spectra. Created binned maps are used by ORCS to fit a cube with a
+smaller binning. For example it can be more robust to start the
+first fit with a high binning value (e.g. 10x10) and lower the
+binning down to 1x1 (e.g. 10x10 then 6x6 then 3x3 then 1x1). This
+way the last computed parameters (especially the velocity) will be
+used in the next fit: 10x10 parameters will be used by the 6x6 fit,
+then 6x6 parameters will be used by the 3x3 fit etc. <em>This fitting
+procedure is especially useful for objects with a large velocity
+range (e.g. nearly edge-on galaxies)</em>.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="list-of-available-lines">
+<span id="list-lines"></span><h3><a class="toc-backref" href="#id8">List of available lines</a><a class="headerlink" href="#list-of-available-lines" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">NAME</th>
+<th class="head">Air Wavelength</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[OII]3726</td>
+<td>372.603</td>
+</tr>
+<tr class="row-odd"><td>[OII]3729</td>
+<td>372.882</td>
+</tr>
+<tr class="row-even"><td>[NeIII]3869</td>
+<td>386.875</td>
+</tr>
+<tr class="row-odd"><td>Hepsilon</td>
+<td>397.007</td>
+</tr>
+<tr class="row-even"><td>Hdelta</td>
+<td>410.176</td>
+</tr>
+<tr class="row-odd"><td>Hgamma</td>
+<td>434.047</td>
+</tr>
+<tr class="row-even"><td>[OIII]4363</td>
+<td>436.321</td>
+</tr>
+<tr class="row-odd"><td>Hbeta</td>
+<td>486.133</td>
+</tr>
+<tr class="row-even"><td>[OIII]4959</td>
+<td>495.891</td>
+</tr>
+<tr class="row-odd"><td>[OIII]5007</td>
+<td>500.684</td>
+</tr>
+<tr class="row-even"><td>HeI5876</td>
+<td>587.567</td>
+</tr>
+<tr class="row-odd"><td>[OI]6300</td>
+<td>630.030</td>
+</tr>
+<tr class="row-even"><td>[SIII]6312</td>
+<td>631.21</td>
+</tr>
+<tr class="row-odd"><td>[NII]6548</td>
+<td>654.803</td>
+</tr>
+<tr class="row-even"><td>Halpha</td>
+<td>656.280</td>
+</tr>
+<tr class="row-odd"><td>[NII]6583</td>
+<td>658.341</td>
+</tr>
+<tr class="row-even"><td>HeI6678</td>
+<td>667.815</td>
+</tr>
+<tr class="row-odd"><td>[SII]6716</td>
+<td>671.647</td>
+</tr>
+<tr class="row-even"><td>[SII]6731</td>
+<td>673.085</td>
+</tr>
+<tr class="row-odd"><td>HeI7065</td>
+<td>706.528</td>
+</tr>
+<tr class="row-even"><td>[ArIII]7136</td>
+<td>713.578</td>
+</tr>
+<tr class="row-odd"><td>[OII]7120</td>
+<td>731.965</td>
+</tr>
+<tr class="row-even"><td>[OII]7130</td>
+<td>733.016</td>
+</tr>
+<tr class="row-odd"><td>[ArIII]7751</td>
+<td>775.112</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="step-4-check-the-results">
+<h2><a class="toc-backref" href="#id9">Step 4: Check the results</a><a class="headerlink" href="#step-4-check-the-results" title="Permalink to this headline">¶</a></h2>
+<p>Maps of the parameters of the fit can be found in the directory
+created by ORCS: <code class="docutils literal"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
+<p>Each line has 5 parameters (which gives 5 maps): height, amplitude,
+velocity, fwhm, sigma. Height and amplitude are given in
+ergs/cm^2/s/A. Velocity and broadening are given in km/s. FWHM is
+given in cm^-1.</p>
+<p>The flux map is also computed (from fwhm, amplitude and sigma
+parameters) and given in ergs/cm^2/s.</p>
+<p>Each fitted parameter is associated an uncertainty (<a href="#id1"><span class="problematic" id="id2">*</span></a>_err maps) given
+in the same unit.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Thomas Martin (thomas.martin.1@ulaval.ca).
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

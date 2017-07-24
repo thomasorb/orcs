@@ -1,0 +1,824 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example of a single spectrum fit. &mdash; Orcs 2.0.0b documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Orcs 2.0.0b documentation" href="index.html"/>
+        <link rel="up" title="Examples" href="examples.html"/>
+        <link rel="next" title="Core module" href="core_module.html"/>
+        <link rel="prev" title="Examples" href="examples.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0b
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="examples.html#a-few-words-on-orcs">A few words on ORCS</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="examples.html#jupyter-examples">Jupyter Examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example of a single spectrum fit.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#First-step:-extracting-and-viewing-the-spectrum">First step: extracting and viewing the spectrum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Second-step:-fitting-the-spectrum">Second step: fitting the spectrum</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Orcs</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="examples.html">Examples</a> &raquo;</li>
+        
+      <li>Example of a single spectrum fit.</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/script_example_fit_a_single_spectrum.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 8ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-bold { font-weight: bold; }
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+/* nice headers on first paragraph of info/warning boxes */
+.admonition .first {
+    margin: -12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    line-height: 1;
+    display: block;
+}
+.admonition.warning .first {
+    background: #f0b37e;
+}
+.admonition.note .first {
+    background: #6ab0de;
+}
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="Example-of-a-single-spectrum-fit.">
+<h1>Example of a single spectrum fit.<a class="headerlink" href="#Example-of-a-single-spectrum-fit." title="Permalink to this headline">¶</a></h1>
+<div class="section" id="First-step:-extracting-and-viewing-the-spectrum">
+<h2>First step: extracting and viewing the spectrum<a class="headerlink" href="#First-step:-extracting-and-viewing-the-spectrum" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
+<span class="kn">from</span> <span class="nn">orcs.core</span> <span class="kn">import</span> <span class="n">HDFCube</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-fg">  File </span><span class="ansi-green-fg">&#34;/home/thomas/Astro/Python/ORB/Orcs/orcs/core.py&#34;</span><span class="ansi-cyan-fg">, line </span><span class="ansi-green-fg">863</span>
+<span class="ansi-red-fg">    is hasattr(self, &#39;sky_velocity_map&#39;):</span>
+     ^
+<span class="ansi-red-fg">SyntaxError</span><span class="ansi-red-fg">:</span> invalid syntax
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># load spectral cube</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">HDFCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-3-6811f05bd778&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-red-fg"># load spectral cube</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>cube <span class="ansi-blue-fg">=</span> HDFCube<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-red-fg">NameError</span>: name &#39;HDFCube&#39; is not defined
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># extract and plot a spectrum at x=919 y=893 integrated over a radius of 2 pixels</span>
+<span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">extract_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.016 s]
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.444 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[4]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>[&lt;matplotlib.lines.Line2D at 0x7f91a392e110&gt;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_fit_a_single_spectrum_4_2.png" src="_images/script_example_fit_a_single_spectrum_4_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Second-step:-fitting-the-spectrum">
+<h2>Second step: fitting the spectrum<a class="headerlink" href="#Second-step:-fitting-the-spectrum" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The emission lines to fit are passed by name (their wavenumber, in
+cm-1, could also be given directly). Remember that:</li>
+</ul>
+<p><span class="math">\(\sigma [\text{cm}^{-1}] = \frac{1e7}{\lambda [\text{nm}]}\)</span></p>
+<ul class="simple">
+<li>The line model is <code class="docutils literal"><span class="pre">gaussian</span></code> by default. Here we use the more
+realistic model of a cardinal sinus convoluted with a gaussian
+<code class="docutils literal"><span class="pre">sincgauss</span></code>:</li>
+</ul>
+<p><code class="docutils literal"><span class="pre">fmodel</span> <span class="pre">=</span> <span class="pre">'sincgauss'</span></code></p>
+<ul class="simple">
+<li>The velocity of the lines is -513 km/s. It is passed with the
+argument:</li>
+</ul>
+<p><code class="docutils literal"><span class="pre">pos_cov</span> <span class="pre">=</span> <span class="pre">-513</span></code></p>
+<p>The velocity is considered as a covarying parameter. By default all the
+lines are considered to share the same velocity, i.e. they all have the
+same covarying group. That&#8217;s why the fitted velocity is the same for
+both lines.</p>
+<ul class="simple">
+<li>The broadening is considered to be a free parameter by default. It
+can be different for each line.</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                                                     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
+<span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Flux: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;====================&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.016 s]
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.422 s]
+<span class="ansi-yellow-fg">17-07-18|09:36:14 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:129: UserWarning: No SNR guess given. Fit mode is classic.
+  warnings.warn(&#39;No SNR guess given. Fit mode is classic.&#39;)
+</span>
+<span class="ansi-yellow-fg">17-07-18|09:36:14 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/utils/spectrum.py:413: RuntimeWarning: invalid value encountered in multiply
+  return h + a * orb.cgvar.sincgauss1d(a_, b_)
+</span>
+<span class="ansi-yellow-fg">17-07-18|09:36:14 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/utils/spectrum.py:413: RuntimeWarning: invalid value encountered in cdouble_scalars
+  return h + a * orb.cgvar.sincgauss1d(a_, b_)
+</span>
+
+===== Results ======
+Velocity:  [-506.8(1.3) -506.8(1.3)]
+Broadening:  [26.4(1.6) 30.2(6.1)]
+Flux:  [1.611(81)e-15 4.57(88)e-16]
+====================
+</pre></div></div>
+</div>
+<div class="section" id="Ungroup-the-velocity-parameter">
+<h3>Ungroup the velocity parameter<a class="headerlink" href="#Ungroup-the-velocity-parameter" title="Permalink to this headline">¶</a></h3>
+<p>We can ungroup the velocity of the emission lines by giving each line a
+unique group label. We can set:</p>
+<p><code class="docutils literal"><span class="pre">pos_def=['1',</span> <span class="pre">'2']</span></code></p>
+<p>I this case the measured velocity must be different for both lines. But
+the precision will also be worsen.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                                                     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
+                                                     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
+<span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Flux: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;====================&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.012 s]
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.429 s]
+
+===== Results ======
+Velocity:  [-506.5(1.3) -511.1(5.4)]
+Broadening:  [26.5(1.6) 30.6(6.1)]
+Flux:  [1.612(81)e-15 4.62(89)e-16]
+====================
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Group-the-broadening-parameter">
+<h3>Group the broadening parameter<a class="headerlink" href="#Group-the-broadening-parameter" title="Permalink to this headline">¶</a></h3>
+<p>We can group the broadening parameter of the emission lines by giving
+the same group label to the lines. We can set:</p>
+<p><code class="docutils literal"><span class="pre">sigma_def=['1',</span> <span class="pre">'1']</span></code></p>
+<p>I this case the measured broadening will be the same for both lines and
+the precision of the estimations are better.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span>
+    <span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+    <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+    <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
+    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">])</span>
+<span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
+<span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Flux: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;====================&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.017 s]
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.442 s]
+
+===== Results ======
+Velocity:  [-506.7(1.3) -506.7(1.3)]
+Broadening:  [26.7(1.5) 26.7(1.5)]
+Flux:  [1.619(79)e-15 4.31(54)e-16]
+====================
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Plotting-the-result">
+<h3>Plotting the result<a class="headerlink" href="#Plotting-the-result" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Real spectrum&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fitted spectrum&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[8]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_fit_a_single_spectrum_12_1.png" src="_images/script_example_fit_a_single_spectrum_12_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Model-with-no-filter">
+<h3>Model with no filter<a class="headerlink" href="#Model-with-no-filter" title="Permalink to this headline">¶</a></h3>
+<p>The filter model can be removed but the range over which the fit is made
+must be limited to the filter bandpass. This is made transparently by
+setting the option</p>
+<p><code class="docutils literal"><span class="pre">nofilter</span> <span class="pre">=</span> <span class="pre">True</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span>
+    <span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+    <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+    <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
+    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">nofilter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
+<span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;Flux: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
+<span class="k">print</span> <span class="s1">&#39;====================&#39;</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Real spectrum&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fitted spectrum&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.020 s]
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.427 s]
+[14583.211806568279, 15462.642256308758]
+
+===== Results ======
+Velocity:  [-506.7(1.4) -506.7(1.4)]
+Broadening:  [26.9(1.7) 26.9(1.7)]
+Flux:  [1.610(88)e-15 4.36(60)e-16]
+====================
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[9]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_fit_a_single_spectrum_14_2.png" src="_images/script_example_fit_a_single_spectrum_14_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="examples.html" class="btn btn-neutral" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Thomas Martin (thomas.martin.1@ulaval.ca).
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0b',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
