@@ -476,10 +476,10 @@ class HDFCube(orb.core.HDFCube):
                     data_col[icol, :].fill(np.nan)
 
             if median:
-                return (bn.nanmedian(data_col, axis=0) * np.nansum(mask_col),
+                return (np.nanmedian(data_col, axis=0) * np.nansum(mask_col),
                         np.nansum(mask_col))
             else:
-                return (bn.nansum(data_col, axis=0),
+                return (np.nansum(data_col, axis=0),
                         np.nansum(mask_col))
                         
         if median:
@@ -560,8 +560,7 @@ class HDFCube(orb.core.HDFCube):
                               median, self.params.wavenumber,
                               self.params.base_axis, self.params.step,
                               self.params.order), 
-                        modules=('import bottleneck as bn',
-                                 'import numpy as np',
+                        modules=('import numpy as np',
                                  'import orb.utils.spectrum',
                                  'import orb.utils.vector'),
                         depfuncs=(_interpolate_spectrum,)))
