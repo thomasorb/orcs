@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example of a single spectrum fit. &mdash; Orcs 2.0.2 documentation</title>
+  <title>Example of a single spectrum fit. &mdash; Orcs 2.0.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.0.3 documentation" href="index.html"/>
         <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model+fit_1_line.html"/>
         <link rel="prev" title="Introduction" href="introduction.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -409,7 +409,7 @@ div.nboutput div.output_area.stderr {
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [2]:
 </pre></div>
@@ -420,18 +420,6 @@ div.nboutput div.output_area.stderr {
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-cyan-fg">  File </span><span class="ansi-green-fg">&#34;/home/thomas/Astro/Python/ORB/Orcs/orcs/core.py&#34;</span><span class="ansi-cyan-fg">, line </span><span class="ansi-green-fg">863</span>
-<span class="ansi-red-fg">    is hasattr(self, &#39;sky_velocity_map&#39;):</span>
-     ^
-<span class="ansi-red-fg">SyntaxError</span><span class="ansi-red-fg">:</span> invalid syntax
-
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
@@ -449,13 +437,9 @@ div.nboutput div.output_area.stderr {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-3-6811f05bd778&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-red-fg"># load spectral cube</span>
-<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>cube <span class="ansi-blue-fg">=</span> HDFCube<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">NameError</span>: name &#39;HDFCube&#39; is not defined
+17-07-24|17:34:34 # HDFCube.__init__ &gt; Data shape : (2048, 2064, 840)
+17-07-24|17:34:34 # HDFCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
+17-07-24|17:34:34 # HDFCube.__init__ &gt; Cube is CALIBRATED
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -475,9 +459,10 @@ div.nboutput div.output_area.stderr {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.016 s]
+17-07-24|17:34:35 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
+ [==========] [100%] [completed in 0.092 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.444 s]
+ [==========] [100%] [completed in 0.421 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -486,7 +471,7 @@ Init of the parallel processing server with 4 threads
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>[&lt;matplotlib.lines.Line2D at 0x7f91a392e110&gt;]
+<span></span>[&lt;matplotlib.lines.Line2D at 0x7fa9dd9f94d0&gt;]
 </pre></div>
 </div>
 </div>
@@ -546,23 +531,16 @@ can be different for each line.</li>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.016 s]
+17-07-24|17:34:39 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
+ [==========] [100%] [completed in 0.011 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.422 s]
-<span class="ansi-yellow-fg">17-07-18|09:36:14 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:129: UserWarning: No SNR guess given. Fit mode is classic.
-  warnings.warn(&#39;No SNR guess given. Fit mode is classic.&#39;)
-</span>
-<span class="ansi-yellow-fg">17-07-18|09:36:14 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/utils/spectrum.py:413: RuntimeWarning: invalid value encountered in multiply
-  return h + a * orb.cgvar.sincgauss1d(a_, b_)
-</span>
-<span class="ansi-yellow-fg">17-07-18|09:36:14 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/utils/spectrum.py:413: RuntimeWarning: invalid value encountered in cdouble_scalars
-  return h + a * orb.cgvar.sincgauss1d(a_, b_)
-</span>
+ [==========] [100%] [completed in 0.442 s]
+SNR GUESS None
 
 ===== Results ======
-Velocity:  [-506.8(1.3) -506.8(1.3)]
-Broadening:  [26.4(1.6) 30.2(6.1)]
-Flux:  [1.611(81)e-15 4.57(88)e-16]
+Velocity:  [-506.4(1.3) -506.4(1.3)]
+Broadening:  [25.7(1.7) 27.5(6.5)]
+Flux:  [1.676(88)e-15 4.53(92)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -596,14 +574,16 @@ the precision will also be worsen.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.012 s]
+17-07-24|17:34:47 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
+ [==========] [100%] [completed in 0.018 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.429 s]
+ [==========] [100%] [completed in 0.437 s]
+SNR GUESS None
 
 ===== Results ======
-Velocity:  [-506.5(1.3) -511.1(5.4)]
-Broadening:  [26.5(1.6) 30.6(6.1)]
-Flux:  [1.612(81)e-15 4.62(89)e-16]
+Velocity:  [-506.0(1.3) -512.6(5.3)]
+Broadening:  [25.7(1.7) 27.8(6.4)]
+Flux:  [1.677(88)e-15 4.60(93)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -640,14 +620,16 @@ the precision of the estimations are better.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.017 s]
+17-07-24|17:34:52 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
+ [==========] [100%] [completed in 0.018 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.442 s]
+ [==========] [100%] [completed in 0.415 s]
+SNR GUESS None
 
 ===== Results ======
-Velocity:  [-506.7(1.3) -506.7(1.3)]
-Broadening:  [26.7(1.5) 26.7(1.5)]
-Flux:  [1.619(79)e-15 4.31(54)e-16]
+Velocity:  [-506.5(1.3) -506.5(1.3)]
+Broadening:  [25.8(1.6) 25.8(1.6)]
+Flux:  [1.680(86)e-15 4.40(59)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -721,15 +703,16 @@ setting the option</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.020 s]
+17-07-24|17:34:57 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
+ [==========] [100%] [completed in 0.012 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.427 s]
-[14583.211806568279, 15462.642256308758]
+ [==========] [100%] [completed in 0.430 s]
+SNR GUESS None
 
 ===== Results ======
-Velocity:  [-506.7(1.4) -506.7(1.4)]
-Broadening:  [26.9(1.7) 26.9(1.7)]
-Flux:  [1.610(88)e-15 4.36(60)e-16]
+Velocity:  [-506.4(1.5) -506.4(1.5)]
+Broadening:  [26.1(1.8) 26.1(1.8)]
+Flux:  [1.673(98)e-15 4.46(67)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -808,7 +791,7 @@ Flux:  [1.610(88)e-15 4.36(60)e-16]
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.2',
+            VERSION:'2.0.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

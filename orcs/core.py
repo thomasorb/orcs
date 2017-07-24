@@ -411,6 +411,17 @@ class HDFCube(orb.core.HDFCube):
         return hdr
 
 
+    def _get_integrated_spectrum_fit_path(self, region_name):
+        """Return the path to an integrated spectrum fit
+
+        :param region_name: Name of the region
+        """
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "INTEGRATED"
+                + os.sep + basename + "integrated_spectrum_fit_{}.fits".format(region_name))
+        
+
     def _extract_spectrum_from_region(self, region,
                                       subtract_spectrum=None,
                                       median=False,
@@ -823,7 +834,7 @@ class HDFCube(orb.core.HDFCube):
                     
         # extract regions
         integ_spectra = list()
-        
+
         regions = self.get_mask_from_ds9_region_file(
             regions_file_path, integrate=False)
         

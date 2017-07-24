@@ -231,6 +231,7 @@ class SpectralCube(HDFCube):
 
 
             with self.open_file(self._get_temp_reg_path(), 'w') as f:
+                f.write('image\n')
                 for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
                     for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
                         if not exclude_mask[int(ix), int(iy)]:
@@ -335,7 +336,8 @@ class SpectralCube(HDFCube):
             self.get_calibration_laser_map_orig(), new_nm_laser, pixel_size=pixel_size,
             return_model_fit=True)
 
-        
+
+        ######################
         ## orb.utils.io.write_fits('orig_fit_map.fits', orig_fit_map,
         ## overwrite=True)
         ## orb.utils.io.write_fits('orig_model.fits', orig_model, overwrite=True)
@@ -345,6 +347,7 @@ class SpectralCube(HDFCube):
         ## orig_model = orb.utils.io.read_fits('orig_model.fits')
         ## orig_params = orb.utils.io.read_fits('orig_params.fits')
         #################
+        
 
         orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
         orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
@@ -359,11 +362,10 @@ class SpectralCube(HDFCube):
         #p_var = orig_params[:-1]
         #p_fix = [new_nm_laser]
         #p_ind = np.array([0,0,0,0,0,0,1])
-        p_var = orig_params
-        
+        p_var = orig_params[:-1]
+    
         p_fix = []
         p_ind = np.array([0,0,0,0,0,0,0])
-        
         fit = scipy.optimize.leastsq(diff,
                                      p_var,
                                      args=(p_fix, p_ind, wf_bin,

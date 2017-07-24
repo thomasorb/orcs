@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.0.2 documentation</title>
+  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.0.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.0.3 documentation" href="index.html"/>
         <link rel="next" title="Core module" href="core_module.html"/>
         <link rel="prev" title="Modelling and fitting two unresolved emission lines with a bayesian approach" href="script_example_model+fit_2_lines_bayes.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.0.2
+                2.0.3
               </div>
             
           
@@ -449,9 +449,9 @@ interferometer.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-19|08:42:26 # SpectralCube.__init__ &gt; Data shape : (2048, 2064, 840)
-17-07-19|08:42:26 # SpectralCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
-17-07-19|08:42:26 # SpectralCube.__init__ &gt; Cube is CALIBRATED
+17-07-24|18:24:50 # SpectralCube.__init__ &gt; Data shape : (2048, 2064, 840)
+17-07-24|18:24:50 # SpectralCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
+17-07-24|18:24:50 # SpectralCube.__init__ &gt; Cube is CALIBRATED
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -473,9 +473,10 @@ interferometer.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+17-07-24|18:24:50 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 1257
  [==========] [100%] [completed in 0.028 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.787 s]
+ [==========] [100%] [completed in 0.854 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -533,17 +534,20 @@ considered to be at 453.5 nm).</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.026 s]
+17-07-24|18:24:53 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 1257
+ [==========] [100%] [completed in 0.029 s]
 Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.729 s]
+ [==========] [100%] [completed in 0.744 s]
+SNR GUESS None
 
 ===== Results ======
-Velocity:  [73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6)
- 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6)
- 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6)
- 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6)
- 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6) 73.8(1.6)
- 73.8(1.6)]
+Velocity:  [73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
+ 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
+ 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
+ 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
+ 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
+ 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
+ 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -586,213 +590,17 @@ basic example it is recommended to limit the number of grid division to
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-19|08:42:31 # SpectralCube.map_sky_velocity &gt; X range: 0 2048, Y range: 0 2064
-17-07-19|08:42:31 # SpectralCube.map_sky_velocity &gt; Radius: 85.3333333333
-17-07-19|08:42:31 # SpectralCube.map_sky_velocity &gt; 100 regions to fit
- loading region: Shape : circle ( Number(1861.81818),Number(1876.36364),Number(85.33333) )
-
-17-07-19|08:42:35 # SpectralCube._fit_integrated_spectra &gt; Fitting region 0/100
-Velocity of the first line (km/s): 77.4(1.4)
-17-07-19|08:42:41 # SpectralCube._fit_integrated_spectra &gt; Fitting region 1/100
-Velocity of the first line (km/s): 76.7(1.4)
-17-07-19|08:42:46 # SpectralCube._fit_integrated_spectra &gt; Fitting region 2/100
-Velocity of the first line (km/s): 73.4(1.5)
-17-07-19|08:42:52 # SpectralCube._fit_integrated_spectra &gt; Fitting region 3/100
-Velocity of the first line (km/s): 71.8(1.4)
-17-07-19|08:42:58 # SpectralCube._fit_integrated_spectra &gt; Fitting region 4/100
-Velocity of the first line (km/s): 71.1(1.6)
-17-07-19|08:43:04 # SpectralCube._fit_integrated_spectra &gt; Fitting region 5/100
-Velocity of the first line (km/s): 70.3(1.8)
-17-07-19|08:43:10 # SpectralCube._fit_integrated_spectra &gt; Fitting region 6/100
-Velocity of the first line (km/s): 69.6(1.8)
-17-07-19|08:43:15 # SpectralCube._fit_integrated_spectra &gt; Fitting region 7/100
-Velocity of the first line (km/s): 68.5(1.9)
-17-07-19|08:43:21 # SpectralCube._fit_integrated_spectra &gt; Fitting region 8/100
-Velocity of the first line (km/s): 72.4(2.1)
-17-07-19|08:43:29 # SpectralCube._fit_integrated_spectra &gt; Fitting region 9/100
-Velocity of the first line (km/s): 70.3(1.8)
-17-07-19|08:43:39 # SpectralCube._fit_integrated_spectra &gt; Fitting region 10/100
-Velocity of the first line (km/s): 78.3(1.4)
-17-07-19|08:43:47 # SpectralCube._fit_integrated_spectra &gt; Fitting region 11/100
-Velocity of the first line (km/s): 77.3(1.4)
-17-07-19|08:43:53 # SpectralCube._fit_integrated_spectra &gt; Fitting region 12/100
-Velocity of the first line (km/s): 74.9(1.5)
-17-07-19|08:44:01 # SpectralCube._fit_integrated_spectra &gt; Fitting region 13/100
-Velocity of the first line (km/s): 71.4(1.4)
-17-07-19|08:44:11 # SpectralCube._fit_integrated_spectra &gt; Fitting region 14/100
-Velocity of the first line (km/s): 71.3(1.6)
-17-07-19|08:44:19 # SpectralCube._fit_integrated_spectra &gt; Fitting region 15/100
-Velocity of the first line (km/s): 70.9(1.8)
-17-07-19|08:44:27 # SpectralCube._fit_integrated_spectra &gt; Fitting region 16/100
-Velocity of the first line (km/s): 68.5(1.7)
-17-07-19|08:44:35 # SpectralCube._fit_integrated_spectra &gt; Fitting region 17/100
-Velocity of the first line (km/s): 67.9(1.7)
-17-07-19|08:44:45 # SpectralCube._fit_integrated_spectra &gt; Fitting region 18/100
-Velocity of the first line (km/s): 69.1(1.9)
-17-07-19|08:44:53 # SpectralCube._fit_integrated_spectra &gt; Fitting region 19/100
-Velocity of the first line (km/s): 70.5(1.7)
-17-07-19|08:45:02 # SpectralCube._fit_integrated_spectra &gt; Fitting region 20/100
-Velocity of the first line (km/s): 78.5(1.5)
-17-07-19|08:45:11 # SpectralCube._fit_integrated_spectra &gt; Fitting region 21/100
-Velocity of the first line (km/s): 78.6(1.5)
-17-07-19|08:45:20 # SpectralCube._fit_integrated_spectra &gt; Fitting region 22/100
-Velocity of the first line (km/s): 75.6(1.3)
-17-07-19|08:45:27 # SpectralCube._fit_integrated_spectra &gt; Fitting region 23/100
-Velocity of the first line (km/s): 74.1(1.3)
-17-07-19|08:45:36 # SpectralCube._fit_integrated_spectra &gt; Fitting region 24/100
-Velocity of the first line (km/s): 115.7(1.9)
-17-07-19|08:45:53 # SpectralCube._fit_integrated_spectra &gt; Fitting region 25/100
-Velocity of the first line (km/s): 75.7(2.0)
-17-07-19|08:46:02 # SpectralCube._fit_integrated_spectra &gt; Fitting region 26/100
-Velocity of the first line (km/s): 71.1(1.9)
-17-07-19|08:46:09 # SpectralCube._fit_integrated_spectra &gt; Fitting region 27/100
-Velocity of the first line (km/s): 69.1(1.7)
-17-07-19|08:46:17 # SpectralCube._fit_integrated_spectra &gt; Fitting region 28/100
-Velocity of the first line (km/s): 69.9(1.9)
-17-07-19|08:46:25 # SpectralCube._fit_integrated_spectra &gt; Fitting region 29/100
-Velocity of the first line (km/s): 71.9(1.7)
-17-07-19|08:46:32 # SpectralCube._fit_integrated_spectra &gt; Fitting region 30/100
-Velocity of the first line (km/s): 79.3(1.5)
-17-07-19|08:46:41 # SpectralCube._fit_integrated_spectra &gt; Fitting region 31/100
-Velocity of the first line (km/s): 79.0(1.4)
-17-07-19|08:46:50 # SpectralCube._fit_integrated_spectra &gt; Fitting region 32/100
-Velocity of the first line (km/s): 76.0(1.3)
-17-07-19|08:46:58 # SpectralCube._fit_integrated_spectra &gt; Fitting region 33/100
-Velocity of the first line (km/s): 68.3(1.5)
-17-07-19|08:47:05 # SpectralCube._fit_integrated_spectra &gt; Fitting region 34/100
-Velocity of the first line (km/s): 76.8(1.4)
-17-07-19|08:47:12 # SpectralCube._fit_integrated_spectra &gt; Fitting region 35/100
-Velocity of the first line (km/s): 126.5(2.2)
-17-07-19|08:47:22 # SpectralCube._fit_integrated_spectra &gt; Fitting region 36/100
-Velocity of the first line (km/s): 74.4(2.3)
-17-07-19|08:47:29 # SpectralCube._fit_integrated_spectra &gt; Fitting region 37/100
-Velocity of the first line (km/s): 71.2(1.9)
-17-07-19|08:47:38 # SpectralCube._fit_integrated_spectra &gt; Fitting region 38/100
-Velocity of the first line (km/s): 70.2(1.8)
-17-07-19|08:47:44 # SpectralCube._fit_integrated_spectra &gt; Fitting region 39/100
-Velocity of the first line (km/s): 73.5(1.5)
-17-07-19|08:47:54 # SpectralCube._fit_integrated_spectra &gt; Fitting region 40/100
-Velocity of the first line (km/s): 79.8(1.5)
-17-07-19|08:48:04 # SpectralCube._fit_integrated_spectra &gt; Fitting region 41/100
-Velocity of the first line (km/s): 77.5(1.8)
-17-07-19|08:48:13 # SpectralCube._fit_integrated_spectra &gt; Fitting region 42/100
-Velocity of the first line (km/s): 79.0(1.6)
-17-07-19|08:48:22 # SpectralCube._fit_integrated_spectra &gt; Fitting region 43/100
-Velocity of the first line (km/s): 89.4(2.6)
-17-07-19|08:48:29 # SpectralCube._fit_integrated_spectra &gt; Fitting region 44/100
-Velocity of the first line (km/s): 75.1(2.6)
-17-07-19|08:48:35 # SpectralCube._fit_integrated_spectra &gt; Fitting region 45/100
-Velocity of the first line (km/s): 86.1(3.9)
-17-07-19|08:48:41 # SpectralCube._fit_integrated_spectra &gt; Fitting region 46/100
-Velocity of the first line (km/s): 77.3(3.4)
-17-07-19|08:48:50 # SpectralCube._fit_integrated_spectra &gt; Fitting region 47/100
-Velocity of the first line (km/s): 73.2(2.1)
-17-07-19|08:48:58 # SpectralCube._fit_integrated_spectra &gt; Fitting region 48/100
-Velocity of the first line (km/s): 72.8(1.7)
-17-07-19|08:49:07 # SpectralCube._fit_integrated_spectra &gt; Fitting region 49/100
-Velocity of the first line (km/s): 75.5(1.4)
-17-07-19|08:49:16 # SpectralCube._fit_integrated_spectra &gt; Fitting region 50/100
-Velocity of the first line (km/s): 81.7(1.5)
-17-07-19|08:49:25 # SpectralCube._fit_integrated_spectra &gt; Fitting region 51/100
-Velocity of the first line (km/s): 81.2(1.4)
-17-07-19|08:49:34 # SpectralCube._fit_integrated_spectra &gt; Fitting region 52/100
-Velocity of the first line (km/s): 81.0(2.0)
-17-07-19|08:49:43 # SpectralCube._fit_integrated_spectra &gt; Fitting region 53/100
-Velocity of the first line (km/s): 77.4(2.1)
-17-07-19|08:49:49 # SpectralCube._fit_integrated_spectra &gt; Fitting region 54/100
-Velocity of the first line (km/s): 76.8(4.3)
-17-07-19|08:49:55 # SpectralCube._fit_integrated_spectra &gt; Fitting region 55/100
-Velocity of the first line (km/s): 83.7(3.5)
-17-07-19|08:50:03 # SpectralCube._fit_integrated_spectra &gt; Fitting region 56/100
-Velocity of the first line (km/s): 74.8(2.8)
-17-07-19|08:50:11 # SpectralCube._fit_integrated_spectra &gt; Fitting region 57/100
-Velocity of the first line (km/s): 77.1(1.7)
-17-07-19|08:50:20 # SpectralCube._fit_integrated_spectra &gt; Fitting region 58/100
-Velocity of the first line (km/s): 77.8(1.4)
-17-07-19|08:50:29 # SpectralCube._fit_integrated_spectra &gt; Fitting region 59/100
-Velocity of the first line (km/s): 78.9(1.2)
-17-07-19|08:50:38 # SpectralCube._fit_integrated_spectra &gt; Fitting region 60/100
-Velocity of the first line (km/s): 80.9(1.6)
-17-07-19|08:50:48 # SpectralCube._fit_integrated_spectra &gt; Fitting region 61/100
-Velocity of the first line (km/s): 80.6(1.5)
-17-07-19|08:50:56 # SpectralCube._fit_integrated_spectra &gt; Fitting region 62/100
-Velocity of the first line (km/s): 82.2(2.4)
-17-07-19|08:51:04 # SpectralCube._fit_integrated_spectra &gt; Fitting region 63/100
-Velocity of the first line (km/s): 76.5(3.0)
-17-07-19|08:51:11 # SpectralCube._fit_integrated_spectra &gt; Fitting region 64/100
-Velocity of the first line (km/s): 79.4(2.9)
-17-07-19|08:51:18 # SpectralCube._fit_integrated_spectra &gt; Fitting region 65/100
-Velocity of the first line (km/s): 71.0(2.4)
-17-07-19|08:51:24 # SpectralCube._fit_integrated_spectra &gt; Fitting region 66/100
-Velocity of the first line (km/s): 76.1(1.8)
-17-07-19|08:51:32 # SpectralCube._fit_integrated_spectra &gt; Fitting region 67/100
-Velocity of the first line (km/s): 79.5(1.2)
-17-07-19|08:51:40 # SpectralCube._fit_integrated_spectra &gt; Fitting region 68/100
-Velocity of the first line (km/s): 80.8(1.0)
-17-07-19|08:51:48 # SpectralCube._fit_integrated_spectra &gt; Fitting region 69/100
-Velocity of the first line (km/s): 84.4(1.3)
-17-07-19|08:51:57 # SpectralCube._fit_integrated_spectra &gt; Fitting region 70/100
-Velocity of the first line (km/s): 83.0(1.6)
-17-07-19|08:52:07 # SpectralCube._fit_integrated_spectra &gt; Fitting region 71/100
-Velocity of the first line (km/s): 84.0(1.5)
-17-07-19|08:52:16 # SpectralCube._fit_integrated_spectra &gt; Fitting region 72/100
-Velocity of the first line (km/s): 82.1(2.0)
-17-07-19|08:52:24 # SpectralCube._fit_integrated_spectra &gt; Fitting region 73/100
-Velocity of the first line (km/s): 78.8(2.4)
-17-07-19|08:52:33 # SpectralCube._fit_integrated_spectra &gt; Fitting region 74/100
-Velocity of the first line (km/s): 79.5(2.4)
-17-07-19|08:52:41 # SpectralCube._fit_integrated_spectra &gt; Fitting region 75/100
-Velocity of the first line (km/s): 77.7(1.8)
-17-07-19|08:52:50 # SpectralCube._fit_integrated_spectra &gt; Fitting region 76/100
-Velocity of the first line (km/s): 76.8(1.4)
-17-07-19|08:52:58 # SpectralCube._fit_integrated_spectra &gt; Fitting region 77/100
-Velocity of the first line (km/s): 76.0(1.0)
-17-07-19|08:53:07 # SpectralCube._fit_integrated_spectra &gt; Fitting region 78/100
-Velocity of the first line (km/s): 79.30(87)
-17-07-19|08:53:16 # SpectralCube._fit_integrated_spectra &gt; Fitting region 79/100
-Velocity of the first line (km/s): 84.80(96)
-17-07-19|08:53:24 # SpectralCube._fit_integrated_spectra &gt; Fitting region 80/100
-Velocity of the first line (km/s): 85.1(1.8)
-17-07-19|08:53:34 # SpectralCube._fit_integrated_spectra &gt; Fitting region 81/100
-Velocity of the first line (km/s): 84.1(1.4)
-17-07-19|08:53:42 # SpectralCube._fit_integrated_spectra &gt; Fitting region 82/100
-Velocity of the first line (km/s): 83.6(1.4)
-17-07-19|08:53:51 # SpectralCube._fit_integrated_spectra &gt; Fitting region 83/100
-Velocity of the first line (km/s): 79.6(1.5)
-17-07-19|08:54:00 # SpectralCube._fit_integrated_spectra &gt; Fitting region 84/100
-Velocity of the first line (km/s): 81.8(1.5)
-17-07-19|08:54:09 # SpectralCube._fit_integrated_spectra &gt; Fitting region 85/100
-Velocity of the first line (km/s): 78.3(1.4)
-17-07-19|08:54:19 # SpectralCube._fit_integrated_spectra &gt; Fitting region 86/100
-Velocity of the first line (km/s): 79.7(1.1)
-17-07-19|08:54:26 # SpectralCube._fit_integrated_spectra &gt; Fitting region 87/100
-Velocity of the first line (km/s): 82.94(89)
-17-07-19|08:54:36 # SpectralCube._fit_integrated_spectra &gt; Fitting region 88/100
-Velocity of the first line (km/s): 82.91(79)
-17-07-19|08:54:44 # SpectralCube._fit_integrated_spectra &gt; Fitting region 89/100
-Velocity of the first line (km/s): 85.33(94)
-17-07-19|08:54:53 # SpectralCube._fit_integrated_spectra &gt; Fitting region 90/100
-Velocity of the first line (km/s): 86.4(1.7)
-17-07-19|08:55:03 # SpectralCube._fit_integrated_spectra &gt; Fitting region 91/100
-Velocity of the first line (km/s): 85.4(1.5)
-17-07-19|08:55:11 # SpectralCube._fit_integrated_spectra &gt; Fitting region 92/100
-Velocity of the first line (km/s): 83.1(1.4)
-17-07-19|08:55:19 # SpectralCube._fit_integrated_spectra &gt; Fitting region 93/100
-Velocity of the first line (km/s): 81.0(1.3)
-17-07-19|08:55:28 # SpectralCube._fit_integrated_spectra &gt; Fitting region 94/100
-Velocity of the first line (km/s): 82.9(1.1)
-17-07-19|08:55:37 # SpectralCube._fit_integrated_spectra &gt; Fitting region 95/100
-Velocity of the first line (km/s): 85.0(1.0)
-17-07-19|08:55:46 # SpectralCube._fit_integrated_spectra &gt; Fitting region 96/100
-Velocity of the first line (km/s): 84.44(88)
-17-07-19|08:55:55 # SpectralCube._fit_integrated_spectra &gt; Fitting region 97/100
-Velocity of the first line (km/s): 84.72(77)
-17-07-19|08:56:05 # SpectralCube._fit_integrated_spectra &gt; Fitting region 98/100
-Velocity of the first line (km/s): 85.19(83)
-17-07-19|08:56:15 # SpectralCube._fit_integrated_spectra &gt; Fitting region 99/100
-Velocity of the first line (km/s): 84.50(96)
+17-07-24|18:24:57 # SpectralCube.map_sky_velocity &gt; fitting process already done. Do you really want to redo it again ?
+type [yes]: no
+<span class="ansi-yellow-fg">17-07-24|18:25:00 # SpectralCube.map_sky_velocity &gt; Warning: Fitting process not done again, only the final sky map is computed</span>
+<span class="ansi-yellow-fg">17-07-24|18:25:00 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orcs/orcs/process.py:304: RuntimeWarning: invalid value encountered in greater
+  sky_vel_map[sky_vel_map &gt; np.nanpercentile(sky_vel_map, 95)] = np.nan
+</span>
 First laser wavelentgh calibration estimation: 543.356235946 nm
 Angle at the center of the frame: 15.4977038652
+<span class="ansi-yellow-fg">17-07-24|18:25:00 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1038: RuntimeWarning: invalid value encountered in less
+  calib_laser_map[np.nonzero(calib_laser_map &lt; value_min)] = np.nan
+</span>
 &gt; Binning calibration map
 &gt; Calibration laser map fit
   &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
@@ -829,23 +637,29 @@ Angle at the center of the frame: 15.4977038652
     Error on fit: mean -2.73378866828e-06, std 0.00312555663736 (in nm)
     Error on fit: mean -0.00150939024203, std 1.72569472691 (in km/s)
   &gt; Zernike polynomials fit of the residual wavefront
+<span class="ansi-yellow-fg">17-07-24|18:25:03 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:54: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
+  r0v = np.linspace(-1-center[0], 1-center[0], r0).astype(dtype).reshape(-1,1)
+</span>
+<span class="ansi-yellow-fg">17-07-24|18:25:03 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:55: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
+  r1v = np.linspace(-1-center[1], 1-center[1], r1).astype(dtype).reshape(1,-1)
+</span>
 Standard deviation of the residual: 1.84989027732e-05
 Median relative error (err/val)): 0.05%
 &gt; final error (std on 50.0% of the total size): 1.764e-05 nm, 9.739e-03 km/s
     &gt; New calibration laser map fit parameters:
-    distance to mirror: 23.7225685337 cm
-    X angle from the optical axis to the center: -0.00245928689611 degrees
-    Y angle from the optical axis to the center: 15.5159105839 degrees
-    Tip-tilt angle of the detector along X: 1.1997369795 degrees
-    Tip-tilt angle of the detector along Y: 0.112798774753 degrees
-    Rotation angle of the detector: 1.76000785274 degrees
-    Calibration laser wavelength: 543.334514481 nm
+    distance to mirror: 23.7195966921 cm
+    X angle from the optical axis to the center: 0.0365916904474 degrees
+    Y angle from the optical axis to the center: 15.5142349306 degrees
+    Tip-tilt angle of the detector along X: 1.19648939214 degrees
+    Tip-tilt angle of the detector along Y: 0.126632246957 degrees
+    Rotation angle of the detector: 1.90131404301 degrees
+    Calibration laser wavelength: 543.338776628 nm
 
-fit residual std (in km/s): 1.67457474408
+fit residual std (in km/s): 1.66892593866
 median error on the data (in km/s) 1.41094439599
-Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.calibration_laser_map.fits in 0.19 s
-Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.wavefront_map.fits in 0.18 s
-Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits in 0.18 s
+Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.calibration_laser_map.fits in 0.36 s
+Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.wavefront_map.fits in 0.19 s
+Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits in 0.19 s
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -966,7 +780,7 @@ it works particularly well even if the case of M31 (<a class="reference external
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.2',
+            VERSION:'2.0.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
