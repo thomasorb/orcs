@@ -176,6 +176,7 @@ class HDFCube(orb.core.HDFCube):
         # wavenumber
         self.set_param('wavetype', str(self.header['WAVTYPE']))
         if self.params.wavetype == 'WAVELENGTH':
+            raise Exception('ORCS cannot handle wavelength cubes')
             self.params['wavenumber'] = False
             self._print_msg('Cube is in WAVELENGTH (nm)')
             self.unit = 'nm'
@@ -222,8 +223,13 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('axis_min', np.min(self.params.base_axis))
         self.set_param('axis_max', np.max(self.params.base_axis))
         self.set_param('axis_step', np.min(self.params.base_axis[1] - self.params.base_axis[0]))
-
-
+        self.set_param('line_fwhm', orb.utils.spectrum.compute_line_fwhm(
+            self.params.step_nb - self.params.zpd_index, self.params.step, self.params.order,
+            apod_coeff=self.params.apodization,
+            corr=self.params.axis_corr,
+            wavenumber=self.params.wavenumber))
+        self.set_param('filter_range', self.get_filter_range())
+        
     def _get_data_prefix(self):
         """Return data prefix"""
         return self._data_prefix
@@ -1464,7 +1470,22 @@ class HDFCube(orb.core.HDFCube):
         self.sky_velocity_map = sky_map
         self.reset_calibration_laser_map()
         
-        
+    def get_amp_ratio_from_flux_ratio(self, line0, line1, flux_ratio):
+        """Return the amplitude ratio (amp(line0) / amp(line1)) to define from the flux ratio
+        (at constant fwhm and broadening).
+
+        :param line0: Wavenumber of the line 0 (in cm-1).
+
+        :param line1: Wavenumber of the line 1 (in cm-1).
+
+        :param flux_ratio: Flux ratio: flux(line0) / flux(line1).
+        """
+        if isinstance(line0, str):
+            line0 = orb.core.Lines().get_line_cm1(line0)
+        if isinstance(line1, str):
+            line1 = orb.core.Lines().get_line_cm1(line1)
+            
+        return line0**2 / line1**2 * flux_ratio
 
 ##################################################
 #### CLASS LineMaps ##############################

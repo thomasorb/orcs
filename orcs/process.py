@@ -100,6 +100,14 @@ class SpectralCube(HDFCube):
         """
         return self._get_data_prefix() + 'wavefront_map.fits'
 
+    def _get_detection_frame_path(self):
+        """Return path to the detection frame"""
+        return self._data_path_hdr + "detection_frame.fits"
+
+    def _get_detection_pos_frame_path(self):
+        """Return path to the detection position frame"""
+        return self._data_path_hdr + "detection_pos_frame.fits"
+
     def map_sky_velocity(self, mean_sky_vel, div_nb=20, plot=True,
                          x_range=None, y_range=None,
                          exclude_reg_file_path=None,
@@ -498,6 +506,127 @@ class SpectralCube(HDFCube):
             
             pl.show()
 
+    def detect_sources(self, fast=True):
+        """Detect emission line sources in the spectral cube
+    
+        :param fast: (Optional) Fast detection algorithm (with FFT
+          convolution). Borders of the frame are wrong but process is
+          much faster (default True).
+        """
+
+        def filter_frame(_frame, fast):
+            BOX_SIZE = 3 # must be odd
+            BACK_COEFF = 9 # must be odd
+            
+            if not fast:
+                _res = orb.cutils.filter_background(_frame, BOX_SIZE, BACK_COEFF)
+            else:
+                kernel_box = np.ones((BOX_SIZE, BOX_SIZE), dtype=float)
+                kernel_box /= np.nansum(kernel_box)
+                kernel_back = np.ones((BOX_SIZE*BACK_COEFF,
+                                       BOX_SIZE*BACK_COEFF), dtype=float)
+                kernel_back[kernel_back.shape[0]/2 - kernel_box.shape[0]/2:
+                            kernel_back.shape[0]/2 + kernel_box.shape[0]/2 + 1,
+                            kernel_back.shape[1]/2 - kernel_box.shape[1]/2:
+                            kernel_back.shape[1]/2 + kernel_box.shape[1]/2 + 1] = np.nan
+                kernel_back /= np.nansum(kernel_back)
+
+                kernel_back[np.nonzero(np.isnan(kernel_back))] = 0.
+
+                _box = scipy.signal.fftconvolve(_frame, kernel_box, mode='same')
+                _back = scipy.signal.fftconvolve(_frame, kernel_back, mode='same')
+                _res = _box - _back
+            
+            return _res
+
+        Z_SIZE = 10
+        FILTER_BORDER = 0.1
+
+        if fast: self._print_msg('Source detection using fast algorithm')
+        else: self._print_msg('Source detection using slow (but better) algorithm')
+
+
+        # get filter range
+        if self.params.wavenumber:
+            filter_range_pix = orb.utils.spectrum.cm12pix(
+                self.params.base_axis, self.params.filter_range)
+
+        else:
+            filter_range_pix = orb.utils.spectrum.nm2pix(
+                self.params.base_axis, self.params.filter_range)
+
+        fr = max(filter_range_pix) - min(filter_range_pix)
+        fr_b = int(float(fr) * FILTER_BORDER)
+        fr_min = min(filter_range_pix) + fr_b
+        fr_max = max(filter_range_pix) - fr_b
+        filter_range_pix = (int(fr_min), int(fr_max))
+        
+        self._print_msg('Signal range: {} {}, {} pixels'.format(
+            self.params.filter_range, self.unit, filter_range_pix))
+        ## each pixel is replaced by the mean of the values in a small
+        ## box around it minus the median value of the background
+        ## taken in a larger box
+
+        # Init multiprocessing server
+        dat_cube = None
+        det_frame = np.zeros((self.dimx, self.dimy), dtype=float)
+        argdet_frame = np.copy(det_frame)
+        argdet_frame.fill(np.nan)
+
+        job_server, ncpus = self._init_pp_server()
+        for iframe in range(int(min(filter_range_pix)),
+                            int(max(filter_range_pix)), ncpus):
+            if iframe + ncpus >= self.dimz:
+                ncpus = self.dimz - iframe
+
+            if dat_cube is not None:
+                if last_frame < iframe + ncpus:
+                    dat_cube = None
+
+            if dat_cube is None:
+                res_z_size = ncpus*Z_SIZE
+                if iframe + res_z_size > self.dimz:
+                    res_z_size = self.dimz - iframe
+                first_frame = int(iframe)
+                last_frame = iframe + res_z_size
+                
+                self._print_msg('Extracting frames: {} to {} (/{} frames)'.format(
+                    iframe, last_frame-1, max(filter_range_pix) - min(filter_range_pix)))
+                dat_cube = self.get_data(0, self.dimx,
+                                         0, self.dimy,
+                                         iframe, last_frame,
+                                         silent=False)
+                
+                res_cube = np.empty_like(dat_cube)
+                res_cube.fill(np.nan)
+
+
+            jobs = [(ijob, job_server.submit(
+                filter_frame,
+                args=(dat_cube[:,:,iframe - first_frame + ijob], fast),
+                modules=("import orb.cutils",
+                         "import numpy as np",
+                         "import scipy.signal")))
+                    for ijob in range(ncpus)]
+
+            for ijob, job in jobs:
+                # filtered data is written in place of non filtered data
+                res_cube[:,:,iframe - first_frame + ijob] = job()
+                
+            max_frame = np.nanmax(res_cube, axis=2)
+            argmax_frame = np.nanargmax(res_cube, axis=2) + first_frame
+            new_det = np.nonzero(max_frame > det_frame)
+            det_frame[new_det] = max_frame[new_det]
+            argdet_frame[new_det] = argmax_frame[new_det]
+                
+
+        self._close_pp_server(job_server)
+
+        self.write_fits(self._get_detection_frame_path(),
+                        det_frame, overwrite=True)
+        self.write_fits(self._get_detection_pos_frame_path(),
+                        argdet_frame, overwrite=True)
+            
 
 
 #################################################
@@ -514,13 +643,6 @@ class SpectralCube(HDFCube):
 ##         """Return path to a tweaked cube"""
 ##         return self._data_path_hdr + "tweaked_cube.hdf5"
 
-##     def _get_detection_frame_path(self):
-##         """Return path to the detection frame"""
-##         return self._data_path_hdr + "detection_frame.fits"
-
-##     def _get_detection_pos_frame_path(self):
-##         """Return path to the detection position frame"""
-##         return self._data_path_hdr + "detection_pos_frame.fits"
 
 ##     def subtract_spectrum(self, spectrum, axis, wavenumber, step, order,
 ##                           calibration_laser_map_path, wavelength_calibration,
@@ -594,161 +716,4 @@ class SpectralCube(HDFCube):
 ##                                         self._get_tweaked_cube_path())
 
 
-##     def detect_sources(self, wavenumber, step, order,
-##                        calibration_laser_map_path, wavelength_calibration,
-##                        nm_laser, filter_range, axis_corr=1, fast=True):
-##         """Detect emission line sources in the spectral cube
-
-        
-##         :param wavenumber: True if the spectral cube is in wavenumber
-
-##         :param step: Step size (in nm)
-
-##         :param order: Folding order
-
-##         :param calibration_laser_map_path: Path to the calibration
-##           laser map
-
-##         :param nm_laser: Calibration laser wavelength in nm
-
-##         :param filter_range: Range of detection
-        
-##         :param axis_corr: (Optional) If the spectrum is calibrated in
-##           wavelength but not projected on the interferometer axis
-##           (angle 0) the axis correction coefficient must be given.
-
-##         :param fast: (Optional) Fast detection algorithm (with FFT
-##           convolution). Borders of the frame are wrong but process is
-##           much faster (default True).
-
-##         """
-
-##         def filter_frame(_frame, fast):
-##             BOX_SIZE = 3 # must be odd
-##             BACK_COEFF = 9 # must be odd
-            
-##             if not fast:
-##                 _res = orb.cutils.filter_background(_frame, BOX_SIZE, BACK_COEFF)
-##             else:
-##                 kernel_box = np.ones((BOX_SIZE, BOX_SIZE), dtype=float)
-##                 kernel_box /= np.nansum(kernel_box)
-##                 kernel_back = np.ones((BOX_SIZE*BACK_COEFF,
-##                                        BOX_SIZE*BACK_COEFF), dtype=float)
-##                 kernel_back[kernel_back.shape[0]/2 - kernel_box.shape[0]/2:
-##                             kernel_back.shape[0]/2 + kernel_box.shape[0]/2 + 1,
-##                             kernel_back.shape[1]/2 - kernel_box.shape[1]/2:
-##                             kernel_back.shape[1]/2 + kernel_box.shape[1]/2 + 1] = np.nan
-##                 kernel_back /= np.nansum(kernel_back)
-
-##                 kernel_back[np.nonzero(np.isnan(kernel_back))] = 0.
-
-##                 _box = scipy.signal.fftconvolve(_frame, kernel_box, mode='same')
-##                 _back = scipy.signal.fftconvolve(_frame, kernel_back, mode='same')
-##                 _res = _box - _back
-            
-##             return _res
-
-##         Z_SIZE = 10
-##         FILTER_BORDER = 0.1
-
-##         if fast: self._print_msg('Source detection using fast algorithm')
-##         else: self._print_msg('Source detection using slow (but better) algorithm')
-
-
-##         # get filter range
-##         if wavenumber:
-##             cm1_axis = orb.utils.spectrum.create_cm1_axis(
-##                 self.dimz, step, order, corr=axis_corr)
-##             filter_range_pix = orb.utils.spectrum.cm12pix(
-##                 cm1_axis, filter_range)
-
-##         else:
-##             nm_axis = orb.utils.spectrum.create_nm_axis(
-##                 self.dimz, step, order, corr=axis_corr)
-##             filter_range_pix = orb.utils.spectrum.nm2pix(
-##                 nm_axis, filter_range)
-
-##         fr = max(filter_range_pix) - min(filter_range_pix)
-##         fr_b = int(float(fr) * FILTER_BORDER)
-##         fr_min = min(filter_range_pix) + fr_b
-##         fr_max = max(filter_range_pix) - fr_b
-##         filter_range_pix = (int(fr_min), int(fr_max))
-
-##         if wavenumber: unit = 'cm-1'
-##         else: unit = 'nm'
-        
-##         self._print_msg('Signal range: {} {}, {} pixels'.format(filter_range, unit, filter_range_pix))
-##         ## each pixel is replaced by the mean of the values in a small
-##         ## box around it minus the median value of the background
-##         ## taken in a larger box
-
-##         # Init multiprocessing server
-##         dat_cube = None
-##         det_frame = np.zeros((self.dimx, self.dimy), dtype=float)
-##         argdet_frame = np.copy(det_frame)
-##         argdet_frame.fill(np.nan)
-
-##         job_server, ncpus = self._init_pp_server()
-##         progress = orb.core.ProgressBar(
-##             max(filter_range_pix) - min(filter_range_pix))        
-##         for iframe in range(int(min(filter_range_pix)),
-##                             int(max(filter_range_pix)), ncpus):
-##             progress.update(
-##                 iframe - min(filter_range_pix),
-##                 info="working on frame %d/%d"%(
-##                     iframe - min(filter_range_pix) + 1,
-##                     max(filter_range_pix) - min(filter_range_pix)))
-##             if iframe + ncpus >= self.dimz:
-##                 ncpus = self.dimz - iframe
-
-##             if dat_cube is not None:
-##                 if last_frame < iframe + ncpus:
-##                     dat_cube = None
-
-##             if dat_cube is None:
-##                 res_z_size = ncpus*Z_SIZE
-##                 if iframe + res_z_size > self.dimz:
-##                     res_z_size = self.dimz - iframe
-##                 first_frame = int(iframe)
-##                 last_frame = iframe + res_z_size
-##                 dat_cube = self.get_data(0, self.dimx,
-##                                          0, self.dimy,
-##                                          iframe, last_frame,
-##                                          silent=False)
-##                 ## dat_cube = np.ones(
-##                 ##     (self.dimx, self.dimy,
-##                 ##      last_frame - iframe), dtype=float) + 10 * iframe
-##                 ## dat_cube[200:205,200:205,10] += 3.
-                
-##                 res_cube = np.empty_like(dat_cube)
-##                 res_cube.fill(np.nan)
-
-
-##             jobs = [(ijob, job_server.submit(
-##                 filter_frame,
-##                 args=(dat_cube[:,:,iframe - first_frame + ijob], fast),
-##                 modules=("import orb.cutils",
-##                          "import numpy as np",
-##                          "import scipy.signal")))
-##                     for ijob in range(ncpus)]
-
-##             for ijob, job in jobs:
-##                 # filtered data is written in place of non filtered data
-##                 res_cube[:,:,iframe - first_frame + ijob] = job()
-                
-##             max_frame = np.nanmax(res_cube, axis=2)
-##             argmax_frame = np.nanargmax(res_cube, axis=2) + first_frame
-##             new_det = np.nonzero(max_frame > det_frame)
-##             det_frame[new_det] = max_frame[new_det]
-##             argdet_frame[new_det] = argmax_frame[new_det]
-                
-
-##         self._close_pp_server(job_server)
-##         progress.end()
-
-##         self.write_fits(self._get_detection_frame_path(),
-##                             det_frame, overwrite=True)
-##         self.write_fits(self._get_detection_pos_frame_path(),
-##                         argdet_frame, overwrite=True)
-            
         

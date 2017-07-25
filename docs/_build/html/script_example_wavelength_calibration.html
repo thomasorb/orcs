@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.0.3 documentation</title>
+  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.0.4 documentation</title>
   
 
   
@@ -37,8 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.3 documentation" href="index.html"/>
-        <link rel="next" title="Core module" href="core_module.html"/>
+    <link rel="top" title="Orcs 2.0.4 documentation" href="index.html"/>
+        <link rel="up" title="Examples" href="examples.html"/>
+        <link rel="next" title="Constraining line ratios" href="script_example_constaining_line_ratios.html"/>
         <link rel="prev" title="Modelling and fitting two unresolved emission lines with a bayesian approach" href="script_example_model+fit_2_lines_bayes.html"/> 
 
   
@@ -71,7 +72,7 @@
             
             
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
             
           
@@ -95,23 +96,24 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-</ul>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_1_line.html">Modelling and fitting a single line spectrum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_2_lines.html">Modelling and fitting a spectrum with two resolved lines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_2_lines_bayes.html">Modelling and fitting two unresolved emission lines with a bayesian approach</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Wavelength recalibration with the sky lines (Mendel OH bands)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#First-step:-checking-the-calibration">First step: checking the calibration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#fitting-the-sky-spectrum">fitting the sky spectrum</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="examples.html#calibrating-your-data">Calibrating your data</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Wavelength recalibration with the sky lines (Mendel OH bands)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#First-step:-checking-the-calibration">First step: checking the calibration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Second-step:-Mapping-the-sky-velocity">Second step: Mapping the sky velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Resulting-data">Resulting data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calibrating-your-data-with-the-sky-velocity-map">Calibrating your data with the sky velocity map</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Second-step:-Mapping-the-sky-velocity">Second step: Mapping the sky velocity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Resulting-data">Resulting data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
 </ul>
 </li>
 </ul>
@@ -123,9 +125,6 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
 </ul>
 
             
@@ -169,6 +168,8 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="examples.html">Examples</a> &raquo;</li>
         
       <li>Wavelength recalibration with the sky lines (Mendel OH bands)</li>
     
@@ -449,9 +450,9 @@ interferometer.</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|18:24:50 # SpectralCube.__init__ &gt; Data shape : (2048, 2064, 840)
-17-07-24|18:24:50 # SpectralCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
-17-07-24|18:24:50 # SpectralCube.__init__ &gt; Cube is CALIBRATED
+17-07-25|09:27:51 # SpectralCube.__init__ &gt; Data shape : (2048, 2064, 840)
+17-07-25|09:27:51 # SpectralCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
+17-07-25|09:27:51 # SpectralCube.__init__ &gt; Cube is CALIBRATED
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -723,6 +724,91 @@ possible to estimate the velocity of the lines at the center of the
 field where no real data has been obtained. And the result is stricking,
 it works particularly well even if the case of M31 (<a class="reference external" href="https://arxiv.org/abs/1707.01366">Martin et al.
 2017a</a>)</p>
+</div>
+<div class="section" id="Calibrating-your-data-with-the-sky-velocity-map">
+<h2>Calibrating your data with the sky velocity map<a class="headerlink" href="#Calibrating-your-data-with-the-sky-velocity-map" title="Permalink to this headline">¶</a></h2>
+<p>Once the velocity map is passed to the SpectralCube class, the class
+will internaly make the appropriate corrections so that the measured
+velocity of any spectrum will be corrected. But it will also correct the
+spectral misalignment of the spectra before extracting the data which
+should have an effect on the broadening of the lines when a spectrum is
+integrated over a large field of view with a non-negligible gradient on
+the velocity calibration.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># the computed sky velocity map is passed to cube</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">correct_wavelength</span><span class="p">(</span><span class="s1">&#39;M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># The same sky spectrum is now extracted and fitted and the measured velocity is now similar to 0 km/s.</span>
+<span class="c1"># Note that the calibration map used here has not been calculated with a 40x40 grid. The calibration</span>
+<span class="c1"># quality would have been better in this case.</span>
+
+<span class="n">sky_lines_cm1</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_sky_lines</span><span class="p">()</span>
+<span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">sky_lines_cm1</span><span class="p">,</span>
+                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                                                     <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                                                     <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                                                     <span class="n">nofilter</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                     <span class="n">pos_cov</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
+<span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+17-07-25|09:28:24 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 1257
+ [==========] [100%] [completed in 0.030 s]
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.734 s]
+SNR GUESS None
+
+===== Results ======
+Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
+ -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
+ -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
+ -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
+ -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
+ -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
+ -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[6]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_wavelength_calibration_13_2.png" src="_images/script_example_wavelength_calibration_13_2.png" />
+</div>
+</div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [ ]:
@@ -746,7 +832,7 @@ it works particularly well even if the case of M31 (<a class="reference external
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="script_example_constaining_line_ratios.html" class="btn btn-neutral float-right" title="Constraining line ratios" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="script_example_model+fit_2_lines_bayes.html" class="btn btn-neutral" title="Modelling and fitting two unresolved emission lines with a bayesian approach" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -780,7 +866,7 @@ it works particularly well even if the case of M31 (<a class="reference external
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.3',
+            VERSION:'2.0.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

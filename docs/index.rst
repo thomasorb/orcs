@@ -46,30 +46,17 @@ Quick Start
 -----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    installation
    introduction
-
-Examples
---------
-
-.. toctree::
-   :maxdepth: 2
-
-   script_example_fit_a_single_spectrum.ipynb
-   script_example_model+fit_1_line.ipynb
-   script_example_model+fit_2_lines.ipynb
-   script_example_model+fit_2_lines_bayes.ipynb
-   script_example_wavelength_calibration.ipynb
-
-
+   examples
 
 Documentation
 -------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    core_module
 	   
@@ -84,15 +71,9 @@ Changelog
 ---------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    changelog
-
-
-.. toctree::
-   :maxdepth: 2
-	      
-   script_example_fit_a_single_spectrum.ipynb
 
    
 Indices and tables

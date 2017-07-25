@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modelling and fitting two unresolved emission lines with a bayesian approach &mdash; Orcs 2.0.3 documentation</title>
+  <title>Modelling and fitting two unresolved emission lines with a bayesian approach &mdash; Orcs 2.0.4 documentation</title>
   
 
   
@@ -37,7 +37,8 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.3 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.0.4 documentation" href="index.html"/>
+        <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html"/>
         <link rel="prev" title="Modelling and fitting a spectrum with two resolved lines" href="script_example_model+fit_2_lines.html"/> 
 
@@ -71,7 +72,7 @@
             
             
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
             
           
@@ -95,24 +96,24 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-</ul>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_1_line.html">Modelling and fitting a single line spectrum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_2_lines.html">Modelling and fitting a spectrum with two resolved lines</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Modelling and fitting two unresolved emission lines with a bayesian approach</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Third-step:-modelling-and-fitting-a-spectrum-with-two-unresolved-lines-(classic-fit-and-bayesian-fit)">Third step: modelling and fitting a spectrum with two unresolved lines (classic fit and bayesian fit)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Model">Model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Classical-fit">Classical fit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Bayesian-fit">Bayesian fit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="script_example_model+fit_1_line.html">Modelling and fitting a single line spectrum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_model+fit_2_lines.html">Modelling and fitting a spectrum with two resolved lines</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Modelling and fitting two unresolved emission lines with a bayesian approach</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Third-step:-modelling-and-fitting-a-spectrum-with-two-unresolved-lines-(classic-fit-and-bayesian-fit)">Third step: modelling and fitting a spectrum with two unresolved lines (classic fit and bayesian fit)</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_wavelength_calibration.html">Wavelength recalibration with the sky lines (Mendel OH bands)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#calibrating-your-data">Calibrating your data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
@@ -122,9 +123,6 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
 </ul>
 
             
@@ -168,6 +166,8 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="examples.html">Examples</a> &raquo;</li>
         
       <li>Modelling and fitting two unresolved emission lines with a bayesian approach</li>
     
@@ -698,7 +698,7 @@ package gvar which is intimatly linked to lsqfit - same author)</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.3',
+            VERSION:'2.0.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

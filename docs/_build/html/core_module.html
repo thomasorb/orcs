@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.0.3 documentation</title>
+  <title>Core module &mdash; Orcs 2.0.4 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.3 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.0.4 documentation" href="index.html"/>
         <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html"/> 
+        <link rel="prev" title="Constraining line ratios" href="script_example_constaining_line_ratios.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.0.3
+                2.0.4
               </div>
             
           
@@ -98,13 +98,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_1_line.html">Modelling and fitting a single line spectrum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_2_lines.html">Modelling and fitting a spectrum with two resolved lines</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_model+fit_2_lines_bayes.html">Modelling and fitting two unresolved emission lines with a bayesian approach</a></li>
-<li class="toctree-l1"><a class="reference internal" href="script_example_wavelength_calibration.html">Wavelength recalibration with the sky lines (Mendel OH bands)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Core module</a></li>
@@ -114,9 +108,6 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
 </ul>
 
             
@@ -753,6 +744,26 @@ dictionary containing the fit results (same output as
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.get_amp_ratio_from_flux_ratio">
+<code class="descname">get_amp_ratio_from_flux_ratio</code><span class="sig-paren">(</span><em>line0</em>, <em>line1</em>, <em>flux_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_amp_ratio_from_flux_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the amplitude ratio (amp(line0) / amp(line1)) to define from the flux ratio
+(at constant fwhm and broadening).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>line0</strong> &#8211; Wavenumber of the line 0 (in cm-1).</li>
+<li><strong>line1</strong> &#8211; Wavenumber of the line 1 (in cm-1).</li>
+<li><strong>flux_ratio</strong> &#8211; Flux ratio: flux(line0) / flux(line1).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.get_calibration_coeff_map">
 <code class="descname">get_calibration_coeff_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_coeff_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the calibration coeff map based on the calibration
@@ -1115,7 +1126,7 @@ parameter already exists.</p>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_constaining_line_ratios.html" class="btn btn-neutral" title="Constraining line ratios" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1146,7 +1157,7 @@ parameter already exists.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.3',
+            VERSION:'2.0.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
