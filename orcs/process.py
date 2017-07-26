@@ -590,8 +590,10 @@ class SpectralCube(HDFCube):
                 first_frame = int(iframe)
                 last_frame = iframe + res_z_size
                 
-                self._print_msg('Extracting frames: {} to {} (/{} frames)'.format(
-                    iframe, last_frame-1, max(filter_range_pix) - min(filter_range_pix)))
+                self._print_msg('Extracting frames: {} to {} ({}/{} frames)'.format(
+                    iframe, last_frame-1,
+                    last_frame - 1 -min(filter_range_pix),
+                    max(filter_range_pix) - min(filter_range_pix)))
                 dat_cube = self.get_data(0, self.dimx,
                                          0, self.dimy,
                                          iframe, last_frame,

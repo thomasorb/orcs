@@ -55,3 +55,56 @@ very close to the one returned by our algorithm (less than a few
 percents).
 
 
+Models parameters
+~~~~~~~~~~~~~~~~~
+
+Each time you want to use a fitting method you must pass a list of
+fitting parameters as keywords. The exact list of fitting parameters
+depends on the models you are going to use. You only have to enter a
+keyword if you want to change its default behaviour.
+
+In general 3 models are used which are all implemented an documented
+in the orb.fit module:
+
+- py:class:`orb.fit.Cm1LinesModel`
+  
+- py:class:`orb.fit.ContinuumModel`
+
+- py:class:`orb.fit.FilterModel`
+
+Here's the list of the available keywords and their use.
+
+  
+.. _list-lines:
+	
+List of available lines
+~~~~~~~~~~~~~~~~~~~~~~~
+
+============ ================
+    NAME       Air Wavelength
+============ ================
+[OII]3726    372.603
+[OII]3729    372.882
+[NeIII]3869  386.875
+Hepsilon     397.007
+Hdelta       410.176
+Hgamma       434.047
+[OIII]4363   436.321
+Hbeta        486.133
+[OIII]4959   495.891
+[OIII]5007   500.684
+HeI5876      587.567
+[OI]6300     630.030
+[SIII]6312   631.21
+[NII]6548    654.803
+Halpha       656.280
+[NII]6583    658.341
+HeI6678      667.815
+[SII]6716    671.647
+[SII]6731    673.085
+HeI7065      706.528
+[ArIII]7136  713.578
+[OII]7120    731.965
+[OII]7130    733.016
+[ArIII]7751  775.112
+============ ================

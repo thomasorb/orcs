@@ -1,0 +1,92 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Automatic source detection"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "17-07-25|17:40:42 # SpectralCube.__init__ > Data shape : (2048, 2064, 840)\n",
+      "17-07-25|17:40:42 # SpectralCube.__init__ > Cube is in WAVENUMBER (cm-1)\n",
+      "17-07-25|17:40:42 # SpectralCube.__init__ > Cube is CALIBRATED\n"
+     ]
+    }
+   ],
+   "source": [
+    "from orcs.process import SpectralCube\n",
+    "# load spectral cube\n",
+    "cube = SpectralCube('/home/thomas/M31_SN3.merged.cm1.1.0.hdf5')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "17-07-25|17:40:44 # SpectralCube.detect_sources > Source detection using fast algorithm\n",
+      "17-07-25|17:40:44 # SpectralCube.detect_sources > Signal range: [14583.211806568279, 15462.642256308758] cm-1, (270, 608) pixels\n",
+      "Init of the parallel processing server with 4 threads\n",
+      "17-07-25|17:40:45 # SpectralCube.detect_sources > Extracting frames: 270 to 309 (/338 frames)\n",
+      " [==========] [100%] [completed in 4m26s]                                     \n",
+      "17-07-25|17:46:08 # SpectralCube.detect_sources > Extracting frames: 310 to 349 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m51s]                                     \n",
+      "17-07-25|17:48:48 # SpectralCube.detect_sources > Extracting frames: 350 to 389 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m50s]                                     \n",
+      "17-07-25|17:51:27 # SpectralCube.detect_sources > Extracting frames: 390 to 429 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m54s]                                     \n",
+      "17-07-25|17:54:11 # SpectralCube.detect_sources > Extracting frames: 430 to 469 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m50s]                                     \n",
+      "17-07-25|17:56:51 # SpectralCube.detect_sources > Extracting frames: 470 to 509 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m47s]                                     \n",
+      "17-07-25|17:59:29 # SpectralCube.detect_sources > Extracting frames: 510 to 549 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m49s]                                     \n",
+      "17-07-25|18:02:07 # SpectralCube.detect_sources > Extracting frames: 550 to 589 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m59s]                                     \n",
+      "17-07-25|18:04:56 # SpectralCube.detect_sources > Extracting frames: 590 to 629 (/338 frames)\n",
+      " [==========] [100%] [completed in 1m50s]                                     \n",
+      "Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.SpectralCube.detection_frame.fits in 0.51 s \n",
+      "Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.SpectralCube.detection_pos_frame.fits in 0.18 s \n"
+     ]
+    }
+   ],
+   "source": [
+    "cube.detect_sources(fast=True)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 2",
+   "language": "python",
+   "name": "python2"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 2
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython2",
+   "version": "2.7.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

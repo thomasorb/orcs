@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Orcs 2.0.4 documentation</title>
+  <title>Introduction &mdash; Orcs 2.0.5 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.0.5 documentation" href="index.html"/>
         <link rel="next" title="Examples" href="examples.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.0.4
+                2.0.5
               </div>
             
           
@@ -100,6 +100,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#a-few-words-on-orcs">A few words on ORCS</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#the-fitting-engine">The fitting engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#models-parameters">Models parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-of-available-lines">List of available lines</a></li>
 </ul>
 </li>
 </ul>
@@ -219,6 +221,8 @@
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a><ul>
 <li><a class="reference internal" href="#a-few-words-on-orcs" id="id2">A few words on ORCS</a><ul>
 <li><a class="reference internal" href="#the-fitting-engine" id="id3">The fitting engine</a></li>
+<li><a class="reference internal" href="#models-parameters" id="id4">Models parameters</a></li>
+<li><a class="reference internal" href="#list-of-available-lines" id="id5">List of available lines</a></li>
 </ul>
 </li>
 </ul>
@@ -249,7 +253,7 @@ broadening to the sinc)</li>
 </ul>
 <p>Emission lines and background model parameters are always defined via
 a list of keywords which must be passed to the fitting functions (see
-<a href="#id4"><span class="problematic" id="id5">`Jupyter Examples`_</span></a>). Emission line model can be constrained in
+<a href="#id6"><span class="problematic" id="id7">`Jupyter Examples`_</span></a>). Emission line model can be constrained in
 velocity and broadening: multiple groups of lines can share the same
 velocity and/or the same broadening. They can also be constrained in
 amplitude ratio.</p>
@@ -262,6 +266,109 @@ Monte-Carlo-Markov-Chain algorithm and found that they are very
 reasonable. The uncertainties returned by the MCMC algorithm are also
 very close to the one returned by our algorithm (less than a few
 percents).</p>
+</div>
+<div class="section" id="models-parameters">
+<h3><a class="toc-backref" href="#id4">Models parameters</a><a class="headerlink" href="#models-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Each time you want to use a fitting method you must pass a list of
+fitting parameters as keywords. The exact list of fitting parameters
+depends on the models you are going to use. You only have to enter a
+keyword if you want to change its default behaviour.</p>
+<p>In general 3 models are used which are all implemented an documented
+in the orb.fit module:</p>
+<ul class="simple">
+<li>py:class:<cite>orb.fit.Cm1LinesModel</cite></li>
+<li>py:class:<cite>orb.fit.ContinuumModel</cite></li>
+<li>py:class:<cite>orb.fit.FilterModel</cite></li>
+</ul>
+<p>Here&#8217;s the list of the available keywords and their use.</p>
+</div>
+<div class="section" id="list-of-available-lines">
+<span id="list-lines"></span><h3><a class="toc-backref" href="#id5">List of available lines</a><a class="headerlink" href="#list-of-available-lines" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">NAME</th>
+<th class="head">Air Wavelength</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[OII]3726</td>
+<td>372.603</td>
+</tr>
+<tr class="row-odd"><td>[OII]3729</td>
+<td>372.882</td>
+</tr>
+<tr class="row-even"><td>[NeIII]3869</td>
+<td>386.875</td>
+</tr>
+<tr class="row-odd"><td>Hepsilon</td>
+<td>397.007</td>
+</tr>
+<tr class="row-even"><td>Hdelta</td>
+<td>410.176</td>
+</tr>
+<tr class="row-odd"><td>Hgamma</td>
+<td>434.047</td>
+</tr>
+<tr class="row-even"><td>[OIII]4363</td>
+<td>436.321</td>
+</tr>
+<tr class="row-odd"><td>Hbeta</td>
+<td>486.133</td>
+</tr>
+<tr class="row-even"><td>[OIII]4959</td>
+<td>495.891</td>
+</tr>
+<tr class="row-odd"><td>[OIII]5007</td>
+<td>500.684</td>
+</tr>
+<tr class="row-even"><td>HeI5876</td>
+<td>587.567</td>
+</tr>
+<tr class="row-odd"><td>[OI]6300</td>
+<td>630.030</td>
+</tr>
+<tr class="row-even"><td>[SIII]6312</td>
+<td>631.21</td>
+</tr>
+<tr class="row-odd"><td>[NII]6548</td>
+<td>654.803</td>
+</tr>
+<tr class="row-even"><td>Halpha</td>
+<td>656.280</td>
+</tr>
+<tr class="row-odd"><td>[NII]6583</td>
+<td>658.341</td>
+</tr>
+<tr class="row-even"><td>HeI6678</td>
+<td>667.815</td>
+</tr>
+<tr class="row-odd"><td>[SII]6716</td>
+<td>671.647</td>
+</tr>
+<tr class="row-even"><td>[SII]6731</td>
+<td>673.085</td>
+</tr>
+<tr class="row-odd"><td>HeI7065</td>
+<td>706.528</td>
+</tr>
+<tr class="row-even"><td>[ArIII]7136</td>
+<td>713.578</td>
+</tr>
+<tr class="row-odd"><td>[OII]7120</td>
+<td>731.965</td>
+</tr>
+<tr class="row-even"><td>[OII]7130</td>
+<td>733.016</td>
+</tr>
+<tr class="row-odd"><td>[ArIII]7751</td>
+<td>775.112</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -310,7 +417,7 @@ percents).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.4',
+            VERSION:'2.0.5',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
