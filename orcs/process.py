@@ -32,11 +32,13 @@ __version__ = version.__version__
 
 # import Python libraries
 import os
+import logging
 import sys
 import math
 import time
 import numpy as np
 import astropy.io.fits as pyfits
+import astropy.wcs as pywcs
 import bottleneck as bn
 import warnings
 import inspect
@@ -45,7 +47,7 @@ import marshal
 import gvar
 
 # import core
-from core import HDFCube, LineMaps, Tools
+from core import HDFCube, LineMaps
 
 # import ORB
 import orb.core
@@ -55,6 +57,7 @@ import orb.utils.stats
 import orb.utils.filters
 import orb.utils.misc
 import orb.fit
+from orb.astrometry import Astrometry
     
         
 #################################################
@@ -83,6 +86,20 @@ class SpectralCube(HDFCube):
         sky velocity map.
         """
         return self._get_data_prefix() + 'skymap.fits'
+
+    def _get_deep_frame_wcs_path(self):
+        """Return path to the generated deep frame with the reocmputed
+        WCS.
+        """
+        return self._get_data_prefix() + 'wcs.deep_frame.fits'
+
+    def _get_dxmap_path(self):
+        """Return path to the generated X micro-shifting map."""
+        return self._get_data_prefix() + 'wcs.dxmap.fits'
+
+    def _get_dymap_path(self):
+        """Return path to the generated Y micro-shifting map."""
+        return self._get_data_prefix() + 'wcs.dymap.fits'
 
 
     def _get_calibration_laser_map_path(self):
@@ -195,19 +212,19 @@ class SpectralCube(HDFCube):
         
         
         if div_nb < 2:
-            self._print_error('div_nb must be >= 2')
+            raise Exception('div_nb must be >= 2')
         MAX_R = 100 
         
         if not no_fit:
             if os.path.exists(self._get_skymap_file_path()):
-                self._print_msg('fitting process already done. Do you really want to redo it again ?')
+                logging.info('fitting process already done. Do you really want to redo it again ?')
                 try:
                     if raw_input('type [yes]: ') != 'yes': no_fit = True
                 except Exception:
                     no_fit = True
               
         if no_fit:
-            self._print_warning('Fitting process not done again, only the final sky map is computed')
+            warnings.warn('Fitting process not done again, only the final sky map is computed')
                     
         dimx = self.dimx
         dimy = self.dimy
@@ -225,11 +242,11 @@ class SpectralCube(HDFCube):
             ymin = 0 ; ymax = dimy
 
         if not no_fit:
-            self._print_msg('X range: {} {}, Y range: {} {}'.format(xmin, xmax, ymin, ymax))
+            logging.info('X range: {} {}, Y range: {} {}'.format(xmin, xmax, ymin, ymax))
 
             r = min((xmax - xmin), (ymax - ymin)) / float(div_nb + 2) / 2.
             r = min(r, MAX_R)
-            self._print_msg('Radius: {}'.format(r))
+            logging.info('Radius: {}'.format(r))
 
             exclude_mask = np.zeros((dimx, dimy), dtype=bool)
             if exclude_reg_file_path is not None:
@@ -247,7 +264,7 @@ class SpectralCube(HDFCube):
                             f.write('circle({:.5f},{:.5f},{:.5f})\n'.format(
                                 ix, iy, r))
 
-            self._print_msg('{} regions to fit'.format(len(regions)))
+            logging.info('{} regions to fit'.format(len(regions)))
 
             self._prepare_input_params(self.get_sky_lines(), fmodel='sinc',
                                        pos_def='1', sigma_def='1', pos_cov=mean_sky_vel,
@@ -542,8 +559,8 @@ class SpectralCube(HDFCube):
         Z_SIZE = 10
         FILTER_BORDER = 0.1
 
-        if fast: self._print_msg('Source detection using fast algorithm')
-        else: self._print_msg('Source detection using slow (but better) algorithm')
+        if fast: logging.info('Source detection using fast algorithm')
+        else: logging.info('Source detection using slow (but better) algorithm')
 
 
         # get filter range
@@ -561,7 +578,7 @@ class SpectralCube(HDFCube):
         fr_max = max(filter_range_pix) - fr_b
         filter_range_pix = (int(fr_min), int(fr_max))
         
-        self._print_msg('Signal range: {} {}, {} pixels'.format(
+        logging.info('Signal range: {} {}, {} pixels'.format(
             self.params.filter_range, self.unit, filter_range_pix))
         ## each pixel is replaced by the mean of the values in a small
         ## box around it minus the median value of the background
@@ -590,7 +607,7 @@ class SpectralCube(HDFCube):
                 first_frame = int(iframe)
                 last_frame = iframe + res_z_size
                 
-                self._print_msg('Extracting frames: {} to {} ({}/{} frames)'.format(
+                logging.info('Extracting frames: {} to {} ({}/{} frames)'.format(
                     iframe, last_frame-1,
                     last_frame - 1 -min(filter_range_pix),
                     max(filter_range_pix) - min(filter_range_pix)))
@@ -630,7 +647,57 @@ class SpectralCube(HDFCube):
                         argdet_frame, overwrite=True)
             
 
+    def register(self, distortion_map_path=None):
+        """Make a new registration of the cube.
 
+        :param distortion_map: A path to a FITS image containing an
+          SIP distortion model. It can be a registered image of a
+          calibration field containing a lot of stars and taken during
+          the same run as the science cube.
+        """
+
+        deep_frame = self.get_deep_frame()
+        if deep_frame is None:
+            raise Exception('No deep frame is attached to the cube. Please run the last step of the reduction process again.')
+
+        sip = None
+        compute_distortion = True
+        if distortion_map_path is not None:
+            dist_map_hdu = self.read_fits(distortion_map_path, return_hdu_only=True)[0]
+            hdr = dist_map_hdu.header
+            sip = pywcs.WCS(hdr, relax=True)
+            # distortion are already defined and must not be recomputed
+            compute_distortion = False
+            
+        astro = Astrometry(
+            deep_frame, self.params.init_fwhm,
+            self.params.fov,
+            target_radec=(self.params.target_ra,
+                          self.params.target_dec),
+            target_xy=(self.params.target_x,
+                       self.params.target_y),
+            wcs_rotation=self.params.wcs_rotation,
+            sip=sip)
+
+        wcs, dxmap, dymap = astro.register(
+            compute_distortion = compute_distortion,
+            return_error_maps=True)
+
+        newhdr = wcs.to_header(relax=True)
+        newhdr['CD1_1'] = wcs.wcs.cd[0,0]
+        newhdr['CD1_2'] = wcs.wcs.cd[0,1]
+        newhdr['CD2_1'] = wcs.wcs.cd[1,0]
+        newhdr['CD2_2'] = wcs.wcs.cd[1,1]
+
+        self.write_fits(self._get_deep_frame_wcs_path(), deep_frame,
+                        fits_header=newhdr, overwrite=True)
+        self.write_fits(self._get_dxmap_path(), dxmap,
+                        fits_header=newhdr, overwrite=True)
+        self.write_fits(self._get_dymap_path(), dymap,
+                        fits_header=newhdr, overwrite=True)
+
+
+        
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
@@ -693,7 +760,7 @@ class SpectralCube(HDFCube):
             
 
 ##         if axis is None:
-##             self._print_warning('Spectrum axis guessed to be the same as the cube axis')
+##             warnings.warn('Spectrum axis guessed to be the same as the cube axis')
 ##             if wavenumber:
 ##                 axis = orb.utils.spectrum.create_cm1_axis(
 ##                     self.dimz, step, order, corr=axis_corr).astype(float)

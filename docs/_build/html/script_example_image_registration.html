@@ -1,0 +1,1842 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Image registration &mdash; Orcs 2.1.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Orcs</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Image registration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/script_example_image_registration.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 8ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-bold { font-weight: bold; }
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+/* nice headers on first paragraph of info/warning boxes */
+.admonition .first {
+    margin: -12px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+    color: #fff;
+    line-height: 1;
+    display: block;
+}
+.admonition.warning .first {
+    background: #f0b37e;
+}
+.admonition.note .first {
+    background: #6ab0de;
+}
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="Image-registration">
+<h1>Image registration<a class="headerlink" href="#Image-registration" title="Permalink to this headline">¶</a></h1>
+<p>In some cases a calibration image of a field containing a lot of stars
+obtained with SITELLE in the same filter and during the same run as the
+science data can be used to compute a distortion model that can be then
+used directly to enhance the astrometrical calibration of the science
+cube which may have much less stars. The distortion model is then kept
+as is and only the basic registration parameters are recomputed (see
+Martin el al. 2017, <a class="reference external" href="http://adsabs.harvard.edu/abs/2017arXiv170701366M">http://adsabs.harvard.edu/abs/2017arXiv170701366M</a>)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">orb.astrometry</span> <span class="kn">import</span> <span class="n">Astrometry</span>
+<span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="kn">as</span> <span class="nn">io</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Initial-calibration">
+<h2>Initial calibration<a class="headerlink" href="#Initial-calibration" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">target_radec</span></code> and <code class="docutils literal"><span class="pre">target_xy</span></code> are the initial coordinates of the
+registration procedure. They must be taken near the center of the image
+to register and can be obtained using, e.g. the Digital Sky Survey.</p>
+<p>The process is best done two times. The first time only the center of
+the field of view is considered and a rough primary distortion field is
+obtained that can be used the second time to compute a distortion model
+over the whole field of view.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">)</span>
+<span class="n">wcs</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">),</span>
+                               <span class="n">target_xy</span><span class="o">=</span><span class="p">(</span><span class="mi">1036</span><span class="p">,</span> <span class="mi">1032</span><span class="p">))</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">compute_distortion</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:15:54|astrometry:1875:register|INFO&gt; Computing WCS
+170729-10:15:54|astrometry:1877:register|INFO&gt; Initial scale: 0.32373046875 arcsec/pixel
+170729-10:15:54|astrometry:1878:register|INFO&gt; Initial rotation: 2.09 degrees
+170729-10:15:54|astrometry:1880:register|INFO&gt; Initial target position in the image (X,Y): 1036 1032
+170729-10:15:54|core:1029:_get_tuning_parameter|INFO&gt; looking for tuning parameter: Astrometry.detect_stars.PRE_DETECT_COEFF
+170729-10:15:54|astrometry:1476:detect_stars|INFO&gt; Detecting stars
+170729-10:15:54|astrometry:1483:detect_stars|INFO&gt; Filtering master image
+170729-10:15:56|astrometry:1486:detect_stars|INFO&gt; Master image filtered in 1.98992991447 s
+170729-10:15:56|astrometry:1491:detect_stars|INFO&gt; Stars preselection
+170729-10:16:00|astrometry:1531:detect_stars|INFO&gt; Bad stars rejection based on fitting
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 3.20 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:16:04|astrometry:1570:detect_stars|INFO&gt; Fit check
+170729-10:16:04|astrometry:1614:detect_stars|INFO&gt; 60 stars detected
+170729-10:16:04|astrometry:1616:detect_stars|INFO&gt; Detected stars FWHM : 3.276040 pixels, 1.060554 arc-seconds
+170729-10:16:04|astrometry:1619:detect_stars|INFO&gt; SNR Min: 5.2e+01, Max:5.3e+02, Median:1.3e+02
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Star list of 60 stars loaded
+Sending query to VizieR server (catalog: gaia)
+Looking for stars at RA: 294.112073 DEC: 19.706786
+8523 stars recorded in the given field
+Magnitude min: 9.578, max:21.217
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:16:32|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -6.0, dx -69.7889447236, dy -598.753768844
+170729-10:16:35|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.69230769231, dx 13.1859296482, dy -743.959798995
+170729-10:16:38|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -5.38461538462, dx 127.27638191, dy -59.4170854271
+170729-10:16:42|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -5.07692307692, dx -28.3015075377, dy 2.81407035176
+170729-10:16:45|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.76923076923, dx -28.3015075377, dy 2.81407035176
+170729-10:16:48|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -4.46153846154, dx -505.407035176, dy 230.994974874
+170729-10:16:51|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.15384615385, dx 2.81407035176, dy 469.547738693
+170729-10:16:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.84615384615, dx 220.623115578, dy -163.135678392
+170729-10:16:58|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.53846153846, dx 220.623115578, dy -152.763819095
+170729-10:17:01|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.23076923077, dx -17.9296482412, dy 2.81407035176
+170729-10:17:04|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -2.92307692308, dx -59.4170854271, dy -567.638190955
+170729-10:17:07|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle -2.61538461538, dx 2.81407035176, dy -7.55778894472
+170729-10:17:10|astrometry:1968:register|INFO&gt; histogram check: correlation level 11.0, angle -2.30769230769, dx 2.81407035176, dy 2.81407035176
+170729-10:17:13|astrometry:1968:register|INFO&gt; histogram check: correlation level 11.0, angle -2.0, dx 2.81407035176, dy 2.81407035176
+170729-10:17:16|astrometry:1968:register|INFO&gt; histogram check: correlation level 23.0, angle -1.69230769231, dx 2.81407035176, dy 2.81407035176
+170729-10:17:19|astrometry:1968:register|INFO&gt; histogram check: correlation level 32.0, angle -1.38461538462, dx 2.81407035176, dy 2.81407035176
+170729-10:17:22|astrometry:1968:register|INFO&gt; histogram check: correlation level 37.0, angle -1.07692307692, dx 2.81407035176, dy 2.81407035176
+170729-10:17:25|astrometry:1968:register|INFO&gt; histogram check: correlation level 32.0, angle -0.769230769231, dx 2.81407035176, dy 2.81407035176
+170729-10:17:28|astrometry:1968:register|INFO&gt; histogram check: correlation level 25.0, angle -0.461538461538, dx 2.81407035176, dy 2.81407035176
+170729-10:17:31|astrometry:1968:register|INFO&gt; histogram check: correlation level 15.0, angle -0.153846153846, dx 2.81407035176, dy 2.81407035176
+170729-10:17:34|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 0.153846153846, dx 2.81407035176, dy 2.81407035176
+170729-10:17:37|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 0.461538461538, dx 2.81407035176, dy 2.81407035176
+170729-10:17:40|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 0.769230769231, dx 2.81407035176, dy 2.81407035176
+170729-10:17:43|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 1.07692307692, dx -287.59798995, dy 521.407035176
+170729-10:17:46|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 1.38461538462, dx 303.59798995, dy -214.994974874
+170729-10:17:49|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 1.69230769231, dx -671.35678392, dy -121.648241206
+170729-10:17:52|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 2.0, dx -163.135678392, dy -100.904522613
+170729-10:17:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 2.30769230769, dx 262.110552764, dy -370.572864322
+170729-10:17:58|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 2.61538461538, dx 251.738693467, dy 552.522613065
+170729-10:18:01|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 2.92307692308, dx 313.969849246, dy -204.623115578
+170729-10:18:04|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 3.23076923077, dx -38.6733668342, dy 13.1859296482
+170729-10:18:07|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 3.53846153846, dx -339.457286432, dy 96.1608040201
+170729-10:18:11|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 3.84615384615, dx 313.969849246, dy 168.763819095
+170729-10:18:14|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.15384615385, dx -297.969849246, dy -401.688442211
+170729-10:18:17|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.46153846154, dx 241.366834171, dy 376.201005025
+170729-10:18:20|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 4.76923076923, dx 241.366834171, dy 376.201005025
+170729-10:18:23|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 5.07692307692, dx -422.432160804, dy 386.572864322
+170729-10:18:26|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 5.38461538462, dx -412.060301508, dy 241.366834171
+170729-10:18:29|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 5.69230769231, dx -163.135678392, dy 531.778894472
+170729-10:18:32|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 6.0, dx -163.135678392, dy 531.778894472
+170729-10:18:32|astrometry:1988:register|INFO&gt; Histogram guess of the parameters:
+&gt; Rotation angle [in degree]: -1.077
+&gt; Target position [in pixel]: (1038.814, 1034.814)
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Brute force range:
+X = -20.64:20.64:2.17
+Y = -20.64:20.64:2.17
+R = -2.40:2.40:0.12
+Init of the parallel processing server with 4 threads
+Brute force guess:
+dx = 1.08631578947
+dy = -1.08631578947
+dr = -2.15384615385
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:18:59|astrometry:2032:register|INFO&gt; Checking with zoom 0.9925: dx=-1.37071393014, dy=1.37071393014, dr=-2.1694255112, score=858924.759689
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:03|astrometry:2032:register|INFO&gt; Checking with zoom 0.993289473684: dx=-1.37071393014, dy=1.37071393014, dr=-2.1694255112, score=906678.819141
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:07|astrometry:2032:register|INFO&gt; Checking with zoom 0.994078947368: dx=1.08631578947, dy=-1.08631578947, dr=-2.25043816943, score=1035672.75131
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:12|astrometry:2032:register|INFO&gt; Checking with zoom 0.994868421053: dx=1.08631578947, dy=-1.08631578947, dr=-2.20681596884, score=1185465.95767
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:16|astrometry:2032:register|INFO&gt; Checking with zoom 0.995657894737: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1288436.12191
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:20|astrometry:2032:register|INFO&gt; Checking with zoom 0.996447368421: dx=1.08631578947, dy=-1.08631578947, dr=-2.20681596884, score=1448202.77324
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:25|astrometry:2032:register|INFO&gt; Checking with zoom 0.997236842105: dx=1.08631578947, dy=-1.08631578947, dr=-2.22551119766, score=1467212.53822
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:29|astrometry:2032:register|INFO&gt; Checking with zoom 0.998026315789: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1555660.40271
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:33|astrometry:2032:register|INFO&gt; Checking with zoom 0.998815789474: dx=1.08631578947, dy=-1.08631578947, dr=-2.22551119766, score=1619617.22804
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:38|astrometry:2032:register|INFO&gt; Checking with zoom 0.999605263158: dx=1.08631578947, dy=-1.08631578947, dr=-2.20681596884, score=1568369.3327
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:42|astrometry:2032:register|INFO&gt; Checking with zoom 1.00039473684: dx=1.08631578947, dy=-1.08631578947, dr=-2.21304771178, score=1553290.65515
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:46|astrometry:2032:register|INFO&gt; Checking with zoom 1.00118421053: dx=1.08631578947, dy=-1.08631578947, dr=-2.22551119766, score=1453944.01287
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:51|astrometry:2032:register|INFO&gt; Checking with zoom 1.00197368421: dx=1.08631578947, dy=-1.08631578947, dr=-2.21927945472, score=1376873.31798
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:19:55|astrometry:2032:register|INFO&gt; Checking with zoom 1.00276315789: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1258182.0462
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:00|astrometry:2032:register|INFO&gt; Checking with zoom 1.00355263158: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1130281.8256
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:04|astrometry:2032:register|INFO&gt; Checking with zoom 1.00434210526: dx=1.08631578947, dy=-1.08631578947, dr=-2.21927945472, score=1034159.94595
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:09|astrometry:2032:register|INFO&gt; Checking with zoom 1.00513157895: dx=1.08631578947, dy=-1.08631578947, dr=-2.17565725414, score=886712.812047
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:13|astrometry:2032:register|INFO&gt; Checking with zoom 1.00592105263: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=821874.226597
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:18|astrometry:2032:register|INFO&gt; Checking with zoom 1.00671052632: dx=1.08631578947, dy=-1.08631578947, dr=-2.28782862707, score=687177.96354
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:22|astrometry:2032:register|INFO&gt; Checking with zoom 1.0075: dx=1.08631578947, dy=-1.08631578947, dr=-2.17565725414, score=610834.60082
+170729-10:20:22|astrometry:2052:register|INFO&gt; Brute force guess of the parameters:
+&gt; Rotation angle [in degree]: 1.149
+&gt; Target position [in pixel]: (1037.728, 1035.900)
+&gt; Scale X (arcsec/pixel): 0.32335
+&gt; Scale Y (arcsec/pixel): 0.32335
+170729-10:20:22|astrometry:2079:register|INFO&gt; Computing SIP coefficients
+<span class="ansi-yellow-fg">170729-10:20:22|astrometry:2081:register|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2081: UserWarning: As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class
+  warnings.warn(&#39;As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class&#39;)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">170729-10:20:23|astrometry:579:fit_star|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:579: UserWarning: fit_star leastsq exception: Improper input: N=3 must not exceed M=0
+  warnings.warn(&#39;fit_star leastsq exception: {}&#39;.format(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:28|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 20 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 3 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 10 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 8 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 14 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 12 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+<span class="ansi-yellow-fg">170729-10:20:30|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+After 11 iterations, the solution is diverging at least for one input point.
+  warnings.warn(str(e))
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Optimized average radius for direct transformation (in pixel) 2.87948923016
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:20:39|astrometry:2132:register|INFO&gt; Computing distortion maps
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Optimized average radius for reverse transformation (in pixel) 1.54421285883e-07
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">170729-10:20:45|astrometry:2159:register|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2159: RuntimeWarning: invalid value encountered in greater
+  _x[np.nonzero(_r &gt; rmax)] = np.nan
+</span>
+170729-10:20:57|astrometry:2217:register|INFO&gt; Computing astrometrical precision
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Standard deviation of the residual: 1.71037516194
+Median relative error (err/val)): 47.54%
+Standard deviation of the residual: 1.70853839412
+Median relative error (err/val)): 44.08%
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:21:03|astrometry:2291:register|INFO&gt; Astrometrical precision [in arcsec]: 0.446 [+/-0.199] computed over 1626 stars
+170729-10:21:03|astrometry:2317:register|INFO&gt; Optimization parameters:
+&gt; Rotation angle [in degree]: 1.149
+&gt; Target position [in pixel]: (1037.728, 1035.900)
+&gt; Scale X (arcsec/pixel): 0.32335
+&gt; Scale Y (arcsec/pixel): 0.32335
+170729-10:21:03|astrometry:2321:register|INFO&gt; Corrected WCS computed
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Data written as M1-71.deep_frame.wcs.init.fits in 0.22 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[3]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&#39;M1-71.deep_frame.wcs.init.fits&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Final-calibration">
+<h2>Final calibration<a class="headerlink" href="#Final-calibration" title="Permalink to this headline">¶</a></h2>
+<p>The obtained wcs is used as an input for the final calibration. Now the
+whole field of view can be considered.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="k">print</span> <span class="n">wcs</span>
+<span class="n">target_radec</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crval</span>
+<span class="n">target_xy</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crpix</span>
+<span class="kn">import</span> <span class="nn">orb.utils.astrometry</span>
+<span class="n">wcs_rotation</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">get_wcs_parameters</span><span class="p">(</span><span class="n">wcs</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">wcs_rotation</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">170729-10:21:04|wcs:2729:__repr__|WARNING&gt; /usr/local/lib/python2.7/dist-packages/astropy/wcs/wcs.py:2729: RuntimeWarning: cdelt will be ignored since cd is present
+  description.append(s.format(*self.wcs.cdelt))
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+WCS Keywords
+
+Number of WCS axes: 2
+CTYPE : &#39;RA---TAN-SIP&#39;  &#39;DEC--TAN-SIP&#39;
+CRVAL : 294.11207289999999  19.706785969999999
+CRPIX : 1037.7277545623001  1035.9003861412
+PC1_1 PC1_2  : -8.9800592910422e-05  -1.8004417444403e-06
+PC2_1 PC2_2  : -1.8004417444403e-06  8.9800592910422e-05
+CDELT : 1.0  1.0
+NAXIS : 0  0
+1.14858812074
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">wcs</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="n">target_radec</span><span class="p">,</span>
+                               <span class="n">target_xy</span><span class="o">=</span><span class="n">target_xy</span><span class="p">,</span>  <span class="n">wcs_rotation</span><span class="o">=</span><span class="n">wcs_rotation</span><span class="p">,</span> <span class="n">sip</span><span class="o">=</span><span class="n">wcs</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+                                    <span class="n">compute_distortion</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:21:04|astrometry:1875:register|INFO&gt; Computing WCS
+170729-10:21:04|astrometry:1877:register|INFO&gt; Initial scale: 0.32373046875 arcsec/pixel
+170729-10:21:04|astrometry:1878:register|INFO&gt; Initial rotation: 1.14858812074 degrees
+170729-10:21:04|astrometry:1880:register|INFO&gt; Initial target position in the image (X,Y): 1037.72775456 1035.90038614
+170729-10:21:04|core:1029:_get_tuning_parameter|INFO&gt; looking for tuning parameter: Astrometry.detect_stars.PRE_DETECT_COEFF
+170729-10:21:04|astrometry:1476:detect_stars|INFO&gt; Detecting stars
+170729-10:21:04|astrometry:1483:detect_stars|INFO&gt; Filtering master image
+170729-10:21:06|astrometry:1486:detect_stars|INFO&gt; Master image filtered in 1.91952419281 s
+170729-10:21:06|astrometry:1491:detect_stars|INFO&gt; Stars preselection
+170729-10:21:11|astrometry:1531:detect_stars|INFO&gt; Bad stars rejection based on fitting
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 3.46 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:21:14|astrometry:1570:detect_stars|INFO&gt; Fit check
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:21:14|astrometry:1614:detect_stars|INFO&gt; 60 stars detected
+170729-10:21:14|astrometry:1616:detect_stars|INFO&gt; Detected stars FWHM : 3.276040 pixels, 1.060554 arc-seconds
+170729-10:21:14|astrometry:1619:detect_stars|INFO&gt; SNR Min: 5.2e+01, Max:5.3e+02, Median:1.3e+02
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Star list of 60 stars loaded
+Sending query to VizieR server (catalog: gaia)
+Looking for stars at RA: 294.112073 DEC: 19.706786
+8523 stars recorded in the given field
+Magnitude min: 9.578, max:21.217
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:21:21|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -6.0, dx 148.020100503, dy -225.366834171
+170729-10:21:24|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.69230769231, dx -474.291457286, dy 583.638190955
+170729-10:21:27|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.38461538462, dx -598.753768844, dy 116.904522613
+170729-10:21:30|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.07692307692, dx -422.432160804, dy -204.623115578
+170729-10:21:33|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.76923076923, dx -526.150753769, dy 2.81407035176
+170729-10:21:37|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.46153846154, dx 313.969849246, dy -546.894472362
+170729-10:21:40|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.15384615385, dx 511.035175879, dy 272.48241206
+170729-10:21:43|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.84615384615, dx 521.407035176, dy 272.48241206
+170729-10:21:46|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.53846153846, dx -69.7889447236, dy -308.341708543
+170729-10:21:49|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -3.23076923077, dx 189.507537688, dy -370.572864322
+170729-10:21:52|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -2.92307692308, dx -235.738693467, dy -277.226130653
+170729-10:21:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -2.61538461538, dx -49.0452261307, dy -225.366834171
+170729-10:21:59|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -2.30769230769, dx -412.060301508, dy -308.341708543
+170729-10:22:02|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -2.0, dx -17.9296482412, dy -7.55778894472
+170729-10:22:05|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -1.69230769231, dx -7.55778894472, dy 13.1859296482
+170729-10:22:08|astrometry:1968:register|INFO&gt; histogram check: correlation level 11.0, angle -1.38461538462, dx -7.55778894472, dy -7.55778894472
+170729-10:22:11|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle -1.07692307692, dx -7.55778894472, dy -7.55778894472
+170729-10:22:14|astrometry:1968:register|INFO&gt; histogram check: correlation level 18.0, angle -0.769230769231, dx 2.81407035176, dy 2.81407035176
+170729-10:22:18|astrometry:1968:register|INFO&gt; histogram check: correlation level 28.0, angle -0.461538461538, dx 2.81407035176, dy 2.81407035176
+170729-10:22:21|astrometry:1968:register|INFO&gt; histogram check: correlation level 39.0, angle -0.153846153846, dx 2.81407035176, dy 2.81407035176
+170729-10:22:24|astrometry:1968:register|INFO&gt; histogram check: correlation level 39.0, angle 0.153846153846, dx 2.81407035176, dy 2.81407035176
+170729-10:22:27|astrometry:1968:register|INFO&gt; histogram check: correlation level 28.0, angle 0.461538461538, dx 2.81407035176, dy 2.81407035176
+170729-10:22:30|astrometry:1968:register|INFO&gt; histogram check: correlation level 18.0, angle 0.769230769231, dx 2.81407035176, dy 2.81407035176
+170729-10:22:33|astrometry:1968:register|INFO&gt; histogram check: correlation level 12.0, angle 1.07692307692, dx 13.1859296482, dy 2.81407035176
+170729-10:22:36|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 1.38461538462, dx 13.1859296482, dy 2.81407035176
+170729-10:22:40|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 1.69230769231, dx 96.1608040201, dy 386.572864322
+170729-10:22:43|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 2.0, dx -132.020100503, dy 552.522613065
+170729-10:22:46|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 2.30769230769, dx -671.35678392, dy -121.648241206
+170729-10:22:49|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 2.61538461538, dx -671.35678392, dy -121.648241206
+170729-10:22:52|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 2.92307692308, dx -163.135678392, dy 293.226130653
+170729-10:22:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 3.23076923077, dx -225.366834171, dy -152.763819095
+170729-10:22:58|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 3.53846153846, dx -256.48241206, dy -80.1608040201
+170729-10:23:01|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 3.84615384615, dx 313.969849246, dy 158.391959799
+170729-10:23:04|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.15384615385, dx 313.969849246, dy -204.623115578
+170729-10:23:07|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.46153846154, dx 272.48241206, dy -370.572864322
+170729-10:23:10|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 4.76923076923, dx 54.6733668342, dy 521.407035176
+170729-10:23:13|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 5.07692307692, dx 13.1859296482, dy -17.9296482412
+170729-10:23:16|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 5.38461538462, dx -318.713567839, dy -246.110552764
+170729-10:23:19|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 5.69230769231, dx -163.135678392, dy -858.050251256
+170729-10:23:22|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 6.0, dx 96.1608040201, dy 148.020100503
+170729-10:23:22|astrometry:1988:register|INFO&gt; Histogram guess of the parameters:
+&gt; Rotation angle [in degree]: -0.154
+&gt; Target position [in pixel]: (1040.542, 1038.714)
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Brute force range:
+X = -20.64:20.64:2.17
+Y = -20.64:20.64:2.17
+R = -2.40:2.40:0.12
+Init of the parallel processing server with 4 threads
+Brute force guess:
+dx = 1.08631578947
+dy = 3.25894736842
+dr = -1.29230769231
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:23:56|astrometry:2032:register|INFO&gt; Checking with zoom 0.9925: dx=-1.37071393014, dy=5.71597708803, dr=-1.16455696203, score=612193.994701
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:01|astrometry:2032:register|INFO&gt; Checking with zoom 0.993289473684: dx=-1.37071393014, dy=5.71597708803, dr=-1.13962999026, score=687707.631323
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:06|astrometry:2032:register|INFO&gt; Checking with zoom 0.994078947368: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=847397.982554
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:11|astrometry:2032:register|INFO&gt; Checking with zoom 0.994868421053: dx=1.08631578947, dy=3.25894736842, dr=-1.27672833496, score=1003268.35827
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:17|astrometry:2032:register|INFO&gt; Checking with zoom 0.995657894737: dx=1.08631578947, dy=3.25894736842, dr=-1.28919182084, score=1187839.46266
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:22|astrometry:2032:register|INFO&gt; Checking with zoom 0.996447368421: dx=1.08631578947, dy=3.25894736842, dr=-1.3141187926, score=1340898.77933
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:27|astrometry:2032:register|INFO&gt; Checking with zoom 0.997236842105: dx=1.08631578947, dy=3.25894736842, dr=-1.27672833496, score=1499846.95769
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:32|astrometry:2032:register|INFO&gt; Checking with zoom 0.998026315789: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=1606385.43482
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:37|astrometry:2032:register|INFO&gt; Checking with zoom 0.998815789474: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=1725315.96525
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:42|astrometry:2032:register|INFO&gt; Checking with zoom 0.999605263158: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=1755936.31639
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:47|astrometry:2032:register|INFO&gt; Checking with zoom 1.00039473684: dx=1.08631578947, dy=3.25894736842, dr=-1.25180136319, score=1779163.1384
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:52|astrometry:2032:register|INFO&gt; Checking with zoom 1.00118421053: dx=1.08631578947, dy=3.25894736842, dr=-1.30165530672, score=1759394.47143
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:24:57|astrometry:2032:register|INFO&gt; Checking with zoom 1.00197368421: dx=1.08631578947, dy=3.25894736842, dr=-1.32658227848, score=1735133.17176
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:03|astrometry:2032:register|INFO&gt; Checking with zoom 1.00276315789: dx=1.08631578947, dy=3.25894736842, dr=-1.29542356378, score=1616301.53868
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:08|astrometry:2032:register|INFO&gt; Checking with zoom 1.00355263158: dx=1.08631578947, dy=3.25894736842, dr=-1.30788704966, score=1525970.41357
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:13|astrometry:2032:register|INFO&gt; Checking with zoom 1.00434210526: dx=1.08631578947, dy=3.25894736842, dr=-1.30165530672, score=1302438.05509
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:19|astrometry:2032:register|INFO&gt; Checking with zoom 1.00513157895: dx=1.08631578947, dy=3.25894736842, dr=-1.27049659202, score=1133583.95829
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:24|astrometry:2032:register|INFO&gt; Checking with zoom 1.00592105263: dx=1.08631578947, dy=3.25894736842, dr=-1.27672833496, score=951431.285256
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:29|astrometry:2032:register|INFO&gt; Checking with zoom 1.00671052632: dx=3.54334550909, dy=3.25894736842, dr=-1.21441090555, score=827734.505597
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:25:34|astrometry:2032:register|INFO&gt; Checking with zoom 1.0075: dx=3.54334550909, dy=3.25894736842, dr=-1.27672833496, score=708478.076106
+170729-10:25:34|astrometry:2052:register|INFO&gt; Brute force guess of the parameters:
+&gt; Rotation angle [in degree]: 1.098
+&gt; Target position [in pixel]: (1039.456, 1035.456)
+&gt; Scale X (arcsec/pixel): 0.32386
+&gt; Scale Y (arcsec/pixel): 0.32386
+170729-10:25:34|astrometry:2079:register|INFO&gt; Computing SIP coefficients
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Optimized average radius for direct transformation (in pixel) 3.10729317092
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:26:04|astrometry:2132:register|INFO&gt; Computing distortion maps
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Optimized average radius for reverse transformation (in pixel) 1.52684951295e-08
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:26:21|astrometry:2217:register|INFO&gt; Computing astrometrical precision
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Standard deviation of the residual: 1.4572560119
+Median relative error (err/val)): 37.59%
+Standard deviation of the residual: 1.56875749803
+Median relative error (err/val)): 46.56%
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+170729-10:26:27|astrometry:2291:register|INFO&gt; Astrometrical precision [in arcsec]: 0.428 [+/-0.203] computed over 1617 stars
+170729-10:26:27|astrometry:2317:register|INFO&gt; Optimization parameters:
+&gt; Rotation angle [in degree]: 1.098
+&gt; Target position [in pixel]: (1039.456, 1035.456)
+&gt; Scale X (arcsec/pixel): 0.32386
+&gt; Scale Y (arcsec/pixel): 0.32386
+170729-10:26:27|astrometry:2321:register|INFO&gt; Corrected WCS computed
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">,</span> <span class="n">dymap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Data written as M1-71.deep_frame.wcs.best.fits in 0.07 s
+Data written as M1-71.wcs.dxmap.fits in 0.01 s
+Data written as M1-71.wcs.dymap.fits in 0.01 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[6]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&#39;M1-71.wcs.dymap.fits&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Check-the-results">
+<h2>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h2>
+<p>You might want to check the quality of the calibration by choosing a
+catalog and plot the positions of the stars with the wcs only and with
+the micro-shifting maps (dxmap, dymap).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># load files and query the catalog</span>
+<span class="kn">import</span> <span class="nn">orb.utils.web</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">im</span><span class="p">,</span> <span class="n">hdr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">return_header</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">dxmap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">)</span>
+<span class="n">dymap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">)</span>
+
+<span class="n">star_list_deg</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">query_vizier</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRVAL1&#39;</span><span class="p">],</span> <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRVAL2&#39;</span><span class="p">],</span>
+                                           <span class="n">catalog</span><span class="o">=</span><span class="s1">&#39;gaia&#39;</span><span class="p">,</span> <span class="n">max_stars</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Sending query to VizieR server (catalog: gaia)
+Looking for stars at RA: 294.112073 DEC: 19.706786
+11226 stars recorded in the given field
+Magnitude min: 9.578, max:21.282
+</pre></div></div>
+</div>
+<div class="section" id="Only-the-WCS-(SIP-but-no-dx/dy-maps)">
+<h3>Only the WCS (SIP but no dx/dy maps)<a class="headerlink" href="#Only-the-WCS-(SIP-but-no-dx/dy-maps)" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># this is a very basic filter to remove stars position which are out of the image</span>
+<span class="k">def</span> <span class="nf">filter_star_list</span><span class="p">(</span><span class="n">_star_list</span><span class="p">):</span>
+    <span class="n">_star_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">_star_list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">istar</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_star_list</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2048</span>
+            <span class="ow">or</span> <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2064</span><span class="p">):</span>
+            <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">return</span> <span class="n">_star_list</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">dxmap_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dxmap</span><span class="p">)</span>
+<span class="n">dxmap_null</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+<span class="n">dymap_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dymap</span><span class="p">)</span>
+<span class="n">dymap_null</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+
+<span class="n">star_list_pix1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">world2pix</span><span class="p">(</span>
+    <span class="n">hdr</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">star_list_deg</span><span class="p">),</span> <span class="n">dxmap_null</span><span class="p">,</span> <span class="n">dymap_null</span><span class="p">)</span>
+
+<span class="n">star_list_pix1</span> <span class="o">=</span> <span class="n">filter_star_list</span><span class="p">(</span><span class="n">star_list_pix1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+          <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+          <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray_r&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom-left&#39;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[28]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.collections.PathCollection at 0x7f82f050ff10&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_image_registration_14_1.png" src="_images/script_example_image_registration_14_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="WCS-+-dx/dy-maps">
+<h3>WCS + dx/dy maps<a class="headerlink" href="#WCS-+-dx/dy-maps" title="Permalink to this headline">¶</a></h3>
+<p>Only a SIP model is not enough to get a precision of the order of the
+pixel because the field is strongly distorted on the borders.
+Micro-shifting maps (<code class="docutils literal"><span class="pre">dxmap</span></code> and <code class="docutils literal"><span class="pre">dymap</span></code>) can thus help in attaining
+a really good precision on the astrometry.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">star_list_pix2</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">world2pix</span><span class="p">(</span>
+    <span class="n">hdr</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">star_list_deg</span><span class="p">),</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span><span class="p">)</span>
+
+<span class="n">star_list_pix2</span> <span class="o">=</span> <span class="n">filter_star_list</span><span class="p">(</span><span class="n">star_list_pix2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+          <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+          <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
+          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray_r&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom-left&#39;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">star_list_pix2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">star_list_pix2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[27]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.collections.PathCollection at 0x7f82f0576550&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_image_registration_17_1.png" src="_images/script_example_image_registration_17_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Thomas Martin (thomas.martin.1@ulaval.ca).
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

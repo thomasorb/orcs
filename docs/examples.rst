@@ -1,3 +1,5 @@
+.. _examples:
+
 Examples
 ========
 
@@ -40,6 +42,7 @@ your data.
    :maxdepth: 1
 
    script_example_wavelength_calibration.ipynb
+   script_example_image_registration.ipynb
 
 Advanced fitting
 ----------------
@@ -51,3 +54,10 @@ These examples show advanced fitting procedures.
 
    script_example_constaining_line_ratios.ipynb
 
+Other Tools
+-----------
+
+.. toctree::
+   :maxdepth: 1
+	      
+   script_example_automatic_source_detection.ipynb

@@ -13,33 +13,34 @@ ORCS Documentation
    :align: center
 
 .. topic:: Welcome to ORCS documentation !
+
+.. contents::
+
+
+Features
+--------
+
 	   
-  **ORCS** (*Outils de Réduction de Cubes Spectraux*) is an analysis engine for SITELLE spectral cubes. With ORCS_ you can:
-	   * extract integrated spectra  
-	   * fit the sinc emission lines
-	   * recalibrate your data in wavelength, astrometry and flux  
+**ORCS** (*Outils de Réduction de Cubes Spectraux*) is an analysis engine for SITELLE_ spectral cubes. With ORCS_ you can:
 
+* extract integrated spectra
+  
+* fit the sinc emission lines
+  
+* recalibrate your data in wavelength, astrometry and flux
+  
+* choose between a Bayesian or a classical fitting algorithm
 
-Examples in Jupyter format are given in `Quick Start`_.
+* and much more ...
+
+**Examples** in Jupyter format can be found in :ref:`examples`.
     
-.. _SITELLE: 
-
-   **SITELLE** (Spectromètre-Imageur pour l’Étude en Long et en Large
-    des raie d’Émissions) is a imaging Fourier Transform Spectrometer
-    operating at the CFHT_ (Canada-France-Hawaii Telescope, Hawaii,
-    USA) and designed to obtain visible spectra of a 11x11 arc-minutes
-    field of view.
-
    
 .. warning:: ORCS is always in fast development. You might see bugs or
  strange behaviours ! You might also want desperatly to have new
  features. In all cases please send an email:
  thomas.martin.1@ulaval.ca
 
-Table of contents
------------------
-
-.. contents::
 
 
 Quick Start
@@ -88,3 +89,4 @@ Indices and tables
 .. _Python: http://www.python.org/
 .. _ORB: https://github.com/thomasorb/orb
 .. _ORCS: https://github.com/thomasorb/orcs
+.. _SITELLE: http://www.cfht.hawaii.edu/Instruments/Sitelle

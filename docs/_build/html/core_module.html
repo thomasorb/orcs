@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.0.5 documentation</title>
+  <title>Core module &mdash; Orcs 2.1.0 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.5 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
         <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Constraining line ratios" href="script_example_constaining_line_ratios.html"/> 
+        <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.0.5
+                2.1.0
               </div>
             
           
@@ -312,16 +312,16 @@ with the its fit (default True).</li>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube._fit_lines_in_region">
-<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raw function that fit lines in a given region of the
-cube. All the pixels in the defined region are fitted one by
-one and a set of maps containing the fitted paramaters are
+<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em>, <em>snr_guess=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw function that fit lines in a given region of the cube.</p>
+<p>All the pixels in the defined region are fitted one by one
+and a set of maps containing the fitted paramaters are
 written. Note that the pixels can be binned.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Need the InputParams class to be defined before call</p>
+<p class="last">Need the InputParams class to be defined before call
+(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal"><span class="pre">_prepare_input_params()</span></code></a>).</p>
 </div>
-<p>(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal"><span class="pre">_prepare_input_params()</span></code></a>).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The fit will always use the Bayesian algorithm.</p>
@@ -339,24 +339,27 @@ parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
 <li><strong>binning</strong> &#8211; (Optional) Binning. The fitted pixels can be
 binned.</li>
+<li><strong>snr_guess</strong> &#8211; (Optional) Can only be None (classical fit)
+or &#8216;auto&#8217; (Bayesian fit).</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>..note :: Maps of the parameters of the fit can be found in the directory</dt>
-<dd><p class="first">created by ORCS: <code class="docutils literal"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Maps of the parameters of the fit can be found in
+the directory created by ORCS:
+<code class="docutils literal"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
 <p>Each line has 5 parameters (which gives 5 maps): height,
 amplitude, velocity, fwhm, sigma. Height and amplitude are
 given in ergs/cm^2/s/A. Velocity and broadening are given in
 km/s. FWHM is given in cm^-1.</p>
-<p>The flux map is also computed (from fwhm, amplitude and sigma
-parameters) and given in ergs/cm^2/s.</p>
-<p class="last">Each fitted parameter is associated an uncertainty (<a href="#id1"><span class="problematic" id="id2">*</span></a>_err maps) given
-in the same unit.</p>
-</dd>
-</dl>
+<p>The flux map is also computed (from fwhm, amplitude and
+sigma parameters) and given in ergs/cm^2/s.</p>
+<p class="last">Each fitted parameter is associated an uncertainty (<code class="docutils literal"><span class="pre">*_err</span></code>
+maps) given in the same unit.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -448,8 +451,8 @@ avoid loading a full data cube in memory.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>func</strong> &#8211; Can be a vector or column function (vector
 must be set to False in the case of a function applied to
-the columns). Must be f(vector_data, <a href="#id3"><span class="problematic" id="id4">*</span></a>args) or
-f(column_data, * args).</li>
+the columns). Must be <cite>f(vector_data, *args)</cite> or
+<cite>f(column_data, *args)</cite>.</li>
 <li><strong>args</strong> &#8211; Function arguments. All arguments with a 2D shape
 equal to the cube 2D shape are treated as mapped
 arguments. The column or pixel corresponding to the column
@@ -652,8 +655,6 @@ bandpass.</li>
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>snr_guess</strong> &#8211; Guess on the SNR of the spectrum. Necessary
-to make a Bayesian fit. If None a classical fit is made.</li>
 <li><strong>kwargs</strong> &#8211; Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
@@ -791,6 +792,13 @@ computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibrati
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.get_deep_frame">
+<code class="descname">get_deep_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_deep_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return deep frame if if exists. None if no deep frame is
+attached to the cube.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.get_filter_range">
 <code class="descname">get_filter_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_filter_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the range of the filter in the unit of the spectral
@@ -818,24 +826,30 @@ True)</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="orcs.core.HDFCube.get_param">
-<code class="descname">get_param</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_param" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get an observation  parameter</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> &#8211; parameter key</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="orcs.core.HDFCube.get_sky_lines">
 <code class="descname">get_sky_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_sky_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the wavenumber/wavelength of the sky lines in the
 filter range</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.core.HDFCube.pix2world">
+<code class="descname">pix2world</code><span class="sig-paren">(</span><em>xy</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.pix2world" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert pixel coordinates to celestial coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> &#8211; A tuple (x,y) of pixel coordinates or a list of
+tuples ((x0,y0), (x1,y1), ...)</li>
+<li><strong>deg</strong> &#8211; (Optional) If true, celestial coordinates are
+returned in sexagesimal format (default False).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -854,20 +868,34 @@ calibration has changed</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="orcs.core.HDFCube.set_config">
-<code class="descname">set_config</code><span class="sig-paren">(</span><em>key</em>, <em>cast</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a configuration parameter (from the configuration file)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.set_param">
-<code class="descname">set_param</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_param" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set an observation parameter</p>
+<dt id="orcs.core.HDFCube.set_dxdymaps">
+<code class="descname">set_dxdymaps</code><span class="sig-paren">(</span><em>dxmap_path</em>, <em>dymap_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_dxdymaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set micro-shift maps returned by the astrometrical
+calibration method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> &#8211; parameter key</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dxmap_path</strong> &#8211; Path to the dxmap.</li>
+<li><strong>dymap_path</strong> &#8211; Path to the dymap.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.core.HDFCube.world2pix">
+<code class="descname">world2pix</code><span class="sig-paren">(</span><em>radec</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.world2pix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert celestial coordinates to pixel coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xy</strong> &#8211; A tuple (x,y) of celestial coordinates or a list of
+tuples ((x0,y0), (x1,y1), ...). Must be in degrees.</td>
 </tr>
 </tbody>
 </table>
@@ -878,7 +906,7 @@ calibration has changed</p>
 <dl class="class">
 <dt id="orcs.core.LineMaps">
 <em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">LineMaps</code><span class="sig-paren">(</span><em>dimx</em>, <em>dimy</em>, <em>lines</em>, <em>wavenumber</em>, <em>binning</em>, <em>div_nb</em>, <em>project_header=None</em>, <em>wcs_header=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#orcs.core.Tools" title="orcs.core.Tools"><code class="xref py py-class docutils literal"><span class="pre">orcs.core.Tools</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
 <p>Manage line parameters maps</p>
 <dl class="method">
 <dt id="orcs.core.LineMaps.__init__">
@@ -1021,96 +1049,6 @@ None)</li>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="orcs.core.ROParams">
-<em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">ROParams</code><a class="headerlink" href="#orcs.core.ROParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></p>
-<p>Special dictionary which elements can be accessed like
-attributes.</p>
-<p>Attributes are read-only and may be defined only once.</p>
-<dl class="attribute">
-<dt id="orcs.core.ROParams.__delattr__">
-<code class="descname">__delattr__</code><a class="headerlink" href="#orcs.core.ROParams.__delattr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__delitem__(y) &lt;==&gt; del x[y]</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.ROParams.__getattr__">
-<code class="descname">__getattr__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.ROParams.__getattr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__getitem__(y) &lt;==&gt; x[y]</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.ROParams.__setattr__">
-<code class="descname">__setattr__</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.ROParams.__setattr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Special set attribute function. Always raise a read-only
-error.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> &#8211; Attribute name.</li>
-<li><strong>value</strong> &#8211; Attribute value.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.ROParams.__setitem__">
-<code class="descname">__setitem__</code><span class="sig-paren">(</span><em>key</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.ROParams.__setitem__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Special set item function. Raise a read-only error when the
-parameter already exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>key</strong> &#8211; Item key.</li>
-<li><strong>value</strong> &#8211; Item value.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="orcs.core.ROParams.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#orcs.core.ROParams.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="orcs.core.Tools">
-<em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">Tools</code><span class="sig-paren">(</span><em>data_prefix='./temp/data.'</em>, <em>no_log=False</em>, <em>tuning_parameters={}</em>, <em>ncpus=None</em>, <em>config_file_name='config.orb'</em>, <em>silent=False</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.Tools" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
-<p>Extension of <code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
-</div>
-<dl class="method">
-<dt id="orcs.core.Tools._get_orcs_data_file_path">
-<code class="descname">_get_orcs_data_file_path</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.Tools._get_orcs_data_file_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to a file in ORCS data folder: orcs/data/file_name</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_name</strong> &#8211; Name of the file in ORCS data folder.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -1126,7 +1064,7 @@ parameter already exists.</p>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_constaining_line_ratios.html" class="btn btn-neutral" title="Constraining line ratios" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1157,7 +1095,7 @@ parameter already exists.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.5',
+            VERSION:'2.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

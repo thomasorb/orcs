@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Process module &mdash; Orcs 2.0.5 documentation</title>
+  <title>Process module &mdash; Orcs 2.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.0.5 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
         <link rel="next" title="RVCorrect module" href="rvcorrect_module.html"/>
         <link rel="prev" title="Core module" href="core_module.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.0.5
+                2.1.0
               </div>
             
           
@@ -229,6 +229,13 @@ map.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.process.SpectralCube._get_deep_frame_wcs_path">
+<code class="descname">_get_deep_frame_wcs_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_deep_frame_wcs_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the generated deep frame with the reocmputed
+WCS.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.process.SpectralCube._get_detection_frame_path">
 <code class="descname">_get_detection_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_frame_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the detection frame</p>
@@ -238,6 +245,18 @@ map.</p>
 <dt id="orcs.process.SpectralCube._get_detection_pos_frame_path">
 <code class="descname">_get_detection_pos_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_pos_frame_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the detection position frame</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.process.SpectralCube._get_dxmap_path">
+<code class="descname">_get_dxmap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dxmap_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the generated X micro-shifting map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.process.SpectralCube._get_dymap_path">
+<code class="descname">_get_dymap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dymap_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the generated Y micro-shifting map.</p>
 </dd></dl>
 
 <dl class="method">
@@ -317,6 +336,23 @@ process. Only recompute the velocity map model.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="orcs.process.SpectralCube.register">
+<code class="descname">register</code><span class="sig-paren">(</span><em>distortion_map_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a new registration of the cube.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>distortion_map</strong> &#8211; A path to a FITS image containing an
+SIP distortion model. It can be a registered image of a
+calibration field containing a lot of stars and taken during
+the same run as the science cube.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -365,7 +401,7 @@ process. Only recompute the velocity map model.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.5',
+            VERSION:'2.1.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
