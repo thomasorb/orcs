@@ -152,6 +152,7 @@ class HDFCube(orb.core.HDFCube):
                                            # inconsistency
         self.wcs = pywcs.WCS(self.header, naxis=2, relax=True)
         self.wcs_header = self.wcs.to_header(relax=True)
+        self._wcs_header = pywcs.WCS(self.wcs_header, naxis=2, relax=True)
 
         self.set_param('target_ra', float(self.wcs.wcs.crval[0]))
         self.set_param('target_dec', float(self.wcs.wcs.crval[1]))
@@ -628,7 +629,7 @@ class HDFCube(orb.core.HDFCube):
             binning, self.config.DIV_NB,
             instrument=self.instrument, 
             project_header=self._project_header,
-            wcs_header=self._wcs_header,
+            wcs_header=self.wcs_header,
             data_prefix=self._data_prefix,
             ncpus=self.ncpus)
         
@@ -922,18 +923,36 @@ class HDFCube(orb.core.HDFCube):
         :param spectrum: The spectrum to fit (1d vector).
 
         :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit. If None a classical fit is made.
+          to make a Bayesian fit (If unknown you can set it to 'auto'
+          to try an automatic mode, two fits are made - one with a
+          predefined SNR and the other with the SNR deduced from the
+          first fit). If None a classical fit is made.
 
         :param kwargs: (Optional) Model parameters that must be
           changed in the InputParams instance.    
         """
         if not hasattr(self, 'inputparams'):
             self._print_error('Input params not defined')
-
+        # check snr guess param
         auto_mode = False
-        if snr_guess == 'auto':
-            auto_mode = True
-            snr_guess= 30
+        bad_snr_param = False
+        if snr_guess is not None:
+            if isinstance(snr_guess, str):
+                if snr_guess.lower() == 'auto':
+                    auto_mode = True
+                    snr_guess= 30
+                elif snr_guess.lower() == 'none':
+                    snr_guess = None
+                    auto_mode = False
+                else: bad_snr_param = True
+            elif isinstance(snr_guess, bool):
+                    bad_snr_param = True
+            elif not (isinstance(snr_guess, float)
+                      or isinstance(snr_guess, int)):
+                bad_snr_param = True
+                
+        if bad_snr_param:
+            raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
         try:
             print 'SNR GUESS', snr_guess
@@ -1501,7 +1520,6 @@ class LineMaps(orb.core.Tools):
                   'velocity', 'velocity-err', 'fwhm', 'fwhm-err',
                   'sigma', 'sigma-err', 'flux', 'flux-err')
 
-    _wcs_header = None
 
     def __init__(self, dimx, dimy, lines, wavenumber, binning, div_nb,
                  project_header=None, wcs_header=None, **kwargs):
@@ -1530,7 +1548,7 @@ class LineMaps(orb.core.Tools):
         """
         orb.core.Tools.__init__(self, **kwargs)
         self._project_header = project_header
-        self._wcs_header = wcs_header
+        self.wcs_header = wcs_header
         self.__version__ = version.__version__
 
         self.wavenumber = wavenumber
@@ -1634,12 +1652,12 @@ class LineMaps(orb.core.Tools):
 
         :param hdr: Header to update
         """
-        if self._wcs_header is not None:
+        if self.wcs_header is not None:
             new_hdr = pyfits.Header()
             new_hdr.extend(hdr, strip=True,
                            update=True, end=True)
 
-            new_hdr.extend(self._wcs_header, strip=True,
+            new_hdr.extend(self.wcs_header, strip=True,
                            update=True, end=True)
             
             if 'RESTFRQ' in new_hdr: del new_hdr['RESTFRQ']
