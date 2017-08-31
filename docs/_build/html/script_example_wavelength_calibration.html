@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
-        <link rel="next" title="Constraining line ratios" href="script_example_constaining_line_ratios.html"/>
+        <link rel="next" title="Image registration" href="script_example_image_registration.html"/>
         <link rel="prev" title="Modelling and fitting two unresolved emission lines with a bayesian approach" href="script_example_model+fit_2_lines_bayes.html"/> 
 
   
@@ -111,6 +111,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Calibrating-your-data-with-the-sky-velocity-map">Calibrating your data with the sky velocity map</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_image_registration.html">Image registration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
@@ -502,7 +503,7 @@ Init of the parallel processing server with 4 threads
 <h3>fitting the sky spectrum<a class="headerlink" href="#fitting-the-sky-spectrum" title="Permalink to this headline">¶</a></h3>
 <p>we can also fit the integrated spectrum because there si a large number
 of sky lines and because we are not interested in a perfect fit (only
-the velocity is required), we can use a simple &#8216;sinc&#8217; model with a fixed
+the velocity is required), we can use a simple ‘sinc’ model with a fixed
 fwhm. All the lines are set to share the same velocity parameter and we
 set an inital guess of the velocity around 80 km/s. This general bias of
 80 km/s is known (<a class="reference external" href="https://arxiv.org/abs/1706.03230">Martin et al.
@@ -833,7 +834,7 @@ Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="script_example_constaining_line_ratios.html" class="btn btn-neutral float-right" title="Constraining line ratios" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="script_example_image_registration.html" class="btn btn-neutral float-right" title="Image registration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="script_example_model+fit_2_lines_bayes.html" class="btn btn-neutral" title="Modelling and fitting two unresolved emission lines with a bayesian approach" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -877,7 +878,7 @@ Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

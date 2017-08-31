@@ -232,8 +232,8 @@ for its broader functionality.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>cube_path</strong> &#8211; Path to the HDF5 cube.</li>
-<li><strong>kwargs</strong> &#8211; Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">orb.core.HDFCube()</span></code> properties.</li>
+<li><strong>cube_path</strong> – Path to the HDF5 cube.</li>
+<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">orb.core.HDFCube()</span></code> properties.</li>
 </ul>
 </td>
 </tr>
@@ -253,22 +253,22 @@ taken into account.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>region</strong> &#8211; A list of the indices of the pixels integrated
+<li><strong>region</strong> – A list of the indices of the pixels integrated
 in the returned spectrum.</li>
-<li><strong>subtract_spectrum</strong> &#8211; (Optional) Remove the given spectrum
+<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>median</strong> &#8211; (Optional) If True the integrated spectrum is computed
+<li><strong>median</strong> – (Optional) If True the integrated spectrum is computed
 from the median of the spectra multiplied by the number of
 pixels integrated. Else the integrated spectrum is the pure
 sum of the spectra. In both cases the flux of the spectrum
 is the total integrated flux (Default False).</li>
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>return_spec_nb</strong> &#8211; (Optional) If True the number of
+<li><strong>return_spec_nb</strong> – (Optional) If True the number of
 spectra integrated is returned (default False).</li>
-<li><strong>silent</strong> &#8211; (Optional) If True, nothing is printed (default
+<li><strong>silent</strong> – (Optional) If True, nothing is printed (default
 False).</li>
 </ul>
 </td>
@@ -295,13 +295,13 @@ defined before with
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>regions_file_path</strong> &#8211; Path to a ds9 reg file giving the
+<li><strong>regions_file_path</strong> – Path to a ds9 reg file giving the
 positions of the regions. Each region is considered as a
 different region.</li>
-<li><strong>subtract</strong> &#8211; Spectrum to subtract (must be a spline)</li>
-<li><strong>plot</strong> &#8211; (Optional) If True, plot each intergrated spectrum along
+<li><strong>subtract</strong> – Spectrum to subtract (must be a spline)</li>
+<li><strong>plot</strong> – (Optional) If True, plot each intergrated spectrum along
 with the its fit (default True).</li>
-<li><strong>verbose</strong> &#8211; (Optional) If True print the fit results
+<li><strong>verbose</strong> – (Optional) If True print the fit results
 (default True).</li>
 </ul>
 </td>
@@ -331,16 +331,16 @@ written. Note that the pixels can be binned.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>region</strong> &#8211; Region to fit. Multiple regions can be used to
+<li><strong>region</strong> – Region to fit. Multiple regions can be used to
 define the fitted region. They do not need to be contiguous.</li>
-<li><strong>subtract_spectrum</strong> &#8211; (Optional) Remove the given spectrum
+<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>binning</strong> &#8211; (Optional) Binning. The fitted pixels can be
+<li><strong>binning</strong> – (Optional) Binning. The fitted pixels can be
 binned.</li>
-<li><strong>snr_guess</strong> &#8211; (Optional) Can only be None (classical fit)
-or &#8216;auto&#8217; (Bayesian fit).</li>
+<li><strong>snr_guess</strong> – (Optional) Can only be None (classical fit)
+or ‘auto’ (Bayesian fit).</li>
 </ul>
 </td>
 </tr>
@@ -376,10 +376,13 @@ maps) given in the same unit.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>spectrum</strong> &#8211; The spectrum to fit (1d vector).</li>
-<li><strong>snr_guess</strong> &#8211; Guess on the SNR of the spectrum. Necessary
-to make a Bayesian fit. If None a classical fit is made.</li>
-<li><strong>kwargs</strong> &#8211; (Optional) Model parameters that must be
+<li><strong>spectrum</strong> – The spectrum to fit (1d vector).</li>
+<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
+to make a Bayesian fit (If unknown you can set it to ‘auto’
+to try an automatic mode, two fits are made - one with a
+predefined SNR and the other with the SNR deduced from the
+first fit). If None a classical fit is made.</li>
+<li><strong>kwargs</strong> – (Optional) Model parameters that must be
 changed in the InputParams instance.</li>
 </ul>
 </td>
@@ -402,7 +405,7 @@ changed in the InputParams instance.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> &#8211; Name of the region</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> – Name of the region</td>
 </tr>
 </tbody>
 </table>
@@ -416,7 +419,7 @@ changed in the InputParams instance.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> &#8211; Region name</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> – Region name</td>
 </tr>
 </tbody>
 </table>
@@ -430,7 +433,7 @@ changed in the InputParams instance.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> &#8211; Name of the region</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> – Name of the region</td>
 </tr>
 </tbody>
 </table>
@@ -449,21 +452,21 @@ avoid loading a full data cube in memory.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>func</strong> &#8211; Can be a vector or column function (vector
+<li><strong>func</strong> – Can be a vector or column function (vector
 must be set to False in the case of a function applied to
 the columns). Must be <cite>f(vector_data, *args)</cite> or
 <cite>f(column_data, *args)</cite>.</li>
-<li><strong>args</strong> &#8211; Function arguments. All arguments with a 2D shape
+<li><strong>args</strong> – Function arguments. All arguments with a 2D shape
 equal to the cube 2D shape are treated as mapped
 arguments. The column or pixel corresponding to the column
 or pixel computed is extracted.</li>
-<li><strong>modules</strong> &#8211; Modules to pass to each process.</li>
-<li><strong>out_cube_path</strong> &#8211; Path to the output resulting cube.</li>
-<li><strong>vector</strong> &#8211; (Optional) if vector is True, the function is
+<li><strong>modules</strong> – Modules to pass to each process.</li>
+<li><strong>out_cube_path</strong> – Path to the output resulting cube.</li>
+<li><strong>vector</strong> – (Optional) if vector is True, the function is
 applied to each vector (each pixel) of the cube. Else the
 function is applied to each column of the cube (default
 True)</li>
-<li><strong>binning</strong> &#8211; (Optional) &#8216;on-the-fly&#8217; binning of the data
+<li><strong>binning</strong> – (Optional) ‘on-the-fly’ binning of the data
 (warning: the ouput data shape is binned) (default 1)</li>
 </ul>
 </td>
@@ -481,12 +484,12 @@ True)</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>lines</strong> &#8211; Emission lines to fit (must be in cm-1 if the
+<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
 cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> &#8211; (Optional) If True, Filter model is not added
+<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
 and the fit is made with a single range set to the filter
 bandpass.</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <code class="xref py py-meth docutils literal"><span class="pre">orb.fit._prepare_input_params()</span></code>.</li>
 </ul>
 </td>
@@ -505,7 +508,7 @@ the sky lines computed with
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sky_map_path</strong> &#8211; Path to the sky velocity map.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sky_map_path</strong> – Path to the sky velocity map.</td>
 </tr>
 </tbody>
 </table>
@@ -522,9 +525,9 @@ list of pixels as returned by the function
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>region</strong> &#8211; Region to integrate (can be a list of pixel
+<li><strong>region</strong> – Region to integrate (can be a list of pixel
 coordinates as returned by the function
 <code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
 file). If it is a ds9 region file, multiple regions can be
@@ -546,12 +549,12 @@ given radius.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; X position of the center</li>
-<li><strong>y</strong> &#8211; Y position of the center</li>
-<li><strong>r</strong> &#8211; Radius. If 0, only the central pixel is extracted.</li>
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>x</strong> – X position of the center</li>
+<li><strong>y</strong> – Y position of the center</li>
+<li><strong>r</strong> – Radius. If 0, only the central pixel is extracted.</li>
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
 </ul>
 </td>
@@ -572,12 +575,12 @@ is the mean flux of the extracted region (default False).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; X position of the bottom-left pixel</li>
-<li><strong>y</strong> &#8211; Y position of the bottom-left pixel</li>
-<li><strong>b</strong> &#8211; Binning. If 1, only the central pixel is extracted</li>
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>x</strong> – X position of the bottom-left pixel</li>
+<li><strong>y</strong> – Y position of the bottom-left pixel</li>
+<li><strong>b</strong> – Binning. If 1, only the central pixel is extracted</li>
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
 </ul>
 </td>
@@ -600,25 +603,25 @@ be a list of pixels as returned by the function
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>region</strong> &#8211; Region to integrate (can be a list of pixel
+<li><strong>region</strong> – Region to integrate (can be a list of pixel
 coordinates as returned by the function
 <code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
 file). If it is a ds9 region file, multiple regions can be
 defined and all will be integrated into one spectrum.</li>
-<li><strong>lines</strong> &#8211; Emission lines to fit (must be in cm-1 if the
+<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
 cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> &#8211; (Optional) If True, Filter model is not added
+<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
 and the fit is made with a single range set to the filter
 bandpass.</li>
-<li><strong>subtract_spectrum</strong> &#8211; (Optional) Remove the given spectrum
+<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>snr_guess</strong> &#8211; Guess on the SNR of the spectrum. Necessary
+<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
 to make a Bayesian fit. If None a classical fit is made.</li>
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
 </td>
@@ -644,18 +647,18 @@ pixels can be binned.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>lines</strong> &#8211; Emission lines to fit (must be in cm-1 if the
+<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
 cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>region</strong> &#8211; Region to fit. Multiple regions can be used to
+<li><strong>region</strong> – Region to fit. Multiple regions can be used to
 define the fitted region. They do not need to be contiguous.</li>
-<li><strong>nofilter</strong> &#8211; (Optional) If True, Filter model is not added
+<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
 and the fit is made with a single range set to the filter
 bandpass.</li>
-<li><strong>subtract_spectrum</strong> &#8211; (Optional) Remove the given spectrum
+<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
 </td>
@@ -674,23 +677,23 @@ given radius.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; X position of the center</li>
-<li><strong>y</strong> &#8211; Y position of the center</li>
-<li><strong>r</strong> &#8211; Radius. If 0, only the central pixel is extracted.</li>
-<li><strong>lines</strong> &#8211; Emission lines to fit (must be in cm-1 if the
+<li><strong>x</strong> – X position of the center</li>
+<li><strong>y</strong> – Y position of the center</li>
+<li><strong>r</strong> – Radius. If 0, only the central pixel is extracted.</li>
+<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
 cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> &#8211; (Optional) If True, Filter model is not added
+<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
 and the fit is made with a single range set to the filter
 bandpass.</li>
-<li><strong>subtract_spectrum</strong> &#8211; (Optional) Remove the given spectrum
+<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>snr_guess</strong> &#8211; Guess on the SNR of the spectrum. Necessary
+<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
 to make a Bayesian fit. If None a classical fit is made.</li>
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
 </td>
@@ -714,23 +717,23 @@ given radius.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> &#8211; X position of the bottom-left pixel</li>
-<li><strong>y</strong> &#8211; Y position of the bottom-left pixel</li>
-<li><strong>b</strong> &#8211; Binning. If 0, only the central pixel is extracted.</li>
-<li><strong>lines</strong> &#8211; Emission lines to fit (must be in cm-1 if the
+<li><strong>x</strong> – X position of the bottom-left pixel</li>
+<li><strong>y</strong> – Y position of the bottom-left pixel</li>
+<li><strong>b</strong> – Binning. If 0, only the central pixel is extracted.</li>
+<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
 cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> &#8211; (Optional) If True, Filter model is not added
+<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
 and the fit is made with a single range set to the filter
 bandpass.</li>
-<li><strong>subtract_spectrum</strong> &#8211; (Optional) Remove the given spectrum
+<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
 from the extracted spectrum before fitting
 parameters. Useful to remove sky spectrum. Both spectra must
 have the same size.</li>
-<li><strong>snr_guess</strong> &#8211; Guess on the SNR of the spectrum. Necessary
+<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
 to make a Bayesian fit. If None a classical fit is made.</li>
-<li><strong>mean_flux</strong> &#8211; (Optional) If True the flux of the spectrum
+<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> &#8211; Keyword arguments of the function
+<li><strong>kwargs</strong> – Keyword arguments of the function
 <code class="xref py py-meth docutils literal"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>.</li>
 </ul>
 </td>
@@ -754,9 +757,9 @@ dictionary containing the fit results (same output as
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>line0</strong> &#8211; Wavenumber of the line 0 (in cm-1).</li>
-<li><strong>line1</strong> &#8211; Wavenumber of the line 1 (in cm-1).</li>
-<li><strong>flux_ratio</strong> &#8211; Flux ratio: flux(line0) / flux(line1).</li>
+<li><strong>line0</strong> – Wavenumber of the line 0 (in cm-1).</li>
+<li><strong>line1</strong> – Wavenumber of the line 1 (in cm-1).</li>
+<li><strong>flux_ratio</strong> – Flux ratio: flux(line0) / flux(line1).</li>
 </ul>
 </td>
 </tr>
@@ -814,8 +817,8 @@ cube as a tuple (min, max)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>region</strong> &#8211; Path to a ds9 region file.</li>
-<li><strong>integrate</strong> &#8211; (Optional) If True, all pixels are integrated
+<li><strong>region</strong> – Path to a ds9 region file.</li>
+<li><strong>integrate</strong> – (Optional) If True, all pixels are integrated
 into one mask, else a list of region masks is returned (default
 True)</li>
 </ul>
@@ -833,6 +836,18 @@ filter range</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.get_wcs">
+<code class="descname">get_wcs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_wcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the WCS of the cube as a astropy.wcs.WCS instance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.core.HDFCube.get_wcs_header">
+<code class="descname">get_wcs_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_wcs_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the WCS of the cube as a astropy.wcs.WCS instance</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.pix2world">
 <code class="descname">pix2world</code><span class="sig-paren">(</span><em>xy</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.pix2world" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert pixel coordinates to celestial coordinates</p>
@@ -841,9 +856,9 @@ filter range</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>xy</strong> &#8211; A tuple (x,y) of pixel coordinates or a list of
-tuples ((x0,y0), (x1,y1), ...)</li>
-<li><strong>deg</strong> &#8211; (Optional) If true, celestial coordinates are
+<li><strong>xy</strong> – A tuple (x,y) of pixel coordinates or a list of
+tuples ((x0,y0), (x1,y1), …)</li>
+<li><strong>deg</strong> – (Optional) If true, celestial coordinates are
 returned in sexagesimal format (default False).</li>
 </ul>
 </td>
@@ -877,8 +892,8 @@ calibration method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dxmap_path</strong> &#8211; Path to the dxmap.</li>
-<li><strong>dymap_path</strong> &#8211; Path to the dymap.</li>
+<li><strong>dxmap_path</strong> – Path to the dxmap.</li>
+<li><strong>dymap_path</strong> – Path to the dymap.</li>
 </ul>
 </td>
 </tr>
@@ -894,8 +909,8 @@ calibration method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xy</strong> &#8211; A tuple (x,y) of celestial coordinates or a list of
-tuples ((x0,y0), (x1,y1), ...). Must be in degrees.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xy</strong> – A tuple (x,y) of celestial coordinates or a list of
+tuples ((x0,y0), (x1,y1), …). Must be in degrees.</td>
 </tr>
 </tbody>
 </table>
@@ -917,18 +932,18 @@ tuples ((x0,y0), (x1,y1), ...). Must be in degrees.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dimx</strong> &#8211; X dimension of the unbinned data</li>
-<li><strong>dimy</strong> &#8211; Y dimension of the unbinned data</li>
-<li><strong>lines</strong> &#8211; tuple of the line names</li>
-<li><strong>wavenumber</strong> &#8211; True if the data is in wavenumber, False if
+<li><strong>dimx</strong> – X dimension of the unbinned data</li>
+<li><strong>dimy</strong> – Y dimension of the unbinned data</li>
+<li><strong>lines</strong> – tuple of the line names</li>
+<li><strong>wavenumber</strong> – True if the data is in wavenumber, False if
 it is in wavelength.</li>
-<li><strong>binning</strong> &#8211; Binning of the data.</li>
-<li><strong>div_nb</strong> &#8211; Number of divisions if the data is binned in quadrant mode.</li>
-<li><strong>project_header</strong> &#8211; (Optional) FITS header passed to the
+<li><strong>binning</strong> – Binning of the data.</li>
+<li><strong>div_nb</strong> – Number of divisions if the data is binned in quadrant mode.</li>
+<li><strong>project_header</strong> – (Optional) FITS header passed to the
 written frames (default None).</li>
-<li><strong>wcs_header</strong> &#8211; (Optional) WCS header passed to the written
+<li><strong>wcs_header</strong> – (Optional) WCS header passed to the written
 frames (default None).</li>
-<li><strong>kwargs</strong> &#8211; Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">__init__()</span></code> kwargs.</li>
+<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">__init__()</span></code> kwargs.</li>
 </ul>
 </td>
 </tr>
@@ -944,7 +959,7 @@ frames (default None).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hdr</strong> &#8211; Header to update</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hdr</strong> – Header to update</td>
 </tr>
 </tbody>
 </table>
@@ -959,8 +974,8 @@ frames (default None).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_type</strong> &#8211; Type of file</li>
-<li><strong>comment</strong> &#8211; (Optional) Comments on the file type (default
+<li><strong>file_type</strong> – Type of file</li>
+<li><strong>comment</strong> – (Optional) Comments on the file type (default
 None).</li>
 </ul>
 </td>
@@ -979,9 +994,9 @@ one given emission line.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>line_name</strong> &#8211; Name of the emission line</li>
-<li><strong>param</strong> &#8211; Parameter name</li>
-<li><strong>binning</strong> &#8211; (Optional) Binning of the map. If not given
+<li><strong>line_name</strong> – Name of the emission line</li>
+<li><strong>param</strong> – Parameter name</li>
+<li><strong>binning</strong> – (Optional) Binning of the map. If not given
 instance binning is used (default None).</li>
 </ul>
 </td>
@@ -1007,10 +1022,10 @@ initial fitting parameters.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>param</strong> &#8211; Parameter</li>
-<li><strong>x_range</strong> &#8211; (Optional) Data range along X axis (default
+<li><strong>param</strong> – Parameter</li>
+<li><strong>x_range</strong> – (Optional) Data range along X axis (default
 None)</li>
-<li><strong>y_range</strong> &#8211; (Optional) Data range along Y axis (default
+<li><strong>y_range</strong> – (Optional) Data range along Y axis (default
 None)</li>
 </ul>
 </td>
@@ -1028,11 +1043,11 @@ None)</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>param</strong> &#8211; Parameter</li>
-<li><strong>data_map</strong> &#8211; Data</li>
-<li><strong>x_range</strong> &#8211; (Optional) Data range along X axis (default
+<li><strong>param</strong> – Parameter</li>
+<li><strong>data_map</strong> – Data</li>
+<li><strong>x_range</strong> – (Optional) Data range along X axis (default
 None)</li>
-<li><strong>y_range</strong> &#8211; (Optional) Data range along Y axis (default
+<li><strong>y_range</strong> – (Optional) Data range along Y axis (default
 None)</li>
 </ul>
 </td>
@@ -1105,7 +1120,7 @@ None)</li>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

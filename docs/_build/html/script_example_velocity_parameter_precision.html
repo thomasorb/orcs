@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
-        <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model+fit_1_line.html"/>
+        <link rel="next" title="Extract the deep frame and use the WCS" href="script_example_deep_wcs.html"/>
         <link rel="prev" title="Example of a single spectrum fit." href="script_example_fit_a_single_spectrum.html"/> 
 
   
@@ -107,6 +107,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#In-terms-of-velocity">In terms of velocity</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_deep_wcs.html">Extract the deep frame and use the WCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_fit_region.html">Make a fit over an entire region of the field</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
@@ -388,7 +390,7 @@ div.nboutput div.output_area.stderr {
 <p>The input velocity (set through the parameter <code class="docutils literal"><span class="pre">pos_cov</span></code>) must be given
 with a good precision. The error should not generally be larger than a
 spectrum channel (since the FWHM is around 1.5 channels)</p>
-<p>Here&#8217;s some ways you can determine the size of a channel.</p>
+<p>Here’s some ways you can determine the size of a channel.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [1]:
@@ -558,7 +560,7 @@ channel width in km/s at the mean wavenumber of the axis 42.0197492822
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="script_example_model+fit_1_line.html" class="btn btn-neutral float-right" title="Modelling and fitting a single line spectrum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="script_example_deep_wcs.html" class="btn btn-neutral float-right" title="Extract the deep frame and use the WCS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="script_example_fit_a_single_spectrum.html" class="btn btn-neutral" title="Example of a single spectrum fit." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -602,7 +604,7 @@ channel width in km/s at the mean wavenumber of the axis 42.0197492822
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

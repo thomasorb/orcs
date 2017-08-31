@@ -13,6 +13,9 @@ These examples show the basic usage of ORCS
 	      
    script_example_fit_a_single_spectrum.ipynb
    script_example_velocity_parameter_precision.ipynb
+   script_example_deep_wcs.ipynb
+   script_example_fit_region.ipynb
+   
 
 Bayesian fitting vs. classical fitting
 --------------------------------------

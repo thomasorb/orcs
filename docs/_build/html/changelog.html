@@ -303,11 +303,11 @@ changed to use this new module.</p>
 <div class="section" id="new-operations">
 <h4>New operations<a class="headerlink" href="#new-operations" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li>new operation in orcs command: <strong>&#8216;check&#8217;</strong>, to fit the integrated
+<li>new operation in orcs command: <strong>‘check’</strong>, to fit the integrated
 spectrum of one region. The idea is to select a small region with
 high SNR to test if the fitting procedure works as expected before
 launching a long fit process on a larger region.</li>
-<li>new operation in orcs command: <strong>&#8216;skymap&#8217;</strong> : fit the sky velocity
+<li>new operation in orcs command: <strong>‘skymap’</strong> : fit the sky velocity
 on a high number of points and returns an interpolated map of the
 velocity zero point.</li>
 </ul>
@@ -331,7 +331,7 @@ very well on spectrum with a good SNR (&gt; 10). But may be wrong on low
 SNR spectra. This function is best used with binned fit.</p>
 <p>Note that if the velocity has already been computed with a higher
 binning, this value will be used as an initial guess and the velocity
-range won&#8217;t be taken into account. This way, using the velocity range
+range won’t be taken into account. This way, using the velocity range
 with a 10x10 binning is the best way to recover the general velocity
 profile of a galaxy and use it as an initial guess fot a smaller
 binning fit.</p>
@@ -361,7 +361,7 @@ keyword can be removed if the cube has been exported recently.</li>
 <li>added X and Y range options when computing velocity maps (options -x
 and -y)</li>
 <li>added exclusion region when computing sky velocity maps (option
-&#8211;exclude)</li>
+–exclude)</li>
 <li>bug with SIG_COV corrected when defining a different broadening group
 for sky lines.</li>
 <li>call to <code class="xref py py-meth docutils literal"><span class="pre">orb.utils.misc.get_mask_from_ds9_region_file()</span></code>
@@ -423,7 +423,7 @@ modified to follow the update of ORB which now uses pyregion.</li>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

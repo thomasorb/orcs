@@ -40,6 +40,7 @@ import marshal
 import time
 import gvar
 import warnings
+import copy
 
 # import ORB
 try:
@@ -73,7 +74,7 @@ class HDFCube(orb.core.HDFCube):
         """
         FIT_TOL = 1e-10
         self.cube_path = cube_path
-        self.header = self.get_cube_header()
+        self.header = self.get_header()
         instrument = None
         if 'SITELLE' in self.header['INSTRUME']:
             instrument = 'sitelle'
@@ -148,11 +149,9 @@ class HDFCube(orb.core.HDFCube):
             
 
         ## Get WCS header
-        self.header['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
-                                           # inconsistency
-        self.wcs = pywcs.WCS(self.header, naxis=2, relax=True)
-        self.wcs_header = self.wcs.to_header(relax=True)
-        self._wcs_header = pywcs.WCS(self.wcs_header, naxis=2, relax=True)
+        self.wcs = self.get_wcs()
+        self.wcs_header = self.get_wcs_header()
+        self._wcs_header = self.get_wcs_header()
 
         self.set_param('target_ra', float(self.wcs.wcs.crval[0]))
         self.set_param('target_dec', float(self.wcs.wcs.crval[1]))
@@ -476,7 +475,8 @@ class HDFCube(orb.core.HDFCube):
         elif np.sum(mask) == 1:
             ii = region[0][0] ; ij = region[1][0]
             spectrum = _interpolate_spectrum(
-                self[ii, ij, :], calibration_coeff_map[ii, ij],
+                self.get_data(ii, ii+1, ij, ij+1, 0, self.dimz, silent=silent),
+                calibration_coeff_map[ii, ij],
                 self.params.wavenumber, self.params.step, self.params.order,
                 self.params.base_axis)
             counts = 1
@@ -679,15 +679,23 @@ class HDFCube(orb.core.HDFCube):
 
         mask_bin = orb.utils.image.nanbin_image(mask, binning)
 
+        total_fit_nb = np.nansum(mask_bin)
+        progress = orb.core.ProgressBar(total_fit_nb)
+        logging.info('Number of spectra to fit: {}'.format(total_fit_nb))
+        fit_nb = 0
         for ii in range(mask_bin.shape[0]):
             for ij in range(mask_bin.shape[1]):
+                
                 unbinned_ii = ii*binning
                 unbinned_ij = ij*binning
                 if mask_bin[ii, ij]:
+                    fit_nb += 1
+                    progress.update(fit_nb, info='Fitting spectrum {}/{}'.format(fit_nb, total_fit_nb))
+
                     # load spectrum
                     axis, spectrum = self.extract_spectrum_bin(
                         unbinned_ii, unbinned_ij, binning,
-                        subtract_spectrum=subtract_spectrum)
+                        subtract_spectrum=subtract_spectrum, silent=True)
 
                     # check init velocity (already computed from
                     # binned maps). If a guess exists, velocity range
@@ -745,6 +753,7 @@ class HDFCube(orb.core.HDFCube):
                         linemaps.set_map('flux-err', ifit['flux_err'],
                                          x_range=x_range, y_range=y_range)
 
+        progress.end()
         linemaps.write_maps()
 
     def _fit_integrated_spectra(self, regions_file_path,
@@ -955,7 +964,6 @@ class HDFCube(orb.core.HDFCube):
             raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
         try:
-            print 'SNR GUESS', snr_guess
             warnings.simplefilter('ignore')
             _fit = orb.fit._fit_lines_in_spectrum(
                 spectrum, self.inputparams,
@@ -1389,7 +1397,7 @@ class HDFCube(orb.core.HDFCube):
                 region,
                 [0, self.dimx],
                 [0, self.dimy],
-                header=self.get_cube_header(),
+                header=self.header,
                 integrate=integrate)
         else: return region
         
@@ -1507,6 +1515,22 @@ class HDFCube(orb.core.HDFCube):
             if 'deep_frame' in f:
                 return f['deep_frame'][:]
             else: return None
+
+    def get_header(self):
+        header = self.get_cube_header()
+        header['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
+                                      # inconsistency
+        return copy.copy(header)
+        
+
+    def get_wcs(self):
+        """Return the WCS of the cube as a astropy.wcs.WCS instance """
+        return copy.copy(pywcs.WCS(self.get_header(), naxis=2, relax=True))
+
+    def get_wcs_header(self):
+        """Return the WCS of the cube as a astropy.wcs.WCS instance """
+        return copy.copy(self.wcs.to_header(relax=True))
+    
         
 ##################################################
 #### CLASS LineMaps ##############################
