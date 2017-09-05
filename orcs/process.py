@@ -623,7 +623,8 @@ class SpectralCube(HDFCube):
             jobs = [(ijob, job_server.submit(
                 filter_frame,
                 args=(dat_cube[:,:,iframe - first_frame + ijob], fast),
-                modules=("import orb.cutils",
+                modules=("import logging",
+                         "import orb.cutils",
                          "import numpy as np",
                          "import scipy.signal")))
                     for ijob in range(ncpus)]

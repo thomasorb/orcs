@@ -72,6 +72,7 @@ class HDFCube(orb.core.HDFCube):
 
         :param kwargs: Kwargs are :meth:`orb.core.HDFCube` properties.
         """
+        self.logger = orb.core.Logger()
         FIT_TOL = 1e-10
         self.cube_path = cube_path
         self.header = self.get_header()
@@ -99,13 +100,20 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('filter_name', str(self.header['FILTER']))
         self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
         self.set_param('apodization', float(self.header['APODIZ']))
-        self.set_param('step_nb', int(self.header['STEPNB']))
-        if self.params.step_nb != self.dimz:
-            self._print_error('Malformed spectral cube. The number of steps in the header ({}) does not correspond to the real size of the data cube ({})'.format(self.params.step_nb, self.dimz))
+        self.set_param('exposure_time', float(self.header['EXPTIME']))
+        self.set_param('flambda', float(self.header['FLAMBDA']))
+        
+        
+        step_nb = int(self.header['STEPNB'])
+        if step_nb != self.dimz:
+            warnings.warn('Malformed spectral cube. The number of steps in the header ({}) does not correspond to the real size of the data cube ({})'.format(step_nb, self.dimz))
+            step_nb = int(self.dimz)
+        self.set_param('step_nb', step_nb)
+
         if 'ZPDINDEX' in self.header:
             self.set_param('zpd_index', self.header['ZPDINDEX'])
         else:
-            self._print_error('ZPDINDEX not in cube header. Please run again the last step of ORBS reduction process.')
+            raise StandardError('ZPDINDEX not in cube header. Please run again the last step of ORBS reduction process.')
 
 
         # new data prefix
@@ -350,6 +358,10 @@ class HDFCube(orb.core.HDFCube):
         del out_cube
 
 
+    def _get_reprojected_cube_path(self):
+        """Return the path to the reprojected cube"""
+        return self._data_path_hdr + 'reprojected_cube.fits'
+        
     def _get_integrated_spectrum_path(self, region_name):
         """Return the path to an integrated spectrum
 
@@ -470,7 +482,7 @@ class HDFCube(orb.core.HDFCube):
         if not silent:
             logging.info('Number of integrated pixels: {}'.format(np.sum(mask)))
 
-        if np.sum(mask) == 0: self._print_error('A region must contain at least one valid pixel')
+        if np.sum(mask) == 0: raise StandardError('A region must contain at least one valid pixel')
         
         elif np.sum(mask) == 1:
             ii = region[0][0] ; ij = region[1][0]
@@ -535,7 +547,8 @@ class HDFCube(orb.core.HDFCube):
                               median, self.params.wavenumber,
                               self.params.base_axis, self.params.step,
                               self.params.order), 
-                        modules=('import numpy as np',
+                        modules=("import logging",
+                                 'import numpy as np',
                                  'import orb.utils.spectrum',
                                  'import orb.utils.vector'),
                         depfuncs=(_interpolate_spectrum,)))
@@ -619,7 +632,7 @@ class HDFCube(orb.core.HDFCube):
 
         ## check if input params is instanciated
         if not hasattr(self, 'inputparams'):
-            self._print_error('Input params not defined')
+            raise StandardError('Input params not defined')
 
         ## init LineMaps object        
         linemaps = LineMaps(
@@ -941,7 +954,7 @@ class HDFCube(orb.core.HDFCube):
           changed in the InputParams instance.    
         """
         if not hasattr(self, 'inputparams'):
-            self._print_error('Input params not defined')
+            raise StandardError('Input params not defined')
         # check snr guess param
         auto_mode = False
         bad_snr_param = False
@@ -1048,7 +1061,7 @@ class HDFCube(orb.core.HDFCube):
         
         calib_map = self.get_calibration_laser_map_orig()
         if calib_map is None:
-            self._print_error('No calibration laser map given. Please redo the last step of the data reduction')
+            raise StandardError('No calibration laser map given. Please redo the last step of the data reduction')
 
         if self.params.wavelength_calibration:
             calib_map = (np.ones((self.dimx, self.dimy), dtype=float)
@@ -1148,7 +1161,7 @@ class HDFCube(orb.core.HDFCube):
 
         :returns: (axis, spectrum)
         """
-        if b < 1: self._print_error('Binning must be at least 1')
+        if b < 1: raise StandardError('Binning must be at least 1')
         
         mask = np.zeros((self.dimx, self.dimy), dtype=bool)
         mask[int(x):int(x+b), int(y):int(y+b)] = True
@@ -1410,7 +1423,7 @@ class HDFCube(orb.core.HDFCube):
         """
         sky_map = self.read_fits(sky_map_path)
         if sky_map.shape != (self.dimx, self.dimy):
-            self._print_error('Given sky map does not have the right shape')
+            raise StandardError('Given sky map does not have the right shape')
 
         self.sky_velocity_map = sky_map
         self.reset_calibration_laser_map()
@@ -1464,7 +1477,7 @@ class HDFCube(orb.core.HDFCube):
                 xy = np.copy(xy.T)
             x = xy[:,0]
             y = xy[:,1]
-            self._print_error('xy must be a tuple (x,y) of coordinates or a list of tuples ((x0,y0), (x1,y1), ...)')
+            raise StandardError('xy must be a tuple (x,y) of coordinates or a list of tuples ((x0,y0), (x1,y1), ...)')
 
         if not hasattr(self, 'dxmap') or not hasattr(self, 'dymap'):
             coords = np.array(
@@ -1490,11 +1503,12 @@ class HDFCube(orb.core.HDFCube):
             ra = [radec[0]]
             dec = [radec[1]]
         elif np.size(radec) > 2 and len(radec.shape) == 2:
-            if radec.shape[1] > radec.shape[2]:
+            if radec.shape[0] < radec.shape[1]:
                 radec = np.copy(radec.T)
             ra = radec[:,0]
             dec = radec[:,1]
-            self._print_error('radec must be a tuple (ra,dec) of coordinates or a list of tuples ((ra0,dec0), (ra1,dec1), ...)')
+        else:
+            raise StandardError('radec must be a tuple (ra,dec) of coordinates or a list of tuples ((ra0,dec0), (ra1,dec1), ...)')
 
         if not hasattr(self, 'dxmap') or not hasattr(self, 'dymap'):
             coords = np.array(
@@ -1530,8 +1544,74 @@ class HDFCube(orb.core.HDFCube):
     def get_wcs_header(self):
         """Return the WCS of the cube as a astropy.wcs.WCS instance """
         return copy.copy(self.wcs.to_header(relax=True))
+
+
+    def reproject(self):
+        """Reproject data cube in a distorsion-less WCS.
+
+        .. warning:: The amount of available RAM must be larger than
+          the cube size on disk.
+        """
+        wcs = self.get_wcs()
+        # removes automatically sip distortion
+        new_wcs = pywcs.WCS(self.get_wcs().to_header()) 
+        X, Y = np.mgrid[:2048,:2064]
+        XYp = wcs.all_world2pix(
+            new_wcs.all_pix2world(
+                np.array([X.flatten(),Y.flatten()]).T,0), 0)
+        Xp, Yp = XYp.T
+
+        reprojected_cube = np.empty((self.dimx, self.dimy, self.dimz),
+                                    dtype=np.float32)
+        progress = orb.core.ProgressBar(self.dimz)
+        for i in range(self.dimz):
+            progress.update(i)
+            idat = self.get_data_frame(i, silent=True)
+            idatf = scipy.interpolate.RectBivariateSpline(
+                np.arange(idat.shape[0]), 
+                np.arange(idat.shape[1]), 
+                idat, kx=1, ky=1, s=0)
+            reprojected_cube[:,:,i] = idatf.ev(
+                Xp.reshape(*idat.shape),
+                Yp.reshape(*idat.shape))
+        progress.end()
+        self.write_fits(self._get_reprojected_cube_path(), reprojected_cube,
+                        overwrite=True)
+
+    def get_flux_uncertainty(self, wavenumber):
+        """Return the uncertainty on the flux at a given wavenumber in
+        erg/cm2/s/channel. It corresponds to the uncertainty (1 sigma)
+        of the spectrum in a given channel.
+
+        :param wavenumber: Wavenumber (cm-1)
+        """
+        deep_frame = self.get_deep_frame()
+        if deep_frame is None: 
+            raise StandardError("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
+
+        channel_index = int(orb.utils.spectrum.cm12pix(self.params.base_axis, wavenumber))
+        if np.isnan(channel_index): raise ValueError('Please choose a valid wavenumber')
+        if channel_index >= self.dimz: channel_index = self.dimz - 1
+
+        # compute counts/s
+        # total number of counts in a full cube
+        total_counts = deep_frame * self.dimz 
+
+        # associated photon noise distributed over each channel in counts
+        noise_counts = np.sqrt(total_counts)
+
+        # in flux unit
+        noise_flux = noise_counts / self.params.exposure_time # counts/s
+        noise_flux *= self.params.flambda / self.dimz# erg/cm2/s/A
+        # compute mean channel size
+        channel_size_ang = 10 * orb.utils.spectrum.fwhm_cm12nm(
+            np.diff(self.params.base_axis)[channel_index], 
+            self.params.base_axis[channel_index] + np.diff(self.params.base_axis)[channel_index]/ 2)
+
+        noise_flux *= channel_size_ang # erg/cm2/s/channel
     
-        
+        return noise_flux
+    
 ##################################################
 #### CLASS LineMaps ##############################
 ##################################################
@@ -1645,7 +1725,7 @@ class LineMaps(orb.core.Tools):
             binning = self.binning
 
         if param not in self.lineparams:
-            self._print_error('Bad parameter')
+            raise StandardError('Bad parameter')
          
         dirname = os.path.dirname(self._data_path_hdr)
         basename = os.path.basename(self._data_path_hdr)
@@ -1758,7 +1838,7 @@ class LineMaps(orb.core.Tools):
         """
 
         if param not in self.lineparams:
-            self._print_error('Bad parameter')
+            raise StandardError('Bad parameter')
             
         if x_range is None and y_range is None:
             self.data[param] = data_map
