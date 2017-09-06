@@ -440,6 +440,12 @@ changed in the InputParams instance.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube._get_reprojected_cube_path">
+<code class="descname">_get_reprojected_cube_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._get_reprojected_cube_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to the reprojected cube</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube._parallel_process_in_quads">
 <code class="descname">_parallel_process_in_quads</code><span class="sig-paren">(</span><em>func</em>, <em>args</em>, <em>modules</em>, <em>out_cube_path</em>, <em>binning=1</em>, <em>vector=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._parallel_process_in_quads" title="Permalink to this definition">¶</a></dt>
 <dd><p>General parallel quadrant-based processing.</p>
@@ -809,6 +815,22 @@ cube as a tuple (min, max)</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.get_flux_uncertainty">
+<code class="descname">get_flux_uncertainty</code><span class="sig-paren">(</span><em>wavenumber</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_flux_uncertainty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the uncertainty on the flux at a given wavenumber in
+erg/cm2/s/channel. It corresponds to the uncertainty (1 sigma)
+of the spectrum in a given channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wavenumber</strong> – Wavenumber (cm-1)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.get_mask_from_ds9_region_file">
 <code class="descname">get_mask_from_ds9_region_file</code><span class="sig-paren">(</span><em>region</em>, <em>integrate=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_mask_from_ds9_region_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a mask from a ds9 region file.</p>
@@ -865,6 +887,17 @@ returned in sexagesimal format (default False).</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.core.HDFCube.reproject">
+<code class="descname">reproject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.reproject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reproject data cube in a distorsion-less WCS.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The amount of available RAM must be larger than
+the cube size on disk.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1088,7 +1121,7 @@ None)</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015, Thomas Martin (thomas.martin.1@ulaval.ca).
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
