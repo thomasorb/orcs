@@ -66,13 +66,13 @@ class HDFCube(orb.core.HDFCube):
 
     .. seealso:: :py:class:`orb.core.HDFCube`
     """
-    def __init__(self, cube_path, **kwargs):
+    def __init__(self, cube_path, debug=False, **kwargs):
         """
         :param cube_path: Path to the HDF5 cube.
 
         :param kwargs: Kwargs are :meth:`orb.core.HDFCube` properties.
         """
-        self.logger = orb.core.Logger()
+        self.logger = orb.core.Logger(debug=debug)
         FIT_TOL = 1e-10
         self.cube_path = cube_path
         self.header = self.get_header()
@@ -133,7 +133,7 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('resolution', resolution)
 
         # incident angle of reference (in degrees)
-        self.set_param('theta', np.rad2deg(np.arccos(1./self.params.axis_corr)))
+        self.set_param('theta_proj', orb.utils.spectrum.corr2theta(self.params.axis_corr))
 
         # wavenumber
         self.set_param('wavetype', str(self.header['WAVTYPE']))
@@ -402,7 +402,9 @@ class HDFCube(orb.core.HDFCube):
                                       median=False,
                                       mean_flux=False,
                                       silent=False,
-                                      return_spec_nb=False):
+                                      return_spec_nb=False,
+                                      return_mean_theta=False,
+                                      output_axis=None):
         """
         Extract the integrated spectrum from a region of the cube.
 
@@ -432,8 +434,16 @@ class HDFCube(orb.core.HDFCube):
 
         :param silent: (Optional) If True, nothing is printed (default
           False).
+
+        :param return_mean_theta: (Optional) If True, the mean of the
+          theta values covered by the region is returned (default False).
+
+        :param output_axis: (Optional) If not None, the spectrum is
+          projected on the output axis. Else a scipy.UnivariateSpline
+          object is returned (defautl None).
           
-        :return: A scipy.UnivariateSpline object.
+        :return: A scipy.UnivariateSpline object or a spectrum
+          projected on the ouput_axis if it is not None.
         """
         def _interpolate_spectrum(spec, corr, wavenumber, step, order, base_axis):
             if wavenumber:
@@ -470,6 +480,7 @@ class HDFCube(orb.core.HDFCube):
                         
         if median:
             warnings.warn('Median integration')
+
 
         calibration_coeff_map = self.get_calibration_coeff_map()
 
@@ -576,10 +587,22 @@ class HDFCube(orb.core.HDFCube):
             self.params.base_axis[~np.isnan(spectrum)], spectrum[~np.isnan(spectrum)],
             s=0, k=1, ext=1)
 
-        if return_spec_nb:
-            return spectrum_function, counts
+
+        returns = list()
+        if output_axis is not None:
+            returns.append(spectrum_function(output_axis))
         else:
-            return spectrum_function
+            returns.append(spectrum_function)
+        
+        if return_spec_nb:
+            returns.append(counts)
+        if return_mean_theta:
+            theta_map = self.get_theta_map()
+            mean_theta = np.nanmean(theta_map[np.nonzero(mask)])
+            logging.debug('computed mean theta: {}'.format(mean_theta))
+            returns.append(mean_theta)
+        return returns
+
 
     def _fit_lines_in_region(self, region, subtract_spectrum=None,
                              binning=1, snr_guess=None):
@@ -608,8 +631,11 @@ class HDFCube(orb.core.HDFCube):
         :param binning: (Optional) Binning. The fitted pixels can be
           binned.
 
-        :param snr_guess: (Optional) Can only be None (classical fit)
-          or 'auto' (Bayesian fit).
+        :param snr_guess: Guess on the SNR of the spectrum. Can only
+          be None or 'auto'. Set it to 'auto' to make a Bayesian
+          fit. In this case two fits are made - one with a predefined
+          SNR and the other with the SNR deduced from the first
+          fit. If None a classical fit is made.
 
         .. note:: Maps of the parameters of the fit can be found in
           the directory created by ORCS:
@@ -682,10 +708,7 @@ class HDFCube(orb.core.HDFCube):
         mask = np.zeros((self.dimx, self.dimy), dtype=bool)
         mask[region] = True
          
-        fwhm_map = gvar.mean(self.inputparams.allparams['fwhm_guess']
-                             * self.get_calibration_coeff_map_orig()
-                             / self.get_calibration_coeff_map())
-        fwhm_map = orb.utils.image.nanbin_image(fwhm_map, binning)
+        theta_map = orb.utils.image.nanbin_image(self.get_theta_map(), binning)
         
         mask = np.zeros((self.dimx, self.dimy), dtype=float)
         mask[region] = 1
@@ -732,12 +755,15 @@ class HDFCube(orb.core.HDFCube):
                             sigma_guess_sdev)
                     else:
                         sigma_guess = None
-                        
+
                     ifit = self._fit_lines_in_spectrum(
-                        spectrum, snr_guess=snr_guess, sigma_guess=sigma_guess,
-                        pos_cov=shift_guess, fwhm_guess=fwhm_map[ii,ij])
-        
+                        spectrum, theta_map[ii,ij], snr_guess=snr_guess, sigma_guess=sigma_guess,
+                        pos_cov=shift_guess)
+
+                    
                     if ifit != []:
+                        print ifit['logGBF']
+        
                         x_range = (ii, ii+1)
                         y_range = (ij, ij+1)
                         linemaps.set_map('height', ifit['lines_params'][:,0],
@@ -765,6 +791,15 @@ class HDFCube(orb.core.HDFCube):
                                          x_range=x_range, y_range=y_range)
                         linemaps.set_map('flux-err', ifit['flux_err'],
                                          x_range=x_range, y_range=y_range)
+                        
+                        linemaps.set_map('chi2', ifit['chi2'],
+                                         x_range=x_range, y_range=y_range)
+                        linemaps.set_map('rchi2', ifit['rchi2'],
+                                         x_range=x_range, y_range=y_range)
+                        linemaps.set_map('logGBF', ifit['logGBF'],
+                                         x_range=x_range, y_range=y_range)
+
+
 
         progress.end()
         linemaps.write_maps()
@@ -936,13 +971,15 @@ class HDFCube(orb.core.HDFCube):
              
         return paramsfile
 
-    def _fit_lines_in_spectrum(self, spectrum, snr_guess=None, **kwargs):
+    def _fit_lines_in_spectrum(self, spectrum, theta_orig, snr_guess=None, **kwargs):
         """Raw function for spectrum fitting.
 
         .. note:: Need the InputParams class to be defined before call
         (see :py:meth:`~orcs.core.HDFCube._prepare_input_params`).
 
         :param spectrum: The spectrum to fit (1d vector).
+
+        :param theta_orig: Original value of the incident angle in degree.
 
         :param snr_guess: Guess on the SNR of the spectrum. Necessary
           to make a Bayesian fit (If unknown you can set it to 'auto'
@@ -953,6 +990,7 @@ class HDFCube(orb.core.HDFCube):
         :param kwargs: (Optional) Model parameters that must be
           changed in the InputParams instance.    
         """
+        kwargs_orig = dict(kwargs)
         if not hasattr(self, 'inputparams'):
             raise StandardError('Input params not defined')
         # check snr guess param
@@ -972,7 +1010,24 @@ class HDFCube(orb.core.HDFCube):
             elif not (isinstance(snr_guess, float)
                       or isinstance(snr_guess, int)):
                 bad_snr_param = True
-                
+
+        logging.debug('SNR guess: {}'.format(snr_guess))
+        
+
+        # recompute the fwhm guess
+        if 'fwhm_guess' in kwargs:
+            raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
+        
+        fwhm_guess_cm1 = orb.utils.spectrum.compute_line_fwhm(
+            self.params.step_nb - self.params.zpd_index,
+            self.params.step, self.params.order,
+            orb.utils.spectrum.theta2corr(theta_orig),
+            wavenumber=self.params.wavenumber)
+        
+        kwargs['fwhm_guess'] = fwhm_guess_cm1
+        
+        logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
+        
         if bad_snr_param:
             raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
@@ -993,9 +1048,10 @@ class HDFCube(orb.core.HDFCube):
                         
             return []
 
-        if auto_mode:
+        if auto_mode and _fit != []:
             snr_guess = np.nanmax(spectrum) / np.nanstd(spectrum - _fit['fitted_vector'])
-            return self._fit_lines_in_spectrum(spectrum, snr_guess=snr_guess, **kwargs)
+            return self._fit_lines_in_spectrum(spectrum, theta_orig, snr_guess=snr_guess,
+                                               **kwargs_orig)
         else:
             return _fit
 
@@ -1035,8 +1091,12 @@ class HDFCube(orb.core.HDFCube):
             self.params.step,
             self.params.order,
             self.params.nm_laser,
-            self.params.axis_corr,
+            self.params.theta_proj,
             self.params.zpd_index,
+            ## warning, theta_orig set to theta_proj by default it
+            ## means that the real theta_orig must be defined in the
+            ## fitting function _fit_lines_in_spectrum
+            theta_orig=self.params.theta_proj, 
             wavenumber=self.params.wavenumber,
             filter_file_path=filter_file_path,
             apodization=self.params.apodization,
@@ -1079,6 +1139,18 @@ class HDFCube(orb.core.HDFCube):
         self.calibration_laser_map = calib_map
         self.reset_calibration_coeff_map()
         return self.calibration_laser_map
+
+    def get_fwhm_map(self):
+        """Return the theoretical FWHM map in cm-1 based only on the angle
+        and the theoretical attained resolution."""
+        return orb.utils.spectrum.compute_line_fwhm(
+            self.params.step_nb - self.params.zpd_index, self.params.step, self.params.order,
+            self.params.apodization, self.get_calibration_coeff_map_orig(),
+            wavenumber=self.params.wavenumber)
+    
+    def get_theta_map(self):
+        """Return the incident angle map (in degree)"""
+        return orb.utils.spectrum.corr2theta(self.get_calibration_coeff_map_orig())
 
     def reset_calibration_laser_map(self):
         """Reset the compute calibration laser map (and also the
@@ -1144,7 +1216,7 @@ class HDFCube(orb.core.HDFCube):
         else:
             return _line_nm
 
-    def extract_spectrum_bin(self, x, y, b, mean_flux=False, **kwargs):
+    def extract_spectrum_bin(self, x, y, b, **kwargs):
         """Extract a spectrum integrated over a binned region.
     
         :param x: X position of the bottom-left pixel
@@ -1152,9 +1224,6 @@ class HDFCube(orb.core.HDFCube):
         :param y: Y position of the bottom-left pixel
         
         :param b: Binning. If 1, only the central pixel is extracted
-
-        :param mean_flux: (Optional) If True the flux of the spectrum
-          is the mean flux of the extracted region (default False).
     
         :param kwargs: Keyword arguments of the function
           :py:meth:`~HDFCube._extract_spectrum_from_region`.
@@ -1167,11 +1236,9 @@ class HDFCube(orb.core.HDFCube):
         mask[int(x):int(x+b), int(y):int(y+b)] = True
         region = np.nonzero(mask)
 
-        return self.params.base_axis.astype(float), self._extract_spectrum_from_region(
-            region, mean_flux=mean_flux, **kwargs)(self.params.base_axis.astype(float))
+        return self.extract_integrated_spectrum(region, **kwargs)
 
-
-    def extract_spectrum(self, x, y, r, mean_flux=False, **kwargs):
+    def extract_spectrum(self, x, y, r, **kwargs):
         """Extract a spectrum integrated over a circular region of a
         given radius.
 
@@ -1181,9 +1248,6 @@ class HDFCube(orb.core.HDFCube):
         
         :param r: Radius. If 0, only the central pixel is extracted.
     
-        :param mean_flux: (Optional) If True the flux of the spectrum
-          is the mean flux of the extracted region (default False).
-          
         :param kwargs: Keyword arguments of the function
           :py:meth:`~HDFCube._extract_spectrum_from_region`.
 
@@ -1193,17 +1257,14 @@ class HDFCube(orb.core.HDFCube):
         X, Y = np.mgrid[0:self.dimx, 0:self.dimy]
         R = np.sqrt(((X-x)**2 + (Y-y)**2))
         region = np.nonzero(R <= r)
-        
-        return self.params.base_axis.astype(float), self._extract_spectrum_from_region(
-            region, mean_flux=mean_flux, **kwargs)(self.params.base_axis.astype(float))
 
-    def extract_integrated_spectrum(self, region, mean_flux=False, **kwargs):
+        return self.extract_integrated_spectrum(region, **kwargs)
+
+    
+    def extract_integrated_spectrum(self, region, **kwargs):
         """Extract a spectrum integrated over a given region (can be a
         list of pixels as returned by the function
         :py:meth:`numpy.nonzero` or a ds9 region file).
-
-        :param mean_flux: (Optional) If True the flux of the spectrum
-          is the mean flux of the extracted region (default False).
 
         :param region: Region to integrate (can be a list of pixel
           coordinates as returned by the function
@@ -1212,10 +1273,12 @@ class HDFCube(orb.core.HDFCube):
           defined and all will be integrated into one spectrum.
         """
         region = self.get_mask_from_ds9_region_file(region)
-        return self.params.base_axis.astype(float), self._extract_spectrum_from_region(
-            region, mean_flux=mean_flux, **kwargs)(self.params.base_axis.astype(float))
 
-
+        returns = list()
+        returns.append(self.params.base_axis.astype(float))
+        returns += list(self._extract_spectrum_from_region(
+            region, output_axis=self.params.base_axis.astype(float), **kwargs))
+        return returns
 
     def fit_lines_in_spectrum_bin(self, x, y, b, lines, nofilter=False,
                                   subtract_spectrum=None,
@@ -1244,7 +1307,10 @@ class HDFCube(orb.core.HDFCube):
           have the same size.
 
         :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit. If None a classical fit is made.    
+          to make a Bayesian fit (If unknown you can set it to 'auto'
+          to try an automatic mode, two fits are made - one with a
+          predefined SNR and the other with the SNR deduced from the
+          first fit). If None a classical fit is made.
 
         :param mean_flux: (Optional) If True the flux of the spectrum
           is the mean flux of the extracted region (default False).
@@ -1257,13 +1323,14 @@ class HDFCube(orb.core.HDFCube):
           :py:meth:`orb.fit.fit_lines_in_spectrum`)
         """
 
-        axis, spectrum = self.extract_spectrum_bin(
-            x, y, b, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux)
+        axis, spectrum, theta_orig = self.extract_spectrum_bin(
+            x, y, b, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
+            return_mean_theta=True)
             
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
         
         fit_res = self._fit_lines_in_spectrum(
-            spectrum, snr_guess=snr_guess)
+            spectrum, theta_orig, snr_guess=snr_guess)
                 
         return axis, spectrum, fit_res
 
@@ -1292,7 +1359,10 @@ class HDFCube(orb.core.HDFCube):
           have the same size.
 
         :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit. If None a classical fit is made.    
+          to make a Bayesian fit (If unknown you can set it to 'auto'
+          to try an automatic mode, two fits are made - one with a
+          predefined SNR and the other with the SNR deduced from the
+          first fit). If None a classical fit is made.
 
         :param mean_flux: (Optional) If True the flux of the spectrum
           is the mean flux of the extracted region (default False).
@@ -1304,13 +1374,14 @@ class HDFCube(orb.core.HDFCube):
           dictionary containing the fit results (same output as
           :py:meth:`~HDFCube._fit_lines_in_spectrum`)
         """
-        axis, spectrum = self.extract_spectrum(
-            x, y, r, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux)
+        axis, spectrum, theta_orig = self.extract_spectrum(
+            x, y, r, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
+            return_mean_theta=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
         
         fit_res = self._fit_lines_in_spectrum(
-            spectrum, snr_guess=snr_guess)
+            spectrum, theta_orig, snr_guess=snr_guess)
                 
         return axis, spectrum, fit_res
 
@@ -1341,7 +1412,10 @@ class HDFCube(orb.core.HDFCube):
           have the same size.
 
         :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit. If None a classical fit is made.    
+          to make a Bayesian fit (If unknown you can set it to 'auto'
+          to try an automatic mode, two fits are made - one with a
+          predefined SNR and the other with the SNR deduced from the
+          first fit). If None a classical fit is made.
 
         :param mean_flux: (Optional) If True the flux of the spectrum
           is the mean flux of the extracted region (default False).
@@ -1354,18 +1428,19 @@ class HDFCube(orb.core.HDFCube):
           :py:meth:`~HDFCube._fit_lines_in_spectrum`)
 
         """
-        axis, spectrum = self.extract_integrated_spectrum(
-            region, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux)
+        axis, spectrum, theta_orig = self.extract_integrated_spectrum(
+            region, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
+            return_mean_theta=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
         
         fit_res = self._fit_lines_in_spectrum(
-            spectrum, snr_guess=snr_guess)
+            spectrum, theta_orig, snr_guess=snr_guess)
                 
         return axis, spectrum, fit_res    
 
     def fit_lines_in_region(self, region, lines, binning=1, nofilter=False,
-                            subtract_spectrum=None, **kwargs):
+                            subtract_spectrum=None, snr_guess=None, **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
         the defined region are fitted one by one and a set of maps
         containing the fitted paramaters are written. Note that the
@@ -1386,6 +1461,12 @@ class HDFCube(orb.core.HDFCube):
           parameters. Useful to remove sky spectrum. Both spectra must
           have the same size.
 
+        :param snr_guess: Guess on the SNR of the spectrum. Can only
+          be None or 'auto'. Set it to 'auto' to make a Bayesian
+          fit. In this case two fits are made - one with a predefined
+          SNR and the other with the SNR deduced from the first
+          fit. If None a classical fit is made.
+          
         :param kwargs: Keyword arguments of the function
           :py:meth:`~HDFCube._fit_lines_in_spectrum`.        
         """
@@ -1394,7 +1475,7 @@ class HDFCube(orb.core.HDFCube):
             lines, nofilter=nofilter, **kwargs)
         self._fit_lines_in_region(
             region, subtract_spectrum=subtract_spectrum,
-            binning=binning)
+            binning=binning, snr_guess=snr_guess)
 
     def get_mask_from_ds9_region_file(self, region, integrate=True):
         """Return a mask from a ds9 region file.
@@ -1622,7 +1703,7 @@ class LineMaps(orb.core.Tools):
 
     lineparams = ('height', 'height-err', 'amplitude', 'amplitude-err',
                   'velocity', 'velocity-err', 'fwhm', 'fwhm-err',
-                  'sigma', 'sigma-err', 'flux', 'flux-err')
+                  'sigma', 'sigma-err', 'flux', 'flux-err', 'logGBF', 'chi2', 'rchi2')
 
 
     def __init__(self, dimx, dimy, lines, wavenumber, binning, div_nb,
