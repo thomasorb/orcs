@@ -68,13 +68,14 @@ Documentation
    utils_module
 
 
-Changelog
----------
+
+Known issues
+------------
 
 .. toctree::
    :maxdepth: 1
 
-   changelog
+   known_issues
 
    
 Indices and tables

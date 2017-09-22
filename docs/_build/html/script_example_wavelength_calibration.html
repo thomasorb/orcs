@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.1.0 documentation</title>
+  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.2.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.1 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Image registration" href="script_example_image_registration.html"/>
         <link rel="prev" title="Modelling and fitting two unresolved emission lines with a bayesian approach" href="script_example_model+fit_2_lines_bayes.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.1.0
+                2.2.1
               </div>
             
           
@@ -124,9 +124,6 @@
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
             
@@ -450,11 +447,11 @@ interferometer.</p>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-17-07-25|09:27:51 # SpectralCube.__init__ &gt; Data shape : (2048, 2064, 840)
-17-07-25|09:27:51 # SpectralCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
-17-07-25|09:27:51 # SpectralCube.__init__ &gt; Cube is CALIBRATED
+INFO&gt; Data shape : (2048, 2064, 840)
+INFO&gt; Cube is in WAVENUMBER (cm-1)
+INFO&gt; Cube is CALIBRATED
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -474,12 +471,17 @@ interferometer.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO&gt; Number of integrated pixels: 1257
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|18:24:50 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 1257
- [==========] [100%] [completed in 0.028 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.854 s]
+ [==========] [100%] [completed in 0.429 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -496,14 +498,14 @@ Init of the parallel processing server with 4 threads
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_5_2.png" src="_images/script_example_wavelength_calibration_5_2.png" />
+<img alt="_images/script_example_wavelength_calibration_5_3.png" src="_images/script_example_wavelength_calibration_5_3.png" />
 </div>
 </div>
 <div class="section" id="fitting-the-sky-spectrum">
 <h3>fitting the sky spectrum<a class="headerlink" href="#fitting-the-sky-spectrum" title="Permalink to this headline">¶</a></h3>
 <p>we can also fit the integrated spectrum because there si a large number
 of sky lines and because we are not interested in a perfect fit (only
-the velocity is required), we can use a simple ‘sinc’ model with a fixed
+the velocity is required), we can use a simple &#8216;sinc&#8217; model with a fixed
 fwhm. All the lines are set to share the same velocity parameter and we
 set an inital guess of the velocity around 80 km/s. This general bias of
 80 km/s is known (<a class="reference external" href="https://arxiv.org/abs/1706.03230">Martin et al.
@@ -535,22 +537,50 @@ considered to be at 453.5 nm).</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO&gt; Number of integrated pixels: 1257
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|18:24:53 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 1257
- [==========] [100%] [completed in 0.029 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.744 s]
-SNR GUESS None
+ [==========] [100%] [completed in 0.033 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING&gt; /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1679: RuntimeWarning: invalid value encountered in sqrt
+  noise_counts = np.sqrt(total_counts)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
 
 ===== Results ======
-Velocity:  [73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
- 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
- 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
- 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
- 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
- 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)
- 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1)]
+Velocity:  [72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
+ 72.1(1.5) 72.1(1.5)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -567,7 +597,7 @@ Velocity:  [73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1) 73.8(1.1
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_7_2.png" src="_images/script_example_wavelength_calibration_7_2.png" />
+<img alt="_images/script_example_wavelength_calibration_7_5.png" src="_images/script_example_wavelength_calibration_7_5.png" />
 </div>
 </div>
 </div>
@@ -868,7 +898,7 @@ Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.1.0',
+            VERSION:'2.2.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -878,7 +908,7 @@ Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
