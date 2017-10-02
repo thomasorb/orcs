@@ -1888,11 +1888,12 @@ class LineMaps(orb.core.Tools):
         self.binning = binning
         
         if binning > 1:
-            self.dimx = int(int(dimx / self.div_nb) / self.binning) * self.div_nb
-            self.dimy = int(int(dimy / self.div_nb) / self.binning) * self.div_nb
+            # not optimal but always returns the exact numbers
+            self.dimx, self.dimy = orb.utils.image.nanbin_image(
+                np.empty((dimx, dimy), dtype=float), binning).shape
         else:
-            self.dimx = dimx
-            self.dimy = dimy
+            self.dimx = int(dimx)
+            self.dimy = int(dimy)
 
         self.unbinned_dimx = int(dimx)
         self.unbinned_dimy = int(dimy)
