@@ -638,7 +638,7 @@ class HDFCube(orb.core.HDFCube):
                 spectrum_function = (spectrum_function, spectrum_function_sdev)
 
             if output_axis is None:
-                returns.append(spectrum_function(output_axis))
+                returns.append(spectrum_function(gvar.mean(output_axis)))
             else:
                 returns.append(spectrum_function)
         
@@ -816,7 +816,7 @@ class HDFCube(orb.core.HDFCube):
         init_velocity_map *= vel_map_w
         init_velocity_map = np.nansum(init_velocity_map, axis=2)
         init_velocity_map /= np.nansum(vel_map_w, axis=2)
-        
+
         # create mean sigma map
         # mean map is weighted by the square of the error on the parameter
         init_sigma_map[
@@ -886,7 +886,7 @@ class HDFCube(orb.core.HDFCube):
         """
 
         if verbose:
-            logging.info("Extracting integrated spectra", color=True)
+            logging.info("Extracting integrated spectra")
         
         calibration_coeff_map = self.get_calibration_coeff_map()
         calibration_laser_map = self.get_calibration_laser_map()
@@ -908,22 +908,19 @@ class HDFCube(orb.core.HDFCube):
             else:
                 axis = self.params.base_axis.astype(float)
 
-            spectrumf = self._extract_spectrum_from_region(
+            spectrum, theta_orig = self._extract_spectrum_from_region(
                 regions[iregion],
                 subtract_spectrum=subtract,
-                silent=True)
-
-            spectrum = spectrumf(axis)
-
+                silent=True, output_axis=axis, return_mean_theta=True)
             
             ifit = self._fit_lines_in_spectrum(
-                spectrum, snr_guess=None)
+                spectrum, theta_orig, snr_guess=None)
             lines = gvar.mean(self.inputparams.allparams.pos_guess)
                 
             if ifit != []:
 
                 all_fit_results = list()
-                logging.info('Velocity of the first line (km/s):', ifit['velocity_gvar'][0])
+                logging.info('Velocity of the first line (km/s): {}'.format(ifit['velocity_gvar'][0]))
                 line_names = list()
                 for iline in range(np.size(lines)):
                     if self.params.wavenumber:
@@ -936,7 +933,6 @@ class HDFCube(orb.core.HDFCube):
 
                     fit_params = ifit['lines_params']
                     err_params = ifit['lines_params_err']
-
 
                     fit_results = {
                         'reg_index': iregion,
@@ -958,6 +954,8 @@ class HDFCube(orb.core.HDFCube):
                         'sigma_err': err_params[iline, 4],
                         'flux_err': ifit['flux_err'][iline]}
                     all_fit_results.append(fit_results)
+
+
                 fitted_vector = ifit['fitted_vector']
                 fitted_models = ifit['fitted_models']
             else:
@@ -968,6 +966,7 @@ class HDFCube(orb.core.HDFCube):
             if self.params.wavenumber:
                 linesmodel = 'Cm1LinesModel'
             else:
+                raise NotImplementedError()
                 linesmodel = 'NmLinesModel'
                 
             spectrum_header = (
@@ -991,11 +990,11 @@ class HDFCube(orb.core.HDFCube):
                 paramsfile.append(fit_results)
                 if verbose:
                     logging.info(
-                        'Line: {} ----'.format(
+                        '================ Line: {} ============='.format(
                             fit_results['line_name']))
                     for ikey in fit_results:
-                        print '{}: {}'.format(
-                            ikey, fit_results[ikey])
+                        logging.info('{}: {}'.format(
+                            ikey, fit_results[ikey]))
 
             if plot and ifit != []:
 
@@ -1706,6 +1705,22 @@ class CubeJobServer(object):
                          mask=None, binning=1):
 
 
+        binning = int(binning)
+
+        binned_shape = orb.utils.image.nanbin_image(
+            np.ones((self.cube.dimx, self.cube.dimy)),
+            int(binning)).shape
+
+        def isbinned(_data):
+            if (_data.shape[0] == self.cube.dimx
+                and _data.shape[1] == self.cube.dimy):
+                return False
+            elif (_data.shape[0] == binned_shape[0]
+                  and _data.shape[1] == binned_shape[1]):
+                return True
+            else: raise Exception('Strange data shape {}. Must be correctly binned ({}, {}) or unbinned ({}, {})'.format(_data.shape, binned_shape[0], binned_shape[1], self.cube.dimx, self.cube.dimy))
+
+            
         # check outfile
         self.out_is_dict = True
         if not isinstance(out, dict):
@@ -1731,7 +1746,8 @@ class CubeJobServer(object):
             mask = np.ones((self.cube.dimx, self.cube.dimy), dtype=bool)
 
         if binning > 1:
-            mask = orb.utils.image.nanbin_image(mask, int(binning))
+            if not isbinned(mask):
+                mask = orb.utils.image.nanbin_image(mask, int(binning))
             
         X, Y = np.nonzero(mask)
         
@@ -1761,8 +1777,9 @@ class CubeJobServer(object):
                         shape = None
                         
                     if shape is not None:
-                        if (shape[0], shape[1]) == (self.cube.dimx, self.cube.dimy):
-                            new_arg = np.copy(iarg[ix, iy, ...])
+                        if not isbinned(iarg) and iarg.ndim == 2:
+                            iarg = orb.utils.image.nanbin_image(iarg, int(binning))    
+                        new_arg = np.copy(iarg[ix, iy, ...])
 
                     all_args.append(new_arg)
 
@@ -1993,7 +2010,7 @@ class LineMaps(orb.core.Tools):
         still higher than requested. Loaded maps can be used to get
         initial fitting parameters."""
         # check existing files
-        binnings = np.arange(self.binning+1, 50)
+        binnings = np.arange(self.binning+1, 1000)
         available_binnings = list()
         for binning in binnings:
             all_ok = True
@@ -2092,7 +2109,7 @@ class LineMaps(orb.core.Tools):
             x_range = [0, self.dimx]
         if y_range is None:
             y_range = [0, self.dimy]
-        
+
         return self.data[param][
             x_range[0]:x_range[1],
             y_range[0]:y_range[1]]
