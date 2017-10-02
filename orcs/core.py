@@ -1388,6 +1388,7 @@ class HDFCube(orb.core.HDFCube):
     def fit_lines_in_integrated_region(self, region, lines, nofilter=False,
                                        snr_guess=None, subtract_spectrum=None,
                                        mean_flux=False,
+                                       silent = False,
                                        **kwargs):
         """Fit lines of a spectrum integrated over a given region (can
         be a list of pixels as returned by the function
@@ -1430,7 +1431,7 @@ class HDFCube(orb.core.HDFCube):
         """
         axis, spectrum, theta_orig = self.extract_integrated_spectrum(
             region, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True)
+            return_mean_theta=True, silent=silent)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
