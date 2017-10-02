@@ -48,13 +48,13 @@ The archive and the installation instructions for ORB_ can be found on github::
   https://github.com/thomasorb/orb
 
 
-Install ORCS
-------------
+Install / update ORCS
+---------------------
 
 With pip
 ~~~~~~~~
 
-you just have to do::
+you just have to do (but don't forget to update ORB_ version as well !)::
 
   pip install orcs
 
