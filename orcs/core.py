@@ -104,8 +104,12 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
         self.set_param('apodization', float(self.header['APODIZ']))
         self.set_param('exposure_time', float(self.header['EXPTIME']))
-        self.set_param('flambda', float(self.header['FLAMBDA']))
-        
+        if 'FLAMBDA' in self.header:
+            self.set_param('flambda', float(self.header['FLAMBDA']))
+        else:
+            warnings.warn('FLAMBDA keyword not in cube header. Flux calibration may be bad.')
+            self.set_param('flambda', 1.)
+
         
         step_nb = int(self.header['STEPNB'])
         if step_nb != self.dimz:
@@ -154,7 +158,7 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('wavelength_calibration', bool(self.header['WAVCALIB']))                          
             
         if self.params.wavelength_calibration:
-            logging.info('Cube is CALIBRATED')
+            logging.info('Cube is CALIBRATED in wavenumber')
         else:
             logging.info('Cube is NOT CALIBRATED')            
             
