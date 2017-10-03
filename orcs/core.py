@@ -53,6 +53,8 @@ except Exception, e:
     import sys
     sys.exit(2)
 
+import utils
+
 #################################################
 #### CLASS HDFCube ##############################
 #################################################
@@ -72,7 +74,8 @@ class HDFCube(orb.core.HDFCube):
 
         :param kwargs: Kwargs are :meth:`orb.core.HDFCube` properties.
         """
-        self.logger = orb.core.Logger(debug=debug)
+        self.debug = debug
+        self.logger = orb.core.Logger(debug=self.debug)
         FIT_TOL = 1e-10
         self.cube_path = cube_path
         self.header = self.get_header()
@@ -261,6 +264,8 @@ class HDFCube(orb.core.HDFCube):
 
             return icolumn_data
 
+        raise Exception("It's better to use the CubeJobServer class")
+
         ## function must be serialized (or picked)
         func = marshal.dumps(func.func_code)
 
@@ -404,6 +409,7 @@ class HDFCube(orb.core.HDFCube):
                                       silent=False,
                                       return_spec_nb=False,
                                       return_mean_theta=False,
+                                      return_gvar=False,
                                       output_axis=None):
         """
         Extract the integrated spectrum from a region of the cube.
@@ -438,6 +444,9 @@ class HDFCube(orb.core.HDFCube):
         :param return_mean_theta: (Optional) If True, the mean of the
           theta values covered by the region is returned (default False).
 
+        :param return_gvar: (Optional) If True, returned spectrum will be a
+          gvar. i.e. a data vector with it's uncetainty (default False).
+
         :param output_axis: (Optional) If not None, the spectrum is
           projected on the output axis. Else a scipy.UnivariateSpline
           object is returned (defautl None).
@@ -460,14 +469,15 @@ class HDFCube(orb.core.HDFCube):
 
         def _extract_spectrum_in_column(data_col, calib_coeff_col, mask_col,
                                         median,
-                                        wavenumber, base_axis, step, order):
+                                        wavenumber, base_axis, step, order,
+                                        base_axis_corr):
 
             for icol in range(data_col.shape[0]):
                 if mask_col[icol]:
                     corr = calib_coeff_col[icol]
-                    data_col[icol, :] = _interpolate_spectrum(
-                        data_col[icol, :], corr, wavenumber, step, order, base_axis)
-                    ####
+                    if corr != base_axis_corr:
+                        data_col[icol, :] = _interpolate_spectrum(
+                            data_col[icol, :], corr, wavenumber, step, order, base_axis)
                 else:
                     data_col[icol, :].fill(np.nan)
 
@@ -480,7 +490,6 @@ class HDFCube(orb.core.HDFCube):
 
         if median:
             warnings.warn('Median integration')
-
 
         calibration_coeff_map = self.get_calibration_coeff_map()
 
@@ -537,6 +546,23 @@ class HDFCube(orb.core.HDFCube):
                 if quadrant_extraction:
                     # x_min, x_max, y_min, y_max are now used for quadrants boundaries
                     x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
+
+                iquad_data = self.get_data(x_min, x_max, y_min, y_max,
+                                           0, self.dimz, silent=silent)
+
+                if not quadrant_extraction:
+                    if np.all(calibration_coeff_center == calibration_coeff_map):
+                        ## no interpolation to make -> multiprocessing bypass
+                        counts = np.nansum(mask)
+                        if median:
+                            spectrum = np.nanmedian(
+                                np.nanmedian(iquad_data, axis=0), axis=0) * np.nansum(mask)
+
+                        else:
+                            spectrum = np.nansum(np.nansum(iquad_data, axis=0), axis=0)
+                        break # no multiprocessing
+
+
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max,
                                            0, self.dimz, silent=silent)
 
@@ -557,7 +583,7 @@ class HDFCube(orb.core.HDFCube):
                               mask[x_min + ii + ijob, y_min:y_max],
                               median, self.params.wavenumber,
                               self.params.base_axis, self.params.step,
-                              self.params.order),
+                              self.params.order, self.params.axis_corr),
                         modules=("import logging",
                                  'import numpy as np',
                                  'import orb.utils.spectrum',
@@ -577,22 +603,44 @@ class HDFCube(orb.core.HDFCube):
                 self._close_pp_server(job_server)
                 if not silent: progress.end()
 
+
+        # add uncertainty on the spectrum
+        if return_gvar:
+            flux_uncertainty = self.get_flux_uncertainty()
+
+            if flux_uncertainty is not None:
+                uncertainty = np.nansum(flux_uncertainty[np.nonzero(mask)])
+                logging.debug('computed mean flux uncertainty: {}'.format(uncertainty))
+                spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * uncertainty)
+
+
         if subtract_spectrum is not None:
             spectrum -= subtract_spectrum * counts
 
         if mean_flux:
             spectrum /= counts
 
-        spectrum_function = scipy.interpolate.UnivariateSpline(
-            self.params.base_axis[~np.isnan(spectrum)], spectrum[~np.isnan(spectrum)],
-            s=0, k=1, ext=1)
-
-
         returns = list()
-        if output_axis is not None:
-            returns.append(spectrum_function(output_axis))
+        if output_axis is not None and np.all(output_axis == self.params.base_axis):
+            spectrum[np.isnan(gvar.mean(spectrum))] = 0. # remove nans
+            returns.append(spectrum)
+
         else:
-            returns.append(spectrum_function)
+            nonans = ~np.isnan(gvar.mean(spectrum))
+            spectrum_function = scipy.interpolate.UnivariateSpline(
+                self.params.base_axis[nonans], gvar.mean(spectrum)[nonans],
+                s=0, k=1, ext=1)
+            if return_gvar:
+                spectrum_function_sdev = scipy.interpolate.UnivariateSpline(
+                    self.params.base_axis[nonans], gvar.sdev(spectrum)[nonans],
+                    s=0, k=1, ext=1)
+                raise Exception('now a tuple is returned with both functions for mean and sdev, this will raise an error somewhere and must be checked before')
+                spectrum_function = (spectrum_function, spectrum_function_sdev)
+
+            if output_axis is None:
+                returns.append(spectrum_function(gvar.mean(output_axis)))
+            else:
+                returns.append(spectrum_function)
 
         if return_spec_nb:
             returns.append(counts)
@@ -601,6 +649,7 @@ class HDFCube(orb.core.HDFCube):
             mean_theta = np.nanmean(theta_map[np.nonzero(mask)])
             logging.debug('computed mean theta: {}'.format(mean_theta))
             returns.append(mean_theta)
+
         return returns
 
 
@@ -653,6 +702,81 @@ class HDFCube(orb.core.HDFCube):
           maps) given in the same unit.
 
         """
+        def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
+                               init_velocity_map_ij, init_sigma_map_ij,
+                               theta_map_ij, snr_guess, debug):
+
+            if debug:
+                logging.getLogger().setLevel(logging.DEBUG)
+            else:
+                warnings.simplefilter('ignore', RuntimeWarning)
+            # check init velocity (already computed from
+            # binned maps). If a guess exists, velocity range
+            # is set to None
+            if not np.isnan(init_velocity_map_ij):
+                shift_guess_sdev = gvar.sdev(
+                    inputparams.allparams['pos_cov'])
+                shift_guess = gvar.gvar(
+                    np.ones_like(shift_guess_sdev) * init_velocity_map_ij,
+                    shift_guess_sdev)
+            else:
+                shift_guess = None
+
+            # check init sigma (already computed from binned
+            # maps).
+            if not np.isnan(init_sigma_map_ij):
+                sigma_guess_sdev = gvar.sdev(
+                    inputparams.allparams['sigma_cov'])
+                sigma_guess = gvar.gvar(
+                    np.ones_like(sigma_guess_sdev) * init_sigma_map_ij,
+                    sigma_guess_sdev)
+            else:
+                sigma_guess = None
+
+            ifit = orcs.utils.fit_lines_in_spectrum(
+                params, inputparams, fit_tol, spectrum, theta_map_ij,
+                snr_guess=snr_guess, sigma_guess=sigma_guess,
+                pos_cov=shift_guess)
+
+            if ifit != []:
+                return {
+                    'height': ifit['lines_params'][:,0],
+                    'amplitude': ifit['lines_params'][:,1],
+                    'fwhm': ifit['lines_params'][:,3],
+                    'velocity': ifit['velocity'],
+                    'sigma': ifit['broadening'],
+                    'flux': ifit['flux'],
+                    'height-err': ifit['lines_params_err'][:,0],
+                    'amplitude-err': ifit['lines_params_err'][:,1],
+                    'fwhm-err': ifit['lines_params_err'][:,3],
+                    'velocity-err': ifit['velocity_err'],
+                    'sigma-err': ifit['broadening_err'],
+                    'flux-err': ifit['flux_err'],
+                    'chi2': ifit['chi2'],
+                    'rchi2': ifit['rchi2'],
+                    'logGBF': ifit['logGBF'],
+                    'ks_pvalue': ifit['ks_pvalue']}
+            else: return {
+                'height': np.nan,
+                'amplitude': np.nan,
+                'fwhm': np.nan,
+                'velocity': np.nan,
+                'sigma': np.nan,
+                'flux': np.nan,
+                'height-err': np.nan,
+                'amplitude-err': np.nan,
+                'fwhm-err': np.nan,
+                'velocity-err': np.nan,
+                'sigma-err': np.nan,
+                'flux-err': np.nan,
+                'chi2': np.nan,
+                'rchi2': np.nan,
+                'logGBF': np.nan,
+                'ks_pvalue': np.nan}
+
+
+
+
         if snr_guess not in ('auto', None):
             raise ValueError("snr_guess must be 'auto' or None")
 
@@ -718,90 +842,23 @@ class HDFCube(orb.core.HDFCube):
         total_fit_nb = np.nansum(mask_bin)
         progress = orb.core.ProgressBar(total_fit_nb)
         logging.info('Number of spectra to fit: {}'.format(total_fit_nb))
-        fit_nb = 0
-        for ii in range(mask_bin.shape[0]):
-            for ij in range(mask_bin.shape[1]):
-
-                unbinned_ii = ii*binning
-                unbinned_ij = ij*binning
-                if mask_bin[ii, ij]:
-                    fit_nb += 1
-                    progress.update(fit_nb, info='Fitting spectrum {}/{}'.format(fit_nb, total_fit_nb))
-
-                    # load spectrum
-                    axis, spectrum = self.extract_spectrum_bin(
-                        unbinned_ii, unbinned_ij, binning,
-                        subtract_spectrum=subtract_spectrum, silent=True)
-
-                    # check init velocity (already computed from
-                    # binned maps). If a guess exists, velocity range
-                    # is set to None
-                    if not np.isnan(init_velocity_map[ii, ij]):
-                        shift_guess_sdev = gvar.sdev(
-                            inputparams.allparams['pos_cov'])
-                        shift_guess = gvar.gvar(
-                            np.ones_like(shift_guess_sdev) * init_velocity_map[ii, ij],
-                            shift_guess_sdev)
-                    else:
-                        shift_guess = None
-
-                    # check init sigma (already computed from binned
-                    # maps).
-                    if not np.isnan(init_sigma_map[ii, ij]):
-                        sigma_guess_sdev = gvar.sdev(
-                            inputparams.allparams['sigma_cov'])
-                        sigma_guess = gvar.gvar(
-                            np.ones_like(sigma_guess_sdev) * init_sigma_map[ii, ij],
-                            sigma_guess_sdev)
-                    else:
-                        sigma_guess = None
-
-                    ifit = self._fit_lines_in_spectrum(
-                        spectrum, theta_map[ii,ij], snr_guess=snr_guess, sigma_guess=sigma_guess,
-                        pos_cov=shift_guess)
 
 
-                    if ifit != []:
-                        print ifit['logGBF']
+        cjs = CubeJobServer(self)
+        out = cjs.process_by_pixel(fit_lines_in_pixel,
+                             args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
+                                   init_velocity_map, init_sigma_map,
+                                   theta_map, snr_guess, self.debug],
+                             modules=['numpy as np', 'gvar', 'orcs.utils', 'logging', 'warnings'],
+                             mask=mask,
+                             binning=binning)
 
-                        x_range = (ii, ii+1)
-                        y_range = (ij, ij+1)
-                        linemaps.set_map('height', ifit['lines_params'][:,0],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('amplitude', ifit['lines_params'][:,1],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('velocity', ifit['velocity'],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('fwhm', ifit['lines_params'][:,3],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('sigma', ifit['broadening'],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('flux', ifit['flux'],
-                                         x_range=x_range, y_range=y_range)
-
-                        linemaps.set_map('height-err', ifit['lines_params_err'][:,0],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('amplitude-err', ifit['lines_params_err'][:,1],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('velocity-err', ifit['velocity_err'],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('fwhm-err', ifit['lines_params_err'][:,3],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('sigma-err', ifit['broadening_err'],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('flux-err', ifit['flux_err'],
-                                         x_range=x_range, y_range=y_range)
-
-                        linemaps.set_map('chi2', ifit['chi2'],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('rchi2', ifit['rchi2'],
-                                         x_range=x_range, y_range=y_range)
-                        linemaps.set_map('logGBF', ifit['logGBF'],
-                                         x_range=x_range, y_range=y_range)
+        for key in out:
+            linemaps.set_map(key, out[key],
+                             x_range=[0, self.dimx],
+                             y_range=[0, self.dimy])
 
 
-
-        progress.end()
         linemaps.write_maps()
 
     def _fit_integrated_spectra(self, regions_file_path,
@@ -829,7 +886,7 @@ class HDFCube(orb.core.HDFCube):
         """
 
         if verbose:
-            logging.info("Extracting integrated spectra", color=True)
+            logging.info("Extracting integrated spectra")
 
         calibration_coeff_map = self.get_calibration_coeff_map()
         calibration_laser_map = self.get_calibration_laser_map()
@@ -851,22 +908,19 @@ class HDFCube(orb.core.HDFCube):
             else:
                 axis = self.params.base_axis.astype(float)
 
-            spectrumf = self._extract_spectrum_from_region(
+            spectrum, theta_orig = self._extract_spectrum_from_region(
                 regions[iregion],
                 subtract_spectrum=subtract,
-                silent=True)
-
-            spectrum = spectrumf(axis)
-
+                silent=True, output_axis=axis, return_mean_theta=True)
 
             ifit = self._fit_lines_in_spectrum(
-                spectrum, snr_guess=None)
+                spectrum, theta_orig, snr_guess=None)
             lines = gvar.mean(self.inputparams.allparams.pos_guess)
 
             if ifit != []:
 
                 all_fit_results = list()
-                print 'Velocity of the first line (km/s):', ifit['velocity_gvar'][0]
+                logging.info('Velocity of the first line (km/s): {}'.format(ifit['velocity_gvar'][0]))
                 line_names = list()
                 for iline in range(np.size(lines)):
                     if self.params.wavenumber:
@@ -879,7 +933,6 @@ class HDFCube(orb.core.HDFCube):
 
                     fit_params = ifit['lines_params']
                     err_params = ifit['lines_params_err']
-
 
                     fit_results = {
                         'reg_index': iregion,
@@ -901,6 +954,8 @@ class HDFCube(orb.core.HDFCube):
                         'sigma_err': err_params[iline, 4],
                         'flux_err': ifit['flux_err'][iline]}
                     all_fit_results.append(fit_results)
+
+
                 fitted_vector = ifit['fitted_vector']
                 fitted_models = ifit['fitted_models']
             else:
@@ -911,6 +966,7 @@ class HDFCube(orb.core.HDFCube):
             if self.params.wavenumber:
                 linesmodel = 'Cm1LinesModel'
             else:
+                raise NotImplementedError()
                 linesmodel = 'NmLinesModel'
 
             spectrum_header = (
@@ -934,11 +990,11 @@ class HDFCube(orb.core.HDFCube):
                 paramsfile.append(fit_results)
                 if verbose:
                     logging.info(
-                        'Line: {} ----'.format(
+                        '================ Line: {} ============='.format(
                             fit_results['line_name']))
                     for ikey in fit_results:
-                        print '{}: {}'.format(
-                            ikey, fit_results[ikey])
+                        logging.info('{}: {}'.format(
+                            ikey, fit_results[ikey]))
 
             if plot and ifit != []:
 
@@ -990,70 +1046,13 @@ class HDFCube(orb.core.HDFCube):
         :param kwargs: (Optional) Model parameters that must be
           changed in the InputParams instance.
         """
-        kwargs_orig = dict(kwargs)
+
         if not hasattr(self, 'inputparams'):
-            raise StandardError('Input params not defined')
-        # check snr guess param
-        auto_mode = False
-        bad_snr_param = False
-        if snr_guess is not None:
-            if isinstance(snr_guess, str):
-                if snr_guess.lower() == 'auto':
-                    auto_mode = True
-                    snr_guess= 30
-                elif snr_guess.lower() == 'none':
-                    snr_guess = None
-                    auto_mode = False
-                else: bad_snr_param = True
-            elif isinstance(snr_guess, bool):
-                    bad_snr_param = True
-            elif not (isinstance(snr_guess, float)
-                      or isinstance(snr_guess, int)):
-                bad_snr_param = True
+            raise StandardError('Input params not defined')            
 
-        logging.debug('SNR guess: {}'.format(snr_guess))
-
-
-        # recompute the fwhm guess
-        if 'fwhm_guess' in kwargs:
-            raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
-
-        fwhm_guess_cm1 = orb.utils.spectrum.compute_line_fwhm(
-            self.params.step_nb - self.params.zpd_index,
-            self.params.step, self.params.order,
-            orb.utils.spectrum.theta2corr(theta_orig),
-            wavenumber=self.params.wavenumber)
-
-        kwargs['fwhm_guess'] = fwhm_guess_cm1
-
-        logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
-
-        if bad_snr_param:
-            raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
-
-        try:
-            warnings.simplefilter('ignore')
-            _fit = orb.fit._fit_lines_in_spectrum(
-                spectrum, self.inputparams,
-                fit_tol = self.fit_tol,
-                compute_mcmc_error=False,
-                snr_guess=snr_guess,
-                **kwargs)
-            warnings.simplefilter('default')
-
-        except Exception, e:
-            warnings.warn('Exception occured during fit: {}'.format(e))
-            import traceback
-            print traceback.format_exc()
-
-            return []
-
-        if auto_mode and _fit != []:
-            snr_guess = np.nanmax(spectrum) / np.nanstd(spectrum - _fit['fitted_vector'])
-            return self._fit_lines_in_spectrum(spectrum, theta_orig, snr_guess=snr_guess,
-                                               **kwargs_orig)
-        else:
-            return _fit
+        return utils.fit_lines_in_spectrum(
+            self.params, self.inputparams, self.fit_tol,
+            spectrum, theta_orig, snr_guess=snr_guess, **kwargs)
 
     def _prepare_input_params(self, lines, nofilter=False, **kwargs):
         """prepare the InputParams instance for a fitting procedure.
@@ -1285,8 +1284,8 @@ class HDFCube(orb.core.HDFCube):
                                   snr_guess=None,
                                   mean_flux=False,
                                   **kwargs):
-        """Fit lines of a spectrum extracted from a circular region of a
-        given radius.
+        """Fit lines of a spectrum extracted from a squared region of a
+        given size.
 
         :param x: X position of the bottom-left pixel
 
@@ -1325,14 +1324,14 @@ class HDFCube(orb.core.HDFCube):
 
         axis, spectrum, theta_orig = self.extract_spectrum_bin(
             x, y, b, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True)
+            return_mean_theta=True, return_gvar=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
         fit_res = self._fit_lines_in_spectrum(
             spectrum, theta_orig, snr_guess=snr_guess)
 
-        return axis, spectrum, fit_res
+        return axis, gvar.mean(spectrum), fit_res
 
     def fit_lines_in_spectrum(self, x, y, r, lines, nofilter=False,
                               snr_guess=None, subtract_spectrum=None,
@@ -1376,14 +1375,14 @@ class HDFCube(orb.core.HDFCube):
         """
         axis, spectrum, theta_orig = self.extract_spectrum(
             x, y, r, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True)
+            return_mean_theta=True, return_gvar=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
         fit_res = self._fit_lines_in_spectrum(
             spectrum, theta_orig, snr_guess=snr_guess)
 
-        return axis, spectrum, fit_res
+        return axis, gvar.mean(spectrum), fit_res
 
     def fit_lines_in_integrated_region(self, region, lines, nofilter=False,
                                        snr_guess=None, subtract_spectrum=None,
@@ -1431,14 +1430,14 @@ class HDFCube(orb.core.HDFCube):
         """
         axis, spectrum, theta_orig = self.extract_integrated_spectrum(
             region, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True, silent=silent)
+            return_mean_theta=True, return_gvar=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
         fit_res = self._fit_lines_in_spectrum(
             spectrum, theta_orig, snr_guess=snr_guess)
 
-        return axis, spectrum, fit_res
+        return axis, gvar.mean(spectrum), fit_res
 
     def fit_lines_in_region(self, region, lines, binning=1, nofilter=False,
                             subtract_spectrum=None, snr_guess=None, **kwargs):
@@ -1660,7 +1659,7 @@ class HDFCube(orb.core.HDFCube):
         self.write_fits(self._get_reprojected_cube_path(), reprojected_cube,
                         overwrite=True)
 
-    def get_flux_uncertainty(self, wavenumber):
+    def get_flux_uncertainty(self):
         """Return the uncertainty on the flux at a given wavenumber in
         erg/cm2/s/channel. It corresponds to the uncertainty (1 sigma)
         of the spectrum in a given channel.
@@ -1669,11 +1668,8 @@ class HDFCube(orb.core.HDFCube):
         """
         deep_frame = self.get_deep_frame()
         if deep_frame is None:
-            raise StandardError("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
-
-        channel_index = int(orb.utils.spectrum.cm12pix(self.params.base_axis, wavenumber))
-        if np.isnan(channel_index): raise ValueError('Please choose a valid wavenumber')
-        if channel_index >= self.dimz: channel_index = self.dimz - 1
+            warnings.warn("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
+            return None
 
         # compute counts/s
         # total number of counts in a full cube
@@ -1684,15 +1680,165 @@ class HDFCube(orb.core.HDFCube):
 
         # in flux unit
         noise_flux = noise_counts / self.params.exposure_time # counts/s
-        noise_flux *= self.params.flambda / self.dimz# erg/cm2/s/A
+        noise_flux *= self.params.flambda / self.dimz # erg/cm2/s/A
         # compute mean channel size
         channel_size_ang = 10 * orb.utils.spectrum.fwhm_cm12nm(
-            np.diff(self.params.base_axis)[channel_index],
-            self.params.base_axis[channel_index] + np.diff(self.params.base_axis)[channel_index]/ 2)
+            np.diff(self.params.base_axis)[0],
+            self.params.base_axis[0] + np.diff(self.params.base_axis)[0]/ 2)
 
-        noise_flux *= channel_size_ang # erg/cm2/s/channel
+        noise_flux *= channel_size_ang * orb.constants.FWHM_SINC_COEFF # erg/cm2/s/channel
 
         return noise_flux
+
+
+##################################################
+#### CLASS CubeJobServer #########################
+##################################################
+
+class CubeJobServer(object):
+
+    def __init__(self, cube):
+        self.job_server, self.ncpus = orb.utils.parallel.init_pp_server()
+        self.cube = cube
+
+    def process_by_pixel(self, func, args=list(), modules=list(), out=dict(),
+                         depfuncs=list(),
+                         mask=None, binning=1):
+
+
+        binning = int(binning)
+
+        binned_shape = orb.utils.image.nanbin_image(
+            np.ones((self.cube.dimx, self.cube.dimy)),
+            int(binning)).shape
+
+        def isbinned(_data):
+            if (_data.shape[0] == self.cube.dimx
+                and _data.shape[1] == self.cube.dimy):
+                return False
+            elif (_data.shape[0] == binned_shape[0]
+                  and _data.shape[1] == binned_shape[1]):
+                return True
+            else: raise Exception('Strange data shape {}. Must be correctly binned ({}, {}) or unbinned ({}, {})'.format(_data.shape, binned_shape[0], binned_shape[1], self.cube.dimx, self.cube.dimy))
+
+
+        # check outfile
+        self.out_is_dict = True
+        if not isinstance(out, dict):
+            self.out_is_dict = False
+            if not isinstance(out, np.ndarray):
+                raise TypeError('out must be a numpy.ndarray')
+            elif out.ndim < 2:
+                raise ValueError('out must be at least a 2d numpy.ndarray')
+            elif out.shape[0] != int(self.cube.dimx)/int(binning) or out.shape[1] != int(self.cube.dimy)/int(binning):
+                raise ValueError(
+                    'out.shape[0] and out.shape[1] must be equal to cube.dimx and cube.dimy')
+
+        # check mask
+        if not mask is None:
+            try:
+                mask.shape == (self.cube.dimx, self.cube.dimy)
+            except TypeError:
+                raise Exception('mask must ne a numpy.ndarray')
+            except Exception, e:
+                logging.error('Bad mask format{}', e)
+
+        else:
+            mask = np.ones((self.cube.dimx, self.cube.dimy), dtype=bool)
+
+        if binning > 1:
+            if not isbinned(mask):
+                mask = orb.utils.image.nanbin_image(mask, int(binning))
+
+        X, Y = np.nonzero(mask)
+
+        self.all_jobs_indexes = range(X.shape[0])
+        all_jobs_nb = len(self.all_jobs_indexes)
+        self.jobs = list()
+        progress = orb.core.ProgressBar(all_jobs_nb)
+        while len(self.all_jobs_indexes) > 0:
+            if len(self.jobs) < self.ncpus:
+                ix = X[self.all_jobs_indexes[0]]
+                iy = Y[self.all_jobs_indexes[0]]
+                _, ivector = self.cube.extract_spectrum_bin(
+                    ix*binning, iy*binning, binning, silent=True,
+                    return_gvar=True)
+
+                all_args = list()
+                all_args.append(ivector)
+
+                # reconstruct passed arguments
+                for iarg in args:
+                    new_arg = iarg
+                    try:
+                        shape = iarg.shape
+                    except AttributeError:
+                        shape = None
+                    except KeyError:
+                        shape = None
+
+                    if shape is not None:
+                        if not isbinned(iarg) and iarg.ndim == 2:
+                            iarg = orb.utils.image.nanbin_image(iarg, int(binning))
+                        new_arg = np.copy(iarg[ix, iy, ...])
+
+                    all_args.append(new_arg)
+
+
+                self.jobs.append([
+                    self.job_server.submit(
+                        func, args=tuple(all_args), modules=tuple(modules), depfuncs=tuple(depfuncs)),
+                    (ix, iy)])
+                self.all_jobs_indexes.pop(0)
+
+            for i in range(len(self.jobs)):
+                ijob, (ix, iy) = self.jobs[i]
+                if ijob.finished:
+                    if self.out_is_dict:
+                        res = ijob()
+                        if not isinstance(res, dict):
+                            raise TypeError('function result must be a dict if out is a dict')
+                        for ikey in res.keys():
+                            # create the output array if not set
+                            if ikey not in out:
+                                if np.size(res[ikey]) > 1:
+                                    if res[ikey].ndim > 1: raise TypeError('must a 1d array of floats')
+                                    try: float(res[ikey][0])
+                                    except TypeError: raise TypeError('must be an array of floats')
+                                else:
+                                    try:
+                                        float(res[ikey])
+                                    except TypeError:
+                                        raise TypeError('If out dict maps are not set (i.e. out is set to a default dict()) returned values must be a dict of float or a 1d array of floats')
+                                _iout = np.empty(
+                                    (self.cube.dimx/binning,
+                                     self.cube.dimy/binning,
+                                     np.size(res[ikey])),
+                                    dtype=float)
+
+                                _iout = np.squeeze(_iout)
+                                out[ikey] = _iout
+                                out[ikey].fill(np.nan)
+
+                            out[ikey][ix, iy, ...] = res[ikey]
+                    else:
+                        out[ix, iy, ...] = ijob()
+                    self.jobs.pop(i)
+                    progress.update(all_jobs_nb - len(self.all_jobs_indexes))
+                    break
+        progress.end()
+
+        orb.utils.parallel.close_pp_server(self.job_server)
+
+        return out
+
+    def __del__(self):
+        try:
+            orb.utils.parallel.close_pp_server(self.job_server)
+        except IOError: pass
+
+
+
 
 ##################################################
 #### CLASS LineMaps ##############################
@@ -1704,7 +1850,8 @@ class LineMaps(orb.core.Tools):
 
     lineparams = ('height', 'height-err', 'amplitude', 'amplitude-err',
                   'velocity', 'velocity-err', 'fwhm', 'fwhm-err',
-                  'sigma', 'sigma-err', 'flux', 'flux-err', 'logGBF', 'chi2', 'rchi2')
+                  'sigma', 'sigma-err', 'flux', 'flux-err',
+                  'logGBF', 'chi2', 'rchi2', 'ks_pvalue')
 
 
     def __init__(self, dimx, dimy, lines, wavenumber, binning, div_nb,
@@ -1742,11 +1889,12 @@ class LineMaps(orb.core.Tools):
         self.binning = binning
 
         if binning > 1:
-            self.dimx = int(int(dimx / self.div_nb) / self.binning) * self.div_nb
-            self.dimy = int(int(dimy / self.div_nb) / self.binning) * self.div_nb
+            # not optimal but always returns the exact numbers
+            self.dimx, self.dimy = orb.utils.image.nanbin_image(
+                np.empty((dimx, dimy), dtype=float), binning).shape
         else:
-            self.dimx = dimx
-            self.dimy = dimy
+            self.dimx = int(dimx)
+            self.dimy = int(dimy)
 
         self.unbinned_dimx = int(dimx)
         self.unbinned_dimy = int(dimy)
@@ -1811,9 +1959,13 @@ class LineMaps(orb.core.Tools):
 
         dirname = os.path.dirname(self._data_path_hdr)
         basename = os.path.basename(self._data_path_hdr)
+        if line_name is not None:
+            line_str = '.{}'.format(line_name)
+        else:
+            line_str = '.all'
         return (dirname + os.sep + "MAPS" + os.sep
-                + basename + "map.{}.{}x{}.{}.fits".format(
-                    line_name, binning, binning, param))
+                + basename + "map{}.{}x{}.{}.fits".format(
+                    line_str, binning, binning, param))
 
 
     def _get_map_header(self, file_type, comment=None):
@@ -1860,7 +2012,7 @@ class LineMaps(orb.core.Tools):
         still higher than requested. Loaded maps can be used to get
         initial fitting parameters."""
         # check existing files
-        binnings = np.arange(self.binning+1, 50)
+        binnings = np.arange(self.binning+1, 1000)
         available_binnings = list()
         for binning in binnings:
             all_ok = True
@@ -1918,6 +2070,14 @@ class LineMaps(orb.core.Tools):
         :param y_range: (Optional) Data range along Y axis (default
           None)
         """
+        if not isinstance(data_map, np.ndarray):
+            raise TypeError('data_map  must be a numpy.ndarray')
+
+        if (data_map.shape[0] != self.data[param].shape[0]
+            or data_map.shape[1] != self.data[param].shape[1]):
+            raise TypeError('data_map must has the wrong size')
+        if data_map.ndim > 3:
+            raise TypeError('data_map must have 2 or 3 dimensions')
 
         if param not in self.lineparams:
             raise StandardError('Bad parameter')
@@ -1925,9 +2085,15 @@ class LineMaps(orb.core.Tools):
         if x_range is None and y_range is None:
             self.data[param] = data_map
         else:
-            self.data[param][
-                min(x_range):max(x_range),
-                min(y_range):max(y_range)] = data_map
+            if data_map.ndim == 3:
+                self.data[param][
+                    min(x_range):max(x_range),
+                    min(y_range):max(y_range), :] = data_map
+            else:
+                for ik in range(self.data[param].shape[2]):
+                    self.data[param][
+                        min(x_range):max(x_range),
+                        min(y_range):max(y_range), ik] = data_map
 
     def get_map(self, param, x_range=None, y_range=None):
         """Get map values
@@ -1955,18 +2121,43 @@ class LineMaps(orb.core.Tools):
 
         for param in self.lineparams:
 
+            logging.info('Writing {} maps'.format(param))
+
             if 'fwhm' in param:
                 unit = ' [in {}]'.format(self.unit)
             elif 'velocity' in param:
                 unit = ' [in km/s]'
             else: unit = ''
 
-            for iline in range(len(self.lines)):
-                line_name = self.line_names[iline]
-                map_path = self._get_map_path(
-                    line_name, param=param)
+
+            # check if data is the same for all the lines
+            same_param = True
+            if len(self.lines) > 1:
+                if np.all(np.isnan(self.data[param])):
+                    same_param = False
+                else:
+                    for icheck in range(1, len(self.lines)):
+                        nonans = np.nonzero(~np.isnan(self.data[param][:,:,0]))
+                        if np.any(self.data[param][:,:,0][nonans] != self.data[param][:,:,icheck][nonans]):
+                            same_param = False
+                            break
+
+            if same_param:
+                logging.warning('param {} is the same for all lines'.format(param))
+                lines = list(['fake'])
+            else:
+                lines = list(self.lines)
+
+            for iline in range(len(lines)):
+                if not same_param:
+                    line_name = self.line_names[iline]
+                else:
+                    line_name = None
 
                 new_map = self.data[param][:,:,iline]
+
+                map_path = self._get_map_path(
+                    line_name, param=param)
 
                 # load old map if it exists
                 if os.path.exists(map_path):
@@ -1981,3 +2172,5 @@ class LineMaps(orb.core.Tools):
                     fits_header=self._get_map_header(
                         "Map {} {}{}".format(
                             param, line_name, unit)))
+
+                if same_param: break

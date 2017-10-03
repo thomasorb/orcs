@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Utils module &mdash; Orcs 2.1.0 documentation</title>
+  <title>Utils module &mdash; Orcs 2.2.2 documentation</title>
   
 
   
@@ -37,8 +37,8 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
-        <link rel="next" title="Changelog" href="changelog.html"/>
+    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+        <link rel="next" title="Known Issues" href="known_issues.html"/>
         <link rel="prev" title="RVCorrect module" href="rvcorrect_module.html"/> 
 
   
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.1.0
+                2.2.2
               </div>
             
           
@@ -107,7 +107,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Utils module</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 </ul>
 
             
@@ -210,79 +210,26 @@
 <p>Utils module contains core functions that are used by the processing
 classes of ORCS</p>
 <dl class="function">
-<dt id="utils.add_phase">
-<code class="descclassname">utils.</code><code class="descname">add_phase</code><span class="sig-paren">(</span><em>a</em>, <em>phi</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.add_phase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a phase to a vector.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a</strong> – A vector</li>
-<li><strong>phi</strong> – Phase to be added. Can be a float or a vector of the
-same size as a.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a complex vector of the same size as a.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.calib_hst_image">
-<code class="descclassname">utils.</code><code class="descname">calib_hst_image</code><span class="sig-paren">(</span><em>hst_path</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.calib_hst_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calibrate an HST frame using PHOTFLAM keyword.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.get_calibration_coeff_from_hst_image">
-<code class="descclassname">utils.</code><code class="descname">get_calibration_coeff_from_hst_image</code><span class="sig-paren">(</span><em>cube_path</em>, <em>hst_path</em>, <em>filter_file_path</em>, <em>hst_ds9_reg_path</em>, <em>cube_ds9_reg_path</em>, <em>hst_sky_ds9_reg_path</em>, <em>sky_ds9_reg_path</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.get_calibration_coeff_from_hst_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>2 reg files are nescessary to be able to compare the same regions
-in the HST image and the simulated image from the cube. Those
-files must gives the coordinates of the same region in ‘image’
-format (region can be a box or a circle).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.read_sexphot">
-<code class="descclassname">utils.</code><code class="descname">read_sexphot</code><span class="sig-paren">(</span><em>sexphot_path</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.read_sexphot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a SExtractor sources list file given with an HST frame</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sexphot_path</strong> – Path to the SExtractor source list</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.sexcalib_hst_image">
-<code class="descclassname">utils.</code><code class="descname">sexcalib_hst_image</code><span class="sig-paren">(</span><em>hst_path</em>, <em>sexphot_path</em>, <em>lambda_c</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.sexcalib_hst_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calibrate an HST frame using a Sextractor sources list.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">WFPC2 frames can be calibrated by simply multiplying
-their count rate by the value of PHOTFLAM in the header of the
-frame.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="utils.simulate_hst_filter">
-<code class="descclassname">utils.</code><code class="descname">simulate_hst_filter</code><span class="sig-paren">(</span><em>cube_path</em>, <em>filter_file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.simulate_hst_filter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulate an HST image from a calibrated spectrum cube</p>
+<dt id="utils.fit_lines_in_spectrum">
+<code class="descclassname">utils.</code><code class="descname">fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>params</em>, <em>inputparams</em>, <em>fit_tol</em>, <em>spectrum</em>, <em>theta_orig</em>, <em>snr_guess=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic wrapping function for spectrum fitting.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>cube_path</strong> – Path to the calibrated spectrum cube.</li>
-<li><strong>filter_file_path</strong> – Path to the HST filter file.</li>
+<li><strong>params</strong> &#8211; HDFCube.params dictionary</li>
+<li><strong>inputparams</strong> &#8211; orb.fit.InputParams instance.</li>
+<li><strong>fit_tol</strong> &#8211; fit tolerance.</li>
+<li><strong>spectrum</strong> &#8211; The spectrum to fit (1d vector).</li>
+<li><strong>theta_orig</strong> &#8211; Original value of the incident angle in degree.</li>
+<li><strong>snr_guess</strong> &#8211; Guess on the SNR of the spectrum. Necessary
+to make a Bayesian fit (If unknown you can set it to &#8216;auto&#8217;
+to try an automatic mode, two fits are made - one with a
+predefined SNR and the other with the SNR deduced from the
+first fit). If None a classical fit is made.</li>
+<li><strong>kwargs</strong> &#8211; (Optional) Model parameters that must be
+changed in the InputParams instance.</li>
 </ul>
 </td>
 </tr>
@@ -302,7 +249,7 @@ frame.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="known_issues.html" class="btn btn-neutral float-right" title="Known Issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="rvcorrect_module.html" class="btn btn-neutral" title="RVCorrect module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -336,7 +283,7 @@ frame.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.1.0',
+            VERSION:'2.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -346,7 +293,7 @@ frame.</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

@@ -26,187 +26,104 @@ Utils module contains core functions that are used by the processing
 classes of ORCS
 """
 # import ORB
-from orb.core import Tools
-import orb.utils
-import orb.astrometry
-import orb.constants
+import orb.utils.spectrum
+import orb.fit
 
-import astropy.io.fits as pyfits
 import numpy as np
-import math
-from scipy import optimize
+import logging
+import warnings
+import gvar
 
+def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
+                          theta_orig, snr_guess=None, **kwargs):
+    """Basic wrapping function for spectrum fitting.
 
-def add_phase(a, phi):
-    """Add a phase to a vector.
+    :param params: HDFCube.params dictionary
 
-    :param a: A vector
+    :param inputparams: orb.fit.InputParams instance.
 
-    :param phi: Phase to be added. Can be a float or a vector of the
-        same size as a.
+    :param fit_tol: fit tolerance.
+    
+    :param spectrum: The spectrum to fit (1d vector).
 
-    :return: a complex vector of the same size as a.
+    :param theta_orig: Original value of the incident angle in degree.
+
+    :param snr_guess: Guess on the SNR of the spectrum. Necessary
+      to make a Bayesian fit (If unknown you can set it to 'auto'
+      to try an automatic mode, two fits are made - one with a
+      predefined SNR and the other with the SNR deduced from the
+      first fit). If None a classical fit is made.
+
+    :param kwargs: (Optional) Model parameters that must be
+      changed in the InputParams instance.    
     """
-    a = np.copy(a)
-    a = a.astype(complex)
-    a_mean = np.mean(a)
-    a -= a_mean
-    a_real = np.copy(a.real)
-    a_imag = np.copy(a.imag)
-    a.real = a_real * np.cos(phi) - a_imag * np.sin(phi)
-    a.imag = a_imag * np.cos(phi) + a_real * np.sin(phi)
-    a += a_mean
-    return a
-
-
-
-def read_sexphot(sexphot_path):
-    """Read a SExtractor sources list file given with an HST frame
+    kwargs_orig = dict(kwargs)
     
-    :param sexphot_path: Path to the SExtractor source list
-    """
-    f = open(sexphot_path, 'r')
-    all_phot = list()
-    par = list()
-    for iline in f:
-        if 'X-Center' in iline:
-            par = iline.split()[1:]
-        if '#' not in iline:
-            iline = iline.split()
-            phot = dict()
-            for ipar in range(len(par)):
-                phot[par[ipar]]=float(iline[ipar])
-            all_phot.append(phot)
+    # check snr guess param
+    auto_mode = False
+    bad_snr_param = False
+    if snr_guess is not None:
+        if isinstance(snr_guess, str):
+            if snr_guess.lower() == 'auto':
+                auto_mode = True
+                if np.any(gvar.sdev(spectrum) != 0.):
+                    spectrum_snr = gvar.mean(spectrum) / gvar.sdev(spectrum)
+                    spectrum_snr[np.isinf(spectrum_snr)] = np.nan
+                    snr_guess = np.nanmax(spectrum_snr)
+                    logging.debug('first SNR guess computed from spectrum uncertainty: {}'.format(snr_guess))
+                else:
+                    snr_guess= 30
+            elif snr_guess.lower() == 'none':
+                snr_guess = None
+                auto_mode = False
+            else: bad_snr_param = True
+        elif isinstance(snr_guess, bool):
+                bad_snr_param = True
+        elif not (isinstance(snr_guess, float)
+                  or isinstance(snr_guess, int)):
+            bad_snr_param = True
 
-    f.close()
-    return all_phot
+    logging.debug('SNR guess: {}'.format(snr_guess))
 
-def sexcalib_hst_image(hst_path, sexphot_path, lambda_c):
-    """Calibrate an HST frame using a Sextractor sources list.
 
-    .. note:: WFPC2 frames can be calibrated by simply multiplying
-        their count rate by the value of PHOTFLAM in the header of the
-        frame.
-    """
-    sexphot = read_sexphot(sexphot_path)
-    calib_coeff_list = list()
-    for iphot in range(len(sexphot)):
-        calib_coeff_list.append(
-            orb.utils.ABmag2flambda(sexphot[iphot]['MagBest'], lambda_c)
-            / sexphot[iphot]['FluxBest'])
-    calib_coeff = np.mean(calib_coeff_list)
-    print 'calibration coeff: %e [std: %e]'%(
-        calib_coeff, np.std(calib_coeff_list))
-
-    hdulist = pyfits.open(hst_path)
-    hdulist[1].data *= calib_coeff
-    hdulist.writeto(hst_path + '.sexcalib', clobber=True)
-
-def calib_hst_image(hst_path):
-    """Calibrate an HST frame using PHOTFLAM keyword."""
-
-    hdulist = pyfits.open(hst_path)
-    calib_coeff = hdulist[1].header['PHOTFLAM']
+    # recompute the fwhm guess
+    if 'fwhm_guess' in kwargs:
+        raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
     
-    print 'PHOTFLAM calibration coeff: %e'%calib_coeff
-    
-    hdulist[1].data *= calib_coeff
-    hdulist.writeto(hst_path + '.calib', clobber=True)
+    fwhm_guess_cm1 = orb.utils.spectrum.compute_line_fwhm(
+        params['step_nb'] - params['zpd_index'],
+        params['step'], params['order'],
+        orb.utils.spectrum.theta2corr(theta_orig),
+        wavenumber=params['wavenumber'])
 
-    return hdulist[1].data.T
+    kwargs['fwhm_guess'] = fwhm_guess_cm1
 
+    logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
 
-def simulate_hst_filter(cube_path, filter_file_path):
-    """Simulate an HST image from a calibrated spectrum cube
+    if bad_snr_param:
+        raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
-    :param cube_path: Path to the calibrated spectrum cube.
+    try:
+        warnings.simplefilter('ignore')
+        _fit = orb.fit._fit_lines_in_spectrum(
+            spectrum, inputparams,
+            fit_tol = fit_tol,
+            compute_mcmc_error=False,
+            snr_guess=snr_guess,
+            **kwargs)
+        warnings.simplefilter('default')
 
-    :param filter_file_path: Path to the HST filter file.
-    """
-    f = open(filter_file_path, 'r')
-    fang = list()
-    ftrans = list()
-    for line in f :
-        line = line.split()
-        fang.append(float(line[0]))
-        ftrans.append(float(line[1]))
+    except Exception, e:
+        warnings.warn('Exception occured during fit: {}'.format(e))
+        import traceback
+        print traceback.format_exc()
 
-    fang = np.array(fang)
-    ftrans = np.array(ftrans)
+        return []
 
-    hdu = Tools().read_fits(cube_path, return_hdu_only=True)
-    hdr = hdu[0].header
-    data = hdu[0].data.T
-    ang_axis = orb.utils.create_nm_axis(
-        hdr['NAXIS3'], hdr['STEP'], hdr['ORDER']) * 10.
-
-    ftrans = orb.utils.interpolate_axis(ftrans, ang_axis, 1, old_axis=fang)
-
-    simu = (np.nansum((data * ftrans), axis=2)
-            / (np.nansum(ftrans)))
-
-    Tools().write_fits('simulated_frame.fits', simu, fits_header=hdr,
-                       overwrite=True)
-
-    return simu
-
-
-def get_calibration_coeff_from_hst_image(cube_path, hst_path,
-                                         filter_file_path,
-                                         hst_ds9_reg_path,
-                                         cube_ds9_reg_path,
-                                         hst_sky_ds9_reg_path,
-                                         sky_ds9_reg_path):
-    """
-    2 reg files are nescessary to be able to compare the same regions
-    in the HST image and the simulated image from the cube. Those
-    files must gives the coordinates of the same region in 'image'
-    format (region can be a box or a circle).
-    """
-
-    hst_pix = orb.utils.get_mask_from_ds9_region_file(hst_ds9_reg_path)
-    cube_pix = orb.utils.get_mask_from_ds9_region_file(cube_ds9_reg_path)
-    sky_pix =  orb.utils.get_mask_from_ds9_region_file(sky_ds9_reg_path)
-    hst_sky_pix =  orb.utils.get_mask_from_ds9_region_file(hst_sky_ds9_reg_path)
-    
-    hdu_cube = Tools().read_fits(cube_path, return_hdu_only=True)
-    hdr_cube = hdu_cube[0].header
-    hdu_hst = Tools().read_fits(hst_path, return_hdu_only=True)
-    hdr_hst = hdu_hst[1].header
-    
-    cube_pix_area = abs(hdr_cube['CDELT1'] * hdr_cube['CDELT2']) * 3600**2.
-    hst_pix_area = abs(hdr_hst['CD1_1'] * hdr_hst['CD2_2'] * 3600**2.)
-    cube_area = len(cube_pix[0]) * cube_pix_area
-    hst_area = len(hst_pix[0]) * hst_pix_area
-
-    hst_image = calib_hst_image(hst_path).astype(float)
-    
-    
-    sim_hst_image = simulate_hst_filter(cube_path, filter_file_path).astype(float)
-
-    # get sky level in simulated frame
-    #sky_level = orb.astrometry.sky_background_level(sim_hst_image)
-    #sky_level = 0
-    # get sky level in simulated frame
-    sky_level = orb.utils.robust_median(sim_hst_image[sky_pix])
-    sky_level_std = orb.utils.robust_std(sim_hst_image[sky_pix])
-    hst_sky_level = orb.utils.robust_median(hst_image[sky_pix])
-    hst_sky_level_std = orb.utils.robust_std(hst_image[sky_pix])
-    
-    hst_sum = orb.utils.robust_sum(hst_image[hst_pix] - hst_sky_level) / hst_area
-    sim_hst_sum = orb.utils.robust_sum(
-        sim_hst_image[cube_pix] - sky_level) / cube_area
-    
-    sky_level_error = np.sqrt((len(cube_pix[0]) * sky_level_std**2.)) / cube_area
-    hst_sky_level_error = np.sqrt((len(hst_pix[0]) * hst_sky_level_std**2.)) / hst_area
-    total_error = math.sqrt((sky_level_error/sim_hst_sum)**2. + (hst_sky_level_error/hst_sum)**2.)
-    print 'sky_level: {}, error: {}%'.format(sky_level,
-                                             sky_level_std/sky_level*100)
-    print 'hst [flux mean / arcsec^2]: ', hst_sum
-    print 'sim_hst [flux mean / arcsec^2]: ', sim_hst_sum
-    print 'flux error: {}%'.format((total_error)*100.)
-    calib_coeff = hst_sum / sim_hst_sum
-    print calib_coeff
-    return calib_coeff
-    
-  
+    if auto_mode and _fit != []:
+        snr_guess = np.nanmax(gvar.mean(spectrum)) / np.nanstd(gvar.mean(spectrum) - _fit['fitted_vector'])
+        return fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
+                                     theta_orig, snr_guess=snr_guess,
+                                     **kwargs_orig)
+    else:
+        return _fit

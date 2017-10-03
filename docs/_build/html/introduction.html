@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Orcs 2.1.0 documentation</title>
+  <title>Introduction &mdash; Orcs 2.2.2 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
         <link rel="next" title="Examples" href="examples.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.1.0
+                2.2.2
               </div>
             
           
@@ -117,7 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 </ul>
 
             
@@ -279,7 +279,7 @@ parameters are free but you can change the definition of each
 parameter with the keywords: <code class="docutils literal"><span class="pre">amp_def</span></code>, <code class="docutils literal"><span class="pre">pos_def</span></code>, <code class="docutils literal"><span class="pre">fwhm_def</span></code>
 and <code class="docutils literal"><span class="pre">sigma_def</span></code>. If the FWHM is fixed then you will pass the option
 <code class="docutils literal"><span class="pre">fwhm_def='fixed'</span></code> to the fitting method.</p>
-<p>Let’s start with classical free parameters. Once the behaviour of the
+<p>Let&#8217;s start with classical free parameters. Once the behaviour of the
 parameters is defined you may want to give it a good initial guess
 value (especially for the wavenumber) and start fitting. The initial
 guess value can be given with the keywords : <code class="docutils literal"><span class="pre">amp_guess</span></code>,
@@ -293,7 +293,7 @@ that it is not an optional keyword and can be specified with the
 the most useful. two lines can share the same broadening. In this case
 the broadening parameter of both lines must be replaced with one
 single parameter. You can define the covarying parameter by tagging
-them with the same symbol (a string or a number). let’s say you have
+them with the same symbol (a string or a number). let&#8217;s say you have
 three lines (line0, line1, line2), you can group the broadening of
 line0 and line2 by passing to the fitting function the keyword
 <code class="docutils literal"><span class="pre">sigma_def=('1','2','1')</span></code>. The real broadening of the lines used to
@@ -471,7 +471,7 @@ percents).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.1.0',
+            VERSION:'2.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -481,7 +481,7 @@ percents).</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

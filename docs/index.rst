@@ -42,6 +42,23 @@ Features
  thomas.martin.1@ulaval.ca
 
 
+Publications
+------------
+
+* Martin, Drissen, Melchior (2017). A SITELLE view of M31's central region - I: Calibrations and radial velocity catalogue of nearly 800 emission-line point-like sources. MNRAS (accepted)
+  http://adsabs.harvard.edu/abs/2017arXiv170701366M
+
+
+* Martin, Drissen (2017). SITELLE's level-1 calibration. MNRAS (submitted)
+  http://adsabs.harvard.edu/abs/2017arXiv170603230M
+
+* Martin, Prunet, Drissen (2016). Optimal fitting of Gaussian-apodized or under-resolved emission lines in Fourier transform spectra providing new insights on the velocity structure of NGC 6720. MNRAS
+  http://adsabs.harvard.edu/abs/2016MNRAS.463.4223M
+
+
+* Martin, Drissen, Joncas (2015). ORBS, ORCS, OACS, a Software Suite for Data Reduction and Analysis of the Hyperspectral Imagers SITELLE and SpIOMM. PASP
+  http://adsabs.harvard.edu/abs/2015ASPC..495..327M
+ 
 
 Quick Start
 -----------
@@ -68,13 +85,14 @@ Documentation
    utils_module
 
 
-Changelog
----------
+
+Known issues
+------------
 
 .. toctree::
    :maxdepth: 1
 
-   changelog
+   known_issues
 
    
 Indices and tables

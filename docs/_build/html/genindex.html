@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; Orcs 2.1.0 documentation</title>
+  <title>Index &mdash; Orcs 2.2.2 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.1.0 documentation" href="index.html"/> 
+    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                2.1.0
+                2.2.2
               </div>
             
           
@@ -106,7 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 </ul>
 
             
@@ -257,8 +257,6 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils_module.html#utils.add_phase">add_phase() (in module utils)</a>
-</li>
       <li><a href="rvcorrect_module.html#rvcorrect.RVCorrect.ast_coord">ast_coord() (rvcorrect.RVCorrect method)</a>
 </li>
       <li><a href="rvcorrect_module.html#rvcorrect.RVCorrect.ast_date_to_epoch">ast_date_to_epoch() (rvcorrect.RVCorrect method)</a>
@@ -297,10 +295,6 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils_module.html#utils.calib_hst_image">calib_hst_image() (in module utils)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.correct_wavelength">correct_wavelength() (orcs.core.HDFCube method)</a>
 </li>
   </ul></td>
@@ -337,8 +331,12 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="core_module.html#orcs.core.HDFCube.fit_lines_in_spectrum">fit_lines_in_spectrum() (orcs.core.HDFCube method)</a>
+      <li><a href="utils_module.html#utils.fit_lines_in_spectrum">fit_lines_in_spectrum() (in module utils)</a>
+
+      <ul>
+        <li><a href="core_module.html#orcs.core.HDFCube.fit_lines_in_spectrum">(orcs.core.HDFCube method)</a>
 </li>
+      </ul></li>
       <li><a href="core_module.html#orcs.core.HDFCube.fit_lines_in_spectrum_bin">fit_lines_in_spectrum_bin() (orcs.core.HDFCube method)</a>
 </li>
   </ul></td>
@@ -348,8 +346,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.get_amp_ratio_from_flux_ratio">get_amp_ratio_from_flux_ratio() (orcs.core.HDFCube method)</a>
-</li>
-      <li><a href="utils_module.html#utils.get_calibration_coeff_from_hst_image">get_calibration_coeff_from_hst_image() (in module utils)</a>
 </li>
       <li><a href="core_module.html#orcs.core.HDFCube.get_calibration_coeff_map">get_calibration_coeff_map() (orcs.core.HDFCube method)</a>
 </li>
@@ -361,17 +357,21 @@
 </li>
       <li><a href="core_module.html#orcs.core.HDFCube.get_deep_frame">get_deep_frame() (orcs.core.HDFCube method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.get_filter_range">get_filter_range() (orcs.core.HDFCube method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.get_flux_uncertainty">get_flux_uncertainty() (orcs.core.HDFCube method)</a>
+</li>
+      <li><a href="core_module.html#orcs.core.HDFCube.get_fwhm_map">get_fwhm_map() (orcs.core.HDFCube method)</a>
 </li>
       <li><a href="core_module.html#orcs.core.LineMaps.get_map">get_map() (orcs.core.LineMaps method)</a>
 </li>
       <li><a href="core_module.html#orcs.core.HDFCube.get_mask_from_ds9_region_file">get_mask_from_ds9_region_file() (orcs.core.HDFCube method)</a>
 </li>
       <li><a href="core_module.html#orcs.core.HDFCube.get_sky_lines">get_sky_lines() (orcs.core.HDFCube method)</a>
+</li>
+      <li><a href="core_module.html#orcs.core.HDFCube.get_theta_map">get_theta_map() (orcs.core.HDFCube method)</a>
 </li>
       <li><a href="core_module.html#orcs.core.HDFCube.get_wcs">get_wcs() (orcs.core.HDFCube method)</a>
 </li>
@@ -427,16 +427,14 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils_module.html#utils.read_sexphot">read_sexphot() (in module utils)</a>
-</li>
       <li><a href="process_module.html#orcs.process.SpectralCube.register">register() (orcs.process.SpectralCube method)</a>
 </li>
       <li><a href="core_module.html#orcs.core.HDFCube.reproject">reproject() (orcs.core.HDFCube method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.reset_calibration_coeff_map">reset_calibration_coeff_map() (orcs.core.HDFCube method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.reset_calibration_laser_map">reset_calibration_laser_map() (orcs.core.HDFCube method)</a>
 </li>
       <li><a href="rvcorrect_module.html#rvcorrect.RVCorrect">RVCorrect (class in rvcorrect)</a>
@@ -451,13 +449,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core_module.html#orcs.core.HDFCube.set_dxdymaps">set_dxdymaps() (orcs.core.HDFCube method)</a>
 </li>
-      <li><a href="core_module.html#orcs.core.LineMaps.set_map">set_map() (orcs.core.LineMaps method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="utils_module.html#utils.sexcalib_hst_image">sexcalib_hst_image() (in module utils)</a>
-</li>
-      <li><a href="utils_module.html#utils.simulate_hst_filter">simulate_hst_filter() (in module utils)</a>
+      <li><a href="core_module.html#orcs.core.LineMaps.set_map">set_map() (orcs.core.LineMaps method)</a>
 </li>
       <li><a href="process_module.html#orcs.process.SpectralCube">SpectralCube (class in orcs.process)</a>
 </li>
@@ -520,7 +514,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.1.0',
+            VERSION:'2.2.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -530,7 +524,7 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
