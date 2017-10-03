@@ -563,7 +563,8 @@ class HDFCube(orb.core.HDFCube):
                                 np.nanmedian(iquad_data, axis=0), axis=0) * np.nansum(mask)
                             
                         else:
-                            spectrum = np.nansum(np.nansum(iquad_data, axis=0), axis=0)
+                            spectrum = np.nansum(np.nansum(
+                                (iquad_data.T * mask[x_min:x_max, y_min:y_max].T).T, axis=0), axis=0)
                         break # no multiprocessing
 
                         
