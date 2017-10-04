@@ -104,7 +104,11 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
         self.set_param('apodization', float(self.header['APODIZ']))
         self.set_param('exposure_time', float(self.header['EXPTIME']))
-        self.set_param('flambda', float(self.header['FLAMBDA']))
+        if 'FLAMBDA' in self.header:
+            self.set_param('flambda', float(self.header['FLAMBDA']))
+        else:
+            warnings.warn('FLAMBDA keyword not in cube header. Flux calibration may be bad.')
+            self.set_param('flambda', 1.)
 
 
         step_nb = int(self.header['STEPNB'])
@@ -154,7 +158,7 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('wavelength_calibration', bool(self.header['WAVCALIB']))
 
         if self.params.wavelength_calibration:
-            logging.info('Cube is CALIBRATED')
+            logging.info('Cube is CALIBRATED in wavenumber')
         else:
             logging.info('Cube is NOT CALIBRATED')
 
@@ -559,7 +563,8 @@ class HDFCube(orb.core.HDFCube):
                                 np.nanmedian(iquad_data, axis=0), axis=0) * np.nansum(mask)
 
                         else:
-                            spectrum = np.nansum(np.nansum(iquad_data, axis=0), axis=0)
+                            spectrum = np.nansum(np.nansum(
+                                (iquad_data.T * mask[x_min:x_max, y_min:y_max].T).T, axis=0), axis=0)
                         break # no multiprocessing
 
 
@@ -706,6 +711,7 @@ class HDFCube(orb.core.HDFCube):
                                init_velocity_map_ij, init_sigma_map_ij,
                                theta_map_ij, snr_guess, debug):
 
+            stime = time.time()
             if debug:
                 logging.getLogger().setLevel(logging.DEBUG)
             else:
@@ -739,6 +745,9 @@ class HDFCube(orb.core.HDFCube):
                 pos_cov=shift_guess)
 
             if ifit != []:
+                logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
+                logging.debug('fit function time: {} s'.format(time.time() - stime))
+
                 return {
                     'height': ifit['lines_params'][:,0],
                     'amplitude': ifit['lines_params'][:,1],
@@ -756,23 +765,25 @@ class HDFCube(orb.core.HDFCube):
                     'rchi2': ifit['rchi2'],
                     'logGBF': ifit['logGBF'],
                     'ks_pvalue': ifit['ks_pvalue']}
-            else: return {
-                'height': np.nan,
-                'amplitude': np.nan,
-                'fwhm': np.nan,
-                'velocity': np.nan,
-                'sigma': np.nan,
-                'flux': np.nan,
-                'height-err': np.nan,
-                'amplitude-err': np.nan,
-                'fwhm-err': np.nan,
-                'velocity-err': np.nan,
-                'sigma-err': np.nan,
-                'flux-err': np.nan,
-                'chi2': np.nan,
-                'rchi2': np.nan,
-                'logGBF': np.nan,
-                'ks_pvalue': np.nan}
+
+            else:
+                return {
+                    'height': None,
+                    'amplitude': None,
+                    'fwhm': None,
+                    'velocity': None,
+                    'sigma': None,
+                    'flux': None,
+                    'height-err': None,
+                    'amplitude-err': None,
+                    'fwhm-err': None,
+                    'velocity-err': None,
+                    'sigma-err': None,
+                    'flux-err': None,
+                    'chi2': None,
+                    'rchi2': None,
+                    'logGBF': None,
+                    'ks_pvalue': None}
 
 
 
@@ -849,7 +860,8 @@ class HDFCube(orb.core.HDFCube):
                              args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
                                    init_velocity_map, init_sigma_map,
                                    theta_map, snr_guess, self.debug],
-                             modules=['numpy as np', 'gvar', 'orcs.utils', 'logging', 'warnings'],
+                             modules=['numpy as np', 'gvar', 'orcs.utils',
+                                      'logging', 'warnings', 'time'],
                              mask=mask,
                              binning=binning)
 
@@ -1048,7 +1060,7 @@ class HDFCube(orb.core.HDFCube):
         """
 
         if not hasattr(self, 'inputparams'):
-            raise StandardError('Input params not defined')            
+            raise StandardError('Input params not defined')
 
         return utils.fit_lines_in_spectrum(
             self.params, self.inputparams, self.fit_tol,
@@ -1750,59 +1762,96 @@ class CubeJobServer(object):
             if not isbinned(mask):
                 mask = orb.utils.image.nanbin_image(mask, int(binning))
 
+        # check arguments
+        # reshape passed arguments
+        for i in range(len(args)):
+            new_arg = args[i]
+            is_map = False
+            try:
+                shape = new_arg.shape
+            except AttributeError:
+                shape = None
+            except KeyError:
+                shape = None
+
+            if shape is not None:
+                if not isbinned(new_arg) and new_arg.ndim == 2:
+                    new_arg = orb.utils.image.nanbin_image(new_arg, int(binning))
+                    is_map = True
+                elif isbinned(new_arg):
+                    is_map = True
+                else:
+                    raise Exception('Data shape {} not handled'.format(new_arg.shape))
+
+            args[i] = (new_arg, is_map)
+
         X, Y = np.nonzero(mask)
+
 
         self.all_jobs_indexes = range(X.shape[0])
         all_jobs_nb = len(self.all_jobs_indexes)
+
+        # jobs submit / retrieve loop
         self.jobs = list()
         progress = orb.core.ProgressBar(all_jobs_nb)
         while len(self.all_jobs_indexes) > 0:
-            if len(self.jobs) < self.ncpus:
+            while_loop_start = time.time()
+
+            # submit jobs
+            while len(self.jobs) < self.ncpus:
+                timer = dict()
+                timer['job_submit_start'] = time.time()
                 ix = X[self.all_jobs_indexes[0]]
                 iy = Y[self.all_jobs_indexes[0]]
+
+                timer['job_load_data_start'] = time.time()
                 _, ivector = self.cube.extract_spectrum_bin(
                     ix*binning, iy*binning, binning, silent=True,
                     return_gvar=True)
+                timer['job_load_data_end'] = time.time()
 
                 all_args = list()
                 all_args.append(ivector)
 
-                # reconstruct passed arguments
+                # extract values of mapped arguments
                 for iarg in args:
-                    new_arg = iarg
-                    try:
-                        shape = iarg.shape
-                    except AttributeError:
-                        shape = None
-                    except KeyError:
-                        shape = None
+                    if iarg[1]:
+                        all_args.append(np.copy(iarg[0][ix, iy, ...]))
+                    else:
+                        all_args.append(iarg[0])
 
-                    if shape is not None:
-                        if not isbinned(iarg) and iarg.ndim == 2:
-                            iarg = orb.utils.image.nanbin_image(iarg, int(binning))
-                        new_arg = np.copy(iarg[ix, iy, ...])
+                timer['job_submit_end'] = time.time()
 
-                    all_args.append(new_arg)
-
-
+                # job submission
                 self.jobs.append([
                     self.job_server.submit(
-                        func, args=tuple(all_args), modules=tuple(modules), depfuncs=tuple(depfuncs)),
-                    (ix, iy)])
+                        func, args=tuple(all_args),
+                        modules=tuple(modules),
+                        depfuncs=tuple(depfuncs)),
+                    (ix, iy), time.time(), timer])
                 self.all_jobs_indexes.pop(0)
 
+            # try to retrieve 1 submitted job
+            unfinished_jobs = list()
             for i in range(len(self.jobs)):
-                ijob, (ix, iy) = self.jobs[i]
+                ijob, (ix, iy), stime, timer = self.jobs[i]
                 if ijob.finished:
+                    logging.debug('job time since submission: {} s'.format(
+                        time.time() - stime))
+                    logging.debug('job submit time: {} s'.format(
+                        timer['job_submit_end'] - timer['job_submit_start']))
+                    logging.debug('job load data time: {} s'.format(
+                        timer['job_load_data_end'] - timer['job_load_data_start']))
+
                     if self.out_is_dict:
                         res = ijob()
                         if not isinstance(res, dict):
                             raise TypeError('function result must be a dict if out is a dict')
                         for ikey in res.keys():
                             # create the output array if not set
-                            if ikey not in out:
+                            if ikey not in out and res[ikey] is not None:
                                 if np.size(res[ikey]) > 1:
-                                    if res[ikey].ndim > 1: raise TypeError('must a 1d array of floats')
+                                    if res[ikey].ndim > 1: raise TypeError('must be a 1d array of floats')
                                     try: float(res[ikey][0])
                                     except TypeError: raise TypeError('must be an array of floats')
                                 else:
@@ -1820,12 +1869,20 @@ class CubeJobServer(object):
                                 out[ikey] = _iout
                                 out[ikey].fill(np.nan)
 
-                            out[ikey][ix, iy, ...] = res[ikey]
+                            if res[ikey] is not None:
+                                out[ikey][ix, iy, ...] = res[ikey]
                     else:
                         out[ix, iy, ...] = ijob()
-                    self.jobs.pop(i)
-                    progress.update(all_jobs_nb - len(self.all_jobs_indexes))
-                    break
+                    logging.debug('job time (whole loop): {} s'.format(time.time() - stime))
+                else:
+                    unfinished_jobs.append(self.jobs[i])
+            self.jobs = unfinished_jobs
+
+
+            progress.update(all_jobs_nb - len(self.all_jobs_indexes))
+
+
+            logging.debug('while loop time: {} s'.format(time.time() - while_loop_start))
         progress.end()
 
         orb.utils.parallel.close_pp_server(self.job_server)
