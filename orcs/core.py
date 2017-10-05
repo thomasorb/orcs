@@ -559,17 +559,26 @@ class HDFCube(orb.core.HDFCube):
             else:
                 sigma_guess = None
 
+            # correct spectrum for nans
+            spectrum[np.isnan(spectrum)] = 0.
+
             # add flux uncertainty to the spectrum
             spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
-
-            ifit = orcs.utils.fit_lines_in_spectrum(
-                params, inputparams, fit_tol, spectrum, theta_map_ij,
-                snr_guess=snr_guess, sigma_guess=sigma_guess,
-                pos_cov=shift_guess)
+            
+            try:
+                ifit = orcs.utils.fit_lines_in_spectrum(
+                    params, inputparams, fit_tol, spectrum, theta_map_ij,
+                    snr_guess=snr_guess, sigma_guess=sigma_guess,
+                    pos_cov=shift_guess)
+            except Exception, e:
+                logging.debug('Exception occured during fit: {}'.format(e))
+                ifit = []
 
             if ifit != []:
                 logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
                 logging.debug('fit function time: {} s'.format(time.time() - stime))
+                logging.debug('velocity: {}'.format(ifit['velocity_gvar'] + sky_vel_ij))
+                logging.debug('broadening: {}'.format(ifit['broadening_gvar']))                
                 
                 return {
                     'height': ifit['lines_params'][:,0],

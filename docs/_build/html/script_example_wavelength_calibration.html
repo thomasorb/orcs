@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.2.2 documentation</title>
+  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Image registration" href="script_example_image_registration.html"/>
         <link rel="prev" title="Modelling and fitting two unresolved emission lines with a bayesian approach" href="script_example_model+fit_2_lines_bayes.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.2
+                2.2.3
               </div>
             
           
@@ -452,9 +452,9 @@ interferometer.</p>
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO&gt; Data shape : (2048, 2064, 840)
-INFO&gt; Cube is in WAVENUMBER (cm-1)
-INFO&gt; Cube is CALIBRATED
+INFO| Data shape : (2048, 2064, 840)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -476,7 +476,7 @@ INFO&gt; Cube is CALIBRATED
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO&gt; Number of integrated pixels: 1257
+INFO| Number of integrated pixels: 1257
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -484,7 +484,23 @@ INFO&gt; Number of integrated pixels: 1257
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.429 s]
+ [==========] [100%] [completed in 0.292 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 16 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.584 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -501,7 +517,7 @@ INFO&gt; Number of integrated pixels: 1257
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_5_3.png" src="_images/script_example_wavelength_calibration_5_3.png" />
+<img alt="_images/script_example_wavelength_calibration_5_5.png" src="_images/script_example_wavelength_calibration_5_5.png" />
 </div>
 </div>
 <div class="section" id="fitting-the-sky-spectrum">
@@ -542,7 +558,7 @@ considered to be at 453.5 nm).</p>
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO&gt; Number of integrated pixels: 1257
+INFO| Number of integrated pixels: 1257
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -550,7 +566,7 @@ INFO&gt; Number of integrated pixels: 1257
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.033 s]
+ [==========] [100%] [completed in 0.020 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -558,7 +574,23 @@ INFO&gt; Number of integrated pixels: 1257
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING&gt; /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1679: RuntimeWarning: invalid value encountered in sqrt
+INFO| Init of the parallel processing server with 16 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.559 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1546: RuntimeWarning: invalid value encountered in sqrt
   noise_counts = np.sqrt(total_counts)
 </span>
 </pre></div></div>
@@ -570,20 +602,20 @@ INFO&gt; Number of integrated pixels: 1257
 <div class="highlight"><pre>
 
 ===== Results ======
-Velocity:  [72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5)
- 72.1(1.5) 72.1(1.5)]
+Velocity:  [72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -600,7 +632,7 @@ Velocity:  [72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5) 72.1(1.5
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_7_5.png" src="_images/script_example_wavelength_calibration_7_5.png" />
+<img alt="_images/script_example_wavelength_calibration_7_7.png" src="_images/script_example_wavelength_calibration_7_7.png" />
 </div>
 </div>
 </div>
@@ -624,120 +656,398 @@ basic example it is recommended to limit the number of grid division to
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|18:24:57 # SpectralCube.map_sky_velocity &gt; fitting process already done. Do you really want to redo it again ?
-type [yes]: no
-<span class="ansi-yellow-fg">17-07-24|18:25:00 # SpectralCube.map_sky_velocity &gt; Warning: Fitting process not done again, only the final sky map is computed</span>
-<span class="ansi-yellow-fg">17-07-24|18:25:00 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orcs/orcs/process.py:304: RuntimeWarning: invalid value encountered in greater
-  sky_vel_map[sky_vel_map &gt; np.nanpercentile(sky_vel_map, 95)] = np.nan
-</span>
-First laser wavelentgh calibration estimation: 543.356235946 nm
-Angle at the center of the frame: 15.4977038652
-<span class="ansi-yellow-fg">17-07-24|18:25:00 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1038: RuntimeWarning: invalid value encountered in less
-  calib_laser_map[np.nonzero(calib_laser_map &lt; value_min)] = np.nan
-</span>
-&gt; Binning calibration map
-&gt; Calibration laser map fit
-  &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
-    &gt; Calibration laser map fit parameters:
-    distance to mirror: 23.6954632448 cm
-    X angle from the optical axis to the center: 0.0 degrees (Fixed)
-    Y angle from the optical axis to the center: 15.5050669216 degrees
-    Tip-tilt angle of the detector along X: 0.0 degrees (Fixed)
-    Tip-tilt angle of the detector along Y: 0.0 degrees (Fixed)
-    Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.356235946 nm (Fixed)
-    Error on fit: mean -1.16831223579e-06, std 0.0515054158154 (in nm)
-    Error on fit: mean -0.000645053185275, std 28.437374456 (in km/s)
-  &gt; Second fit on the central portion of the calibration laser map (30.0% of the total size)
-    &gt; Calibration laser map fit parameters:
-    distance to mirror: 23.6792529911 cm
-    X angle from the optical axis to the center: -0.467393834246 degrees
-    Y angle from the optical axis to the center: 15.4980058922 degrees
-    Tip-tilt angle of the detector along X: 0.427357564651 degrees
-    Tip-tilt angle of the detector along Y: -1.24571403707 degrees
-    Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.356235946 nm (Fixed)
-    Error on fit: mean -3.94460707057e-07, std 0.000791471197978 (in nm)
-    Error on fit: mean -0.000217791210054, std 0.436990216888 (in km/s)
-  &gt; Third fit on a larger portion of the map (50.0% of the total size)
-    &gt; Calibration laser map fit parameters:
-    distance to mirror: 23.7163902827 cm
-    X angle from the optical axis to the center: -0.467753337786 degrees
-    Y angle from the optical axis to the center: 15.498384909 degrees
-    Tip-tilt angle of the detector along X: 0.311296394954 degrees
-    Tip-tilt angle of the detector along Y: -0.724167834406 degrees
-    Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.356235946 nm (Fixed)
-    Error on fit: mean -2.73378866828e-06, std 0.00312555663736 (in nm)
-    Error on fit: mean -0.00150939024203, std 1.72569472691 (in km/s)
-  &gt; Zernike polynomials fit of the residual wavefront
-<span class="ansi-yellow-fg">17-07-24|18:25:03 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:54: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
-  r0v = np.linspace(-1-center[0], 1-center[0], r0).astype(dtype).reshape(-1,1)
-</span>
-<span class="ansi-yellow-fg">17-07-24|18:25:03 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:55: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
-  r1v = np.linspace(-1-center[1], 1-center[1], r1).astype(dtype).reshape(1,-1)
-</span>
-Standard deviation of the residual: 1.84989027732e-05
-Median relative error (err/val)): 0.05%
-&gt; final error (std on 50.0% of the total size): 1.764e-05 nm, 9.739e-03 km/s
-    &gt; New calibration laser map fit parameters:
-    distance to mirror: 23.7195966921 cm
-    X angle from the optical axis to the center: 0.0365916904474 degrees
-    Y angle from the optical axis to the center: 15.5142349306 degrees
-    Tip-tilt angle of the detector along X: 1.19648939214 degrees
-    Tip-tilt angle of the detector along Y: 0.126632246957 degrees
-    Rotation angle of the detector: 1.90131404301 degrees
-    Calibration laser wavelength: 543.338776628 nm
-
-fit residual std (in km/s): 1.66892593866
-median error on the data (in km/s) 1.41094439599
-Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.calibration_laser_map.fits in 0.36 s
-Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.wavefront_map.fits in 0.19 s
-Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits in 0.19 s
+INFO| fitting process already done. Do you really want to redo it again ?
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_1.png" src="_images/script_example_wavelength_calibration_9_1.png" />
+<div class="highlight"><pre>
+type [yes]: yes
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| X range: 0 2048, Y range: 0 2064
+INFO| Radius: 85.3333333333
+INFO| 100 regions to fit
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ loading region: Shape : circle ( Number(1861.81818),Number(1876.36364),Number(85.33333) )
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Fitting region 0/100
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Velocity of the first line (km/s): 75.5(1.2)
+INFO| Fitting region 1/100
+INFO| Velocity of the first line (km/s): 75.8(1.2)
+INFO| Fitting region 2/100
+INFO| Velocity of the first line (km/s): 73.8(1.5)
+INFO| Fitting region 3/100
+INFO| Velocity of the first line (km/s): 71.6(1.4)
+INFO| Fitting region 4/100
+INFO| Velocity of the first line (km/s): 72.5(1.7)
+INFO| Fitting region 5/100
+INFO| Velocity of the first line (km/s): 69.9(1.6)
+INFO| Fitting region 6/100
+INFO| Velocity of the first line (km/s): 67.5(1.6)
+INFO| Fitting region 7/100
+INFO| Velocity of the first line (km/s): 66.6(1.5)
+INFO| Fitting region 8/100
+INFO| Velocity of the first line (km/s): 72.7(1.5)
+INFO| Fitting region 9/100
+INFO| Velocity of the first line (km/s): 70.7(2.0)
+INFO| Fitting region 10/100
+INFO| Velocity of the first line (km/s): 77.0(1.3)
+INFO| Fitting region 11/100
+INFO| Velocity of the first line (km/s): 76.6(1.3)
+INFO| Fitting region 12/100
+INFO| Velocity of the first line (km/s): 77.0(1.3)
+INFO| Fitting region 13/100
+INFO| Velocity of the first line (km/s): 72.7(1.5)
+INFO| Fitting region 14/100
+INFO| Velocity of the first line (km/s): 70.2(1.6)
+INFO| Fitting region 15/100
+INFO| Velocity of the first line (km/s): 65.8(1.5)
+INFO| Fitting region 16/100
+INFO| Velocity of the first line (km/s): 67.8(1.5)
+INFO| Fitting region 17/100
+INFO| Velocity of the first line (km/s): 68.4(1.6)
+INFO| Fitting region 18/100
+INFO| Velocity of the first line (km/s): 67.5(1.5)
+INFO| Fitting region 19/100
+INFO| Velocity of the first line (km/s): 71.9(1.7)
+INFO| Fitting region 20/100
+INFO| Velocity of the first line (km/s): 77.5(1.4)
+INFO| Fitting region 21/100
+INFO| Velocity of the first line (km/s): 78.0(1.3)
+INFO| Fitting region 22/100
+INFO| Velocity of the first line (km/s): 76.9(1.3)
+INFO| Fitting region 23/100
+INFO| Velocity of the first line (km/s): 74.6(1.5)
+INFO| Fitting region 24/100
+INFO| Velocity of the first line (km/s): 76.3(1.6)
+INFO| Fitting region 25/100
+INFO| Velocity of the first line (km/s): 78.7(1.7)
+INFO| Fitting region 26/100
+INFO| Velocity of the first line (km/s): 95.6(1.8)
+INFO| Fitting region 27/100
+INFO| Velocity of the first line (km/s): 61.9(1.6)
+INFO| Fitting region 28/100
+INFO| Velocity of the first line (km/s): 59.6(1.4)
+INFO| Fitting region 29/100
+INFO| Velocity of the first line (km/s): 73.7(1.5)
+INFO| Fitting region 30/100
+INFO| Velocity of the first line (km/s): 78.5(1.2)
+INFO| Fitting region 31/100
+INFO| Velocity of the first line (km/s): 77.0(1.3)
+INFO| Fitting region 32/100
+INFO| Velocity of the first line (km/s): 77.4(1.7)
+INFO| Fitting region 33/100
+INFO| Velocity of the first line (km/s): 62.9(1.8)
+INFO| Fitting region 34/100
+INFO| Velocity of the first line (km/s): 71.5(2.0)
+INFO| Fitting region 35/100
+INFO| Velocity of the first line (km/s): 83.8(2.1)
+INFO| Fitting region 36/100
+INFO| Velocity of the first line (km/s): 102.3(2.3)
+INFO| Fitting region 37/100
+INFO| Velocity of the first line (km/s): 54.1(1.6)
+INFO| Fitting region 38/100
+INFO| Velocity of the first line (km/s): 50.8(1.5)
+INFO| Fitting region 39/100
+INFO| Velocity of the first line (km/s): 75.2(1.3)
+INFO| Fitting region 40/100
+INFO| Velocity of the first line (km/s): 78.6(1.3)
+INFO| Fitting region 41/100
+INFO| Velocity of the first line (km/s): 73.2(1.9)
+INFO| Fitting region 42/100
+INFO| Velocity of the first line (km/s): 80.2(1.9)
+INFO| Fitting region 43/100
+INFO| Velocity of the first line (km/s): 96.9(2.4)
+INFO| Fitting region 44/100
+INFO| Velocity of the first line (km/s): 68.6(2.7)
+INFO| Fitting region 45/100
+INFO| Velocity of the first line (km/s): 77.2(2.0)
+INFO| Fitting region 46/100
+INFO| Velocity of the first line (km/s): 70.0(1.7)
+INFO| Fitting region 47/100
+INFO| Velocity of the first line (km/s): 109.7(2.0)
+INFO| Fitting region 48/100
+INFO| Velocity of the first line (km/s): 79.8(1.6)
+INFO| Fitting region 49/100
+INFO| Velocity of the first line (km/s): 74.7(1.2)
+INFO| Fitting region 50/100
+INFO| Velocity of the first line (km/s): 79.2(1.3)
+INFO| Fitting region 51/100
+INFO| Velocity of the first line (km/s): 76.9(1.5)
+INFO| Fitting region 52/100
+INFO| Velocity of the first line (km/s): 80.0(2.2)
+INFO| Fitting region 53/100
+INFO| Velocity of the first line (km/s): 91.5(2.6)
+INFO| Fitting region 54/100
+INFO| Velocity of the first line (km/s): 91.9(2.9)
+INFO| Fitting region 55/100
+INFO| Velocity of the first line (km/s): 85.7(2.9)
+INFO| Fitting region 56/100
+INFO| Velocity of the first line (km/s): 106.5(2.1)
+INFO| Fitting region 57/100
+INFO| Velocity of the first line (km/s): 78.5(1.9)
+INFO| Fitting region 58/100
+INFO| Velocity of the first line (km/s): 75.3(1.5)
+INFO| Fitting region 59/100
+INFO| Velocity of the first line (km/s): 77.5(1.1)
+INFO| Fitting region 60/100
+INFO| Velocity of the first line (km/s): 79.5(1.4)
+INFO| Fitting region 61/100
+INFO| Velocity of the first line (km/s): 78.3(1.7)
+INFO| Fitting region 62/100
+INFO| Velocity of the first line (km/s): 80.7(2.6)
+INFO| Fitting region 63/100
+INFO| Velocity of the first line (km/s): 78.4(2.6)
+INFO| Fitting region 64/100
+INFO| Velocity of the first line (km/s): 83.0(2.6)
+INFO| Fitting region 65/100
+INFO| Velocity of the first line (km/s): 61.3(2.4)
+INFO| Fitting region 66/100
+INFO| Velocity of the first line (km/s): 76.4(2.2)
+INFO| Fitting region 67/100
+INFO| Velocity of the first line (km/s): 77.7(1.7)
+INFO| Fitting region 68/100
+INFO| Velocity of the first line (km/s): 73.6(1.4)
+INFO| Fitting region 69/100
+INFO| Velocity of the first line (km/s): 80.7(1.7)
+INFO| Fitting region 70/100
+INFO| Velocity of the first line (km/s): 80.2(1.4)
+INFO| Fitting region 71/100
+INFO| Velocity of the first line (km/s): 80.5(1.5)
+INFO| Fitting region 72/100
+INFO| Velocity of the first line (km/s): 82.6(2.5)
+INFO| Fitting region 73/100
+INFO| Velocity of the first line (km/s): 79.7(2.5)
+INFO| Fitting region 74/100
+INFO| Velocity of the first line (km/s): 80.8(2.7)
+INFO| Fitting region 75/100
+INFO| Velocity of the first line (km/s): 83.9(2.3)
+INFO| Fitting region 76/100
+INFO| Velocity of the first line (km/s): 78.4(1.9)
+INFO| Fitting region 77/100
+INFO| Velocity of the first line (km/s): 72.5(1.3)
+INFO| Fitting region 78/100
+INFO| Velocity of the first line (km/s): 77.2(1.2)
+INFO| Fitting region 79/100
+INFO| Velocity of the first line (km/s): 80.00(98)
+INFO| Fitting region 80/100
+INFO| Velocity of the first line (km/s): 84.2(1.5)
+INFO| Fitting region 81/100
+INFO| Velocity of the first line (km/s): 81.0(1.4)
+INFO| Fitting region 82/100
+INFO| Velocity of the first line (km/s): 86.3(1.7)
+INFO| Fitting region 83/100
+INFO| Velocity of the first line (km/s): 82.1(2.0)
+INFO| Fitting region 84/100
+INFO| Velocity of the first line (km/s): 87.0(2.0)
+INFO| Fitting region 85/100
+INFO| Velocity of the first line (km/s): 81.8(1.9)
+INFO| Fitting region 86/100
+INFO| Velocity of the first line (km/s): 80.5(1.6)
+INFO| Fitting region 87/100
+INFO| Velocity of the first line (km/s): 82.4(1.1)
+INFO| Fitting region 88/100
+INFO| Velocity of the first line (km/s): 80.33(93)
+INFO| Fitting region 89/100
+INFO| Velocity of the first line (km/s): 86.09(89)
+INFO| Fitting region 90/100
+INFO| Velocity of the first line (km/s): 84.4(1.7)
+INFO| Fitting region 91/100
+INFO| Velocity of the first line (km/s): 82.8(1.4)
+INFO| Fitting region 92/100
+INFO| Velocity of the first line (km/s): 82.3(1.6)
+INFO| Fitting region 93/100
+INFO| Velocity of the first line (km/s): 83.9(1.7)
+INFO| Fitting region 94/100
+INFO| Velocity of the first line (km/s): 83.9(1.5)
+INFO| Fitting region 95/100
+INFO| Velocity of the first line (km/s): 85.7(1.4)
+INFO| Fitting region 96/100
+INFO| Velocity of the first line (km/s): 83.8(1.1)
+INFO| Fitting region 97/100
+INFO| Velocity of the first line (km/s): 83.41(78)
+INFO| Fitting region 98/100
+INFO| Velocity of the first line (km/s): 83.27(81)
+INFO| Fitting region 99/100
+INFO| Velocity of the first line (km/s): 83.79(69)
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/process.py:329: RuntimeWarning: invalid value encountered in greater
+  sky_vel_map[sky_vel_map &gt; np.nanpercentile(sky_vel_map, 95)] = np.nan
+</span>
+INFO| Angle at the center of the frame: 15.4961376587
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1054: RuntimeWarning: invalid value encountered in less
+  calib_laser_map[np.nonzero(calib_laser_map &lt; value_min)] = np.nan
+</span>
+INFO| &gt; Binning calibration map
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+INFO| &gt; Calibration laser map fit
+INFO|   &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
+INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 23.6929484545 cm
+    X angle from the optical axis to the center: 0.0 degrees (Fixed)
+    Y angle from the optical axis to the center: 15.5034960221 degrees
+    Tip-tilt angle of the detector along X: 0.0 degrees (Fixed)
+    Tip-tilt angle of the detector along Y: 0.0 degrees (Fixed)
+    Rotation angle of the detector: 0.0 degrees (Fixed)
+    Calibration laser wavelength: 543.360354174 nm (Fixed)
+    Error on fit: mean -1.14694114185e-06, std 0.0515053233379 (in nm)
+    Error on fit: mean -0.000633248892585, std 28.4371078653 (in km/s)
+INFO|   &gt; Second fit on the central portion of the calibration laser map (30.0% of the total size)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+First laser wavelentgh calibration estimation: 543.360354174 nm
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 23.6769550191 cm
+    X angle from the optical axis to the center: -0.467348573066 degrees
+    Y angle from the optical axis to the center: 15.4964389183 degrees
+    Tip-tilt angle of the detector along X: 0.427738947088 degrees
+    Tip-tilt angle of the detector along Y: -1.22059704838 degrees
+    Rotation angle of the detector: 0.0 degrees (Fixed)
+    Calibration laser wavelength: 543.360354174 nm (Fixed)
+    Error on fit: mean -3.79483279357e-07, std 0.000789304258014 (in nm)
+    Error on fit: mean -0.000209520225266, std 0.435790494439 (in km/s)
+INFO|   &gt; Third fit on a larger portion of the map (50.0% of the total size)
+INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 23.7139686185 cm
+    X angle from the optical axis to the center: -0.46771103975 degrees
+    Y angle from the optical axis to the center: 15.496813076 degrees
+    Tip-tilt angle of the detector along X: 0.301189457349 degrees
+    Tip-tilt angle of the detector along Y: -0.70067458497 degrees
+    Rotation angle of the detector: 0.0 degrees (Fixed)
+    Calibration laser wavelength: 543.360354174 nm (Fixed)
+    Error on fit: mean -2.73349405071e-06, std 0.00312197276085 (in nm)
+    Error on fit: mean -0.0015092161379, std 1.72370291844 (in km/s)
+INFO|   &gt; Zernike polynomials fit of the residual wavefront
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:54: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
+  r0v = np.linspace(-1-center[0], 1-center[0], r0).astype(dtype).reshape(-1,1)
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:55: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
+  r1v = np.linspace(-1-center[1], 1-center[1], r1).astype(dtype).reshape(1,-1)
+</span>
+INFO| Standard deviation of the residual: 1.84989074611e-05
+INFO| Median relative error (err/val)): 0.05%
+INFO| &gt; final error (std on 50.0% of the total size): 1.764e-05 nm, 9.739e-03 km/s
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+    &gt; New calibration laser map fit parameters:
+    distance to mirror: 23.6630434546 cm
+    X angle from the optical axis to the center: -0.0972147989421 degrees
+    Y angle from the optical axis to the center: 15.4797965758 degrees
+    Tip-tilt angle of the detector along X: 4.69894825761 degrees
+    Tip-tilt angle of the detector along Y: 0.336872109582 degrees
+    Rotation angle of the detector: 1.38202531904 degrees
+    Calibration laser wavelength: 543.42604743 nm
+
+fit residual std (in km/s): 2.22847256858
+median error on the data (in km/s) 1.44334722958
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.calibration_laser_map.fits in 0.13 s
+INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.wavefront_map.fits in 0.23 s
+INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits in 0.16 s
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_wavelength_calibration_9_11.png" src="_images/script_example_wavelength_calibration_9_11.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_2.png" src="_images/script_example_wavelength_calibration_9_2.png" />
+<img alt="_images/script_example_wavelength_calibration_9_12.png" src="_images/script_example_wavelength_calibration_9_12.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_3.png" src="_images/script_example_wavelength_calibration_9_3.png" />
+<img alt="_images/script_example_wavelength_calibration_9_13.png" src="_images/script_example_wavelength_calibration_9_13.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_4.png" src="_images/script_example_wavelength_calibration_9_4.png" />
+<img alt="_images/script_example_wavelength_calibration_9_14.png" src="_images/script_example_wavelength_calibration_9_14.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_5.png" src="_images/script_example_wavelength_calibration_9_5.png" />
+<img alt="_images/script_example_wavelength_calibration_9_15.png" src="_images/script_example_wavelength_calibration_9_15.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_6.png" src="_images/script_example_wavelength_calibration_9_6.png" />
+<img alt="_images/script_example_wavelength_calibration_9_16.png" src="_images/script_example_wavelength_calibration_9_16.png" />
 </div>
 </div>
 </div>
@@ -771,7 +1081,7 @@ integrated over a large field of view with a non-negligible gradient on
 the velocity calibration.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -782,7 +1092,7 @@ the velocity calibration.</p>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -809,27 +1119,54 @@ the velocity calibration.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 1257
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-25|09:28:24 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 1257
- [==========] [100%] [completed in 0.030 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.734 s]
-SNR GUESS None
+ [==========] [100%] [completed in 0.028 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 16 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.701 s]
 
 ===== Results ======
-Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
- -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
- -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
- -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
- -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
- -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)
- -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1)]
+Velocity:  [-1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5)
+ -1.2(1.5) -1.2(1.5)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[6]:
+<span></span>Out[8]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -841,7 +1178,7 @@ Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_13_2.png" src="_images/script_example_wavelength_calibration_13_2.png" />
+<img alt="_images/script_example_wavelength_calibration_13_5.png" src="_images/script_example_wavelength_calibration_13_5.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -901,7 +1238,7 @@ Velocity:  [-3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1) -3.2(1.1
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.2',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

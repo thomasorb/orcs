@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Extract the deep frame and use the WCS &mdash; Orcs 2.2.2 documentation</title>
+  <title>Extract the deep frame and use the WCS &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Make a fit over an entire region of the field" href="script_example_fit_region.html"/>
         <link rel="prev" title="How precise must be the input velocity parameter ?" href="script_example_velocity_parameter_precision.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.2
+                2.2.3
               </div>
             
           
@@ -429,16 +429,16 @@ M being the number of frames).</p>
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-170828-16:12:09|core:4000:__init__|INFO&gt; Data shape : (2048, 2064, 593)
-170828-16:12:09|core:138:__init__|INFO&gt; Cube is in WAVENUMBER (cm-1)
-170828-16:12:09|core:145:__init__|INFO&gt; Cube is CALIBRATED
+INFO| Data shape : (2048, 2064, 593)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
 </pre></div></div>
 </div>
 <div class="section" id="Displaying-the-deep-frame">
 <h2>Displaying the deep frame<a class="headerlink" href="#Displaying-the-deep-frame" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -469,7 +469,7 @@ M being the number of frames).</p>
 <h2>Exporting the deep frame with the WCS<a class="headerlink" href="#Exporting-the-deep-frame-with-the-WCS" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -480,14 +480,14 @@ M being the number of frames).</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-Data written as deep_frame.fits in 0.24 s
+INFO| Data written as deep_frame.fits in 0.17 s
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[6]:
+<span></span>Out[4]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -552,7 +552,7 @@ Data written as deep_frame.fits in 0.24 s
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.2',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

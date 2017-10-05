@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modelling and fitting two unresolved emission lines with a bayesian approach &mdash; Orcs 2.2.2 documentation</title>
+  <title>Modelling and fitting two unresolved emission lines with a bayesian approach &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html"/>
         <link rel="prev" title="Modelling and fitting a spectrum with two resolved lines" href="script_example_model+fit_2_lines.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.2
+                2.2.3
               </div>
             
           
@@ -426,7 +426,7 @@ parameters are unchanged.</p>
 <h3>Model<a class="headerlink" href="#Model" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [3]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -468,11 +468,11 @@ parameters are unchanged.</p>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[3]:
+<span></span>Out[11]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.legend.Legend at 0x7f6151bd0890&gt;
+<span></span>&lt;matplotlib.legend.Legend at 0x7f310065e190&gt;
 </pre></div>
 </div>
 </div>
@@ -492,11 +492,11 @@ same chi2. the best fit will be very badly constrained and can give
 random sets of parameters depending on the noise.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [4]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
                                     <span class="n">wavenumber</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
                                     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
                                     <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">velocity1</span><span class="p">,</span> <span class="n">velocity2</span><span class="p">],</span>
@@ -521,30 +521,20 @@ random sets of parameters depending on the noise.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-yellow-fg">170823-14:01:51|fit:132:__init__|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:132: UserWarning: No SNR guess given. Fit mode is classic.
-  warnings.warn(&#39;No SNR guess given. Fit mode is classic.&#39;)
-</span>
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-velocity (in km/s):  [31.0(2.5) -40(18)]
-broadening (in km/s):  [30.0(3.4) 0.07 +- 1.3e+03]
-flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [2.60(24) 0.17(12)]
+velocity (in km/s):  [41(18) -20(69)]
+broadening (in km/s):  [21(11) 22(44)]
+flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [2.3(1.1) 0.6(1.1)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[4]:
+<span></span>Out[12]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.text.Text at 0x7f614fa62d50&gt;
+<span></span>&lt;matplotlib.text.Text at 0x7f31005de610&gt;
 </pre></div>
 </div>
 </div>
@@ -552,7 +542,7 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [2.60(24)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_model+fit_2_lines_bayes_7_3.png" src="_images/script_example_model+fit_2_lines_bayes_7_3.png" />
+<img alt="_images/script_example_model+fit_2_lines_bayes_7_2.png" src="_images/script_example_model+fit_2_lines_bayes_7_2.png" />
 </div>
 </div>
 </div>
@@ -581,7 +571,7 @@ package gvar which is intimatly linked to lsqfit - same author)</li>
 </ul>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -589,12 +579,12 @@ package gvar which is intimatly linked to lsqfit - same author)</li>
 <span class="c1"># now we can define our random variables, we are purposely biasing the inital guess</span>
 <span class="c1"># and giving a large error of +/- 10 km/s on both the velocity and the broadening</span>
 
-<span class="n">velocity1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">velocity1</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># velocity1 is known at +/- 10 km/s</span>
-<span class="n">velocity2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">velocity2</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># velocity2 is known at +/- 10 km/s</span>
-<span class="n">broadening1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening1</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening1 is known at +/- 10 km/s</span>
-<span class="n">broadening2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening2</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening2 is known at +/- 10 km/s</span>
+<span class="n">velocity1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">velocity1</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># velocity1 is known at +/- 10 km/s</span>
+<span class="n">velocity2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">velocity2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># velocity2 is known at +/- 10 km/s</span>
+<span class="n">broadening1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening1</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening1 is known at +/- 10 km/s</span>
+<span class="n">broadening2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening2 is known at +/- 10 km/s</span>
 
-<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
                                     <span class="n">wavenumber</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
                                     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
                                     <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">velocity1_gvar</span><span class="p">,</span> <span class="n">velocity2_gvar</span><span class="p">],</span>
@@ -630,27 +620,37 @@ package gvar which is intimatly linked to lsqfit - same author)</li>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+WARNING:root:nan detected: trying with erf computation
+WARNING:root:nan detected: trying with erf computation
+WARNING:root:nan detected: trying with erf computation
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 === velocity ===
-input velocity (km/s):  55(10) 5(10)
-fitted velocity (km/s):  [48.7(6.6) 7.0(8.7)]
+input velocity (km/s):  53(10) 7(10)
+fitted velocity (km/s):  [48.6(4.4) 6.4(9.2)]
 real velocity (km/s) 50 10
 === broadening ===
-input broadening (km/s):  20(10) 25(10)
-fitted broadening (km/s):  [20.7(6.1) 27.3(6.7)]
+input broadening (km/s):  18(10) 27(10)
+fitted broadening (km/s):  [16.3(5.6) 30.0(7.5)]
 real broadening (km/s) 15 30
 === flux ===
-flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.29(43) 1.43(48)]
+flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.55(37) 1.37(48)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[12]:
+<span></span>Out[14]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.text.Text at 0x7f614f3f49d0&gt;
+<span></span>&lt;matplotlib.text.Text at 0x7f3100395310&gt;
 </pre></div>
 </div>
 </div>
@@ -658,7 +658,7 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.29(43)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_model+fit_2_lines_bayes_9_2.png" src="_images/script_example_model+fit_2_lines_bayes_9_2.png" />
+<img alt="_images/script_example_model+fit_2_lines_bayes_9_3.png" src="_images/script_example_model+fit_2_lines_bayes_9_3.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -719,7 +719,7 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.29(43)
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.2',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

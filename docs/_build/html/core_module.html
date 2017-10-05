@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.2.2 documentation</title>
+  <title>Core module &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="next" title="Process module" href="process_module.html"/>
         <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.2.2
+                2.2.3
               </div>
             
           
@@ -458,42 +458,6 @@ changed in the InputParams instance.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="orcs.core.HDFCube._parallel_process_in_quads">
-<code class="descname">_parallel_process_in_quads</code><span class="sig-paren">(</span><em>func</em>, <em>args</em>, <em>modules</em>, <em>out_cube_path</em>, <em>binning=1</em>, <em>vector=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._parallel_process_in_quads" title="Permalink to this definition">¶</a></dt>
-<dd><p>General parallel quadrant-based processing.</p>
-<p>Built to process a cube in columns or vector by vector and
-write the processed cube as an HDF5 quad cube.</p>
-<p>The process is split over a certain number of quadrants to
-avoid loading a full data cube in memory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>func</strong> &#8211; Can be a vector or column function (vector
-must be set to False in the case of a function applied to
-the columns). Must be <cite>f(vector_data, *args)</cite> or
-<cite>f(column_data, *args)</cite>.</li>
-<li><strong>args</strong> &#8211; Function arguments. All arguments with a 2D shape
-equal to the cube 2D shape are treated as mapped
-arguments. The column or pixel corresponding to the column
-or pixel computed is extracted.</li>
-<li><strong>modules</strong> &#8211; Modules to pass to each process.</li>
-<li><strong>out_cube_path</strong> &#8211; Path to the output resulting cube.</li>
-<li><strong>vector</strong> &#8211; (Optional) if vector is True, the function is
-applied to each vector (each pixel) of the cube. Else the
-function is applied to each column of the cube (default
-True)</li>
-<li><strong>binning</strong> &#8211; (Optional) &#8216;on-the-fly&#8217; binning of the data
-(warning: the ouput data shape is binned) (default 1)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="orcs.core.HDFCube._prepare_input_params">
 <code class="descname">_prepare_input_params</code><span class="sig-paren">(</span><em>lines</em>, <em>nofilter=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._prepare_input_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>prepare the InputParams instance for a fitting procedure.</p>
@@ -530,6 +494,16 @@ the sky lines computed with
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">the sky velocity map returned by the function
+SpectralCube.map_sky_velocity is inversed (a velocity of 80
+km/s is indicated as -80 km/s). It is thus more a correction
+map that must be directly added to the computed velocity to
+obtain a corrected velocity. As this map can be passed as
+is, it means that the given sky velocity map must be a
+correction map.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1173,7 +1147,7 @@ None)</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.2',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
