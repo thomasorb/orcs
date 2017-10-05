@@ -74,6 +74,7 @@ class HDFCube(orb.core.HDFCube):
 
         :param kwargs: Kwargs are :meth:`orb.core.HDFCube` properties.
         """
+        print 'dev' ; quit()
         self.debug = debug
         self.logger = orb.core.Logger(debug=self.debug)
         FIT_TOL = 1e-10
