@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example of a single spectrum fit. &mdash; Orcs 2.2.2 documentation</title>
+  <title>Example of a single spectrum fit. &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="How precise must be the input velocity parameter ?" href="script_example_velocity_parameter_precision.html"/>
         <link rel="prev" title="Examples" href="examples.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.2
+                2.2.3
               </div>
             
           
@@ -426,11 +426,11 @@ div.nboutput div.output_area.stderr {
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:34:34 # HDFCube.__init__ &gt; Data shape : (2048, 2064, 840)
-17-07-24|17:34:34 # HDFCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
-17-07-24|17:34:34 # HDFCube.__init__ &gt; Cube is CALIBRATED
+INFO| Data shape : (2048, 2064, 840)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -448,12 +448,33 @@ div.nboutput div.output_area.stderr {
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:34:35 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
- [==========] [100%] [completed in 0.092 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.421 s]
+ [==========] [100%] [completed in 0.067 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.440 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -462,7 +483,7 @@ Init of the parallel processing server with 4 threads
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>[&lt;matplotlib.lines.Line2D at 0x7fa9dd9f94d0&gt;]
+<span></span>[&lt;matplotlib.lines.Line2D at 0x7f9e26fc5b10&gt;]
 </pre></div>
 </div>
 </div>
@@ -470,7 +491,7 @@ Init of the parallel processing server with 4 threads
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_a_single_spectrum_4_2.png" src="_images/script_example_fit_a_single_spectrum_4_2.png" />
+<img alt="_images/script_example_fit_a_single_spectrum_4_5.png" src="_images/script_example_fit_a_single_spectrum_4_5.png" />
 </div>
 </div>
 </div>
@@ -517,21 +538,60 @@ can be different for each line.</li>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.012 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ [==========] [100%] [completed in 0.436 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1537: RuntimeWarning: invalid value encountered in sqrt
+  noise_counts = np.sqrt(total_counts)
+</span>
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:34:39 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
- [==========] [100%] [completed in 0.011 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.442 s]
-SNR GUESS None
+
 
 ===== Results ======
 Velocity:  [-506.4(1.3) -506.4(1.3)]
-Broadening:  [25.7(1.7) 27.5(6.5)]
-Flux:  [1.676(88)e-15 4.53(92)e-16]
+Broadening:  [25.8(1.7) 27.4(6.5)]
+Flux:  [1.678(88)e-15 4.52(92)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -560,21 +620,42 @@ the precision will also be worsen.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.021 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:34:47 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
- [==========] [100%] [completed in 0.018 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.437 s]
-SNR GUESS None
+
+ [==========] [100%] [completed in 0.426 s]
 
 ===== Results ======
-Velocity:  [-506.0(1.3) -512.6(5.3)]
-Broadening:  [25.7(1.7) 27.8(6.4)]
-Flux:  [1.677(88)e-15 4.60(93)e-16]
+Velocity:  [-506.0(1.3) -512.8(5.3)]
+Broadening:  [25.8(1.7) 27.7(6.4)]
+Flux:  [1.679(88)e-15 4.59(92)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -606,21 +687,42 @@ the precision of the estimations are better.</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.018 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:34:52 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
- [==========] [100%] [completed in 0.018 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.415 s]
-SNR GUESS None
+
+ [==========] [100%] [completed in 0.426 s]
 
 ===== Results ======
-Velocity:  [-506.5(1.3) -506.5(1.3)]
-Broadening:  [25.8(1.6) 25.8(1.6)]
-Flux:  [1.680(86)e-15 4.40(59)e-16]
+Velocity:  [-506.4(1.3) -506.4(1.3)]
+Broadening:  [25.9(1.6) 25.9(1.6)]
+Flux:  [1.681(86)e-15 4.40(60)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -692,18 +794,39 @@ setting the option</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:34:57 # HDFCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
  [==========] [100%] [completed in 0.012 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.430 s]
-SNR GUESS None
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ [==========] [100%] [completed in 0.508 s]
 
 ===== Results ======
 Velocity:  [-506.4(1.5) -506.4(1.5)]
-Broadening:  [26.1(1.8) 26.1(1.8)]
-Flux:  [1.673(98)e-15 4.46(67)e-16]
+Broadening:  [26.2(1.8) 26.2(1.8)]
+Flux:  [1.676(98)e-15 4.47(68)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -721,7 +844,7 @@ Flux:  [1.673(98)e-15 4.46(67)e-16]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_a_single_spectrum_14_2.png" src="_images/script_example_fit_a_single_spectrum_14_2.png" />
+<img alt="_images/script_example_fit_a_single_spectrum_14_5.png" src="_images/script_example_fit_a_single_spectrum_14_5.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -782,7 +905,7 @@ Flux:  [1.673(98)e-15 4.46(67)e-16]
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.2',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

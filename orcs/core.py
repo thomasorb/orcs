@@ -206,167 +206,6 @@ class HDFCube(orb.core.HDFCube):
         """Return data prefix"""
         return self._data_prefix
 
-    def _parallel_process_in_quads(self, func, args, modules,
-                                   out_cube_path,
-                                   binning=1, vector=True):
-
-        """
-        General parallel quadrant-based processing.
-
-        Built to process a cube in columns or vector by vector and
-        write the processed cube as an HDF5 quad cube.
-
-        The process is split over a certain number of quadrants to
-        avoid loading a full data cube in memory.
-
-        :param func: Can be a vector or column function (vector
-          must be set to False in the case of a function applied to
-          the columns). Must be `f(vector_data, *args)` or
-          `f(column_data, *args)`.
-
-        :param args: Function arguments. All arguments with a 2D shape
-          equal to the cube 2D shape are treated as mapped
-          arguments. The column or pixel corresponding to the column
-          or pixel computed is extracted.
-
-        :param modules: Modules to pass to each process.
-
-        :param out_cube_path: Path to the output resulting cube.
-
-        :param vector: (Optional) if vector is True, the function is
-          applied to each vector (each pixel) of the cube. Else the
-          function is applied to each column of the cube (default
-          True)
-
-        :param binning: (Optional) 'on-the-fly' binning of the data
-          (warning: the ouput data shape is binned) (default 1)
-        """
-        def process_in_column(args):
-            """Basic column processing for a vector function"""
-            import marshal, types
-            import numpy as np
-            ## function is unpicked
-            _code = marshal.loads(args[0])
-            _func = types.FunctionType(_code, globals(), '_func')
-            icolumn_data = np.squeeze(args[1])
-            for i in range(icolumn_data.shape[0]):
-                iargs_list = list()
-                for iarg in args[2:]:
-                    try:
-                        shape = iarg.shape
-                    except AttributeError:
-                        shape = None
-                    if shape is not None:
-                        iarg = np.squeeze(iarg)
-                        shape = iarg.shape
-                        if shape == (icolumn_data.shape[0],):
-                            iarg = iarg[i]
-
-                    iargs_list.append(iarg)
-
-                icolumn_data[i,:] = _func(icolumn_data[i,:], *iargs_list)
-
-            return icolumn_data
-
-        raise Exception("It's better to use the CubeJobServer class")
-
-        ## function must be serialized (or picked)
-        func = marshal.dumps(func.func_code)
-
-        if vector:
-            col_func = process_in_column
-        else:
-            col_func = func
-
-        out_cube = orb.core.OutHDFQuadCube(
-            out_cube_path,
-            (self.dimx / binning, self.dimy / binning, self.dimz),
-            self.config.QUAD_NB,
-            reset=True)
-
-
-        for iquad in range(0, self.config.QUAD_NB):
-            x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
-            iquad_data = self.get_data(x_min, x_max, y_min, y_max,
-                                       0, self.dimz)
-            ## iquad_data = np.zeros((x_max - x_min, y_max - y_min, self.dimz), dtype=float)
-
-
-            # multi-processing server init
-            job_server, ncpus = self._init_pp_server()
-            progress = orb.core.ProgressBar(x_max - x_min)
-            for ii in range(0, x_max - x_min, ncpus * binning):
-                progress.update(ii, 'processing quad{}/{}'.format(
-                    iquad+1, self.config.QUAD_NB))
-                # no more jobs than columns
-                if (ii + ncpus * binning >= x_max - x_min):
-                    ncpus = (x_max - x_min - ii) / binning
-
-                # construct passed arguments
-                jobs_args_list = list()
-                for ijob in range(ncpus):
-                    iargs_list = list()
-
-                    if vector:
-                        iargs_list.append(func)
-                    else:
-                        iargs_list.append(None)
-
-                    icolumn_data = iquad_data[
-                        ii + ijob * binning:
-                        ii + (ijob+1) * binning,:,:]
-
-                    iargs_list.append(icolumn_data)
-
-                    for iarg in args:
-                        try:
-                           shape = iarg.shape
-                        except AttributeError:
-                            shape = None
-                        if shape is not None:
-                            if shape == (self.dimx, self.dimy):
-                                icolumn = iarg[
-                                    x_min + ii + ijob * binning:
-                                    x_min + ii + (ijob+1) * binning,
-                                    y_min:y_max]
-
-                                # reduce column to binning
-                                if binning > 1:
-                                    icolumn = orb.utils.image.nanbin_image(
-                                        icolumn, binning)
-                            else:
-                                icolumn = iarg
-                            iargs_list.append(icolumn)
-                        else:
-                            iargs_list.append(iarg)
-                    jobs_args_list.append(iargs_list)
-
-                # jobs submission
-                jobs = [(ijob, job_server.submit(
-                    process_in_column,
-                    args=(jobs_args_list[ijob],),
-                    modules=modules))
-                        for ijob in range(ncpus)]
-
-                # get results
-                for ijob, job in jobs:
-                    icol_res = job()
-                    iquad_data[ii+ijob,:icol_res.shape[0], :] = icol_res
-
-            progress.end()
-
-            # save data
-            logging.info('Writing quad {}/{} to disk'.format(
-                iquad+1, self.config.QUAD_NB))
-            write_start_time = time.time()
-            out_cube.write_quad(iquad, data=iquad_data)
-            logging.info('Quad {}/{} written in {:.2f} s'.format(
-                iquad+1, self.config.QUAD_NB, time.time() - write_start_time))
-
-        out_cube.close()
-        del out_cube
-
-
     def _get_reprojected_cube_path(self):
         """Return the path to the reprojected cube"""
         return self._data_path_hdr + 'reprojected_cube.fits'
@@ -464,11 +303,7 @@ class HDFCube(orb.core.HDFCube):
                     spec.shape[0], step, order, corr=corr)
                 return orb.utils.vector.interpolate_axis(
                     spec, base_axis, 5, old_axis=corr_axis)
-            else:
-                corr_axis = orb.utils.spectrum.create_nm_axis(
-                    spec.shape[0], step, order, corr=corr)
-                return orb.utils.vector.interpolate_axis(
-                    spec, base_axis, 5, old_axis=corr_axis)
+            else: raise NotImplementedError()
 
 
         def _extract_spectrum_in_column(data_col, calib_coeff_col, mask_col,
@@ -494,6 +329,7 @@ class HDFCube(orb.core.HDFCube):
 
         if median:
             warnings.warn('Median integration')
+
 
         calibration_coeff_map = self.get_calibration_coeff_map()
 
@@ -550,23 +386,6 @@ class HDFCube(orb.core.HDFCube):
                 if quadrant_extraction:
                     # x_min, x_max, y_min, y_max are now used for quadrants boundaries
                     x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
-
-                iquad_data = self.get_data(x_min, x_max, y_min, y_max,
-                                           0, self.dimz, silent=silent)
-
-                if not quadrant_extraction:
-                    if np.all(calibration_coeff_center == calibration_coeff_map):
-                        ## no interpolation to make -> multiprocessing bypass
-                        counts = np.nansum(mask)
-                        if median:
-                            spectrum = np.nanmedian(
-                                np.nanmedian(iquad_data, axis=0), axis=0) * np.nansum(mask)
-
-                        else:
-                            spectrum = np.nansum(np.nansum(
-                                (iquad_data.T * mask[x_min:x_max, y_min:y_max].T).T, axis=0), axis=0)
-                        break # no multiprocessing
-
 
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max,
                                            0, self.dimz, silent=silent)
@@ -709,7 +528,8 @@ class HDFCube(orb.core.HDFCube):
         """
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
                                init_velocity_map_ij, init_sigma_map_ij,
-                               theta_map_ij, snr_guess, debug):
+                               theta_map_ij, snr_guess, sky_vel_ij, flux_sdev_ij,
+                               debug):
 
             stime = time.time()
             if debug:
@@ -739,20 +559,32 @@ class HDFCube(orb.core.HDFCube):
             else:
                 sigma_guess = None
 
-            ifit = orcs.utils.fit_lines_in_spectrum(
-                params, inputparams, fit_tol, spectrum, theta_map_ij,
-                snr_guess=snr_guess, sigma_guess=sigma_guess,
-                pos_cov=shift_guess)
+            # correct spectrum for nans
+            spectrum[np.isnan(spectrum)] = 0.
+
+            # add flux uncertainty to the spectrum
+            spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
+
+            try:
+                ifit = orcs.utils.fit_lines_in_spectrum(
+                    params, inputparams, fit_tol, spectrum, theta_map_ij,
+                    snr_guess=snr_guess, sigma_guess=sigma_guess,
+                    pos_cov=shift_guess)
+            except Exception, e:
+                logging.debug('Exception occured during fit: {}'.format(e))
+                ifit = []
 
             if ifit != []:
                 logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
                 logging.debug('fit function time: {} s'.format(time.time() - stime))
+                logging.debug('velocity: {}'.format(ifit['velocity_gvar'] + sky_vel_ij))
+                logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
 
                 return {
                     'height': ifit['lines_params'][:,0],
                     'amplitude': ifit['lines_params'][:,1],
                     'fwhm': ifit['lines_params'][:,3],
-                    'velocity': ifit['velocity'],
+                    'velocity': ifit['velocity'] + sky_vel_ij,
                     'sigma': ifit['broadening'],
                     'flux': ifit['flux'],
                     'height-err': ifit['lines_params_err'][:,0],
@@ -784,9 +616,6 @@ class HDFCube(orb.core.HDFCube):
                     'rchi2': None,
                     'logGBF': None,
                     'ks_pvalue': None}
-
-
-
 
         if snr_guess not in ('auto', None):
             raise ValueError("snr_guess must be 'auto' or None")
@@ -852,14 +681,28 @@ class HDFCube(orb.core.HDFCube):
 
         total_fit_nb = np.nansum(mask_bin)
         progress = orb.core.ProgressBar(total_fit_nb)
-        logging.info('Number of spectra to fit: {}'.format(total_fit_nb))
+        logging.info('Number of spectra to fit: {}'.format(int(total_fit_nb)))
 
+        if self.get_sky_velocity_map() is not None:
+            sky_velocity_map = orb.utils.image.nanbin_image(
+                self.get_sky_velocity_map(), binning)
+        else:
+            sky_velocity_map = orb.utils.image.nanbin_image(
+                np.zeros((self.dimx, self.dimy), dtype=float), binning)
+
+        flux_uncertainty = self.get_flux_uncertainty()
+        if flux_uncertainty is not None:
+            flux_uncertainty = orb.utils.image.nanbin_image(flux_uncertainty, binning)
+        else:
+            flux_uncertainty = orb.utils.image.nanbin_image(
+                np.ones((self.dimx, self.dimy), dtype=float), binning) * binning**2.
 
         cjs = CubeJobServer(self)
         out = cjs.process_by_pixel(fit_lines_in_pixel,
                              args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
                                    init_velocity_map, init_sigma_map,
-                                   theta_map, snr_guess, self.debug],
+                                   theta_map, snr_guess, sky_velocity_map,
+                                   flux_uncertainty, self.debug],
                              modules=['numpy as np', 'gvar', 'orcs.utils',
                                       'logging', 'warnings', 'time'],
                              mask=mask,
@@ -1104,8 +947,8 @@ class HDFCube(orb.core.HDFCube):
             self.params.nm_laser,
             self.params.theta_proj,
             self.params.zpd_index,
-            ## warning, theta_orig set to theta_proj by default it
-            ## means that the real theta_orig must be defined in the
+            ## warning, theta_orig set to theta_proj by default.
+            ## Means that the real theta_orig must be defined in the
             ## fitting function _fit_lines_in_spectrum
             theta_orig=self.params.theta_proj,
             wavenumber=self.params.wavenumber,
@@ -1143,13 +986,18 @@ class HDFCube(orb.core.HDFCube):
                 calib_map, self.dimx, self.dimy)
 
         # calibration correction
-        if hasattr(self, 'sky_velocity_map'):
-            ratio = 1 + (self.sky_velocity_map / orb.constants.LIGHT_VEL_KMS)
+        if self.get_sky_velocity_map() is not None:
+            ratio = 1 + (self.get_sky_velocity_map() / orb.constants.LIGHT_VEL_KMS)
             calib_map /= ratio
 
         self.calibration_laser_map = calib_map
         self.reset_calibration_coeff_map()
         return self.calibration_laser_map
+
+    def get_sky_velocity_map(self):
+        if hasattr(self, 'sky_velocity_map'):
+            return self.sky_velocity_map
+        else: return None
 
     def get_fwhm_map(self):
         """Return the theoretical FWHM map in cm-1 based only on the angle
@@ -1513,6 +1361,14 @@ class HDFCube(orb.core.HDFCube):
         :py:meth:`~orcs.process.SpectralCube.map_sky_velocity`
 
         :param sky_map_path: Path to the sky velocity map.
+
+        .. warning:: the sky velocity map returned by the function
+          SpectralCube.map_sky_velocity is inversed (a velocity of 80
+          km/s is indicated as -80 km/s). It is thus more a correction
+          map that must be directly added to the computed velocity to
+          obtain a corrected velocity. As this map can be passed as
+          is, it means that the given sky velocity map must be a
+          correction map.
         """
         sky_map = self.read_fits(sky_map_path)
         if sky_map.shape != (self.dimx, self.dimy):
@@ -1717,6 +1573,39 @@ class CubeJobServer(object):
                          depfuncs=list(),
                          mask=None, binning=1):
 
+        def process_in_line(*args):
+            """Basic line processing for a vector function"""
+            import marshal, types
+            import numpy as np
+            ## function is unpicked
+            _code = marshal.loads(args[0])
+            _func = types.FunctionType(_code, globals(), '_func')
+            iline_data = np.squeeze(args[1])
+            out_line = list()
+            for i in range(iline_data.shape[0]):
+                iargs_list = list()
+                # remap arguments
+                for iarg in args[2:]:
+                    try:
+                        shape = iarg.shape
+                    except AttributeError:
+                        shape = None
+                    if shape is not None:
+                        iarg = np.squeeze(iarg)
+                        shape = iarg.shape
+                        if shape == (iline_data.shape[0],):
+                            iarg = iarg[i]
+
+                    iargs_list.append(iarg)
+
+                #iline_data[i,:] = _func(iline_data[i,:], *iargs_list)
+                out_line.append(_func(iline_data[i,:], *iargs_list))
+
+            return out_line
+
+
+        ## function must be serialized (or picked)
+        func = marshal.dumps(func.func_code)
 
         binning = int(binning)
 
@@ -1785,33 +1674,49 @@ class CubeJobServer(object):
 
             args[i] = (new_arg, is_map)
 
-        X, Y = np.nonzero(mask)
+        # get pixel positions grouped by line
+        xy = list()
+        for i in range(mask.shape[1]):
+            _X = np.nonzero(mask[:,i])[0]
+            if len(_X) > 0:
+                xy.append((_X, np.ones(len(_X), dtype=np.int64) * i))
+        logging.info('{} lines to fit'.format(len(xy)))
 
-
-        self.all_jobs_indexes = range(X.shape[0])
+        # jobs will be passed by line
+        self.all_jobs_indexes = range(len(xy))
         all_jobs_nb = len(self.all_jobs_indexes)
 
         # jobs submit / retrieve loop
         self.jobs = list()
         progress = orb.core.ProgressBar(all_jobs_nb)
-        while len(self.all_jobs_indexes) > 0:
+        while len(self.all_jobs_indexes) > 0 or len(self.jobs) > 0:
             while_loop_start = time.time()
 
             # submit jobs
-            while len(self.jobs) < self.ncpus:
+            while len(self.jobs) < self.ncpus and len(self.all_jobs_indexes) > 0:
                 timer = dict()
                 timer['job_submit_start'] = time.time()
-                ix = X[self.all_jobs_indexes[0]]
-                iy = Y[self.all_jobs_indexes[0]]
+
+                ix, iy = xy[self.all_jobs_indexes[0]]
 
                 timer['job_load_data_start'] = time.time()
-                _, ivector = self.cube.extract_spectrum_bin(
-                    ix*binning, iy*binning, binning, silent=True,
-                    return_gvar=True)
+
+                # raw lines extraction (warning: velocity must be
+                # corrected by the function itself)
+
+                iline = self.cube.get_data(min(ix) * binning, (max(ix) + 1) * binning,
+                                           iy[0] * binning, (iy[0] + 1) * binning,
+                                           0, self.cube.dimz, silent=True)
+                if binning > 1:
+                    iline = orb.utils.image.nanbin_image(iline, binning) * binning**2
+
+                iline = iline[ix - min(ix), :]
+
                 timer['job_load_data_end'] = time.time()
 
                 all_args = list()
-                all_args.append(ivector)
+                all_args.append(func)
+                all_args.append(iline)
 
                 # extract values of mapped arguments
                 for iarg in args:
@@ -1825,17 +1730,21 @@ class CubeJobServer(object):
                 # job submission
                 self.jobs.append([
                     self.job_server.submit(
-                        func, args=tuple(all_args),
+                        process_in_line,
+                        args=tuple(all_args),
                         modules=tuple(modules),
                         depfuncs=tuple(depfuncs)),
                     (ix, iy), time.time(), timer])
                 self.all_jobs_indexes.pop(0)
+                progress.update(all_jobs_nb - len(self.all_jobs_indexes))
 
-            # try to retrieve 1 submitted job
+
+            # retrieve all finished jobs
             unfinished_jobs = list()
             for i in range(len(self.jobs)):
                 ijob, (ix, iy), stime, timer = self.jobs[i]
                 if ijob.finished:
+
                     logging.debug('job time since submission: {} s'.format(
                         time.time() - stime))
                     logging.debug('job submit time: {} s'.format(
@@ -1843,46 +1752,45 @@ class CubeJobServer(object):
                     logging.debug('job load data time: {} s'.format(
                         timer['job_load_data_end'] - timer['job_load_data_start']))
 
-                    if self.out_is_dict:
-                        res = ijob()
-                        if not isinstance(res, dict):
-                            raise TypeError('function result must be a dict if out is a dict')
-                        for ikey in res.keys():
-                            # create the output array if not set
-                            if ikey not in out and res[ikey] is not None:
-                                if np.size(res[ikey]) > 1:
-                                    if res[ikey].ndim > 1: raise TypeError('must be a 1d array of floats')
-                                    try: float(res[ikey][0])
-                                    except TypeError: raise TypeError('must be an array of floats')
-                                else:
-                                    try:
-                                        float(res[ikey])
-                                    except TypeError:
-                                        raise TypeError('If out dict maps are not set (i.e. out is set to a default dict()) returned values must be a dict of float or a 1d array of floats')
-                                _iout = np.empty(
-                                    (self.cube.dimx/binning,
-                                     self.cube.dimy/binning,
-                                     np.size(res[ikey])),
-                                    dtype=float)
+                    res_line = ijob()
+                    for iline in range(len(res_line)):
+                        res = res_line[iline]
+                        if self.out_is_dict:
+                            if not isinstance(res, dict):
+                                raise TypeError('function result must be a dict if out is a dict')
+                            for ikey in res.keys():
+                                # create the output array if not set
+                                if ikey not in out and res[ikey] is not None:
+                                    if np.size(res[ikey]) > 1:
+                                        if res[ikey].ndim > 1: raise TypeError('must be a 1d array of floats')
+                                        try: float(res[ikey][0])
+                                        except TypeError: raise TypeError('must be an array of floats')
+                                    else:
+                                        try:
+                                            float(res[ikey])
+                                        except TypeError:
+                                            raise TypeError('If out dict maps are not set (i.e. out is set to a default dict()) returned values must be a dict of float or a 1d array of floats')
+                                    _iout = np.empty(
+                                        (self.cube.dimx/binning,
+                                         self.cube.dimy/binning,
+                                         np.size(res[ikey])),
+                                        dtype=float)
 
-                                _iout = np.squeeze(_iout)
-                                out[ikey] = _iout
-                                out[ikey].fill(np.nan)
+                                    _iout = np.squeeze(_iout)
+                                    out[ikey] = _iout
+                                    out[ikey].fill(np.nan)
 
-                            if res[ikey] is not None:
-                                out[ikey][ix, iy, ...] = res[ikey]
-                    else:
-                        out[ix, iy, ...] = ijob()
+                                if res[ikey] is not None:
+                                    out[ikey][ix[iline], iy[iline], ...] = res[ikey]
+                        else:
+                            out[ix[iline], iy[iline], ...] = ijob()
                     logging.debug('job time (whole loop): {} s'.format(time.time() - stime))
                 else:
                     unfinished_jobs.append(self.jobs[i])
             self.jobs = unfinished_jobs
 
 
-            progress.update(all_jobs_nb - len(self.all_jobs_indexes))
-
-
-            logging.debug('while loop time: {} s'.format(time.time() - while_loop_start))
+            #logging.debug('while loop time: {} s'.format(time.time() - while_loop_start))
         progress.end()
 
         orb.utils.parallel.close_pp_server(self.job_server)

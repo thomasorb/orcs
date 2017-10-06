@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Modelling and fitting a single line spectrum &mdash; Orcs 2.2.2 documentation</title>
+  <title>Modelling and fitting a single line spectrum &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.2 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Modelling and fitting a spectrum with two resolved lines" href="script_example_model+fit_2_lines.html"/>
         <link rel="prev" title="Make a fit over an entire region of the field" href="script_example_fit_region.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.2
+                2.2.3
               </div>
             
           
@@ -436,22 +436,29 @@ are useful to simulate a spectrum which corresponds to your data.</p>
 <span class="k">print</span> <span class="s1">&#39;step (scan step size in nm): &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">step</span>
 <span class="k">print</span> <span class="s1">&#39;order: &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">order</span>
 <span class="k">print</span> <span class="s1">&#39;resolution: &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">resolution</span>
-<span class="k">print</span> <span class="s1">&#39;theta (incident angle at the center of the frame in degrees): &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">theta</span>
+<span class="k">print</span> <span class="s1">&#39;theta (incident angle at the center of the frame in degrees): &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">theta_proj</span>
 <span class="k">print</span> <span class="s1">&#39;axis correction coefficient (calibration coefficient of the wavenumber axis which only depends on theta)&#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">axis_corr</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Data shape : (2048, 2064, 840)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-24|17:37:55 # HDFCube.__init__ &gt; Data shape : (2048, 2064, 840)
-17-07-24|17:37:55 # HDFCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
-17-07-24|17:37:55 # HDFCube.__init__ &gt; Cube is CALIBRATED
 step (scan step size in nm):  2943.025792
 order:  8
-resolution:  4910.44370002
+resolution:  4733.11731899
 theta (incident angle at the center of the frame in degrees):  15.4447050003
 axis correction coefficient (calibration coefficient of the wavenumber axis which only depends on theta) 1.03746502972
 </pre></div></div>
@@ -478,7 +485,7 @@ axis correction coefficient (calibration coefficient of the wavenumber axis whic
 <span class="n">velocity</span> <span class="o">=</span> <span class="mi">250</span>
 <span class="n">broadening</span> <span class="o">=</span> <span class="mi">15</span>
 <span class="n">spectrum</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                         <span class="n">sigma</span><span class="o">=</span><span class="n">broadening</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity</span><span class="p">)</span>
+                                           <span class="n">sigma</span><span class="o">=</span><span class="n">broadening</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity</span><span class="p">)</span>
 
 <span class="c1"># add noise</span>
 <span class="n">spectrum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.03</span>
@@ -513,7 +520,7 @@ axis correction coefficient (calibration coefficient of the wavenumber axis whic
 <h2>Fit the spectrum with a classic Levenberg-Marquardt algorithm<a class="headerlink" href="#Fit-the-spectrum-with-a-classic-Levenberg-Marquardt-algorithm" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -524,7 +531,7 @@ axis correction coefficient (calibration coefficient of the wavenumber axis whic
 <span class="c1"># because the reference position -i.e. the initial guess- of the lines is set</span>
 <span class="c1">#</span>
 <span class="c1"># sigma_guess is the initial guess on the broadening (in km/s)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
                                     <span class="n">wavenumber</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
                                     <span class="n">pos_cov</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">sigma_guess</span><span class="o">=</span><span class="n">broadening</span><span class="p">)</span>
 <span class="k">print</span> <span class="s1">&#39;velocity (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
@@ -542,21 +549,18 @@ axis correction coefficient (calibration coefficient of the wavenumber axis whic
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">17-07-24|17:37:59 # Lines._custom_warn &gt; Warning: /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:129: UserWarning: No SNR guess given. Fit mode is classic.
-  warnings.warn(&#39;No SNR guess given. Fit mode is classic.&#39;)
-</span>
-velocity (in km/s):  [251.77(95)]
-broadening (in km/s):  [15.7(1.8)]
-flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.210(55)]
+velocity (in km/s):  [251.48(85)]
+broadening (in km/s):  [14.2(1.8)]
+flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.235(52)]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[6]:
+<span></span>Out[7]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.legend.Legend at 0x7f28e7fe82d0&gt;
+<span></span>&lt;matplotlib.legend.Legend at 0x7f5d374e6950&gt;
 </pre></div>
 </div>
 </div>
@@ -624,7 +628,7 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.210(55
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.2',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
