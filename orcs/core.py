@@ -596,7 +596,8 @@ class HDFCube(orb.core.HDFCube):
                     'chi2': ifit['chi2'],
                     'rchi2': ifit['rchi2'],
                     'logGBF': ifit['logGBF'],
-                    'ks_pvalue': ifit['ks_pvalue']}
+                    'ks_pvalue': ifit['ks_pvalue'],
+                    'fitted_vector': np.sum(ifit['fitted_models']['Cm1LinesModel'], 0)}
 
             else:
                 return {
@@ -615,7 +616,8 @@ class HDFCube(orb.core.HDFCube):
                     'chi2': None,
                     'rchi2': None,
                     'logGBF': None,
-                    'ks_pvalue': None}
+                    'ks_pvalue': None,
+                    'fitted_vector': None}
 
         if snr_guess not in ('auto', None):
             raise ValueError("snr_guess must be 'auto' or None")
@@ -709,12 +711,17 @@ class HDFCube(orb.core.HDFCube):
                              binning=binning)
 
         for key in out:
-            linemaps.set_map(key, out[key],
+            if key == 'fitted_vector':
+                output = out[key]
+            else:
+
+                linemaps.set_map(key, out[key],
                              x_range=[0, self.dimx],
                              y_range=[0, self.dimy])
 
 
         linemaps.write_maps()
+        return output
 
     def _fit_integrated_spectra(self, regions_file_path,
                                subtract=None,
@@ -1333,7 +1340,7 @@ class HDFCube(orb.core.HDFCube):
         region = self.get_mask_from_ds9_region_file(region)
         self._prepare_input_params(
             lines, nofilter=nofilter, **kwargs)
-        self._fit_lines_in_region(
+        return self._fit_lines_in_region(
             region, subtract_spectrum=subtract_spectrum,
             binning=binning, snr_guess=snr_guess)
 
