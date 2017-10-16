@@ -128,7 +128,7 @@ class SpectralCube(HDFCube):
     def map_sky_velocity(self, mean_sky_vel, div_nb=20, plot=True,
                          x_range=None, y_range=None,
                          exclude_reg_file_path=None,
-                         no_fit=False):
+                         no_fit=False, threshold=None):
         """Map the sky velocity on rectangular grid and interpolate it
         to return a map of the velocity zero point that can be
         subtracted to the returned velocity map of the cube fit.
@@ -153,6 +153,10 @@ class SpectralCube(HDFCube):
         
         :param no_fit: (Optional) Do not repeat the fitting
           process. Only recompute the velocity map model.
+
+        :param threshold: (Optional) If not None, this threshold on
+          the velocity uncertainty is used in place of an automatic
+          threshold.
         """
         def model(p, wf, pixel_size, orig_fit_map, x, y):
             # 0: mirror_distance
@@ -310,10 +314,11 @@ class SpectralCube(HDFCube):
         sky_vel_map_err = np.array(sky_vel_map_err)
         sky_vel_map_err[sky_vel_map_err == 0.] = np.nan
 
-        sky_vel_map_err[sky_vel_map_err > (
-            np.nanmedian(sky_vel_map_err) + 1. * np.std(
-                orb.utils.stats.sigmacut(
-                    sky_vel_map_err, sigma=2.)))] = np.nan
+        if threshold is None:
+            threshold = np.nanmedian(sky_vel_map_err) + 1. * np.std(
+                orb.utils.stats.sigmacut(sky_vel_map_err, sigma=2.))
+
+        sky_vel_map_err[sky_vel_map_err > threshold] = np.nan
 
         # create weights map
         w = 1./(sky_vel_map_err)
