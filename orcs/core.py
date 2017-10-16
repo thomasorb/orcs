@@ -1580,6 +1580,7 @@ class CubeJobServer(object):
             _code = marshal.loads(args[0])
             _func = types.FunctionType(_code, globals(), '_func')
             iline_data = np.squeeze(args[1])
+            iline_data = np.atleast_2d(iline_data)
             out_line = list()
             for i in range(iline_data.shape[0]):
                 iargs_list = list()
@@ -1596,9 +1597,11 @@ class CubeJobServer(object):
                             iarg = iarg[i]
                             
                     iargs_list.append(iarg)
-                        
-                #iline_data[i,:] = _func(iline_data[i,:], *iargs_list)
-                out_line.append(_func(iline_data[i,:], *iargs_list))
+                try:
+                    out_line.append(_func(iline_data[i,:], *iargs_list))
+                except Exception, e:
+                    out_line.append(None)
+                    logging.warning('Exception occured in process_in_line at function call level: {}'.format(e))
             
             return out_line
 
@@ -1639,7 +1642,7 @@ class CubeJobServer(object):
             try:
                 mask.shape == (self.cube.dimx, self.cube.dimy)
             except TypeError:
-                raise Exception('mask must ne a numpy.ndarray')
+                raise TypeError('mask must be a numpy.ndarray')
             except Exception, e:
                 logging.error('Bad mask format{}', e)
 
@@ -1669,7 +1672,7 @@ class CubeJobServer(object):
                 elif isbinned(new_arg):
                     is_map = True
                 else:
-                    raise Exception('Data shape {} not handled'.format(new_arg.shape))
+                    raise TypeError('Data shape {} not handled'.format(new_arg.shape))
                     
             args[i] = (new_arg, is_map)
 
@@ -1706,9 +1709,11 @@ class CubeJobServer(object):
                 iline = self.cube.get_data(min(ix) * binning, (max(ix) + 1) * binning,
                                            iy[0] * binning, (iy[0] + 1) * binning,
                                            0, self.cube.dimz, silent=True)
+        
                 if binning > 1:
                     iline = orb.utils.image.nanbin_image(iline, binning) * binning**2
 
+                iline = np.atleast_2d(iline)
                 iline = iline[ix - min(ix), :]
                 
                 timer['job_load_data_end'] = time.time()
