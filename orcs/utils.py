@@ -58,7 +58,6 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
       changed in the InputParams instance.    
     """
     kwargs_orig = dict(kwargs)
-    
     # check snr guess param
     auto_mode = False
     bad_snr_param = False

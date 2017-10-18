@@ -739,6 +739,11 @@ class HDFCube(orb.core.HDFCube):
         :param verbose: (Optional) If True print the fit results
           (default True).
         """
+        def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol):
+            return utils.fit_lines_in_spectrum(
+                params, inputparams, fit_tol,
+                spectrum, theta_orig, snr_guess=None).convert()
+
 
         if verbose:
             logging.info("Extracting integrated spectra")
@@ -749,29 +754,35 @@ class HDFCube(orb.core.HDFCube):
         # Create parameters file
         paramsfile = list()
                     
-        # extract regions
+        # extract and fit regions
         integ_spectra = list()
 
         regions = self.get_mask_from_ds9_region_file(
             regions_file_path, integrate=False)
-        
-        for iregion in range(len(regions)):
-            logging.info("Fitting region %d/%d"%(iregion, len(regions)))
-            
-            if not (self.params.wavelength_calibration):
-                raise Exception('Not implemented')
-            else:
-                axis = self.params.base_axis.astype(float)
 
-            spectrum, theta_orig = self._extract_spectrum_from_region(
-                regions[iregion],
-                subtract_spectrum=subtract,
-                silent=True, output_axis=axis, return_mean_theta=True)
-            
-            ifit = self._fit_lines_in_spectrum(
-                spectrum, theta_orig, snr_guess=None)
-            lines = gvar.mean(self.inputparams.allparams.pos_guess)
-                
+
+        if not (self.params.wavelength_calibration):
+            raise Exception('Not implemented')
+        else:
+            axis = self.params.base_axis.astype(float)
+
+        if not hasattr(self, 'inputparams'):
+            raise StandardError('Input params not defined')            
+
+
+        cjs = CubeJobServer(self)
+        all_fit = cjs.process_by_region(
+            _fit_lines, regions, subtract, axis,
+            args=(self.params.convert(), self.inputparams.convert(), self.fit_tol),
+            modules=('import logging',
+                     'import orcs.utils as utils'))
+        
+        lines = gvar.mean(self.inputparams.allparams.pos_guess)
+
+        # process results
+        for iregion in range(len(regions)):
+            ifit, ispectrum = all_fit[iregion]
+
             if ifit != []:
 
                 all_fit_results = list()
@@ -815,7 +826,7 @@ class HDFCube(orb.core.HDFCube):
                 fitted_models = ifit['fitted_models']
             else:
                 all_fit_results = [dict() for _ in range(len(lines))]
-                fitted_vector = np.zeros_like(spectrum)
+                fitted_vector = np.zeros_like(ispectrum)
                 fitted_models = list()
                 
             if self.params.wavenumber:
@@ -831,7 +842,7 @@ class HDFCube(orb.core.HDFCube):
             self.write_fits(
                 self._get_integrated_spectrum_path(
                     iregion),
-                spectrum, fits_header=spectrum_header,
+                ispectrum, fits_header=spectrum_header,
                 overwrite=True, silent=True)
 
             self.write_fits(
@@ -855,7 +866,7 @@ class HDFCube(orb.core.HDFCube):
 
                 import pylab as pl
                 ax1 = pl.subplot(211)
-                ax1.plot(axis, spectrum, c= '0.3',
+                ax1.plot(axis, ispectrum, c= '0.3',
                          ls='--', lw=1.5,
                          label='orig spectrum')
 
@@ -872,13 +883,13 @@ class HDFCube(orb.core.HDFCube):
                 ax1.grid()
                 ax1.legend()
                 ax2 = pl.subplot(212, sharex=ax1)
-                ax2.plot(axis, spectrum - fitted_vector, c= 'red',
+                ax2.plot(axis, ispectrum - fitted_vector, c= 'red',
                          ls='-', lw=1.5, label='residual')
                 ax2.grid()
                 ax2.legend()
                 pl.show()
 
-            integ_spectra.append(spectrum)
+            integ_spectra.append(ispectrum)
              
         return paramsfile
 
@@ -1568,9 +1579,117 @@ class CubeJobServer(object):
         self.job_server, self.ncpus = orb.utils.parallel.init_pp_server()
         self.cube = cube
 
+
+    def process_by_region(self, func, regions, subtract, axis, args=list(), modules=list(),
+                          depfuncs=list()):
+
+        """Parallelize a function applied to a list of intergrated
+        regions extracted from the spectral cube.
+
+        the function must be func(spectrum, theta_orig, *args)
+
+        theta_orig is the mean original incident angle in the integrated region.
+        """
+        self.all_jobs = [(i, regions[i]) for i in range(len(regions))] # jobs to submit
+
+        # jobs submit / retrieve loop
+        out = list()
+        self.jobs = list() # submitted and unfinished jobs
+        all_jobs_nb = len(self.all_jobs)
+        progress = orb.core.ProgressBar(all_jobs_nb)
+        while len(self.all_jobs) > 0 or len(self.jobs) > 0:
+            while_loop_start = time.time()
+
+            # submit jobs
+            while len(self.jobs) < self.ncpus and len(self.all_jobs) > 0:
+                timer = dict()
+                timer['job_submit_start'] = time.time()
+                
+                timer['job_load_data_start'] = time.time()
+                # raw lines extraction (warning: velocity must be
+                # corrected by the function itself)
+                ispectrum, itheta_orig = self.cube._extract_spectrum_from_region(
+                    self.all_jobs[0][1],
+                    subtract_spectrum=subtract,
+                    silent=True, output_axis=axis, return_mean_theta=True)
+                
+                timer['job_load_data_end'] = time.time()
+                
+                all_args = list()
+                all_args.append(ispectrum)
+                all_args.append(itheta_orig)
+                for iarg in args:
+                    all_args.append(iarg)
+                
+                timer['job_submit_end'] = time.time()
+                
+                # job submission
+                self.jobs.append([
+                    self.job_server.submit(
+                        func,
+                        args=tuple(all_args),
+                        modules=tuple(modules),
+                        depfuncs=tuple(depfuncs)),
+                    self.all_jobs[0], time.time(), timer])
+                self.all_jobs.pop(0)
+                progress.update(all_jobs_nb - len(self.all_jobs))
+
+
+            # retrieve all finished jobs
+            unfinished_jobs = list()
+            for i in range(len(self.jobs)):
+                ijob, (iregion_index, iregion), stime, timer = self.jobs[i]
+                if ijob.finished:
+                    
+                    logging.debug('job time since submission: {} s'.format(
+                        time.time() - stime))
+                    logging.debug('job submit time: {} s'.format(
+                        timer['job_submit_end'] - timer['job_submit_start']))
+                    logging.debug('job load data time: {} s'.format(
+                        timer['job_load_data_end'] - timer['job_load_data_start']))
+
+                    out.append((iregion_index, ijob(), ispectrum))
+                    logging.debug('job time (whole loop): {} s'.format(time.time() - stime))
+                else:
+                    unfinished_jobs.append(self.jobs[i])
+            self.jobs = unfinished_jobs
+                                        
+                    
+        progress.end()
+
+        orb.utils.parallel.close_pp_server(self.job_server)
+
+        # reorder out
+        ordered_out = list()
+        for i in range(all_jobs_nb):
+            ok = False
+            for iout in out:
+                if iout[0] == i:
+                    ordered_out.append(iout[1:])
+                    ok = True
+                    break
+            if not ok: 
+                raise StandardError('at least one of the processed region is not in the results list')
+
+        return ordered_out
+        
+
     def process_by_pixel(self, func, args=list(), modules=list(), out=dict(),
                          depfuncs=list(),
                          mask=None, binning=1):
+        """Parallelize a function taking binned spectra of the cube as
+        an input. All pixels are gone through unless a mask is passed
+        which indicates the pixels that must be processed. The typical
+        results returned are maps.
+
+        The function must be func(spectrum, *args)
+
+        Any argument with a shape equal to the x,y shape of the cube
+        (or the binned x,y shape) will be mapped, i.e., the argument
+        passed to the vector function will be the value corresponding
+        to the position of the extracted spectrum. (works also for 3d
+        shaped arguments, the 3rd dimension can have any size)    
+        """
 
         def process_in_line(*args):
             """Basic line processing for a vector function"""
