@@ -314,6 +314,23 @@ class SpectralCube(HDFCube):
         sky_vel_map_err = np.array(sky_vel_map_err)
         sky_vel_map_err[sky_vel_map_err == 0.] = np.nan
 
+
+        # remove excluded regions (if already fitted, e.g. when the
+        # process is doen another time with a different exclude mask)
+        if exclude_reg_file_path is not None:
+            exclude_mask = np.zeros((dimx, dimy), dtype=bool)
+            exclude_mask[orb.utils.misc.get_mask_from_ds9_region_file(
+                exclude_reg_file_path,
+                [0, dimx], [0, dimy])] = True
+            
+            for i in range(len(x)):
+                if exclude_mask[int(x[i]), int(y[i])]:
+                    x[i] = np.nan
+                    y[i] = np.nan
+                    sky_vel_map[i] = np.nan
+                    sky_vel_map_err[i] = np.nan
+                    
+        # remove bad fits
         if threshold is None:
             threshold = np.nanmedian(sky_vel_map_err) + 1. * np.std(
                 orb.utils.stats.sigmacut(sky_vel_map_err, sigma=2.))
