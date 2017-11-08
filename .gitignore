@@ -8,4 +8,4 @@ dist/
 build/
 orcs.egg-info/
 .eggs/
-.DS_Store
+*.DS_Store
