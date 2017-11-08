@@ -128,7 +128,7 @@ class SpectralCube(HDFCube):
     def map_sky_velocity(self, mean_sky_vel, div_nb=20, plot=True,
                          x_range=None, y_range=None,
                          exclude_reg_file_path=None,
-                         no_fit=False):
+                         no_fit=False, threshold=None):
         """Map the sky velocity on rectangular grid and interpolate it
         to return a map of the velocity zero point that can be
         subtracted to the returned velocity map of the cube fit.
@@ -153,6 +153,10 @@ class SpectralCube(HDFCube):
         
         :param no_fit: (Optional) Do not repeat the fitting
           process. Only recompute the velocity map model.
+
+        :param threshold: (Optional) If not None, this threshold on
+          the velocity uncertainty is used in place of an automatic
+          threshold.
         """
         def model(p, wf, pixel_size, orig_fit_map, x, y):
             # 0: mirror_distance
@@ -310,10 +314,28 @@ class SpectralCube(HDFCube):
         sky_vel_map_err = np.array(sky_vel_map_err)
         sky_vel_map_err[sky_vel_map_err == 0.] = np.nan
 
-        sky_vel_map_err[sky_vel_map_err > (
-            np.nanmedian(sky_vel_map_err) + 1. * np.std(
-                orb.utils.stats.sigmacut(
-                    sky_vel_map_err, sigma=2.)))] = np.nan
+
+        # remove excluded regions (if already fitted, e.g. when the
+        # process is doen another time with a different exclude mask)
+        if exclude_reg_file_path is not None:
+            exclude_mask = np.zeros((dimx, dimy), dtype=bool)
+            exclude_mask[orb.utils.misc.get_mask_from_ds9_region_file(
+                exclude_reg_file_path,
+                [0, dimx], [0, dimy])] = True
+            
+            for i in range(len(x)):
+                if exclude_mask[int(x[i]), int(y[i])]:
+                    x[i] = np.nan
+                    y[i] = np.nan
+                    sky_vel_map[i] = np.nan
+                    sky_vel_map_err[i] = np.nan
+                    
+        # remove bad fits
+        if threshold is None:
+            threshold = np.nanmedian(sky_vel_map_err) + 1. * np.std(
+                orb.utils.stats.sigmacut(sky_vel_map_err, sigma=2.))
+
+        sky_vel_map_err[sky_vel_map_err > threshold] = np.nan
 
         # create weights map
         w = 1./(sky_vel_map_err)
