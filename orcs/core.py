@@ -1429,10 +1429,9 @@ class HDFCube(orb.core.HDFCube):
             x = [xy[0]]
             y = [xy[1]]
         elif np.size(xy) > 2 and len(xy.shape) == 2:
-            if xy.shape[1] > xy.shape[2]:
-                xy = np.copy(xy.T)
             x = xy[:,0]
             y = xy[:,1]
+        else:
             raise StandardError('xy must be a tuple (x,y) of coordinates or a list of tuples ((x0,y0), (x1,y1), ...)')
 
         if not hasattr(self, 'dxmap') or not hasattr(self, 'dymap'):
