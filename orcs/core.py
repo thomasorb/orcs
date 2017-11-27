@@ -1575,8 +1575,6 @@ class HDFCube(orb.core.HDFCube):
 
         This can be used inside a jupyter session. Works best with
         `%matplotlib notebook` magic function.
-
-    
         """
         import pylab as pl
         from matplotlib.widgets import Slider, Button
