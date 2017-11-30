@@ -352,7 +352,11 @@ div.nboutput div.output_area.stderr {
 .ansi-white-intense-fg { color: #A1A6B2; }
 .ansi-white-intense-bg { background-color: #A1A6B2; }
 
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
 .ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
 
 /* CSS overrides for sphinx_rtd_theme */
 
@@ -524,7 +528,7 @@ INFO| Init of the parallel processing server with 16 threads
 <h3>fitting the sky spectrum<a class="headerlink" href="#fitting-the-sky-spectrum" title="Permalink to this headline">¶</a></h3>
 <p>we can also fit the integrated spectrum because there si a large number
 of sky lines and because we are not interested in a perfect fit (only
-the velocity is required), we can use a simple &#8216;sinc&#8217; model with a fixed
+the velocity is required), we can use a simple ‘sinc’ model with a fixed
 fwhm. All the lines are set to share the same velocity parameter and we
 set an inital guess of the velocity around 80 km/s. This general bias of
 80 km/s is known (<a class="reference external" href="https://arxiv.org/abs/1706.03230">Martin et al.
@@ -1181,16 +1185,6 @@ Velocity:  [-1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5
 <img alt="_images/script_example_wavelength_calibration_13_5.png" src="_images/script_example_wavelength_calibration_13_5.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 
@@ -1248,7 +1242,7 @@ Velocity:  [-1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5) -1.2(1.5
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

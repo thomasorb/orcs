@@ -54,6 +54,7 @@ except Exception, e:
     sys.exit(2)
 
 import utils
+import rvcorrect
 
 #################################################
 #### CLASS HDFCube ##############################
@@ -1643,6 +1644,16 @@ class HDFCube(orb.core.HDFCube):
         self.bnorm = Button(self.axes[3], 'Normalize Colorbar')
         self.bnorm.on_clicked(norm)
 
+    def get_heliocentric_velocity(self, vobs):
+        """Return corrected heliocentric velocity and local standard of rest
+           velocity for a given measured velocity.
+        """
+        rvcorr = rvcorrect.RVCorrect(
+            self.params.target_ra, self.params.target_dec, self.params.obs_date,
+            self.params.hour_ut, (self.config.OBS_LAT, self.config.OBS_LON, self.config.OBS_ALT))
+        return rvcorr.rvcorrect(vobs=vobs)
+        
+        
 ##################################################
 #### CLASS CubeJobServer #########################
 ##################################################

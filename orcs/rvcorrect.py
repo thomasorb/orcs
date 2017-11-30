@@ -20,9 +20,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with ORCS.  If not, see <http://www.gnu.org/licenses/>.
 
-import math
 import numpy as np
-
+import logging
 """Compute the radial velocity correction for spectral data.
 
 The whole class has been created using David Nidever IDL function
@@ -40,7 +39,7 @@ The description of the IRAF function can be found at::
 #### RVCORRECT ##################################
 #################################################
 
-class RVCorrect():
+class RVCorrect(object):
     """
     Compute radial velocity correction. The whole class has been
     created using David Nidever's IDL function RVCORRECT itself
@@ -58,7 +57,7 @@ class RVCorrect():
     J2000  = 2000.0 
     JD2000 = 2451545.0
     JYEAR  = 365.25
-    RADEG = 180./math.pi
+    RADEG = 180./np.pi
 
     ra = None # RA of the object
     dec = None # DEC of the object
@@ -115,19 +114,30 @@ class RVCorrect():
         if isinstance(ut, basestring):
             ut = ut.split(":")
 
-        if len(ra) == 3:
+        if isinstance(ra, float):
+            self.ra = float(ra)
+        elif len(ra) == 3:
             ra_conv = abs(float(ra[0])) + float(ra[1])/60. + float(ra[2])/3600.
-            if ra[0].find('-') != -1: self.ra = -ra_conv
+            if float(ra[0]) < 0.: self.ra = -ra_conv
             else: self.ra = ra_conv
-        if len(dec) == 3:
+        else: raise ValueError('ra must be a tuple (hr, min, sec), a string hr:min:sec or a float')
+
+        if isinstance(dec, float):
+            self.dec = float(dec)
+        elif len(dec) == 3:
             dec_conv = (abs(float(dec[0])) + float(dec[1])/60.
                         + float(dec[2])/3600.)
-            if dec[0].find('-') != -1: self.dec = -dec_conv
+            if float(dec[0]) < 0.: self.dec = -dec_conv
             else: self.dec = dec_conv
-        if len(ut) == 3:
+        else: raise ValueError('dec must be a tuple (deg, min, sec), a string deg:min:sec or a float')
+
+        if isinstance(ut, float):
+            self.ut = ut
+        elif len(ut) == 3:
             ut_conv = abs(float(ut[0])) + float(ut[1])/60. + float(ut[2])/3600.
-            if ut[0].find('-') != -1: self.ut = -ut_conv
+            if float(ut[0]) < 0.: self.ut = -ut_conv
             else: self.ut = ut_conv
+        else: raise ValueError('ut hour must be a tuple (hr, min, sec), a string hr:min:sec or a float')
 
         (self.year, self.month, self.day) = date
         (self.latitude, self.longitude, self.altitude) = obs_coords
@@ -291,9 +301,9 @@ class RVCorrect():
         ra2 = (ra1 * 15.)/self.RADEG
         dec2 = dec1/self.RADEG
 
-        r0[0] = math.cos(ra2) * math.cos(dec2)
-	r0[1] = math.sin(ra2) * math.cos(dec2)
-	r0[2] = math.sin(dec2)
+        r0[0] = np.cos(ra2) * np.cos(dec2)
+	r0[1] = np.sin(ra2) * np.cos(dec2)
+	r0[2] = np.sin(dec2)
 
         # If epoch1 is not the standard epoch then precess to the
 	# standard epoch.
@@ -318,8 +328,8 @@ class RVCorrect():
 	    r0[2] = r1[2]
 
         # Convert from radians to hours and degrees.
-        ra2 = (math.atan2(r0[1], r0[0]) / 15.) * self.RADEG
-	dec2 =(math.asin(r0[2])) * self.RADEG
+        ra2 = (np.arctan2(r0[1], r0[0]) / 15.) * self.RADEG
+	dec2 =(np.arcsin(r0[2])) * self.RADEG
         if (ra2 < 0.):
             ra2 = ra2 + 24.0
 
@@ -345,12 +355,12 @@ class RVCorrect():
 	c = t * (0.5567530 - t * (0.0001185 + t * 0.0000116))
 
         # Compute the cosines and sines once for efficiency.
-        ca = math.cos(a/self.RADEG)
-	sa = math.sin(a/self.RADEG)
-	cb = math.cos(b/self.RADEG)
-	sb = math.sin(b/self.RADEG)
-	cc = math.cos(c/self.RADEG)
-	sc = math.sin(c/self.RADEG)
+        ca = np.cos(a/self.RADEG)
+	sa = np.sin(a/self.RADEG)
+	cb = np.cos(b/self.RADEG)
+	sb = np.sin(b/self.RADEG)
+	cc = np.cos(c/self.RADEG)
+	sc = np.sin(c/self.RADEG)
         
         # Compute the rotation matrix from the sines and cosines.
         p[0, 0] = ca * cb * cc - sa * sb
@@ -383,18 +393,18 @@ class RVCorrect():
         :param b1: latitude of the pole of the coordinates to be
           converted (radians)
         """
-        x = math.cos(a1) * math.cos(b1)
-	y = math.sin(a1) * math.cos(b1)
-	z = math.sin(b1)
-	xp = math.cos(ap) * math.cos(bp)
-	yp = math.sin(ap) * math.cos(bp)
-	zp = math.sin(bp)
+        x = np.cos(a1) * np.cos(b1)
+	y = np.sin(a1) * np.cos(b1)
+	z = np.sin(b1)
+	xp = np.cos(ap) * np.cos(bp)
+	yp = np.sin(ap) * np.cos(bp)
+	zp = np.sin(bp)
 
         # Rotate the origin about z.
-	sao = math.sin(ao)
-	cao = math.cos(ao)
-	sbo = math.sin(bo)
-	cbo = math.cos(bo)
+	sao = np.sin(ao)
+	cao = np.cos(ao)
+	sbo = np.sin(bo)
+	cbo = np.cos(bo)
 	temp = -xp * sao + yp * cao
 	xp = xp * cao + yp * sao
 	yp = temp
@@ -418,8 +428,8 @@ class RVCorrect():
 	z = temp
 
         # Final angular coordinates.
-	a2 = math.atan2(y, x)
-	b2 = math.asin(z)
+	a2 = np.arctan2(y, x)
+	b2 = np.arcsin(z)
 
         return a2, b2
 
@@ -465,23 +475,23 @@ class RVCorrect():
 	oblq = oblq/self.RADEG
 
         # TANOM is the true anomaly (approximate formula) (radians)
-        tanom = (manom + (2.0 * eccen - 0.25 * eccen**3.0) * math.sin(manom)
-                 + 1.25 * eccen**2.0 * math.sin(2.0 * manom)
-                 + 13./12. * eccen**3.0 * math.sin(3.0 * manom))
+        tanom = (manom + (2.0 * eccen - 0.25 * eccen**3.0) * np.sin(manom)
+                 + 1.25 * eccen**2.0 * np.sin(2.0 * manom)
+                 + 13./12. * eccen**3.0 * np.sin(3.0 * manom))
 
         # SLONG is the true longitude of the Sun seen from the Earth (radians)
-	slong = lperi + tanom + math.pi
+	slong = lperi + tanom + np.pi
 
         # L and B are the longitude and latitude of the star in the orbital
 	# plane of the Earth (radians)
-        l, b = self. ast_coord(0., 0., -math.pi/2., math.pi/2. - oblq, r, d)
+        l, b = self. ast_coord(0., 0., -np.pi/2., np.pi/2. - oblq, r, d)
 
         # R is the distance to the Sun.
-        rsun = (1.0 - eccen**2.0) / (1.0 + eccen * math.cos(tanom))
+        rsun = (1.0 - eccen**2.0) / (1.0 + eccen * np.cos(tanom))
 
         # LTIM is the light travel difference to the Sun.
         # HJD is the heliocentric Julian Day
-        ltim = -0.005770 * rsun * math.cos(b) * math.cos(l - slong)
+        ltim = -0.005770 * rsun * np.cos(b) * np.cos(l - slong)
 	hjd = jd + ltim
 
         return ltim, hjd
@@ -497,14 +507,14 @@ class RVCorrect():
         """
 
         # Cartesian velocity components of the velocity vector.
-        vx = v1 * math.cos((15. * ra1)/self.RADEG) * math.cos(dec1/self.RADEG)
-        vy = v1 * math.sin((15. * ra1)/self.RADEG) * math.cos(dec1/self.RADEG)
-        vz = v1 * math.sin(dec1/self.RADEG)
+        vx = v1 * np.cos((15. * ra1)/self.RADEG) * np.cos(dec1/self.RADEG)
+        vy = v1 * np.sin((15. * ra1)/self.RADEG) * np.cos(dec1/self.RADEG)
+        vz = v1 * np.sin(dec1/self.RADEG)
 
         # Direction cosines along the direction of observation.
-        cc = math.cos(dec2/self.RADEG) * math.cos( (15. * ra2)/self.RADEG)
-        cs = math.cos(dec2/self.RADEG) * math.sin( (15. * ra2)/self.RADEG)
-        s  = math.sin(dec2/self.RADEG)
+        cc = np.cos(dec2/self.RADEG) * np.cos( (15. * ra2)/self.RADEG)
+        cs = np.cos(dec2/self.RADEG) * np.sin( (15. * ra2)/self.RADEG)
+        s  = np.sin(dec2/self.RADEG)
 
         # Project velocity vector along the direction of observation.
         v2 = (vx * cc + vy * cs + vz * s)
@@ -544,27 +554,27 @@ class RVCorrect():
 	oblq = oblq/self.RADEG
 
         # TANOM is the true anomaly (approximate formula) (radians)
-        tanom = (manom + (2.0 * eccen - 0.25 * eccen**3.0) * math.sin(manom)
-                 + 1.25 * eccen**2.0 * math.sin(2.0 * manom)
-                 + 13./12. * eccen**3.0 * math.sin(3.0 * manom))
+        tanom = (manom + (2.0 * eccen - 0.25 * eccen**3.0) * np.sin(manom)
+                 + 1.25 * eccen**2.0 * np.sin(2.0 * manom)
+                 + 13./12. * eccen**3.0 * np.sin(3.0 * manom))
 
         # SLONG is the true longitude of the Sun seen from the Earth
-	slong = lperi + tanom + math.pi
+	slong = lperi + tanom + np.pi
 
         # L and B are the longitude and latitude of the star in the
         # orbital plane of the Earth (radians)
-        l, b = self.ast_coord(0., 0., -math.pi/2., math.pi/2 - oblq, r, d)
+        l, b = self.ast_coord(0., 0., -np.pi/2., np.pi/2 - oblq, r, d)
 
         # VORB is the component of the Earth's orbital velocity perpendicular
         # to the radius vector (km/s) where the Earth's semi-major axis is
         # 149598500 km and the year is 365.2564 days.
-        vorb = ((2.0*math.pi / 365.2564) * 149598500.
-                / math.sqrt(1.0 - eccen**2.)) / 86400.
+        vorb = ((2.0*np.pi / 365.2564) * 149598500.
+                / np.sqrt(1.0 - eccen**2.)) / 86400.
 
         # V is the projection onto the line of sight to the observation of
         # the velocity of the Earth-Moon barycenter with respect to the
         # Sun (km/s).
-        v = vorb * math.cos(b) * (math.sin(slong - l) - eccen * math.sin(lperi - l))
+        v = vorb * np.cos(b) * (np.sin(slong - l) - eccen * np.sin(lperi - l))
         return v
 
 
@@ -613,9 +623,9 @@ class RVCorrect():
         lperi = lperi/self.RADEG
         llong = llong/self.RADEG
         anom = llong - lperi
-        anom = (anom + (2.0 * em - 0.25 * em**3.0) * math.sin(anom)
-                + 1.25 * em**2.0 * math.sin(2.0 * anom)
-                + 13./12. * em**3.0 * math.sin(3.0 * anom))
+        anom = (anom + (2.0 * em - 0.25 * em**3.0) * np.sin(anom)
+                + 1.25 * em**2.0 * np.sin(2.0 * anom)
+                + 13./12. * em**3.0 * np.sin(3.0 * anom))
         llong = anom + lperi
 
         # L and B are the ecliptic longitude and latitude of the
@@ -629,8 +639,8 @@ class RVCorrect():
         oblq = oblq/self.RADEG
         inclin = inclin/self.RADEG
 
-        l, b = self.ast_coord(0.,0., -math.pi/2., math.pi/2. - oblq, r, d)
-        lm, bm = self.ast_coord(omega, 0., omega - math.pi/2., math.pi/2. - inclin, l, b)
+        l, b = self.ast_coord(0.,0., -np.pi/2., np.pi/2. - oblq, r, d)
+        lm, bm = self.ast_coord(omega, 0., omega - np.pi/2., np.pi/2. - inclin, l, b)
 
         # VMOON is the component of the lunar velocity perpendicular
         # to the radius vector.  V is the projection onto the line of
@@ -638,9 +648,9 @@ class RVCorrect():
         # center with respect to the Earth-Moon barycenter.  The 81.53
         # is the ratio of the Earth's mass to the Moon's mass.
 
-        vmoon = ((2.0*math.pi / 27.321661) * 384403.12040
-                 / math.sqrt(1.0 - em**2.0) / 86400.)
-        v = vmoon * math.cos(bm) * (math.sin(llong - lm) - em * math.sin(lperi - lm))
+        vmoon = ((2.0*np.pi / 27.321661) * 384403.12040
+                 / np.sqrt(1.0 - em**2.0) / 86400.)
+        v = vmoon * np.cos(bm) * (np.sin(llong - lm) - em * np.sin(lperi - lm))
         v = v / 81.53
 
         return v
@@ -662,8 +672,8 @@ class RVCorrect():
         
         # Reduction of geodesic latitude to geocentric latitude
         # (radians).  Dlat is in arcseconds.
-        dlat = (-(11.0 * 60.0 + 32.743000) * math.sin(2.0 * lat)
-                + 1.163300 * math.sin(4.0 * lat) -0.002600 * math.sin(6.0 * lat))
+        dlat = (-(11.0 * 60.0 + 32.743000) * np.sin(2.0 * lat)
+                + 1.163300 * np.sin(4.0 * lat) -0.002600 * np.sin(6.0 * lat))
         lat = lat + ((dlat / 3600.) / self.RADEG)
 
         # R is the radius vector from the Earth's center to the
@@ -671,22 +681,22 @@ class RVCorrect():
         # velocity (meters/sidereal day converted to km / sec).
         # (sidereal day = 23.934469591229 hours (1986))
 
-        r = (6378160.0 * (0.998327073 + 0.00167643800 * math.cos(2.0 * lat)
-                          - 0.00000351 * math.cos(4.0 * lat)
-                          + 0.000000008 * math.cos(6.0 * lat))
+        r = (6378160.0 * (0.998327073 + 0.00167643800 * np.cos(2.0 * lat)
+                          - 0.00000351 * np.cos(4.0 * lat)
+                          + 0.000000008 * np.cos(6.0 * lat))
              + altitude)
         
-        vc = 2.0 * math.pi * (r / 1000.)  / (23.934469591229 * 3600.0)
+        vc = 2.0 * np.pi * (r / 1000.)  / (23.934469591229 * 3600.0)
 
         # Project the velocity onto the line of sight to the star.
         lmst = self.ast_mst(epoch, longitude)
-        v = (vc * math.cos(lat) * math.cos(dec/self.RADEG)
-             * math.sin(((ra - lmst) * 15.)/self.RADEG))
+        v = (vc * np.cos(lat) * np.cos(dec/self.RADEG)
+             * np.sin(((ra - lmst) * 15.)/self.RADEG))
         
         return v
 
     def rvcorrect(self, vobs=0.):
-        """ Compute the radial velocities.
+        """ Compute the radial velocities (heliocentric and local standard of rest).
         """
 
         # SOLAR INFORMATION
@@ -715,13 +725,13 @@ class RVCorrect():
         self.vlsr = self.vrot + self.vbary + self.vorb + self.vsol + vobs
 
         if not self.silent:
-            print("VOBS: %f km.s-1"%vobs)
-            print("HJD: %f"%self.hjd)
-            print("VHELIO: %f km.s-1"%(self.vhelio))
-            print("VLSR: %f km.s-1"%self.vlsr)
-            print("VDIURNAL: %f km.s-1"%self.vrot)
-            print("VLUNAR: %f km.s-1"%self.vbary)
-            print("VANNUAL: %f km.s-1"%self.vorb)
-            print("VSOLAR: %f km.s-1"%self.vsol)
+            logging.info("VOBS: %f km.s-1"%vobs)
+            logging.info("HJD: %f"%self.hjd)
+            logging.info("VHELIO: %f km.s-1"%(self.vhelio))
+            logging.info("VLSR: %f km.s-1"%self.vlsr)
+            logging.info("VDIURNAL: %f km.s-1"%self.vrot)
+            logging.info("VLUNAR: %f km.s-1"%self.vbary)
+            logging.info("VANNUAL: %f km.s-1"%self.vorb)
+            logging.info("VSOLAR: %f km.s-1"%self.vsol)
             
         return self.vhelio, self.vlsr

@@ -64,3 +64,4 @@ Other Tools
    :maxdepth: 1
 	      
    script_example_automatic_source_detection.ipynb
+   script_example_heliocentric_velocity.ipynb
