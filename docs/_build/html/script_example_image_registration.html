@@ -350,7 +350,11 @@ div.nboutput div.output_area.stderr {
 .ansi-white-intense-fg { color: #A1A6B2; }
 .ansi-white-intense-bg { background-color: #A1A6B2; }
 
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
 .ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
 
 /* CSS overrides for sphinx_rtd_theme */
 
@@ -408,7 +412,11 @@ Martin el al. 2017, <a class="reference external" href="http://adsabs.harvard.ed
 <h2>Initial calibration<a class="headerlink" href="#Initial-calibration" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">target_radec</span></code> and <code class="docutils literal"><span class="pre">target_xy</span></code> are the initial coordinates of the
 registration procedure. They must be taken near the center of the image
-to register and can be obtained using, e.g. the Digital Sky Survey.</p>
+to register and can be obtained using, e.g. the Digital Sky Survey
+(<a class="reference external" href="http://archive.stsci.edu/cgi-bin/dss_form">http://archive.stsci.edu/cgi-bin/dss_form</a>).</p>
+<p><strong>warning</strong> don’t forget that ds9 is indexed (1,1) and python is indexed
+(0,0). i.e. you must subtract 1 to x and y image coordinates if you read
+your image with ds9.</p>
 <p>The process is best done two times. The first time only the center of
 the field of view is considered and a rough primary distortion field is
 obtained that can be used the second time to compute a distortion model
@@ -1782,16 +1790,6 @@ a really good precision on the astrometry.</p>
 <img alt="_images/script_example_image_registration_17_1.png" src="_images/script_example_image_registration_17_1.png" />
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -1850,7 +1848,7 @@ a really good precision on the astrometry.</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
