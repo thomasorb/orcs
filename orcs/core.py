@@ -79,10 +79,10 @@ class HDFCube(orb.core.HDFCube):
         self.logger = orb.core.Logger(debug=self.debug)
         FIT_TOL = 1e-10
         self.cube_path = cube_path
-        self.header = self.get_header()
         instrument = None
-        if 'SITELLE' in self.header['INSTRUME']:
+        if 'SITELLE' in self.get_header()['INSTRUME']:
             instrument = 'sitelle'
+        
 
         kwargs['instrument'] = instrument
         orb.core.HDFCube.__init__(self, cube_path, **kwargs)
@@ -95,113 +95,8 @@ class HDFCube(orb.core.HDFCube):
         
 
         self.fit_tol = FIT_TOL
-        
-        self.set_param('step', float(self.header['STEP']))
-        self.set_param('order', int(self.header['ORDER']))
-        self.set_param('axis_corr', float(self.header['AXISCORR']))
-        self.set_param('nm_laser', float(self.header['CALIBNM']))
-        self.set_param('object_name', str(self.header['OBJECT']))
-        self.set_param('filter_name', str(self.header['FILTER']))
-        self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
-        self.set_param('apodization', float(self.header['APODIZ']))
-        self.set_param('exposure_time', float(self.header['EXPTIME']))
-        if 'FLAMBDA' in self.header:
-            self.set_param('flambda', float(self.header['FLAMBDA']))
-        else:
-            warnings.warn('FLAMBDA keyword not in cube header. Flux calibration may be bad.')
-            self.set_param('flambda', 1.)
 
-        
-        step_nb = int(self.header['STEPNB'])
-        if step_nb != self.dimz:
-            warnings.warn('Malformed spectral cube. The number of steps in the header ({}) does not correspond to the real size of the data cube ({})'.format(step_nb, self.dimz))
-            step_nb = int(self.dimz)
-        self.set_param('step_nb', step_nb)
-
-        if 'ZPDINDEX' in self.header:
-            self.set_param('zpd_index', self.header['ZPDINDEX'])
-        else:
-            raise StandardError('ZPDINDEX not in cube header. Please run again the last step of ORBS reduction process.')
-
-
-        # new data prefix
-        base_prefix = '{}_{}.{}'.format(self.params.object_name,
-                                         self.params.filter_name,
-                                         self.params.apodization)
-        
-        self._data_prefix = base_prefix + '.ORCS' + os.sep + base_prefix + '.'
-        self._msg_class_hdr = self._get_msg_class_hdr()
-        self._data_path_hdr = self._get_data_path_hdr()
-
-        # resolution
-        resolution = orb.utils.spectrum.compute_resolution(
-            self.dimz - self.params.zpd_index,
-            self.params.step, self.params.order,
-            self.params.axis_corr)
-        self.set_param('resolution', resolution)
-
-        # incident angle of reference (in degrees)
-        self.set_param('theta_proj', orb.utils.spectrum.corr2theta(self.params.axis_corr))
-
-        # wavenumber
-        self.set_param('wavetype', str(self.header['WAVTYPE']))
-        if self.params.wavetype == 'WAVELENGTH':
-            raise Exception('ORCS cannot handle wavelength cubes')
-            self.params['wavenumber'] = False
-            logging.info('Cube is in WAVELENGTH (nm)')
-            self.unit = 'nm'
-        else:
-            self.params['wavenumber'] = True
-            logging.info('Cube is in WAVENUMBER (cm-1)')
-            self.unit = 'cm-1'
-
-        # wavelength calibration
-        self.set_param('wavelength_calibration', bool(self.header['WAVCALIB']))                          
-            
-        if self.params.wavelength_calibration:
-            logging.info('Cube is CALIBRATED in wavenumber')
-        else:
-            logging.info('Cube is NOT CALIBRATED')            
-            
-
-        ## Get WCS header
-        self.wcs = self.get_wcs()
-        self.wcs_header = self.get_wcs_header()
-        self._wcs_header = self.get_wcs_header()
-
-        self.set_param('target_ra', float(self.wcs.wcs.crval[0]))
-        self.set_param('target_dec', float(self.wcs.wcs.crval[1]))
-        self.set_param('target_x', float(self.wcs.wcs.crpix[0]))
-        self.set_param('target_y', float(self.wcs.wcs.crpix[1]))
-        
-        wcs_params = orb.utils.astrometry.get_wcs_parameters(self.wcs)
-        self.set_param('wcs_rotation', float(wcs_params[-1]))
-
-        self.set_param('obs_date', np.array(self.header['DATE-OBS'].strip().split('-'), dtype=int))
-        if 'HOUR_UT' in self.header:
-            self.set_param('hour_ut', np.array(self.header['HOUR_UT'].strip().split(':'), dtype=float))
-        else:
-            self.params['hour_ut'] = (0., 0., 0.)
-
-        # create base axis of the data
-        if self.params.wavenumber:
-            self.set_param('base_axis', orb.utils.spectrum.create_cm1_axis(
-                self.dimz, self.params.step, self.params.order,
-                corr=self.params.axis_corr))
-        else:
-            self.set_param('base_axis', orb.utils.spectrum.create_nm_axis(
-                self.dimz, self.params.step, self.params.order,
-                corr=self.params.axis_corr))
-
-        self.set_param('axis_min', np.min(self.params.base_axis))
-        self.set_param('axis_max', np.max(self.params.base_axis))
-        self.set_param('axis_step', np.min(self.params.base_axis[1] - self.params.base_axis[0]))
-        self.set_param('line_fwhm', orb.utils.spectrum.compute_line_fwhm(
-            self.params.step_nb - self.params.zpd_index, self.params.step, self.params.order,
-            apod_coeff=self.params.apodization,
-            corr=self.params.axis_corr,
-            wavenumber=self.params.wavenumber))
-        self.set_param('filter_range', self.get_filter_range())
+        self.set_header(None)
         
     def _get_data_prefix(self):
         """Return data prefix"""
@@ -1414,11 +1309,26 @@ class HDFCube(orb.core.HDFCube):
         """
         dxmap = self.read_fits(dxmap_path)
         dymap = self.read_fits(dymap_path)
-        if (dxmap.shape == (self.dimx, self.dimy)
-            and dymap.shape == (self.dimx, self.dimy)):
-            self.dxmap = dxmap
-            self.dymap = dymap
+        if dxmap.shape == (self.dimx, self.dimy):
+            if dymap.shape == (self.dimx, self.dimy):
+                self.dxmap = dxmap
+                self.dymap = dymap
+            else: raise ValueError('Incompatible dymap shape {} must be ({}, {})'.
+                                   format(dymap.shape, self.dimx, self.dimy))
+        else: raise ValueError('Incompatible dxmap shape {} must be ({}, {})'.
+                               format(dxmap.shape, self.dimx, self.dimy))
 
+    def set_wcs(self, wcs_path):
+        """Reset WCS of the cube.
+
+        :param wcs_path: Path to a FITS image containing the new WCS.
+        """
+        hdr = self.get_header()
+
+        hdr.update(pywcs.WCS(self.read_fits(wcs_path, return_hdu_only=True)[0].header,
+                             naxis=2, relax=True).to_header(relax=True))
+        self.set_header(hdr)
+        
     def pix2world(self, xy, deg=True):
         """Convert pixel coordinates to celestial coordinates
 
@@ -1427,26 +1337,37 @@ class HDFCube(orb.core.HDFCube):
 
         :param deg: (Optional) If true, celestial coordinates are
           returned in sexagesimal format (default False).
+
+        .. note:: it is much more effficient to pass a list of
+          coordinates than run the function for each couple of
+          coordinates you want to transform.
         """
-        xy = np.squeeze(xy)
+        xy = np.squeeze(xy).astype(float)
         if np.size(xy) == 2:
             x = [xy[0]]
             y = [xy[1]]
         elif np.size(xy) > 2 and len(xy.shape) == 2:
-            if xy.shape[1] > xy.shape[2]:
+            if xy.shape[0] > xy.shape[1]:
                 xy = np.copy(xy.T)
             x = xy[:,0]
             y = xy[:,1]
+        else:
             raise StandardError('xy must be a tuple (x,y) of coordinates or a list of tuples ((x0,y0), (x1,y1), ...)')
 
         if not hasattr(self, 'dxmap') or not hasattr(self, 'dymap'):
             coords = np.array(
                 self.wcs.all_pix2world(
                     x, y, 0)).T
-        else:    
+        else:
+            if np.size(x) == 1:
+                xyarr = np.atleast_2d([x, y]).T
+            else:
+                xyarr = xy
+                print xy
             coords = orb.utils.astrometry.pix2world(
-                self.hdr, self.dimx, self.dimy, xy, self.dxmap, self.dymap)
-        if deg: return coords
+                self.get_wcs_header(), self.dimx, self.dimy, xyarr, self.dxmap, self.dymap)
+        if deg:
+            return coords
         else: return np.array(
             [orb.utils.astrometry.deg2ra(coords[:,0]),
              orb.utils.astrometry.deg2dec(coords[:,1])])
@@ -1457,6 +1378,10 @@ class HDFCube(orb.core.HDFCube):
 
         :param xy: A tuple (x,y) of celestial coordinates or a list of
           tuples ((x0,y0), (x1,y1), ...). Must be in degrees.
+
+        .. note:: it is much more effficient to pass a list of
+          coordinates than run the function for each couple of
+          coordinates you want to transform.
         """
         radec = np.squeeze(radec)
         if np.size(radec) == 2:
@@ -1476,9 +1401,10 @@ class HDFCube(orb.core.HDFCube):
                     ra, dec, 0,
                     detect_divergence=False,
                     quiet=True)).T
-        else:    
+        else:
+            radecarr = np.atleast_2d([ra, dec]).T
             coords = orb.utils.astrometry.world2pix(
-                self.hdr, self.dimx, self.dimy, radec, self.dxmap, self.dymap)
+                self.get_wcs_header(), self.dimx, self.dimy, radecarr, self.dxmap, self.dymap)
 
         return coords
 
@@ -1491,10 +1417,131 @@ class HDFCube(orb.core.HDFCube):
             else: return None
 
     def get_header(self):
-        header = self.get_cube_header()
-        header['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
-                                      # inconsistency
-        return copy.copy(header)
+        """Return cube header."""
+        if not hasattr(self, 'header'):
+            header = self.get_cube_header()
+            header['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
+                                          # inconsistency
+            return copy.copy(header)
+        else: return copy.copy(self.header)
+
+    def set_header(self, hdr):
+        """Set cube header"""
+        if hdr is None: hdr = self.get_header()
+        hdr['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
+                                   # inconsistency
+            
+        self.header = copy.copy(hdr)
+        self.reset_params()
+
+    def reset_params(self):
+        """Read header again and reset parameters"""
+        if not hasattr(self, 'header'): raise AttributeError('header attribute not set')
+        
+        self.set_param('step', float(self.header['STEP']))
+        self.set_param('order', int(self.header['ORDER']))
+        self.set_param('axis_corr', float(self.header['AXISCORR']))
+        self.set_param('nm_laser', float(self.header['CALIBNM']))
+        self.set_param('object_name', str(self.header['OBJECT']))
+        self.set_param('filter_name', str(self.header['FILTER']))
+        self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
+        self.set_param('apodization', float(self.header['APODIZ']))
+        self.set_param('exposure_time', float(self.header['EXPTIME']))
+        if 'FLAMBDA' in self.header:
+            self.set_param('flambda', float(self.header['FLAMBDA']))
+        else:
+            warnings.warn('FLAMBDA keyword not in cube header. Flux calibration may be bad.')
+            self.set_param('flambda', 1.)
+
+        step_nb = int(self.header['STEPNB'])
+        if step_nb != self.dimz:
+            warnings.warn('Malformed spectral cube. The number of steps in the header ({}) does not correspond to the real size of the data cube ({})'.format(step_nb, self.dimz))
+            step_nb = int(self.dimz)
+        self.set_param('step_nb', step_nb)
+
+        if 'ZPDINDEX' in self.header:
+            self.set_param('zpd_index', self.header['ZPDINDEX'])
+        else:
+            raise KeyError('ZPDINDEX not in cube header. Please run again the last step of ORBS reduction process.')
+
+        # new data prefix
+        base_prefix = '{}_{}.{}'.format(self.params.object_name,
+                                         self.params.filter_name,
+                                         self.params.apodization)
+        
+        self._data_prefix = base_prefix + '.ORCS' + os.sep + base_prefix + '.'
+        self._msg_class_hdr = self._get_msg_class_hdr()
+        self._data_path_hdr = self._get_data_path_hdr()
+
+        # resolution
+        resolution = orb.utils.spectrum.compute_resolution(
+            self.dimz - self.params.zpd_index,
+            self.params.step, self.params.order,
+            self.params.axis_corr)
+        self.set_param('resolution', resolution)
+
+        # incident angle of reference (in degrees)
+        self.set_param('theta_proj', orb.utils.spectrum.corr2theta(self.params.axis_corr))
+
+        # wavenumber
+        self.set_param('wavetype', str(self.header['WAVTYPE']))
+        if self.params.wavetype == 'WAVELENGTH':
+            raise Exception('ORCS cannot handle wavelength cubes')
+            self.params['wavenumber'] = False
+            logging.info('Cube is in WAVELENGTH (nm)')
+            self.unit = 'nm'
+        else:
+            self.params['wavenumber'] = True
+            logging.info('Cube is in WAVENUMBER (cm-1)')
+            self.unit = 'cm-1'
+
+        # wavelength calibration
+        self.set_param('wavelength_calibration', bool(self.header['WAVCALIB']))
+            
+        if self.params.wavelength_calibration:
+            logging.info('Cube is CALIBRATED in wavenumber')
+        else:
+            logging.info('Cube is NOT CALIBRATED')            
+            
+
+        ## Get WCS header
+        self.wcs = self.get_wcs()
+        self.wcs_header = self.get_wcs_header()
+        self._wcs_header = self.get_wcs_header()
+
+        self.set_param('target_ra', float(self.wcs.wcs.crval[0]))
+        self.set_param('target_dec', float(self.wcs.wcs.crval[1]))
+        self.set_param('target_x', float(self.wcs.wcs.crpix[0]))
+        self.set_param('target_y', float(self.wcs.wcs.crpix[1]))
+        
+        wcs_params = orb.utils.astrometry.get_wcs_parameters(self.wcs)
+        self.set_param('wcs_rotation', float(wcs_params[-1]))
+
+        self.set_param('obs_date', np.array(self.header['DATE-OBS'].strip().split('-'), dtype=int))
+        if 'HOUR_UT' in self.header:
+            self.set_param('hour_ut', np.array(self.header['HOUR_UT'].strip().split(':'), dtype=float))
+        else:
+            self.params['hour_ut'] = (0., 0., 0.)
+
+        # create base axis of the data
+        if self.params.wavenumber:
+            self.set_param('base_axis', orb.utils.spectrum.create_cm1_axis(
+                self.dimz, self.params.step, self.params.order,
+                corr=self.params.axis_corr))
+        else:
+            self.set_param('base_axis', orb.utils.spectrum.create_nm_axis(
+                self.dimz, self.params.step, self.params.order,
+                corr=self.params.axis_corr))
+
+        self.set_param('axis_min', np.min(self.params.base_axis))
+        self.set_param('axis_max', np.max(self.params.base_axis))
+        self.set_param('axis_step', np.min(self.params.base_axis[1] - self.params.base_axis[0]))
+        self.set_param('line_fwhm', orb.utils.spectrum.compute_line_fwhm(
+            self.params.step_nb - self.params.zpd_index, self.params.step, self.params.order,
+            apod_coeff=self.params.apodization,
+            corr=self.params.axis_corr,
+            wavenumber=self.params.wavenumber))
+        self.set_param('filter_range', self.get_filter_range())
         
 
     def get_wcs(self):
@@ -1503,7 +1550,7 @@ class HDFCube(orb.core.HDFCube):
 
     def get_wcs_header(self):
         """Return the WCS of the cube as a astropy.wcs.WCS instance """
-        return copy.copy(self.wcs.to_header(relax=True))
+        return copy.copy(self.get_wcs().to_header(relax=True))
 
 
     def reproject(self):
