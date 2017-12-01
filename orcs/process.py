@@ -688,19 +688,19 @@ class SpectralCube(HDFCube):
         if distortion_map_path is not None:
             dist_map_hdu = self.read_fits(distortion_map_path, return_hdu_only=True)[0]
             hdr = dist_map_hdu.header
-            sip = pywcs.WCS(hdr, relax=True)
+            sip = pywcs.WCS(hdr, naxis=2, relax=True)
             # distortion are already defined and must not be recomputed
             compute_distortion = False
             
         astro = Astrometry(
-            deep_frame, self.params.init_fwhm,
-            self.params.fov,
+            deep_frame, 
             target_radec=(self.params.target_ra,
                           self.params.target_dec),
             target_xy=(self.params.target_x,
                        self.params.target_y),
             wcs_rotation=self.params.wcs_rotation,
-            sip=sip)
+            sip=sip,
+            instrument=self.instrument)
 
         wcs, dxmap, dymap = astro.register(
             compute_distortion = compute_distortion,
