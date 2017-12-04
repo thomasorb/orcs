@@ -1316,13 +1316,13 @@ class HDFCube(orb.core.HDFCube):
             else:
                 dymap = orb.utils.image.interpolate_map(
                     dymap, self.dimx, self.dimy)
-                warning.warnings('dymap reshaped from {} to ({}, {})'.
+                warnings.warn('dymap reshaped from {} to ({}, {})'.
                                  format(dymap.shape, self.dimx, self.dimy))
 
         else:
             dxmap = orb.utils.image.interpolate_map(
                 dxmap, self.dimx, self.dimy)
-            warning.warnings('dxmap reshaped from {} to ({}, {})'.
+            warnings.warn('dxmap reshaped from {} to ({}, {})'.
                              format(dxmap.shape, self.dimx, self.dimy))
 
     def set_wcs(self, wcs_path):
