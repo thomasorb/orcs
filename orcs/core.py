@@ -1314,14 +1314,14 @@ class HDFCube(orb.core.HDFCube):
                 self.dxmap = dxmap
                 self.dymap = dymap
             else:
-                dy_map = orb.utils.image.interpolate_map(
-                    dy_map, self.dimx, self.dimy)
+                dymap = orb.utils.image.interpolate_map(
+                    dymap, self.dimx, self.dimy)
                 warning.warnings('dymap reshaped from {} to ({}, {})'.
                                  format(dymap.shape, self.dimx, self.dimy))
 
         else:
-            dx_map = orb.utils.image.interpolate_map(
-                dx_map, self.dimx, self.dimy)
+            dxmap = orb.utils.image.interpolate_map(
+                dxmap, self.dimx, self.dimy)
             warning.warnings('dxmap reshaped from {} to ({}, {})'.
                              format(dxmap.shape, self.dimx, self.dimy))
 
@@ -2404,3 +2404,10 @@ class LineMaps(orb.core.Tools):
 
 
 
+class Filter(object):
+
+    def __init__(self):
+        pass
+
+
+        
