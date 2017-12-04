@@ -1354,7 +1354,7 @@ class HDFCube(orb.core.HDFCube):
             x = [xy[0]]
             y = [xy[1]]
         elif np.size(xy) > 2 and len(xy.shape) == 2:
-            if xy.shape[0] > xy.shape[1]:
+            if xy.shape[0] < xy.shape[1]:
                 xy = np.copy(xy.T)
             x = xy[:,0]
             y = xy[:,1]
