@@ -217,7 +217,9 @@ class HDFCube(orb.core.HDFCube):
                     data_col[icol, :].fill(np.nan)
 
             if median:
-                return (np.nanmedian(data_col, axis=0) * np.nansum(mask_col),
+                with np.warnings.catch_warnings():
+                    np.warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+                    return (np.nanmedian(data_col, axis=0) * np.nansum(mask_col),
                         np.nansum(mask_col))
             else:
                 return (np.nansum(data_col, axis=0),
