@@ -1372,7 +1372,6 @@ class HDFCube(orb.core.HDFCube):
                 xyarr = np.atleast_2d([x, y]).T
             else:
                 xyarr = xy
-                print xy
             coords = orb.utils.astrometry.pix2world(
                 self.get_wcs_header(), self.dimx, self.dimy, xyarr, self.dxmap, self.dymap)
         if deg:
