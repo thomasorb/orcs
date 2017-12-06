@@ -217,7 +217,9 @@ class HDFCube(orb.core.HDFCube):
                     data_col[icol, :].fill(np.nan)
 
             if median:
-                return (np.nanmedian(data_col, axis=0) * np.nansum(mask_col),
+                with np.warnings.catch_warnings():
+                    np.warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+                    return (np.nanmedian(data_col, axis=0) * np.nansum(mask_col),
                         np.nansum(mask_col))
             else:
                 return (np.nansum(data_col, axis=0),
@@ -1370,7 +1372,6 @@ class HDFCube(orb.core.HDFCube):
                 xyarr = np.atleast_2d([x, y]).T
             else:
                 xyarr = xy
-                print xy
             coords = orb.utils.astrometry.pix2world(
                 self.get_wcs_header(), self.dimx, self.dimy, xyarr, self.dxmap, self.dymap)
         if deg:
