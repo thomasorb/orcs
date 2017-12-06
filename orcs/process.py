@@ -44,7 +44,6 @@ import warnings
 import inspect
 import scipy.interpolate
 import marshal
-import gvar
 
 # import core
 from core import HDFCube, LineMaps
@@ -159,62 +158,9 @@ class SpectralCube(HDFCube):
           the velocity uncertainty is used in place of an automatic
           threshold.
         """
-        def model(p, wf, pixel_size, orig_fit_map, x, y):
-            # 0: mirror_distance
-            # 1: theta_cx
-            # 2: theta_cy
-            # 3: phi_x
-            # 4: phi_y
-            # 5: phi_r
-            # 6: calib_laser_nm
-            new_map = (orb.utils.image.simulate_calibration_laser_map(
-                wf.shape[0], wf.shape[1], pixel_size,
-                p[0], p[1], p[2], p[3], p[4], p[5], p[6])
-                    + wf)
-            dl_map = new_map - orig_fit_map
-            dl_mod = list()
-            for i in range(len(x)):
-                dl_mod.append(dl_map[int(x[i]), int(y[i])])
-            return np.array(dl_mod)
-
-        def get_p(p_var, p_fix, p_ind):
-            """p_ind = 0: variable parameter, index=1: fixed parameter
-            """
-            p_all = np.empty_like(p_ind, dtype=float)
-            p_all[np.nonzero(p_ind == 0.)] = p_var
-            p_all[np.nonzero(p_ind > 0.)] = p_fix
-            return p_all
-
-
-        def diff(p_var, p_fix, p_ind, wf, pixel_size, orig_fit_map, x, y,
-                 dl):
-            p = get_p(p_var, p_fix, p_ind)
-            dl_mod = model(p, wf, pixel_size, orig_fit_map, x, y)
-
-            res = ((dl_mod - gvar.mean(dl))/gvar.sdev(dl)).astype(float)
-            return res[~np.isnan(res)]
-
-        def print_params(params):
-            print ('    > New calibration laser map fit parameters:\n'
-                   + '    distance to mirror: {} cm\n'.format(
-                       params[0] * 1e-4)
-                   + '    X angle from the optical axis to the center: {} degrees\n'.format(
-                       math.fmod(float(params[1]),360))
-                   + '    Y angle from the optical axis to the center: {} degrees\n'.format(
-                       math.fmod(float(params[2]),360))
-                   + '    Tip-tilt angle of the detector along X: {} degrees\n'.format(
-                       math.fmod(float(params[3]),360))
-                   + '    Tip-tilt angle of the detector along Y: {} degrees\n'.format(
-                       math.fmod(float(params[4]),360))
-                   + '    Rotation angle of the detector: {} degrees\n'.format(
-                       math.fmod(float(params[5]),360))
-                   + '    Calibration laser wavelength: {} nm\n'.format(
-                       params[6]))
-
         BINNING = 6
 
         pixel_size = self.config['PIX_SIZE_CAM1']
-
 
         if div_nb < 2:
             raise Exception('div_nb must be >= 2')
@@ -338,116 +284,16 @@ class SpectralCube(HDFCube):
 
         sky_vel_map_err[sky_vel_map_err > threshold] = np.nan
 
+        # fit velocity error model
+        (model_calib_map, wf,
+         final_sky_vel_map, new_nm_laser) = utils.fit_velocity_error_model(
+            x, y, sky_vel_map, sky_vel_map_err,
+            self.params.nm_laser,
+            self.get_calibration_laser_map_orig(),
+            pixel_size,
+            binning=BINNING)
 
-        utils.fit_velocity_error_model(x, y, sky_vel_map, sky_vel_map_err,
-                                       self.params.nm_laser,
-                                       self.get_calibration_laser_map_orig(),
-                                       pixel_size,
-                                       binning=BINNING)
-        # # create weights map
-        # w = 1./(sky_vel_map_err)
-        # #w /= np.nanmax(w)
-        # #w[np.isnan(w)] = 1e-35
-        # x = x[~np.isnan(w)]
-        # y = y[~np.isnan(w)]
-        # sky_vel_map = sky_vel_map[~np.isnan(w)]
-        # sky_vel_map_err= sky_vel_map_err[~np.isnan(w)]
-        # w = w[~np.isnan(w)]
-        #
-        # sky_vel_map[sky_vel_map < np.nanpercentile(sky_vel_map, 5)] = np.nan
-        # sky_vel_map[sky_vel_map > np.nanpercentile(sky_vel_map, 95)] = np.nan
-        # x = x[~np.isnan(sky_vel_map)]
-        # y = y[~np.isnan(sky_vel_map)]
-        # w = w[~np.isnan(sky_vel_map)]
-        # sky_vel_map_err = sky_vel_map_err[~np.isnan(sky_vel_map)]
-        # sky_vel_map = sky_vel_map[~np.isnan(sky_vel_map)]
-        #
-        #
-        # # transform velocity error in calibration error (v = dl/l with
-        # # l = 543.5 nm) (velocity error is the inverse of the velocity
-        # # measured)
-        # sky_vel_map = -gvar.gvar(sky_vel_map, sky_vel_map_err)
-        # sky_shift_map = orb.utils.spectrum.line_shift(
-        #     sky_vel_map, self.params.nm_laser)
-        #
-        #
-        # # compute a first estimation of the real calibration laser
-        # # wavelength
-        # new_nm_laser = self.params.nm_laser + np.nanmedian(gvar.mean(sky_shift_map))
-        # print 'First laser wavelentgh calibration estimation: {} nm'.format(
-        #     new_nm_laser)
-        #
-        # new_sky_shift_map = sky_shift_map - (new_nm_laser - self.params.nm_laser)
-        #
-        # # convert shift map to velocity map
-        # new_sky_vel_map = orb.utils.spectrum.compute_radial_velocity(
-        #     new_sky_shift_map + new_nm_laser, new_nm_laser)
-        #
-        # # fit calibration map to get model + wavefront
-        # (orig_params,
-        #  orig_fit_map,
-        #  orig_model) = orb.utils.image.fit_calibration_laser_map(
-        #     self.get_calibration_laser_map_orig(), new_nm_laser, pixel_size=pixel_size,
-        #     return_model_fit=True)
-        #
-        #
-        # ######################
-        # ## orb.utils.io.write_fits('orig_fit_map.fits', orig_fit_map,
-        # ## overwrite=True)
-        # ## orb.utils.io.write_fits('orig_model.fits', orig_model, overwrite=True)
-        # ## orb.utils.io.write_fits('orig_params.fits', orig_params,
-        # ## overwrite=True)
-        # ## orig_fit_map = orb.utils.io.read_fits('orig_fit_map.fits')
-        # ## orig_model = orb.utils.io.read_fits('orig_model.fits')
-        # ## orig_params = orb.utils.io.read_fits('orig_params.fits')
-        # #################
-        #
-        #
-        # orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
-        # orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
-        # wf = orig_fit_map - orig_model
-        # wf_bin = orb.utils.image.nanbin_image(wf, BINNING)
-        # pixel_size_bin = pixel_size * float(BINNING)
-        # x_bin = x / float(BINNING)
-        # y_bin = y / float(BINNING)
-        #
-        #
-        # # calib laser map fit
-        # #p_var = orig_params[:-1]
-        # #p_fix = [new_nm_laser]
-        # #p_ind = np.array([0,0,0,0,0,0,1])
-        # p_var = orig_params[:-1]
-        #
-        # p_fix = []
-        # p_ind = np.array([0,0,0,0,0,0,0])
-        # fit = scipy.optimize.leastsq(diff,
-        #                              p_var,
-        #                              args=(p_fix, p_ind, wf_bin,
-        #                                    pixel_size_bin,
-        #                                    orig_fit_map_bin,
-        #                                    x_bin, y_bin,
-        #                                    new_sky_shift_map),
-        #                              full_output=True)
-        # p = fit[0]
-        # print_params(p)
-        #
-        # # get fit stats
-        # model_sky_shift_map = model(p, wf, pixel_size, orig_fit_map, x, y)
-        # model_sky_vel_map = orb.utils.spectrum.compute_radial_velocity(
-        #     new_nm_laser + model_sky_shift_map, new_nm_laser,
-        #     wavenumber=False)
-        #
-        # print 'fit residual std (in km/s):', np.nanstd(
-        #     model_sky_vel_map - gvar.mean(sky_vel_map))
-        #
-        # print 'median error on the data (in km/s)', np.nanmedian(
-        #     gvar.sdev(sky_vel_map))
-
-        # compute new calibration laser map
-        model_calib_map = (orb.utils.image.simulate_calibration_laser_map(
-            wf.shape[0], wf.shape[1], pixel_size,
-            p[0], p[1], p[2], p[3], p[4], p[5], p[6])
-                         + wf)
+        sky_vel_map = -sky_vel_map
 
         # write new calibration laser map
         self.write_fits(
@@ -460,12 +306,6 @@ class SpectralCube(HDFCube):
             self._get_wavefront_map_path(),
             wf, overwrite=True,
             fits_header=[('CALIBNM', new_nm_laser, 'Calibration laser wl (nm)')])
-
-        # compute new velocity correction map
-        final_sky_shift_map = model_calib_map - orig_fit_map
-        final_sky_vel_map = orb.utils.spectrum.compute_radial_velocity(
-            (new_nm_laser + final_sky_shift_map), self.params.nm_laser,
-            wavenumber=False)
 
         # write new velocity correction map
         self.write_fits(
@@ -503,7 +343,7 @@ class SpectralCube(HDFCube):
 
 
             fig = pl.figure()
-            pl.scatter(x, y, c=gvar.mean(sky_vel_map), vmin=vmin, vmax=vmax, s=30,
+            pl.scatter(x, y, c=sky_vel_map, vmin=vmin, vmax=vmax, s=30,
                        cmap='viridis')
             pl.xlim((0, dimx))
             pl.ylim((0, dimy))
@@ -514,9 +354,9 @@ class SpectralCube(HDFCube):
             fig.savefig(self._get_data_prefix() + 'sky_map.svg')
 
             fig = pl.figure()
-            pl.scatter(x, y, c=gvar.sdev(sky_vel_map),
-                       vmin=np.nanpercentile(gvar.sdev(sky_vel_map), 5),
-                       vmax=np.nanpercentile(gvar.sdev(sky_vel_map), 95),
+            pl.scatter(x, y, c=sky_vel_map_err,
+                       vmin=np.nanpercentile(sky_vel_map_err, 5),
+                       vmax=np.nanpercentile(sky_vel_map_err, 95),
                        s=30,
                        cmap='viridis')
             pl.xlim((0, dimx))
@@ -529,7 +369,7 @@ class SpectralCube(HDFCube):
 
 
             fig = pl.figure()
-            diff = final_sky_vel_map - gvar.mean(sky_vel_map)
+            diff = final_sky_vel_map - sky_vel_map
             pl.scatter(x,y, c=diff,
                        vmin=np.nanpercentile(diff, 5),
                        vmax=np.nanpercentile(diff, 95),
