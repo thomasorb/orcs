@@ -4,7 +4,7 @@
 # File: orcs.py
 
 ## Copyright (c) 2010-2017 Thomas Martin <thomas.martin.1@ulaval.ca>
-## 
+##
 ## This file is part of ORCS
 ##
 ## ORCS is free software: you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     :param inputparams: orb.fit.InputParams instance.
 
     :param fit_tol: fit tolerance.
-    
+
     :param spectrum: The spectrum to fit (1d vector).
 
     :param theta_orig: Original value of the incident angle in degree.
@@ -55,7 +55,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
       first fit). If None a classical fit is made.
 
     :param kwargs: (Optional) Model parameters that must be
-      changed in the InputParams instance.    
+      changed in the InputParams instance.
     """
     kwargs_orig = dict(kwargs)
     # check snr guess param
@@ -88,7 +88,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     # recompute the fwhm guess
     if 'fwhm_guess' in kwargs:
         raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
-    
+
     fwhm_guess_cm1 = orb.utils.spectrum.compute_line_fwhm(
         params['step_nb'] - params['zpd_index'],
         params['step'], params['order'],
@@ -126,3 +126,109 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                                      **kwargs_orig)
     else:
         return _fit
+
+
+def fit_velocity_error_model(x, y, vel, vel_err, nm_laser, calibration_laser_map,
+                             pixel_size, binning=6, ):
+    """Fit a model of the spectral calibration error based on a simplified
+    optical model of the interferometer.
+
+    """
+    # create weights map
+    w = 1./(vel_err)
+    #w /= np.nanmax(w)
+    #w[np.isnan(w)] = 1e-35
+    x = x[~np.isnan(w)]
+    y = y[~np.isnan(w)]
+    vel = vel[~np.isnan(w)]
+    vel_err= vel_err[~np.isnan(w)]
+    w = w[~np.isnan(w)]
+
+    vel[vel < np.nanpercentile(vel, 5)] = np.nan
+    vel[vel > np.nanpercentile(vel, 95)] = np.nan
+    x = x[~np.isnan(vel)]
+    y = y[~np.isnan(vel)]
+    w = w[~np.isnan(vel)]
+    vel_err = vel_err[~np.isnan(vel)]
+    vel = vel[~np.isnan(vel)]
+
+
+    # transform velocity error in calibration error (v = dl/l with
+    # l = 543.5 nm) (velocity error is the inverse of the velocity
+    # measured)
+    vel = -gvar.gvar(vel, vel_err)
+    sky_shift_map = orb.utils.spectrum.line_shift(
+        vel, nm_laser)
+
+
+    # compute a first estimation of the real calibration laser
+    # wavelength
+    new_nm_laser = nm_laser + np.nanmedian(gvar.mean(sky_shift_map))
+    print 'First laser wavelentgh calibration estimation: {} nm'.format(
+        new_nm_laser)
+
+    new_sky_shift_map = sky_shift_map - (new_nm_laser - nm_laser)
+
+    # convert shift map to velocity map
+    new_vel = orb.utils.spectrum.compute_radial_velocity(
+        new_sky_shift_map + new_nm_laser, new_nm_laser)
+
+    # fit calibration map to get model + wavefront
+    (orig_params,
+     orig_fit_map,
+     orig_model) = orb.utils.image.fit_calibration_laser_map(
+        calibration_laser_map, new_nm_laser, pixel_size=pixel_size,
+        return_model_fit=True)
+
+
+    ######################
+    ## orb.utils.io.write_fits('orig_fit_map.fits', orig_fit_map,
+    ## overwrite=True)
+    ## orb.utils.io.write_fits('orig_model.fits', orig_model, overwrite=True)
+    ## orb.utils.io.write_fits('orig_params.fits', orig_params,
+    ## overwrite=True)
+    ## orig_fit_map = orb.utils.io.read_fits('orig_fit_map.fits')
+    ## orig_model = orb.utils.io.read_fits('orig_model.fits')
+    ## orig_params = orb.utils.io.read_fits('orig_params.fits')
+    #################
+
+
+    orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
+    orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
+    wf = orig_fit_map - orig_model
+    wf_bin = orb.utils.image.nanbin_image(wf, BINNING)
+    pixel_size_bin = pixel_size * float(BINNING)
+    x_bin = x / float(BINNING)
+    y_bin = y / float(BINNING)
+
+
+    # calib laser map fit
+    #p_var = orig_params[:-1]
+    #p_fix = [new_nm_laser]
+    #p_ind = np.array([0,0,0,0,0,0,1])
+    p_var = orig_params[:-1]
+
+    p_fix = []
+    p_ind = np.array([0,0,0,0,0,0,0])
+    fit = scipy.optimize.leastsq(diff,
+                                 p_var,
+                                 args=(p_fix, p_ind, wf_bin,
+                                       pixel_size_bin,
+                                       orig_fit_map_bin,
+                                       x_bin, y_bin,
+                                       new_sky_shift_map),
+                                 full_output=True)
+    p = fit[0]
+    print_params(p)
+
+    # get fit stats
+    model_sky_shift_map = model(p, wf, pixel_size, orig_fit_map, x, y)
+    model_vel = orb.utils.spectrum.compute_radial_velocity(
+        new_nm_laser + model_sky_shift_map, new_nm_laser,
+        wavenumber=False)
+
+    print 'fit residual std (in km/s):', np.nanstd(
+        model_vel - gvar.mean(vel))
+
+    print 'median error on the data (in km/s)', np.nanmedian(
+        gvar.sdev(vel))
