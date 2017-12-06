@@ -2407,5 +2407,51 @@ class LineMaps(orb.core.Tools):
 
 class Filter(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, x, f):
+        """
+        Init Filter class
+
+        :param x: 1d array describing the x axis of the filter (must be in nm)
+
+        :param f: 1d array describing the transmission function  (note that the
+        filter function must be defined between 0 and 1).
+        """
+        if not isinstance(x, np.ndarray):
+            raise TypeError('x must be a numpy.ndarray')
+        if not isinstance(f, np.ndarray):
+            raise TypeError('f must be a numpy.ndarray')
+        x = np.copy(x).astype(float)
+        f = np.copy(f).astype(float)
+        x[np.isnan(x)] = 0
+        f[np.isnan(f)] = 0
+        x[np.isinf(x)] = 0
+        f[np.isinf(f)] = 0
+
+        x = orb.core.Vector1d(orb.utils.spectrum.nm2cm1(x)[::-1])
+        f = orb.core.Vector1d(f[::-1])
+
+        if np.nanmax(f.data) > 1 or np.nanmin(f.data) < 0:
+            raise ValueError('f must be defined between 0 and 1')
+        if x.step_nb != f.step_nb:
+            raise ValueError('x and f must have the same size')
+        if not np.any((x.data < orb.utils.spectrum.nm2cm1(200))
+                      * (x.data > orb.utils.spectrum.nm2cm1(1000))):
+            raise ValueError('At least some axis values must be in the optical range (in nm) : 200 - 1000 nm')
+
+        self.f = scipy.interpolate.UnivariateSpline(
+            x.data, f.data, s=0, k=3, ext=1)
+
+        # find beginning and end of filter (5% of max)
+        axisf = scipy.interpolate.UnivariateSpline(
+            np.arange(x.data.size), x.data, s=0, k=1, ext=2)
+        f01 = np.abs(np.diff(f.data > np.nanmax(f.data) * 0.05).astype(float))
+        if np.sum(f01) != 2: raise ValueError('malformed filter function')
+        self.start, self.end = axisf(np.arange(f.data.size - 1)[f01 == 1] + 0.5)
+
+    def __call__(self, x):
+        """Implement call"""
+        return self.f(x)
+
+    def get_filter_bandpass(self):
+        """Return filter bandpass as a tuple (cm1_min, cm1_max)"""
+        return (self.start, self.end)
