@@ -46,7 +46,7 @@ import scipy.interpolate
 import marshal
 
 # import core
-from core import HDFCube, LineMaps
+from core import HDFCube, LineMaps, Filter
 import utils
 
 # import ORB
