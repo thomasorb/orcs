@@ -4,7 +4,7 @@
 # File: process.py
 
 ## Copyright (c) 2010-2017 Thomas Martin <thomas.martin.1@ulaval.ca>
-## 
+##
 ## This file is part of ORCS
 ##
 ## ORCS is free software: you can redistribute it and/or modify it
@@ -44,10 +44,10 @@ import warnings
 import inspect
 import scipy.interpolate
 import marshal
-import gvar
 
 # import core
 from core import HDFCube, LineMaps
+import utils
 
 # import ORB
 import orb.core
@@ -58,8 +58,8 @@ import orb.utils.filters
 import orb.utils.misc
 import orb.fit
 from orb.astrometry import Astrometry
-    
-        
+
+
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
@@ -70,7 +70,7 @@ class SpectralCube(HDFCube):
     .. note:: parent class HDFCube is the ORCS implementation of
       HDFCube.
     """
-        
+
     def _get_temp_reg_path(self):
         """Return path to a temporary region file"""
         return self._get_data_prefix() + 'temp.reg'
@@ -144,13 +144,13 @@ class SpectralCube(HDFCube):
 
         :param x_range: (Optional) Range of pixels along the X axis
           where the velocity is measured (default None).
-          
+
         :param y_range: (Optional) Range of pixels along the Y axis
           where the velocity is measured (default None).
 
         :param exclude_reg_file_path: (Optional) Region to exclude
           from the computation (must be a ds9 reg file)
-        
+
         :param no_fit: (Optional) Do not repeat the fitting
           process. Only recompute the velocity map model.
 
@@ -158,67 +158,14 @@ class SpectralCube(HDFCube):
           the velocity uncertainty is used in place of an automatic
           threshold.
         """
-        def model(p, wf, pixel_size, orig_fit_map, x, y):
-            # 0: mirror_distance
-            # 1: theta_cx
-            # 2: theta_cy
-            # 3: phi_x
-            # 4: phi_y
-            # 5: phi_r
-            # 6: calib_laser_nm
-            new_map = (orb.utils.image.simulate_calibration_laser_map(
-                wf.shape[0], wf.shape[1], pixel_size,
-                p[0], p[1], p[2], p[3], p[4], p[5], p[6])
-                    + wf)
-            dl_map = new_map - orig_fit_map
-            dl_mod = list()
-            for i in range(len(x)):
-                dl_mod.append(dl_map[int(x[i]), int(y[i])])
-            return np.array(dl_mod)
-
-        def get_p(p_var, p_fix, p_ind):
-            """p_ind = 0: variable parameter, index=1: fixed parameter
-            """
-            p_all = np.empty_like(p_ind, dtype=float)
-            p_all[np.nonzero(p_ind == 0.)] = p_var
-            p_all[np.nonzero(p_ind > 0.)] = p_fix
-            return p_all
-
-        
-        def diff(p_var, p_fix, p_ind, wf, pixel_size, orig_fit_map, x, y,
-                 dl):
-            p = get_p(p_var, p_fix, p_ind)
-            dl_mod = model(p, wf, pixel_size, orig_fit_map, x, y)
-
-            res = ((dl_mod - gvar.mean(dl))/gvar.sdev(dl)).astype(float)
-            return res[~np.isnan(res)]
-        
-        def print_params(params):
-            print ('    > New calibration laser map fit parameters:\n'
-                   + '    distance to mirror: {} cm\n'.format(
-                       params[0] * 1e-4)
-                   + '    X angle from the optical axis to the center: {} degrees\n'.format(
-                       math.fmod(float(params[1]),360))
-                   + '    Y angle from the optical axis to the center: {} degrees\n'.format(
-                       math.fmod(float(params[2]),360))
-                   + '    Tip-tilt angle of the detector along X: {} degrees\n'.format(
-                       math.fmod(float(params[3]),360))
-                   + '    Tip-tilt angle of the detector along Y: {} degrees\n'.format(
-                       math.fmod(float(params[4]),360))
-                   + '    Rotation angle of the detector: {} degrees\n'.format(
-                       math.fmod(float(params[5]),360))
-                   + '    Calibration laser wavelength: {} nm\n'.format(
-                       params[6]))
-
         BINNING = 6
-        
+
         pixel_size = self.config['PIX_SIZE_CAM1']
-        
-        
+
         if div_nb < 2:
             raise Exception('div_nb must be >= 2')
-        MAX_R = 100 
-        
+        MAX_R = 100
+
         if not no_fit:
             if os.path.exists(self._get_skymap_file_path()):
                 logging.info('fitting process already done. Do you really want to redo it again ?')
@@ -226,14 +173,14 @@ class SpectralCube(HDFCube):
                     if raw_input('type [yes]: ') != 'yes': no_fit = True
                 except Exception:
                     no_fit = True
-              
+
         if no_fit:
             warnings.warn('Fitting process not done again, only the final sky map is computed')
-                    
+
         dimx = self.dimx
         dimy = self.dimy
         regions = list()
-        
+
         if x_range is not None:
             xmin = int(np.min(x_range))
             xmax = int(np.max(x_range))
@@ -273,14 +220,14 @@ class SpectralCube(HDFCube):
             self._prepare_input_params(self.get_sky_lines(), fmodel='sinc',
                                        pos_def='1', sigma_def='1', pos_cov=mean_sky_vel,
                                        fwhm_def='fixed')
-            
+
 
             lines_nb = self.inputparams.allparams['line_nb']
 
             # fit sky spectra
             paramsfile = self._fit_integrated_spectra(
                 self._get_temp_reg_path(), plot=False, verbose=False)
-            
+
             # write results
             with self.open_file(self._get_skymap_file_path(), 'w') as f:
                 for ireg in range(len(regions)):
@@ -316,20 +263,20 @@ class SpectralCube(HDFCube):
 
 
         # remove excluded regions (if already fitted, e.g. when the
-        # process is doen another time with a different exclude mask)
+        # process is done another time with a different exclude mask)
         if exclude_reg_file_path is not None:
             exclude_mask = np.zeros((dimx, dimy), dtype=bool)
             exclude_mask[orb.utils.misc.get_mask_from_ds9_region_file(
                 exclude_reg_file_path,
                 [0, dimx], [0, dimy])] = True
-            
+
             for i in range(len(x)):
                 if exclude_mask[int(x[i]), int(y[i])]:
                     x[i] = np.nan
                     y[i] = np.nan
                     sky_vel_map[i] = np.nan
                     sky_vel_map_err[i] = np.nan
-                    
+
         # remove bad fits
         if threshold is None:
             threshold = np.nanmedian(sky_vel_map_err) + 1. * np.std(
@@ -337,111 +284,17 @@ class SpectralCube(HDFCube):
 
         sky_vel_map_err[sky_vel_map_err > threshold] = np.nan
 
-        # create weights map
-        w = 1./(sky_vel_map_err)
-        #w /= np.nanmax(w)
-        #w[np.isnan(w)] = 1e-35
-        x = x[~np.isnan(w)]
-        y = y[~np.isnan(w)]
-        sky_vel_map = sky_vel_map[~np.isnan(w)]
-        sky_vel_map_err= sky_vel_map_err[~np.isnan(w)]
-        w = w[~np.isnan(w)]
+        # fit velocity error model
+        (model_calib_map, wf,
+         final_sky_vel_map, new_nm_laser) = utils.fit_velocity_error_model(
+            x, y, sky_vel_map, sky_vel_map_err,
+            self.params.nm_laser,
+            self.get_calibration_laser_map_orig(),
+            pixel_size,
+            binning=BINNING)
 
-        sky_vel_map[sky_vel_map < np.nanpercentile(sky_vel_map, 5)] = np.nan
-        sky_vel_map[sky_vel_map > np.nanpercentile(sky_vel_map, 95)] = np.nan
-        x = x[~np.isnan(sky_vel_map)]
-        y = y[~np.isnan(sky_vel_map)]
-        w = w[~np.isnan(sky_vel_map)]
-        sky_vel_map_err = sky_vel_map_err[~np.isnan(sky_vel_map)]
-        sky_vel_map = sky_vel_map[~np.isnan(sky_vel_map)]
+        sky_vel_map = -sky_vel_map
 
-
-        # transform velocity error in calibration error (v = dl/l with
-        # l = 543.5 nm) (velocity error is the inverse of the velocity
-        # measured)
-        sky_vel_map = -gvar.gvar(sky_vel_map, sky_vel_map_err)
-        sky_shift_map = orb.utils.spectrum.line_shift(
-            sky_vel_map, self.params.nm_laser)
-
-
-        # compute a first estimation of the real calibration laser
-        # wavelength
-        new_nm_laser = self.params.nm_laser + np.nanmedian(gvar.mean(sky_shift_map))
-        print 'First laser wavelentgh calibration estimation: {} nm'.format(
-            new_nm_laser)
-
-        new_sky_shift_map = sky_shift_map - (new_nm_laser - self.params.nm_laser)
-
-        # convert shift map to velocity map
-        new_sky_vel_map = orb.utils.spectrum.compute_radial_velocity(
-            new_sky_shift_map + new_nm_laser, new_nm_laser)
-        
-        # fit calibration map to get model + wavefront
-        (orig_params,
-         orig_fit_map,
-         orig_model) = orb.utils.image.fit_calibration_laser_map(
-            self.get_calibration_laser_map_orig(), new_nm_laser, pixel_size=pixel_size,
-            return_model_fit=True)
-
-
-        ######################
-        ## orb.utils.io.write_fits('orig_fit_map.fits', orig_fit_map,
-        ## overwrite=True)
-        ## orb.utils.io.write_fits('orig_model.fits', orig_model, overwrite=True)
-        ## orb.utils.io.write_fits('orig_params.fits', orig_params,
-        ## overwrite=True)
-        ## orig_fit_map = orb.utils.io.read_fits('orig_fit_map.fits')
-        ## orig_model = orb.utils.io.read_fits('orig_model.fits')
-        ## orig_params = orb.utils.io.read_fits('orig_params.fits')
-        #################
-        
-
-        orig_fit_map_bin = orb.utils.image.nanbin_image(orig_fit_map, BINNING)
-        orig_model_bin = orb.utils.image.nanbin_image(orig_model, BINNING)
-        wf = orig_fit_map - orig_model
-        wf_bin = orb.utils.image.nanbin_image(wf, BINNING)
-        pixel_size_bin = pixel_size * float(BINNING)
-        x_bin = x / float(BINNING)
-        y_bin = y / float(BINNING)
-        
-
-        # calib laser map fit
-        #p_var = orig_params[:-1]
-        #p_fix = [new_nm_laser]
-        #p_ind = np.array([0,0,0,0,0,0,1])
-        p_var = orig_params[:-1]
-    
-        p_fix = []
-        p_ind = np.array([0,0,0,0,0,0,0])
-        fit = scipy.optimize.leastsq(diff,
-                                     p_var,
-                                     args=(p_fix, p_ind, wf_bin,
-                                           pixel_size_bin,
-                                           orig_fit_map_bin,
-                                           x_bin, y_bin,
-                                           new_sky_shift_map),
-                                     full_output=True)
-        p = fit[0]
-        print_params(p)
-
-        # get fit stats
-        model_sky_shift_map = model(p, wf, pixel_size, orig_fit_map, x, y)
-        model_sky_vel_map = orb.utils.spectrum.compute_radial_velocity(
-            new_nm_laser + model_sky_shift_map, new_nm_laser,
-            wavenumber=False)
-
-        print 'fit residual std (in km/s):', np.nanstd(
-            model_sky_vel_map - gvar.mean(sky_vel_map))
-        
-        print 'median error on the data (in km/s)', np.nanmedian(
-            gvar.sdev(sky_vel_map))
-
-        # compute new calibration laser map
-        model_calib_map = (orb.utils.image.simulate_calibration_laser_map(
-            wf.shape[0], wf.shape[1], pixel_size,
-            p[0], p[1], p[2], p[3], p[4], p[5], p[6])
-                         + wf)
-        
         # write new calibration laser map
         self.write_fits(
             self._get_calibration_laser_map_path(),
@@ -453,12 +306,6 @@ class SpectralCube(HDFCube):
             self._get_wavefront_map_path(),
             wf, overwrite=True,
             fits_header=[('CALIBNM', new_nm_laser, 'Calibration laser wl (nm)')])
-
-        # compute new velocity correction map
-        final_sky_shift_map = model_calib_map - orig_fit_map
-        final_sky_vel_map = orb.utils.spectrum.compute_radial_velocity(
-            (new_nm_laser + final_sky_shift_map), self.params.nm_laser,
-            wavenumber=False)
 
         # write new velocity correction map
         self.write_fits(
@@ -487,42 +334,42 @@ class SpectralCube(HDFCube):
             pl.scatter(x, y, c=final_sky_vel_map, vmin=vmin, vmax=vmax, s=30,
                        cmap='viridis')
             pl.xlim((0, dimx))
-            pl.ylim((0, dimy))            
+            pl.ylim((0, dimy))
             pl.colorbar()
             pl.title('Sky velocity map model projected on grid points (km/s)')
-            
+
             fig.savefig(self._get_data_prefix() + 'sky_map_model.pdf')
             fig.savefig(self._get_data_prefix() + 'sky_map_model.svg')
 
-            
+
             fig = pl.figure()
-            pl.scatter(x, y, c=gvar.mean(sky_vel_map), vmin=vmin, vmax=vmax, s=30,
+            pl.scatter(x, y, c=sky_vel_map, vmin=vmin, vmax=vmax, s=30,
                        cmap='viridis')
             pl.xlim((0, dimx))
             pl.ylim((0, dimy))
             pl.colorbar()
             pl.title('Original measured sky velocity (km/s)')
-            
+
             fig.savefig(self._get_data_prefix() + 'sky_map.pdf')
             fig.savefig(self._get_data_prefix() + 'sky_map.svg')
 
             fig = pl.figure()
-            pl.scatter(x, y, c=gvar.sdev(sky_vel_map),
-                       vmin=np.nanpercentile(gvar.sdev(sky_vel_map), 5),
-                       vmax=np.nanpercentile(gvar.sdev(sky_vel_map), 95),
+            pl.scatter(x, y, c=sky_vel_map_err,
+                       vmin=np.nanpercentile(sky_vel_map_err, 5),
+                       vmax=np.nanpercentile(sky_vel_map_err, 95),
                        s=30,
                        cmap='viridis')
             pl.xlim((0, dimx))
             pl.ylim((0, dimy))
             pl.colorbar()
             pl.title('Original measured sky velocity uncertainty (km/s)')
-            
+
             fig.savefig(self._get_data_prefix() + 'sky_map_err.pdf')
             fig.savefig(self._get_data_prefix() + 'sky_map_err.svg')
 
-            
+
             fig = pl.figure()
-            diff = final_sky_vel_map - gvar.mean(sky_vel_map)
+            diff = final_sky_vel_map - sky_vel_map
             pl.scatter(x,y, c=diff,
                        vmin=np.nanpercentile(diff, 5),
                        vmax=np.nanpercentile(diff, 95),
@@ -531,23 +378,23 @@ class SpectralCube(HDFCube):
             pl.ylim((0, dimy))
             pl.colorbar()
             pl.title('Fit residual (km/s)')
-            
+
             fig.savefig(self._get_data_prefix() + 'residual.pdf')
             fig.savefig(self._get_data_prefix() + 'residual.svg')
 
-            
+
             fig = pl.figure()
             pl.hist(diff[np.nonzero(~np.isnan(diff))], bins=30, range=(-10, 10))
             pl.title('Fit residual histogram (median: {}, std: {})'.format(
                 np.nanmedian(diff), np.nanstd(diff)))
             fig.savefig(self._get_data_prefix() + 'residual_histogram.pdf')
             fig.savefig(self._get_data_prefix() + 'residual_histogram.svg')
-            
+
             pl.show()
 
     def detect_sources(self, fast=True):
         """Detect emission line sources in the spectral cube
-    
+
         :param fast: (Optional) Fast detection algorithm (with FFT
           convolution). Borders of the frame are wrong but process is
           much faster (default True).
@@ -556,7 +403,7 @@ class SpectralCube(HDFCube):
         def filter_frame(_frame, fast):
             BOX_SIZE = 3 # must be odd
             BACK_COEFF = 9 # must be odd
-            
+
             if not fast:
                 _res = orb.cutils.filter_background(_frame, BOX_SIZE, BACK_COEFF)
             else:
@@ -575,7 +422,7 @@ class SpectralCube(HDFCube):
                 _box = scipy.signal.fftconvolve(_frame, kernel_box, mode='same')
                 _back = scipy.signal.fftconvolve(_frame, kernel_back, mode='same')
                 _res = _box - _back
-            
+
             return _res
 
         Z_SIZE = 10
@@ -599,7 +446,7 @@ class SpectralCube(HDFCube):
         fr_min = min(filter_range_pix) + fr_b
         fr_max = max(filter_range_pix) - fr_b
         filter_range_pix = (int(fr_min), int(fr_max))
-        
+
         logging.info('Signal range: {} {}, {} pixels'.format(
             self.params.filter_range, self.unit, filter_range_pix))
         ## each pixel is replaced by the mean of the values in a small
@@ -628,7 +475,7 @@ class SpectralCube(HDFCube):
                     res_z_size = self.dimz - iframe
                 first_frame = int(iframe)
                 last_frame = iframe + res_z_size
-                
+
                 logging.info('Extracting frames: {} to {} ({}/{} frames)'.format(
                     iframe, last_frame-1,
                     last_frame - 1 -min(filter_range_pix),
@@ -637,7 +484,7 @@ class SpectralCube(HDFCube):
                                          0, self.dimy,
                                          iframe, last_frame,
                                          silent=False)
-                
+
                 res_cube = np.empty_like(dat_cube)
                 res_cube.fill(np.nan)
 
@@ -654,13 +501,13 @@ class SpectralCube(HDFCube):
             for ijob, job in jobs:
                 # filtered data is written in place of non filtered data
                 res_cube[:,:,iframe - first_frame + ijob] = job()
-                
+
             max_frame = np.nanmax(res_cube, axis=2)
             argmax_frame = np.nanargmax(res_cube, axis=2) + first_frame
             new_det = np.nonzero(max_frame > det_frame)
             det_frame[new_det] = max_frame[new_det]
             argdet_frame[new_det] = argmax_frame[new_det]
-                
+
 
         self._close_pp_server(job_server)
 
@@ -668,7 +515,7 @@ class SpectralCube(HDFCube):
                         det_frame, overwrite=True)
         self.write_fits(self._get_detection_pos_frame_path(),
                         argdet_frame, overwrite=True)
-            
+
 
     def register(self, distortion_map_path=None):
         """Make a new registration of the cube.
@@ -691,9 +538,9 @@ class SpectralCube(HDFCube):
             sip = pywcs.WCS(hdr, naxis=2, relax=True)
             # distortion are already defined and must not be recomputed
             compute_distortion = False
-            
+
         astro = Astrometry(
-            deep_frame, 
+            deep_frame,
             target_radec=(self.params.target_ra,
                           self.params.target_dec),
             target_xy=(self.params.target_x,
@@ -720,7 +567,67 @@ class SpectralCube(HDFCube):
                         fits_header=newhdr, overwrite=True)
 
 
-        
+    def integrate(self, filter_function, xmin=None, xmax=None, ymin=None, ymax=None):
+        """
+        Integrate a cube under a filter function and generate an image
+
+        :math:`I = \int F(\sigma)S(\sigma)\text{d}\sigma`
+
+        with :math:`I`, the image, :math:`S` the spectral cube, :math:`F` the
+        filter function.
+
+        :param filter_function: Must be an orcs.core.Filter instance
+
+        :param xmin: (Optional) lower boundary of the ROI along x axis (default
+          None, i.e. min)
+
+        :param xmax: (Optional) lower boundary of the ROI along y axis (default
+          None, i.e. min)
+
+        :param ymin: (Optional) upper boundary of the ROI along x axis (default
+          None, i.e. max)
+
+        :param ymax: (Optional) upper boundary of the ROI along y axis (default
+          None, i.e. max)
+        """
+        if not isinstance(filter_function, Filter):
+            raise TypeError('filter_function must be an orcs.core.Filter instance')
+
+        if (filter_function.start <= self.params.base_axis[0]
+            or filter_function.end >= self.params.base_axis[-1]):
+            raise ValueError('filter passband (>5%) between {} - {} out of cube band {} - {}'.format(
+                filter_function.start,
+                filter_function.end,
+                self.params.base_axis[0],
+                self.params.base_axis[-1]))
+
+        if xmin is None: xmin = 0
+        if ymin is None: ymin = 0
+        if xmax is None: xmax = self.dimx
+        if ymax is None: ymax = self.dimy
+
+        xmin = int(np.clip(xmin, 0, self.dimx))
+        xmax = int(np.clip(xmax, 0, self.dimx))
+        ymin = int(np.clip(ymin, 0, self.dimy))
+        ymax = int(np.clip(ymax, 0, self.dimy))
+
+        start_pix, end_pix = orb.utils.spectrum.cm12pix(
+            self.params.base_axis, [filter_function.start, filter_function.end])
+
+        sframe = np.zeros((self.dimx, self.dimy), dtype=float)
+        zsize = end_pix-start_pix+1
+        # This splits the range in zsize//10 +1 chunks (not necessarily of same
+        # size). The endpix is correctly handled in the extraction
+        izranges = np.array_split(range(start_pix, end_pix+1), zsize//10+1)
+        for izrange in izranges:
+            sframe[xmin:xmax, ymin:ymax] += np.sum(
+                self.get_data(xmin, xmax, ymin, ymax,
+                              izrange.min(), izrange.max()+1, silent=True)
+                * filter_function(
+                    self.params.base_axis[izrange].astype(float)), axis=2)
+        sframe /= np.sum(filter_function(self.params.base_axis.astype(float)))
+        return sframe
+
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
@@ -742,11 +649,11 @@ class SpectralCube(HDFCube):
 ##         """Subtract a spectrum to the spectral cube
 
 ##         :param spectrum: Spectrum to subtract
-        
+
 ##         :param axis: Wavelength/wavenumber axis of the spectrum to
 ##           subtract (in nm or cm-1). The axis unit must be the same as
 ##           the spectra cube unit.
-        
+
 ##         :param wavenumber: True if the spectral cube is in wavenumber
 
 ##         :param step: Step size (in nm)
@@ -757,7 +664,7 @@ class SpectralCube(HDFCube):
 ##           laser map
 
 ##         :param nm_laser: Calibration laser wavelength in nm
-        
+
 ##         :param axis_corr: (Optional) If the spectrum is calibrated in
 ##           wavelength but not projected on the interferometer axis
 ##           (angle 0) the axis correction coefficient must be given.
@@ -780,7 +687,7 @@ class SpectralCube(HDFCube):
 ##             _to_sub = spectrum_spline(axis)
 
 ##             return _vector - _to_sub
-            
+
 
 ##         if axis is None:
 ##             warnings.warn('Spectrum axis guessed to be the same as the cube axis')
@@ -790,7 +697,7 @@ class SpectralCube(HDFCube):
 ##             else:
 ##                 axis = orb.utils.spectrum.create_nm_axis(
 ##                     self.dimz, step, order, corr=axis_corr).astype(float)
-            
+
 ##         spectrum_spline = scipy.interpolate.UnivariateSpline(
 ##             axis[~np.isnan(spectrum)], spectrum[~np.isnan(spectrum)],
 ##             s=0, k=1, ext=1)
@@ -806,6 +713,3 @@ class SpectralCube(HDFCube):
 ##                                         ('import numpy as np',
 ##                                          'import orb.utils.spectrum'),
 ##                                         self._get_tweaked_cube_path())
-
-
-        

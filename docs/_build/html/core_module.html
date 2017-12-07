@@ -829,6 +829,12 @@ and the theoretical attained resolution.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.get_header">
+<code class="descname">get_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return cube header.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.get_heliocentric_velocity">
 <code class="descname">get_heliocentric_velocity</code><span class="sig-paren">(</span><em>vobs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_heliocentric_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return corrected heliocentric velocity and local standard of rest
@@ -907,6 +913,12 @@ returned in sexagesimal format (default False).</li>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">it is much more effficient to pass a list of
+coordinates than run the function for each couple of
+coordinates you want to transform.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -936,6 +948,12 @@ calibration has changed</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.reset_params">
+<code class="descname">reset_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.reset_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read header again and reset parameters</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.set_dxdymaps">
 <code class="descname">set_dxdymaps</code><span class="sig-paren">(</span><em>dxmap_path</em>, <em>dymap_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_dxdymaps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set micro-shift maps returned by the astrometrical
@@ -955,6 +973,26 @@ calibration method.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.core.HDFCube.set_header">
+<code class="descname">set_header</code><span class="sig-paren">(</span><em>hdr</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set cube header</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.core.HDFCube.set_wcs">
+<code class="descname">set_wcs</code><span class="sig-paren">(</span><em>wcs_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_wcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset WCS of the cube.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wcs_path</strong> – Path to a FITS image containing the new WCS.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.core.HDFCube.world2pix">
 <code class="descname">world2pix</code><span class="sig-paren">(</span><em>radec</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.world2pix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert celestial coordinates to pixel coordinates</p>
@@ -967,6 +1005,12 @@ tuples ((x0,y0), (x1,y1), …). Must be in degrees.</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">it is much more effficient to pass a list of
+coordinates than run the function for each couple of
+coordinates you want to transform.</p>
+</div>
 </dd></dl>
 
 </dd></dl>

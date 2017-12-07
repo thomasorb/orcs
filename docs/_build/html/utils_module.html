@@ -237,6 +237,34 @@ changed in the InputParams instance.</li>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="utils.fit_velocity_error_model">
+<code class="descclassname">utils.</code><code class="descname">fit_velocity_error_model</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>vel</em>, <em>vel_err</em>, <em>nm_laser</em>, <em>calibration_laser_map</em>, <em>pixel_size</em>, <em>binning=6</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.fit_velocity_error_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a model of the spectral calibration error based on a simplified
+optical model of the interferometer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> – Positions of the velocities along x axis</li>
+<li><strong>y</strong> – Positions of the velocities along y axis</li>
+<li><strong>vel</strong> – Measured velocity errors at (x, y)</li>
+<li><strong>vel_err</strong> – Uncertainty on the measured velocity errors.</li>
+<li><strong>nm_laser</strong> – Calibration laser wavelength in nm</li>
+<li><strong>calibration_laser_map</strong> – Calibration laser map</li>
+<li><strong>pixel_size</strong> – Pixel size in um</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>param binning: (Optional) Binning during computation (process is faster with</dt>
+<dd>marginal precision loss) (default 6)</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
