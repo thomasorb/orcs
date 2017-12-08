@@ -1,3 +1,96 @@
+import pylab as pl
+from matplotlib.widgets import Slider, Button
+from matplotlib import gridspec
+import numpy as np
+from catalog import Catalog
+from process import SpectralCube
+
+class Viewer(object):
+
+    def __init__(self, cube, catalog_path=None):
+
+        if isinstance(cube, str):
+            self.cube = SpectralCube(cube)
+        elif isinstance(cube, SpectralCube):
+            self.cube = cube
+        else: raise TypeError('cube can be a path to a cube or an instance of a orcs.core.SpectralCube')
+        self.fig = pl.figure(figsize=(10, 7))
+        self.imshown = None
+        gs  = gridspec.GridSpec(3, 2, height_ratios=[1, 0.05, 0.05])
+        ax0 = pl.subplot(gs[0])
+        ax1 = pl.subplot(gs[1])
+        ax2 = pl.subplot(gs[2])
+        ax3 = pl.subplot(gs[4])
+
+        self.axes = (ax0, ax1, ax2, ax3)
+        self.xlim = None
+        self.ylim = None
+        self.show_df()
+        cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
+        self.radius = 10
+        self.sradius = Slider(self.axes[2], 'Radius', 1, 30.0, valinit=self.radius)
+        self.sradius.on_changed(self.radius_update)
+        self.bnorm = Button(self.axes[3], 'Normalize Colorbar')
+        self.bnorm.on_clicked(self.norm)
+
+        if catalog_path is not None:
+            self.cat = Catalog(catalog_path)
+        else:
+            self.cat = None
+
+        pl.show()
+
+    def show_df(self, vmin=None, vmax=None):
+        df = self.cube.get_deep_frame().T
+        if vmin is None and vmax is None and self.imshown is not None:
+            vmin, vmax = self.imshown.get_clim()
+        self.imshown = self.axes[0].imshow(
+            df, origin='bottom-left', vmin=vmin, vmax=vmax)
+        self.fig.canvas.draw()
+
+    def onclick(self, event):
+        if event.button == 3 and event.inaxes == self.axes[0]:
+            self.plot_spectrum(event.xdata, event.ydata, self.radius)
+
+    def plot_spectrum(self, x, y, r):
+        # get data
+        axis, spec = self.cube.extract_spectrum(
+            x, y, r)
+        self.axes[1].cla()
+        self.axes[1].plot(axis, spec, label='{:.1f} {:.1f}'.format(
+            x, y))
+        self.axes[1].grid()
+        self.axes[1].set_xlabel(r'Wavenumber (cm$^{-1}$)')
+        self.axes[1].set_ylabel(r'Flux (erg/cm$^{2}$/s/$\AA$)')
+        self.axes[1].legend()
+        self.xlim = self.axes[0].get_xlim()
+        self.ylim = self.axes[0].get_ylim()
+        self.axes[0].cla()
+
+        self.axes[0].set_xlim(self.xlim)
+        self.axes[0].set_ylim(self.ylim)
+        self.axes[0].axvline(x=x, c='orange', alpha=0.7)
+        self.axes[0].axhline(y=y, c='orange', alpha=0.7)
+        circle = pl.Circle((x, y), r,
+                           color='orange', fill=False, alpha=0.7)
+        self.axes[0].add_artist(circle)
+        self.show_df()
+        self.fig.canvas.draw()
+
+    def radius_update(self, val):
+        self.radius = float(val)
+
+    def norm(self, _):
+        self.xlim = self.axes[0].get_xlim()
+        self.ylim = self.axes[0].get_ylim()
+        df = self.cube.get_deep_frame().T
+        box = df[int(self.xlim[0]):int(self.xlim[1]),
+                 int(self.ylim[0]):int(self.ylim[1])]
+        vmin = np.nanpercentile(box, 1)
+        vmax = np.nanpercentile(box, 99)
+        self.show_df(vmin=vmin, vmax=vmax)
+
+
 class Checker():
 
 
