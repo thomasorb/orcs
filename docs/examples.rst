@@ -47,6 +47,7 @@ your data.
 
    script_example_wavelength_calibration.ipynb
    script_example_image_registration.ipynb
+   script_example_hst_flux_calibration.ipynb
 
 Advanced fitting
 ----------------
