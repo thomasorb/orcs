@@ -305,6 +305,34 @@ much faster (default True).</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="orcs.process.SpectralCube.integrate">
+<code class="descname">integrate</code><span class="sig-paren">(</span><em>filter_function</em>, <em>xmin=None</em>, <em>xmax=None</em>, <em>ymin=None</em>, <em>ymax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrate a cube under a filter function and generate an image</p>
+<p><span class="math">\(I = \int F(\sigma)S(\sigma)      ext{d}\sigma\)</span></p>
+<p>with <span class="math">\(I\)</span>, the image, <span class="math">\(S\)</span> the spectral cube, <span class="math">\(F\)</span> the
+filter function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filter_function</strong> – Must be an orcs.core.Filter instance</li>
+<li><strong>xmin</strong> – (Optional) lower boundary of the ROI along x axis (default
+None, i.e. min)</li>
+<li><strong>xmax</strong> – (Optional) lower boundary of the ROI along y axis (default
+None, i.e. min)</li>
+<li><strong>ymin</strong> – (Optional) upper boundary of the ROI along x axis (default
+None, i.e. max)</li>
+<li><strong>ymax</strong> – (Optional) upper boundary of the ROI along y axis (default
+None, i.e. max)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="orcs.process.SpectralCube.map_sky_velocity">
 <code class="descname">map_sky_velocity</code><span class="sig-paren">(</span><em>mean_sky_vel</em>, <em>div_nb=20</em>, <em>plot=True</em>, <em>x_range=None</em>, <em>y_range=None</em>, <em>exclude_reg_file_path=None</em>, <em>no_fit=False</em>, <em>threshold=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.map_sky_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map the sky velocity on rectangular grid and interpolate it
