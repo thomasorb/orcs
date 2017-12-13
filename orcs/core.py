@@ -374,9 +374,8 @@ class HDFCube(orb.core.HDFCube):
 
 
     def _fit_lines_in_region(self, region, subtract_spectrum=None,
-                             binning=1, snr_guess=None):
-        """
-        Raw function that fit lines in a given region of the cube.
+                             binning=1, snr_guess=None, max_iter=None):
+        """Raw function that fit lines in a given region of the cube.
 
 
         All the pixels in the defined region are fitted one by one
@@ -404,7 +403,10 @@ class HDFCube(orb.core.HDFCube):
           be None or 'auto'. Set it to 'auto' to make a Bayesian
           fit. In this case two fits are made - one with a predefined
           SNR and the other with the SNR deduced from the first
-          fit. If None a classical fit is made.
+          fit. If None a classical fit is made. (default None).
+
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
 
         .. note:: Maps of the parameters of the fit can be found in
           the directory created by ORCS:
@@ -425,7 +427,7 @@ class HDFCube(orb.core.HDFCube):
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
                                init_velocity_map_ij, init_sigma_map_ij,
                                theta_map_ij, snr_guess, sky_vel_ij, flux_sdev_ij,
-                               debug):
+                               debug, max_iter):
 
             stime = time.time()
             if debug:
@@ -464,7 +466,8 @@ class HDFCube(orb.core.HDFCube):
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, sigma_guess=sigma_guess,
+                    snr_guess=snr_guess, max_iter=max_iter,
+                    sigma_guess=sigma_guess,
                     pos_cov=shift_guess)
             except Exception, e:
                 logging.debug('Exception occured during fit: {}'.format(e))
@@ -598,7 +601,7 @@ class HDFCube(orb.core.HDFCube):
                              args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
                                    init_velocity_map, init_sigma_map,
                                    theta_map, snr_guess, sky_velocity_map,
-                                   flux_uncertainty, self.debug],
+                                   flux_uncertainty, self.debug, max_iter],
                              modules=['numpy as np', 'gvar', 'orcs.utils',
                                       'logging', 'warnings', 'time'],
                              mask=mask,
@@ -613,9 +616,11 @@ class HDFCube(orb.core.HDFCube):
         linemaps.write_maps()
 
     def _fit_integrated_spectra(self, regions_file_path,
-                               subtract=None,
-                               plot=True,
-                               verbose=True):
+                                subtract=None,
+                                plot=True,
+                                verbose=True,
+                                snr_guess=None,
+                                max_iter=None):
         """
         Fit integrated spectra and their emission lines parameters.
 
@@ -634,11 +639,22 @@ class HDFCube(orb.core.HDFCube):
 
         :param verbose: (Optional) If True print the fit results
           (default True).
+
+        :param snr_guess: Guess on the SNR of the spectrum. Can only
+          be None or 'auto'. Set it to 'auto' to make a Bayesian
+          fit. In this case two fits are made - one with a predefined
+          SNR and the other with the SNR deduced from the first
+          fit. If None a classical fit is made. (default None).
+
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
         """
-        def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol):
+        def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
+                       snr_guess, max_iter):
             return utils.fit_lines_in_spectrum(
                 params, inputparams, fit_tol,
-                spectrum, theta_orig, snr_guess=None).convert()
+                spectrum, theta_orig,
+                snr_guess=snr_guess, max_iter=max_iter).convert()
 
 
         if verbose:
@@ -669,7 +685,8 @@ class HDFCube(orb.core.HDFCube):
         cjs = CubeJobServer(self)
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
-            args=(self.params.convert(), self.inputparams.convert(), self.fit_tol),
+            args=(self.params.convert(), self.inputparams.convert(),
+                  self.fit_tol, snr_guess, max_iter),
             modules=('import logging',
                      'import orcs.utils as utils'))
 
@@ -789,7 +806,9 @@ class HDFCube(orb.core.HDFCube):
 
         return paramsfile
 
-    def _fit_lines_in_spectrum(self, spectrum, theta_orig, snr_guess=None, **kwargs):
+    def _fit_lines_in_spectrum(self, spectrum, theta_orig,
+                               snr_guess=None, max_iter=None,
+                               **kwargs):
         """Raw function for spectrum fitting.
 
         .. note:: Need the InputParams class to be defined before call
@@ -805,6 +824,9 @@ class HDFCube(orb.core.HDFCube):
           predefined SNR and the other with the SNR deduced from the
           first fit). If None a classical fit is made.
 
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
+
         :param kwargs: (Optional) Model parameters that must be
           changed in the InputParams instance.
         """
@@ -814,7 +836,9 @@ class HDFCube(orb.core.HDFCube):
 
         return utils.fit_lines_in_spectrum(
             self.params, self.inputparams, self.fit_tol,
-            spectrum, theta_orig, snr_guess=snr_guess, **kwargs)
+            spectrum, theta_orig,
+            snr_guess=snr_guess, max_iter=max_iter,
+            **kwargs)
 
     def _prepare_input_params(self, lines, nofilter=False, **kwargs):
         """prepare the InputParams instance for a fitting procedure.
@@ -1049,6 +1073,7 @@ class HDFCube(orb.core.HDFCube):
     def fit_lines_in_spectrum_bin(self, x, y, b, lines, nofilter=False,
                                   subtract_spectrum=None,
                                   snr_guess=None,
+                                  max_iter=None,
                                   mean_flux=False,
                                   **kwargs):
         """Fit lines of a spectrum extracted from a squared region of a
@@ -1078,6 +1103,9 @@ class HDFCube(orb.core.HDFCube):
           predefined SNR and the other with the SNR deduced from the
           first fit). If None a classical fit is made.
 
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
+
         :param mean_flux: (Optional) If True the flux of the spectrum
           is the mean flux of the extracted region (default False).
 
@@ -1096,12 +1124,13 @@ class HDFCube(orb.core.HDFCube):
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
         fit_res = self._fit_lines_in_spectrum(
-            spectrum, theta_orig, snr_guess=snr_guess)
+            spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
 
         return axis, gvar.mean(spectrum), fit_res
 
     def fit_lines_in_spectrum(self, x, y, r, lines, nofilter=False,
-                              snr_guess=None, subtract_spectrum=None,
+                              snr_guess=None, max_iter=None,
+                              subtract_spectrum=None,
                               mean_flux=False, **kwargs):
         """Fit lines of a spectrum extracted from a circular region of a
         given radius.
@@ -1130,6 +1159,9 @@ class HDFCube(orb.core.HDFCube):
           predefined SNR and the other with the SNR deduced from the
           first fit). If None a classical fit is made.
 
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
+
         :param mean_flux: (Optional) If True the flux of the spectrum
           is the mean flux of the extracted region (default False).
 
@@ -1147,13 +1179,13 @@ class HDFCube(orb.core.HDFCube):
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
         fit_res = self._fit_lines_in_spectrum(
-            spectrum, theta_orig, snr_guess=snr_guess)
+            spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
 
         return axis, gvar.mean(spectrum), fit_res
 
     def fit_lines_in_integrated_region(self, region, lines, nofilter=False,
-                                       snr_guess=None, subtract_spectrum=None,
-                                       mean_flux=False,
+                                       snr_guess=None, max_iter=None,
+                                       subtract_spectrum=None, mean_flux=False,
                                        **kwargs):
         """Fit lines of a spectrum integrated over a given region (can
         be a list of pixels as returned by the function
@@ -1183,6 +1215,9 @@ class HDFCube(orb.core.HDFCube):
           predefined SNR and the other with the SNR deduced from the
           first fit). If None a classical fit is made.
 
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
+
         :param mean_flux: (Optional) If True the flux of the spectrum
           is the mean flux of the extracted region (default False).
 
@@ -1201,12 +1236,13 @@ class HDFCube(orb.core.HDFCube):
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
         fit_res = self._fit_lines_in_spectrum(
-            spectrum, theta_orig, snr_guess=snr_guess)
+            spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
 
         return axis, gvar.mean(spectrum), fit_res
 
     def fit_lines_in_region(self, region, lines, binning=1, nofilter=False,
-                            subtract_spectrum=None, snr_guess=None, **kwargs):
+                            subtract_spectrum=None, snr_guess=None, max_iter=None,
+                            **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
         the defined region are fitted one by one and a set of maps
         containing the fitted paramaters are written. Note that the
@@ -1233,6 +1269,9 @@ class HDFCube(orb.core.HDFCube):
           SNR and the other with the SNR deduced from the first
           fit. If None a classical fit is made.
 
+        :param max_iter: (Optional) Maximum number of iterations
+          (default None)
+
         :param kwargs: Keyword arguments of the function
           :py:meth:`~HDFCube._fit_lines_in_spectrum`.
         """
@@ -1241,7 +1280,7 @@ class HDFCube(orb.core.HDFCube):
             lines, nofilter=nofilter, **kwargs)
         self._fit_lines_in_region(
             region, subtract_spectrum=subtract_spectrum,
-            binning=binning, snr_guess=snr_guess)
+            binning=binning, snr_guess=snr_guess, max_iter=max_iter)
 
     def get_mask_from_ds9_region_file(self, region, integrate=True):
         """Return a mask from a ds9 region file.

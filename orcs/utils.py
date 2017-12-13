@@ -36,7 +36,8 @@ import gvar
 import scipy
 
 def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
-                          theta_orig, snr_guess=None, **kwargs):
+                          theta_orig, snr_guess=None, max_iter=None,
+                          **kwargs):
     """Basic wrapping function for spectrum fitting.
 
     :param params: HDFCube.params dictionary
@@ -53,7 +54,9 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
       to make a Bayesian fit (If unknown you can set it to 'auto'
       to try an automatic mode, two fits are made - one with a
       predefined SNR and the other with the SNR deduced from the
-      first fit). If None a classical fit is made.
+      first fit). If None a classical fit is made. (default None).
+
+    :param max_iter: (Optional) Maximum number of iterations (default None)
 
     :param kwargs: (Optional) Model parameters that must be
       changed in the InputParams instance.
@@ -110,6 +113,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
             fit_tol = fit_tol,
             compute_mcmc_error=False,
             snr_guess=snr_guess,
+            max_iter=max_iter,
             **kwargs)
         warnings.simplefilter('default')
 
@@ -124,6 +128,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
         snr_guess = np.nanmax(gvar.mean(spectrum)) / np.nanstd(gvar.mean(spectrum) - _fit['fitted_vector'])
         return fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                                      theta_orig, snr_guess=snr_guess,
+                                     max_iter=max_iter,
                                      **kwargs_orig)
     else:
         return _fit
