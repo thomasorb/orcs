@@ -1144,8 +1144,9 @@ class HDFCube(orb.core.HDFCube):
             x, y, r, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
             return_mean_theta=True, return_gvar=True)
 
-        self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
 
+        self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
+    
         fit_res = self._fit_lines_in_spectrum(
             spectrum, theta_orig, snr_guess=snr_guess)
 
