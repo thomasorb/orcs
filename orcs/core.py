@@ -446,6 +446,25 @@ class HDFCube(orb.core.HDFCube):
             spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
 
             logging.debug('passed mapped kwargs: {}'.format(mapped_kwargs))
+
+            fmapped_kwargs = dict()
+            while len(mapped_kwargs) > 0:
+                logging.debug('{}'.format(mapped_kwargs))
+                for key in mapped_kwargs.keys():
+                    rkey = key[:-len(key.split('_')[-1])-1]
+                    index = int(key.split('_')[-1])
+                    if rkey not in fmapped_kwargs:
+                        if index == 0:
+                            fmapped_kwargs[rkey] = list([mapped_kwargs.pop(key)])
+                    elif index == len(fmapped_kwargs[rkey]):
+                        newentry = fmapped_kwargs[rkey]
+                        newentry.append(mapped_kwargs.pop(key))
+                        fmapped_kwargs[rkey] = newentry
+            mapped_kwargs = fmapped_kwargs
+        
+            
+            logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
+            
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
@@ -612,9 +631,6 @@ class HDFCube(orb.core.HDFCube):
 
         if verbose:
             logging.info("Extracting integrated spectra")
-
-        calibration_coeff_map = self.get_calibration_coeff_map()
-        calibration_laser_map = self.get_calibration_laser_map()
 
         # Create parameters file
         paramsfile = list()
@@ -1227,6 +1243,14 @@ class HDFCube(orb.core.HDFCube):
 
         :param kwargs: Keyword arguments of the function
           :py:meth:`~HDFCube._fit_lines_in_spectrum`.
+
+        .. note:: You can pass the fitting parameters (e.g. pos_cov,
+          sigma_cov etc.) as maps (a 2d numy.ndarray instance or a
+          path to a map). But you have to append the suffix '_map' to
+          the parameter you want to map. Any nan or inf in the map
+          will be replaced by the median of the map. This mode can be
+          used to map parameters at a given binning from the result of
+          the fit made at a higher binning.
         """
         region = self.get_mask_from_ds9_region_file(region)
 
@@ -1237,28 +1261,37 @@ class HDFCube(orb.core.HDFCube):
                 rkey = key[:-len('_map')]
                 if rkey in kwargs.keys():
                     raise KeyError('a mapped value has already been defined with {}. Please remove {}.'.format(key, rkey))
-                vmap = kwargs.pop(key)
-                if isinstance(vmap, str):
-                    vmap = self.read_fits(vmap)
-                elif not isinstance(vmap, np.ndarray):
-                    raise TypeError('parameter map {} must be a path to a fits file or a numpy.ndarray instance'.format(key))
-                if vmap.ndim != 2:
-                    raise TypeError('parameter map {} must have exactly two dimensions'.format(key))
-                if vmap.shape != (self.dimx, self.dimy):
-                    # try to detect binning
-                    _bin = orb.utils.image.compute_binning(vmap.shape, (self.dimx, self.dimy))
-                    if _bin[0] == _bin[1]:
-                        logging.debug('parameter map binned {}x{}'.format(_bin[0], _bin[1]))
-                        vmap = orb.cutils.unbin_image(vmap, self.dimx, self.dimy)
-                    else:
-                        logging.debug('parameter map not binned. Interpolating {} map from {} to ({}, {})'.format(key, vmap.shape, self.dimx, self.dimy))
-                        vmap = orb.utils.image.interpolate_map(vmap, self.dimx, self.dimy)
-                    logging.debug('final {} map shape: {}'.format(rkey, vmap.shape))
-                    
-                mapped_kwargs[rkey] = vmap
-                kwargs[rkey] = np.nanmedian(mapped_kwargs[rkey])
-                logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
-                    
+                vmaps = kwargs.pop(key)
+                if not isinstance(vmaps, tuple) and not isinstance(vmaps, list):
+                    vmaps = list([vmaps])
+        
+                for i in range(len(vmaps)):
+                    ivmap = vmaps[i]
+                    if isinstance(ivmap, str):
+                        ivmap = self.read_fits(ivmap)                    
+                    elif not isinstance(ivmap, np.ndarray):
+                        raise TypeError('parameter map {} must be a path to a fits file or a numpy.ndarray instance'.format(key))
+                    if ivmap.ndim != 2:
+                        raise TypeError('parameter map {} must have exactly two dimensions'.format(key))
+                    if ivmap.shape != (self.dimx, self.dimy):
+                        # try to detect binning
+                        _bin = orb.utils.image.compute_binning(ivmap.shape, (self.dimx, self.dimy))
+                        if _bin[0] == _bin[1]:
+                            logging.debug('parameter map binned {}x{}'.format(_bin[0], _bin[1]))
+                            ivmap = orb.cutils.unbin_image(ivmap, self.dimx, self.dimy)
+                        else:
+                            logging.debug('parameter map not binned. Interpolating {} map from {} to ({}, {})'.format(key, ivmap.shape, self.dimx, self.dimy))
+                            ivmap = orb.utils.image.interpolate_map(ivmap, self.dimx, self.dimy)
+                        logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
+
+                    kwargs[rkey] = np.nanmedian(ivmap)
+                    logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
+                    if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
+                        logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
+                    ivmap[np.isnan(ivmap)] = kwargs[rkey]
+                    ivmap[np.isinf(ivmap)] = kwargs[rkey]
+                    mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
+                
         self._prepare_input_params(
             lines, nofilter=nofilter, **kwargs)
         
