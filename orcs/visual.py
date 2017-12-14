@@ -17,10 +17,10 @@ class Viewer(object):
         self.fig = pl.figure(figsize=(10, 7))
         self.imshown = None
         gs  = gridspec.GridSpec(3, 2, height_ratios=[1, 0.05, 0.05])
-        ax0 = pl.subplot(gs[0])
-        ax1 = pl.subplot(gs[1])
-        ax2 = pl.subplot(gs[2])
-        ax3 = pl.subplot(gs[4])
+        ax0 = pl.subplot(gs[0]) # image
+        ax1 = pl.subplot(gs[1]) # spectrum
+        ax2 = pl.subplot(gs[2]) # radius
+        ax3 = pl.subplot(gs[4]) # normalize button
 
         self.axes = (ax0, ax1, ax2, ax3)
         self.xlim = None
@@ -91,6 +91,8 @@ class Viewer(object):
         self.show_df(vmin=vmin, vmax=vmax)
 
 
+
+        
 class Checker():
 
 

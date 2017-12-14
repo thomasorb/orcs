@@ -374,9 +374,10 @@ class HDFCube(orb.core.HDFCube):
 
 
     def _fit_lines_in_region(self, region, subtract_spectrum=None,
-                             binning=1, snr_guess=None, max_iter=None):
-        """Raw function that fit lines in a given region of the cube.
-
+                             binning=1, snr_guess=None, mapped_kwargs=None,
+                             max_iter=None):
+        """
+        Raw function that fit lines in a given region of the cube.
 
         All the pixels in the defined region are fitted one by one
         and a set of maps containing the fitted paramaters are
@@ -408,6 +409,9 @@ class HDFCube(orb.core.HDFCube):
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
 
+        :param mapped_kwargs: If a kwarg is mapped, its value will be
+          replaced by the value at the fitted pixel.
+
         .. note:: Maps of the parameters of the fit can be found in
           the directory created by ORCS:
           ``OBJECT_NAME_FILTER.ORCS/MAPS/``.
@@ -425,37 +429,15 @@ class HDFCube(orb.core.HDFCube):
 
         """
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
-                               init_velocity_map_ij, init_sigma_map_ij,
                                theta_map_ij, snr_guess, sky_vel_ij, flux_sdev_ij,
-                               debug, max_iter):
+                               debug, max_iter, mapped_kwargs):
+
 
             stime = time.time()
             if debug:
                 logging.getLogger().setLevel(logging.DEBUG)
             else:
                 warnings.simplefilter('ignore', RuntimeWarning)
-            # check init velocity (already computed from
-            # binned maps). If a guess exists, velocity range
-            # is set to None
-            if not np.isnan(init_velocity_map_ij):
-                shift_guess_sdev = gvar.sdev(
-                    inputparams.allparams['pos_cov'])
-                shift_guess = gvar.gvar(
-                    np.ones_like(shift_guess_sdev) * init_velocity_map_ij,
-                    shift_guess_sdev)
-            else:
-                shift_guess = None
-
-            # check init sigma (already computed from binned
-            # maps).
-            if not np.isnan(init_sigma_map_ij):
-                sigma_guess_sdev = gvar.sdev(
-                    inputparams.allparams['sigma_cov'])
-                sigma_guess = gvar.gvar(
-                    np.ones_like(sigma_guess_sdev) * init_sigma_map_ij,
-                    sigma_guess_sdev)
-            else:
-                sigma_guess = None
 
             # correct spectrum for nans
             spectrum[np.isnan(spectrum)] = 0.
@@ -463,12 +445,13 @@ class HDFCube(orb.core.HDFCube):
             # add flux uncertainty to the spectrum
             spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
 
+            logging.debug('passed mapped kwargs: {}'.format(mapped_kwargs))
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
                     snr_guess=snr_guess, max_iter=max_iter,
-                    sigma_guess=sigma_guess,
-                    pos_cov=shift_guess)
+                    **mapped_kwargs)
+                
             except Exception, e:
                 logging.debug('Exception occured during fit: {}'.format(e))
                 ifit = []
@@ -535,36 +518,7 @@ class HDFCube(orb.core.HDFCube):
             data_prefix=self._data_prefix,
             ncpus=self.ncpus)
 
-        # compute max uncertainty on velocity and sigma to use it as
-        # an initial guess.
-        max_vel_err = (orb.constants.LIGHT_VEL_KMS / self.params.resolution) / 4.
-        max_sig_err = max_vel_err / 2.
-
-        # load velocity maps of binned maps
-        init_velocity_map = linemaps.get_map('velocity')
-        init_velocity_map_err = linemaps.get_map('velocity-err')
-        # load sigma maps of binned maps
-        init_sigma_map = linemaps.get_map('sigma')
-        init_sigma_map_err = linemaps.get_map('sigma-err')
-
-        # create mean velocity map
-        # mean map is weighted by the square of the error on the parameter
-        init_velocity_map[
-            np.nonzero(np.abs(init_velocity_map_err) > max_vel_err)] = np.nan
-        vel_map_w = (1. / (init_velocity_map_err**2.))
-        init_velocity_map *= vel_map_w
-        init_velocity_map = np.nansum(init_velocity_map, axis=2)
-        init_velocity_map /= np.nansum(vel_map_w, axis=2)
-
-        # create mean sigma map
-        # mean map is weighted by the square of the error on the parameter
-        init_sigma_map[
-            np.nonzero(np.abs(init_sigma_map_err) > max_sig_err)] = np.nan
-        sig_map_w = (1. / (init_sigma_map_err**2.))
-        init_sigma_map *= sig_map_w
-        init_sigma_map = np.nansum(init_sigma_map, axis=2)
-        init_sigma_map /= np.nansum(sig_map_w, axis=2)
-
+        
         # check subtract spectrum
         if np.all(subtract_spectrum == 0.): subtract_spectrum = None
 
@@ -579,7 +533,6 @@ class HDFCube(orb.core.HDFCube):
         mask_bin = orb.utils.image.nanbin_image(mask, binning)
 
         total_fit_nb = np.nansum(mask_bin)
-        progress = orb.core.ProgressBar(total_fit_nb)
         logging.info('Number of spectra to fit: {}'.format(int(total_fit_nb)))
 
         if self.get_sky_velocity_map() is not None:
@@ -599,9 +552,9 @@ class HDFCube(orb.core.HDFCube):
         cjs = CubeJobServer(self)
         out = cjs.process_by_pixel(fit_lines_in_pixel,
                              args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
-                                   init_velocity_map, init_sigma_map,
                                    theta_map, snr_guess, sky_velocity_map,
                                    flux_uncertainty, self.debug, max_iter],
+                             kwargs=mapped_kwargs,
                              modules=['numpy as np', 'gvar', 'orcs.utils',
                                       'logging', 'warnings', 'time'],
                              mask=mask,
@@ -1177,7 +1130,7 @@ class HDFCube(orb.core.HDFCube):
             return_mean_theta=True, return_gvar=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
-
+    
         fit_res = self._fit_lines_in_spectrum(
             spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
 
@@ -1276,11 +1229,43 @@ class HDFCube(orb.core.HDFCube):
           :py:meth:`~HDFCube._fit_lines_in_spectrum`.
         """
         region = self.get_mask_from_ds9_region_file(region)
+
+        # check maps in params
+        mapped_kwargs = dict()
+        for key in kwargs.keys():
+            if '_map' in key:
+                rkey = key[:-len('_map')]
+                if rkey in kwargs.keys():
+                    raise KeyError('a mapped value has already been defined with {}. Please remove {}.'.format(key, rkey))
+                vmap = kwargs.pop(key)
+                if isinstance(vmap, str):
+                    vmap = self.read_fits(vmap)
+                elif not isinstance(vmap, np.ndarray):
+                    raise TypeError('parameter map {} must be a path to a fits file or a numpy.ndarray instance'.format(key))
+                if vmap.ndim != 2:
+                    raise TypeError('parameter map {} must have exactly two dimensions'.format(key))
+                if vmap.shape != (self.dimx, self.dimy):
+                    # try to detect binning
+                    _bin = orb.utils.image.compute_binning(vmap.shape, (self.dimx, self.dimy))
+                    if _bin[0] == _bin[1]:
+                        logging.debug('parameter map binned {}x{}'.format(_bin[0], _bin[1]))
+                        vmap = orb.cutils.unbin_image(vmap, self.dimx, self.dimy)
+                    else:
+                        logging.debug('parameter map not binned. Interpolating {} map from {} to ({}, {})'.format(key, vmap.shape, self.dimx, self.dimy))
+                        vmap = orb.utils.image.interpolate_map(vmap, self.dimx, self.dimy)
+                    logging.debug('final {} map shape: {}'.format(rkey, vmap.shape))
+                    
+                mapped_kwargs[rkey] = vmap
+                kwargs[rkey] = np.nanmedian(mapped_kwargs[rkey])
+                logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
+                    
         self._prepare_input_params(
             lines, nofilter=nofilter, **kwargs)
+        
         self._fit_lines_in_region(
             region, subtract_spectrum=subtract_spectrum,
-            binning=binning, snr_guess=snr_guess, max_iter=max_iter)
+            binning=binning, snr_guess=snr_guess,
+            max_iter=max_iter, mapped_kwargs=mapped_kwargs)
 
     def get_mask_from_ds9_region_file(self, region, integrate=True):
         """Return a mask from a ds9 region file.
@@ -1778,7 +1763,7 @@ class CubeJobServer(object):
 
 
     def process_by_pixel(self, func, args=list(), modules=list(), out=dict(),
-                         depfuncs=list(),
+                         depfuncs=list(), kwargs=dict(),
                          mask=None, binning=1):
         """Parallelize a function taking binned spectra of the cube as
         an input. All pixels are gone through unless a mask is passed
@@ -1794,10 +1779,12 @@ class CubeJobServer(object):
         shaped arguments, the 3rd dimension can have any size)
         """
 
-        def process_in_line(*args):
+        def process_in_row(*args):
             """Basic line processing for a vector function"""
             import marshal, types
             import numpy as np
+
+                              
             ## function is unpicked
             _code = marshal.loads(args[0])
             _func = types.FunctionType(_code, globals(), '_func')
@@ -1819,11 +1806,20 @@ class CubeJobServer(object):
                             iarg = iarg[i]
 
                     iargs_list.append(iarg)
+                    
+                # last arg gives the kwargs which are eventually passed as a dict
+                ikwargs_keys = iargs_list.pop(-1)
+                ikwargs = dict()
+                for ikey in range(len(ikwargs_keys)):
+                    ikwargs[ikwargs_keys[-(ikey + 1)]] = iargs_list.pop(-1)
+                for ikey in ikwargs:
+                    logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
+                iargs_list.append(ikwargs)
                 try:
                     out_line.append(_func(iline_data[i,:], *iargs_list))
                 except Exception, e:
                     out_line.append(None)
-                    logging.warning('Exception occured in process_in_line at function call level: {}'.format(e))
+                    logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
             return out_line
 
@@ -1875,6 +1871,13 @@ class CubeJobServer(object):
             if not isbinned(mask):
                 mask = orb.utils.image.nanbin_image(mask, int(binning))
 
+        # add kwargs to args
+        kwargs_keys = kwargs.keys()
+        for key in kwargs_keys:
+            args.append(kwargs[key])
+        args.append(kwargs_keys)
+        logging.info('passed mapped kwargs : {}'.format(kwargs_keys))
+
         # check arguments
         # reshape passed arguments
         for i in range(len(args)):
@@ -1904,7 +1907,7 @@ class CubeJobServer(object):
             _X = np.nonzero(mask[:,i])[0]
             if len(_X) > 0:
                 xy.append((_X, np.ones(len(_X), dtype=np.int64) * i))
-        logging.info('{} lines to fit'.format(len(xy)))
+        logging.info('{} rows to fit'.format(len(xy)))
 
         # jobs will be passed by line
         self.all_jobs_indexes = range(len(xy))
@@ -1914,7 +1917,6 @@ class CubeJobServer(object):
         self.jobs = list()
         progress = orb.core.ProgressBar(all_jobs_nb)
         while len(self.all_jobs_indexes) > 0 or len(self.jobs) > 0:
-            while_loop_start = time.time()
 
             # submit jobs
             while len(self.jobs) < self.ncpus and len(self.all_jobs_indexes) > 0:
@@ -1956,7 +1958,7 @@ class CubeJobServer(object):
                 # job submission
                 self.jobs.append([
                     self.job_server.submit(
-                        process_in_line,
+                        process_in_row,
                         args=tuple(all_args),
                         modules=tuple(modules),
                         depfuncs=tuple(depfuncs)),
@@ -2015,8 +2017,6 @@ class CubeJobServer(object):
                     unfinished_jobs.append(self.jobs[i])
             self.jobs = unfinished_jobs
 
-
-            #logging.debug('while loop time: {} s'.format(time.time() - while_loop_start))
         progress.end()
 
         orb.utils.parallel.close_pp_server(self.job_server)
@@ -2128,7 +2128,7 @@ class LineMaps(orb.core.Tools):
             self.data[iparam] = np.copy(base_array)
 
         # load computed maps
-        self._load_maps()
+        ## self._load_maps()
 
 
     def _get_map_path(self, line_name, param, binning=None):
@@ -2198,53 +2198,63 @@ class LineMaps(orb.core.Tools):
         else:
             return hdr
 
-    def _load_maps(self):
-        """Load already computed maps with the smallest binning but
-        still higher than requested. Loaded maps can be used to get
-        initial fitting parameters."""
-        # check existing files
-        binnings = np.arange(self.binning+1, 1000)
-        available_binnings = list()
-        for binning in binnings:
-            all_ok = True
-            for line_name in self.line_names:
-                for param in self.lineparams:
-                    if not os.path.exists(self._get_map_path(
-                        line_name, param, binning)):
-                        all_ok = False
-            if all_ok: available_binnings.append(binning)
-        if len(available_binnings) < 1: return
-        # load data from lowest (but still higher than requested)
-        # binning
-        binning = np.nanmin(available_binnings)
-        logging.info('Loading {}x{} maps'.format(
-            binning, binning))
-        for param in self.lineparams:
-            # only velocity param is loaded
-            if param in ['velocity', 'velocity-err', 'sigma', 'sigma-err']:
-                data = np.empty(
-                    (self.dimx, self.dimy, len(self.lines)),
-                    dtype=float)
-                data.fill(np.nan)
-                for iline in range(len(self.lines)):
-                    map_path = self._get_map_path(
-                        self.line_names[iline], param, binning)
-                    old_map = self.read_fits(map_path)
-                    real_old_map = np.copy(old_map)
-                    # data is unbinned and rebinned : creates small
-                    # errors, but loaded maps are only used for initial
-                    # parameters
-                    old_map = orb.cutils.unbin_image(
-                        old_map,
-                        self.unbinned_dimx,
-                        self.unbinned_dimy)
-                    old_map = orb.cutils.nanbin_image(
-                        old_map, self.binning)
-                    old_map = old_map[:self.dimx,:self.dimy]
+    ## def _load_maps(self):
+    ##     """Load already computed maps with the smallest binning but
+    ##     still higher than requested. Loaded maps can be used to get
+    ##     initial fitting parameters."""
+    ##     # check existing files
+    ##     binnings = np.arange(self.binning+1, 1000)
+    ##     available_binnings = list()
+    ##     for binning in binnings:
+    ##         all_ok = True
+    ##         for param in self.lineparams:
+    ##             if not os.path.exists(self._get_map_path(
+    ##                 None, param, binning)): # check *.all.* map                    
+    ##                 for line_name in self.line_names:
+    ##                     ## if binning == 30:
+    ##                     ##     print self._get_map_path(
+    ##                     ##         line_name, param, binning), os.path.exists(self._get_map_path(
+    ##                     ##         line_name, param, binning))
+    ##                     if not os.path.exists(self._get_map_path(
+    ##                         line_name, param, binning)):
+    ##                         all_ok = False
+    ##         if all_ok: available_binnings.append(binning)
+    ##     if len(available_binnings) < 1: return
+    ##     # load data from lowest (but still higher than requested)
+    ##     # binning
+    ##     binning = np.nanmin(available_binnings)
+    ##     logging.info('Loading {}x{} maps'.format(
+    ##         binning, binning))
+    ##     for param in self.lineparams:
+    ##         # only velocity param is loaded
+    ##         if param in ['velocity', 'velocity-err', 'sigma', 'sigma-err']:
+    ##             data = np.empty(
+    ##                 (self.dimx, self.dimy, len(self.lines)),
+    ##                 dtype=float)
+    ##             data.fill(np.nan)
+    ##             for iline in range(len(self.lines)):
+    ##                 if os.path.exists(self._get_map_path(
+    ##                     None, param, binning)):
+    ##                     map_path = self._get_map_path(
+    ##                         None, param, binning)
+    ##                 else:
+    ##                     map_path = self._get_map_path(
+    ##                         self.line_names[iline], param, binning)
+    ##                 old_map = self.read_fits(map_path)
+    ##                 # data is unbinned and rebinned : creates small
+    ##                 # errors, but loaded maps are only used for initial
+    ##                 # parameters
+    ##                 old_map = orb.cutils.unbin_image(
+    ##                     old_map,
+    ##                     self.unbinned_dimx,
+    ##                     self.unbinned_dimy)
+    ##                 old_map = orb.cutils.nanbin_image(
+    ##                     old_map, self.binning)
+    ##                 old_map = old_map[:self.dimx,:self.dimy]
 
-                    data[:,:,iline] = np.copy(old_map)
-                logging.info('{} loaded'.format(param))
-                self.set_map(param, data)
+    ##                 data[:,:,iline] = np.copy(old_map)
+    ##             logging.info('{} loaded'.format(param))
+    ##             self.set_map(param, data)
 
 
 
