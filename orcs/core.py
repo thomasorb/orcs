@@ -1367,20 +1367,19 @@ class HDFCube(orb.core.HDFCube):
         dxmap = self.read_fits(dxmap_path)
         dymap = self.read_fits(dymap_path)
         if dxmap.shape == (self.dimx, self.dimy):
-            if dymap.shape == (self.dimx, self.dimy):
-                self.dxmap = dxmap
-                self.dymap = dymap
-            else:
-                dymap = orb.utils.image.interpolate_map(
-                    dymap, self.dimx, self.dimy)
-                warning.warnings('dymap reshaped from {} to ({}, {})'.
-                                 format(dymap.shape, self.dimx, self.dimy))
-
+            self.dxmap = dxmap
         else:
-            dxmap = orb.utils.image.interpolate_map(
+            self.dxmap = orb.utils.image.interpolate_map(
                 dxmap, self.dimx, self.dimy)
-            warning.warnings('dxmap reshaped from {} to ({}, {})'.
+            warnings.warn('dxmap reshaped from {} to ({}, {})'.
                              format(dxmap.shape, self.dimx, self.dimy))
+        if dymap.shape == (self.dimx, self.dimy):
+            self.dymap = dymap
+        else:
+            self.dymap = orb.utils.image.interpolate_map(
+                dymap, self.dimx, self.dimy)
+            warnings.warn('dymap reshaped from {} to ({}, {})'.
+                             format(dymap.shape, self.dimx, self.dimy))
 
     def set_wcs(self, wcs_path):
         """Reset WCS of the cube.
