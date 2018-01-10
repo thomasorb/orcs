@@ -23,14 +23,11 @@
 import numpy as np
 import logging
 """Compute the radial velocity correction for spectral data.
-
 The whole class has been created using David Nidever IDL function
 RVCORRECT itself translated from the IRAF function RVCORRECT.
-
 The IDL code can be found at::
     
   http://www.astro.virginia.edu/~dln5q/research/idl/rvcorrect.pro
-
 The description of the IRAF function can be found at::
     
   http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?rvcorrect
@@ -44,11 +41,9 @@ class RVCorrect(object):
     Compute radial velocity correction. The whole class has been
     created using David Nidever's IDL function RVCORRECT itself
     translated from the IRAF function RVCORRECT.
-
     The IDL code can be found at::
     
       http://www.astro.virginia.edu/~dln5q/research/idl/rvcorrect.pro
-
     The description of the IRAF function can be found at::
     
       http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?rvcorrect
@@ -102,7 +97,6 @@ class RVCorrect(object):
         
         :param ep: (Optional) The epoch of the coordinates (2000. by
           default).
-
         :param silent: (Optional) If False print all the output
           parameters (default False).
         """
@@ -147,7 +141,6 @@ class RVCorrect(object):
     def ast_date_to_julday(self, year, month, day, t):
         """
         Convert date to Julian day. This assumes dates after year 99.
-
         :param year: Year
         :param month: Month
         :param day: Day
@@ -178,7 +171,6 @@ class RVCorrect(object):
         """
         Convert Gregorian date and solar mean time to a Julian epoch.
         A Julian epoch has 365.25 days per year and 24 hours per day.
-
         :param year: Year
         :param month: Month (1-12)
         :param day: Day of month
@@ -192,7 +184,6 @@ class RVCorrect(object):
     def ast_epoch_to_date(self, epoch):
         """
         Convert a Julian epoch to year, month, day, and time.
-
         :param epoch: Julian epoch
         """
         jd = self.JD2000 + (epoch - self.J2000) * self.JYEAR
@@ -212,7 +203,6 @@ class RVCorrect(object):
         Convert Julian date to calendar date.  This is taken from
         Numerical Receipes by Press, Flannery, Teukolsy, and
         Vetterling.
-
         :param j: Julian date
         """
         ja = int(j)
@@ -247,7 +237,6 @@ class RVCorrect(object):
         Mean sidereal time of the epoch at the given longitude.  This
         procedure may be used to optain Greenwich Mean Sidereal Time
         (GMST) by setting the longitude to 0.
-
         :param epoch: Epoch
         :param longitude: Longitude in degrees
         """
@@ -277,7 +266,6 @@ class RVCorrect(object):
         epoch to epoch2.  The precession between any two dates is done
         this way because the rotation matrix coefficients are given
         relative to the standard epoch.
-
         :param ra1: RA for first coordinates
         :param dec1: DEC for first coordinates
         :param epoch 1: Epoch for first coordinates
@@ -339,7 +327,6 @@ class RVCorrect(object):
         """
         Compute the precession rotation matrix from the standard epoch
         J2000.0 to the specified epoch.
-
         :param epoch: Epoch of date
         """
         p = np.zeros((3,3), dtype=float)
@@ -383,7 +370,6 @@ class RVCorrect(object):
         (a2, b2) in a different coordinate system that is specified by
         the coordinates of its origin (ao, bo).  The range of a2 will
         be from -pi to pi.
-
         :param ao: longitude of the origin of the new coordinates (radians)
         :param bo: latitude of the origin of the new coordinates (radians)
         :param ap: longitude of the pole of the new coordinates (radians)
@@ -435,7 +421,6 @@ class RVCorrect(object):
 
     def ast_hjd(self, ra, dec, epoch):
         """Heliocentric Julian Day from Epoch
-
         :param ra: RA of observation (hours)
         :param dec: DEC of observation (degrees)
         :param epoch: Julian epoch of observation
@@ -444,7 +429,6 @@ class RVCorrect(object):
 
     def ast_jd_to_hjd(self, ra, dec, jd):
         """Heliocentric Julian Day from UT Julian date
-
         :param ra: RA of observation (hours)
         :param dec: DEC of observation (degrees)
         :param jd: Geocentric Julian date of observation
@@ -498,7 +482,6 @@ class RVCorrect(object):
 
     def ast_vr(self, ra1, dec1, v1, ra2, dec2):
         """Project a velocity vector in radial velocity along line of sight.
-
         :param ra1: Right ascension of velocity vector (hours)
         :param dec1: Declination of velocity vector (degrees)
         :param v1: Magnitude of velocity vector
@@ -524,7 +507,6 @@ class RVCorrect(object):
     def ast_vorbit(self, ra, dec, epoch):
         """Radial velocity component of the Earth-Moon barycenter
         relative to the Sun.
-
         :param ra: RA of observation (hours)
         :param dec: DEC of observation (degrees)
         :param epoch: Julian epoch of observation
@@ -581,7 +563,6 @@ class RVCorrect(object):
     def ast_vbary(self, ra, dec, epoch):
         """Radial velocity component of center of the Earth relative to
         to the barycenter of the Earth-Moon system.
-
         :param ra: RA of observation (hours)
         :param dec: DEC of observation (degrees)
         :param epoch: Julian epoch of observation
@@ -658,7 +639,6 @@ class RVCorrect(object):
     def ast_vrotate(self, ra, dec, epoch, latitude, longitude, altitude):
         """ Radial velocity component of the observer relative to the
         center of the Earth due to the Earth's rotation.
-
         :param ra: Right Ascension of observation (hours)
         :param dec: Declination of observation (degrees)
         :param epoch: Epoch of observation (Julian epoch)

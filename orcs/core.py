@@ -35,6 +35,10 @@ import logging
 import numpy as np
 import astropy.io.fits as pyfits
 import astropy.wcs as pywcs
+import astropy.units
+import astropy.time
+import astropy.coordinates
+
 import scipy.interpolate
 import marshal
 import time
@@ -54,7 +58,6 @@ except Exception, e:
     sys.exit(2)
 
 import utils
-import rvcorrect
 
 #################################################
 #### CLASS HDFCube ##############################
@@ -1585,7 +1588,7 @@ class HDFCube(orb.core.HDFCube):
         if 'HOUR_UT' in self.header:
             self.set_param('hour_ut', np.array(self.header['HOUR_UT'].strip().split(':'), dtype=float))
         else:
-            self.params['hour_ut'] = (0., 0., 0.)
+            self.params['hour_ut'] = np.array([0, 0, 0], dtype=float)
 
         # create base axis of the data
         if self.params.wavenumber:
@@ -1680,14 +1683,53 @@ class HDFCube(orb.core.HDFCube):
 
         return noise_flux
 
-    def get_heliocentric_velocity(self, vobs):
-        """Return corrected heliocentric velocity and local standard of rest
-           velocity for a given measured velocity.
+    def get_radial_velocity_correction(self, kind='heliocentric'):
+        """Return heliocentric or barycentric velocity correction to apply on
+           the observed target in km/s
+        
+        :param kind: (Optional) 'heliocentric' or 'barycentric' (default 'heliocentric').
+
+        For m/s precision it should be added. But more care must be
+        taken if a better precision is needed. Please see http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction for more informations.
+
+        :return: (heliocentric or barycentric) velocities.
+
+        .. seealso:: This is based on the astropy methods. See
+        http://docs.astropy.org/en/stable/coordinates/velocities.html
+        for more information on how to use the returned quantities.
+
         """
-        rvcorr = rvcorrect.RVCorrect(
-            self.params.target_ra, self.params.target_dec, self.params.obs_date,
-            self.params.hour_ut, (self.config.OBS_LAT, self.config.OBS_LON, self.config.OBS_ALT))
-        return rvcorr.rvcorrect(vobs=vobs)
+        kinds = ['heliocentric', 'barycentric']
+        if kind not in kinds: raise ValueError('kind must be {}'.format(kinds))
+        obslat = astropy.coordinates.Latitude(self.config.OBS_LAT, unit=astropy.units.deg)
+        obslon = astropy.coordinates.Longitude(self.config.OBS_LON, unit=astropy.units.deg)
+        obsalt = self.config.OBS_ALT * astropy.units.meter
+        
+        location = astropy.coordinates.EarthLocation.from_geodetic(
+            lat=obslat, lon=obslon, height=obsalt)
+        
+        sc = astropy.coordinates.SkyCoord(
+            ra=self.params.target_ra * astropy.units.deg,
+            dec=self.params.target_dec * astropy.units.deg)
+        time_str = ('-'.join(self.params.obs_date.astype(str)) + ' '
+                    + '{}:{}:{}'.format(
+                        int(self.params.hour_ut[0]),
+                        int(self.params.hour_ut[1]),
+                        float(self.params.hour_ut[2])))
+        obstime = astropy.time.Time(
+            time_str,
+            format='iso', scale='utc')
+
+        logging.info('Observation date: {} = {} Julian days'.format(
+            obstime, obstime.jd))
+        logging.info('Observatory location: LAT {} |LON {} |ALT {}'.format(
+            location.lat, location.lon, location.height))
+        logging.info('Observed Target: {}'.format(sc.to_string(style='hmsdms')))
+        radcorr = sc.radial_velocity_correction(
+            kind, obstime=obstime, location=location)
+        return radcorr.to_value(astropy.units.km/astropy.units.s)
+
+
 
 
 ##################################################
