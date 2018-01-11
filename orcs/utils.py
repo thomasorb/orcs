@@ -99,7 +99,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
         orb.utils.spectrum.theta2corr(theta_orig),
         wavenumber=params['wavenumber'])
 
-    kwargs['fwhm_guess'] = fwhm_guess_cm1
+    kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams.allparams.line_nb
 
     logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
 
