@@ -440,7 +440,7 @@ class HDFCube(orb.core.HDFCube):
 
             stime = time.time()
             if debug:
-                logging.getLogger().setLevel(logging.DEBUG)
+                pass#logging.getLogger().setLevel(logging.DEBUG)
             else:
                 warnings.simplefilter('ignore', RuntimeWarning)
 
@@ -473,7 +473,7 @@ class HDFCube(orb.core.HDFCube):
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, max_iter=max_iter,
+                    snr_guess=snr_guess, max_iter=max_iter, debug=debug,
                     **mapped_kwargs)
                 
             except Exception, e:
@@ -627,11 +627,11 @@ class HDFCube(orb.core.HDFCube):
           (default None)
         """
         def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
-                       snr_guess, max_iter):
+                       snr_guess, max_iter, debug):
             _fit = utils.fit_lines_in_spectrum(
                 params, inputparams, fit_tol,
                 spectrum, theta_orig,
-                snr_guess=snr_guess, max_iter=max_iter)
+                snr_guess=snr_guess, max_iter=max_iter, debug=debug)
             if _fit != []: return _fit.convert()
             else: return _fit
 
@@ -661,7 +661,7 @@ class HDFCube(orb.core.HDFCube):
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
             args=(self.params.convert(), self.inputparams.convert(),
-                  self.fit_tol, snr_guess, max_iter),
+                  self.fit_tol, snr_guess, max_iter, self.debug),
             modules=('import logging',
                      'import orcs.utils as utils'))
 
@@ -812,7 +812,7 @@ class HDFCube(orb.core.HDFCube):
         return utils.fit_lines_in_spectrum(
             self.params, self.inputparams, self.fit_tol,
             spectrum, theta_orig,
-            snr_guess=snr_guess, max_iter=max_iter,
+            snr_guess=snr_guess, max_iter=max_iter, debug=self.debug,
             **kwargs)
 
     def _prepare_input_params(self, lines, nofilter=False, **kwargs):

@@ -38,7 +38,7 @@ import orb.utils.log
 
 def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                           theta_orig, snr_guess=None, max_iter=None,
-                          **kwargs):
+                          debug=False, **kwargs):
     """Basic wrapping function for spectrum fitting.
 
     :param params: HDFCube.params dictionary
@@ -64,7 +64,8 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     """
     kwargs_orig = dict(kwargs)
 
-    orb.utils.log.setup_socket_logging()
+    if debug:
+        orb.utils.log.setup_socket_logging()
     
     # check snr guess param
     auto_mode = False
