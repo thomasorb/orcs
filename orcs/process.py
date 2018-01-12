@@ -217,9 +217,13 @@ class SpectralCube(HDFCube):
 
             logging.info('{} regions to fit'.format(len(regions)))
 
-            self._prepare_input_params(self.get_sky_lines(), fmodel='sinc',
-                                       pos_def='1', sigma_def='1', pos_cov=mean_sky_vel,
-                                       fwhm_def='fixed')
+            sky_lines = self.get_sky_lines()
+            logging.info('{} sky lines to fit'.format(len(sky_lines)))
+            
+            self._prepare_input_params(sky_lines, fmodel='sinc',
+                                       pos_def=['1'] * len(sky_lines),
+                                       pos_cov=[mean_sky_vel],
+                                       fwhm_def=['fixed'] * len(sky_lines))
 
 
             lines_nb = self.inputparams.allparams['line_nb']
@@ -256,6 +260,10 @@ class SpectralCube(HDFCube):
         x = np.array(x)
         y = np.array(y)
         sky_vel_map = np.array(sky_vel_map)
+        logging.debug('x: {}'.format(x))
+        logging.debug('y: {}'.format(y))
+        logging.debug('v: {}'.format(sky_vel_map))
+        
         nans = np.isnan(sky_vel_map)
         sky_vel_map[nans] = 0.
         sky_vel_map_err = np.array(sky_vel_map_err)

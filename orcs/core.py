@@ -628,10 +628,12 @@ class HDFCube(orb.core.HDFCube):
         """
         def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
                        snr_guess, max_iter):
-            return utils.fit_lines_in_spectrum(
+            _fit = utils.fit_lines_in_spectrum(
                 params, inputparams, fit_tol,
                 spectrum, theta_orig,
-                snr_guess=snr_guess, max_iter=max_iter).convert()
+                snr_guess=snr_guess, max_iter=max_iter)
+            if _fit != []: return _fit.convert()
+            else: return _fit
 
 
         if verbose:
@@ -654,8 +656,7 @@ class HDFCube(orb.core.HDFCube):
 
         if not hasattr(self, 'inputparams'):
             raise StandardError('Input params not defined')
-
-
+      
         cjs = CubeJobServer(self)
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
