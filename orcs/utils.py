@@ -34,6 +34,7 @@ import logging
 import warnings
 import gvar
 import scipy
+import orb.utils.log
 
 def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                           theta_orig, snr_guess=None, max_iter=None,
@@ -62,6 +63,9 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
       changed in the InputParams instance.
     """
     kwargs_orig = dict(kwargs)
+
+    orb.utils.log.setup_socket_logging()
+    
     # check snr guess param
     auto_mode = False
     bad_snr_param = False
