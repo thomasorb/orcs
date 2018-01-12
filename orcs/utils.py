@@ -106,6 +106,8 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     if bad_snr_param:
         raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
+    if max_iter is None:
+        max_iter = 100 * inputparams.allparams['line_nb']
     try:
         warnings.simplefilter('ignore')
         _fit = orb.fit._fit_lines_in_spectrum(

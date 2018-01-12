@@ -628,6 +628,8 @@ class HDFCube(orb.core.HDFCube):
         """
         def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
                        snr_guess, max_iter):
+            import orb.utils.log
+            orb.utils.log.setup_socket_logging()
             _fit = utils.fit_lines_in_spectrum(
                 params, inputparams, fit_tol,
                 spectrum, theta_orig,
