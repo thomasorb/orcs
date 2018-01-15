@@ -80,8 +80,6 @@ Documentation
 	   
    process_module
 
-   rvcorrect_module
-
    utils_module
 
 

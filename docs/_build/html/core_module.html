@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Heliocentric velocity correction" href="script_example_heliocentric_velocity.html"/> 
+        <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -290,7 +290,7 @@ projected on the ouput_axis if it is not None.</p>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube._fit_integrated_spectra">
-<code class="descname">_fit_integrated_spectra</code><span class="sig-paren">(</span><em>regions_file_path</em>, <em>subtract=None</em>, <em>plot=True</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_integrated_spectra" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_fit_integrated_spectra</code><span class="sig-paren">(</span><em>regions_file_path</em>, <em>subtract=None</em>, <em>plot=True</em>, <em>verbose=True</em>, <em>snr_guess=None</em>, <em>max_iter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_integrated_spectra" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit integrated spectra and their emission lines parameters.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -311,6 +311,13 @@ different region.</li>
 with the its fit (default True).</li>
 <li><strong>verbose</strong> – (Optional) If True print the fit results
 (default True).</li>
+<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Can only
+be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
+fit. In this case two fits are made - one with a predefined
+SNR and the other with the SNR deduced from the first
+fit. If None a classical fit is made. (default None).</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
 </ul>
 </td>
 </tr>
@@ -320,7 +327,7 @@ with the its fit (default True).</li>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube._fit_lines_in_region">
-<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em>, <em>snr_guess=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em>, <em>snr_guess=None</em>, <em>mapped_kwargs=None</em>, <em>max_iter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raw function that fit lines in a given region of the cube.</p>
 <p>All the pixels in the defined region are fitted one by one
 and a set of maps containing the fitted paramaters are
@@ -351,7 +358,11 @@ binned.</li>
 be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
 fit. In this case two fits are made - one with a predefined
 SNR and the other with the SNR deduced from the first
-fit. If None a classical fit is made.</li>
+fit. If None a classical fit is made. (default None).</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
+<li><strong>mapped_kwargs</strong> – If a kwarg is mapped, its value will be
+replaced by the value at the fitted pixel.</li>
 </ul>
 </td>
 </tr>
@@ -375,7 +386,7 @@ maps) given in the same unit.</p>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube._fit_lines_in_spectrum">
-<code class="descname">_fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>spectrum</em>, <em>theta_orig</em>, <em>snr_guess=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>spectrum</em>, <em>theta_orig</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raw function for spectrum fitting.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -394,6 +405,8 @@ to make a Bayesian fit (If unknown you can set it to ‘auto’
 to try an automatic mode, two fits are made - one with a
 predefined SNR and the other with the SNR deduced from the
 first fit). If None a classical fit is made.</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
 <li><strong>kwargs</strong> – (Optional) Model parameters that must be
 changed in the InputParams instance.</li>
 </ul>
@@ -577,7 +590,7 @@ given radius.</p>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube.fit_lines_in_integrated_region">
-<code class="descname">fit_lines_in_integrated_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_integrated_region" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_lines_in_integrated_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_integrated_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines of a spectrum integrated over a given region (can
 be a list of pixels as returned by the function
 <code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
@@ -605,6 +618,8 @@ to make a Bayesian fit (If unknown you can set it to ‘auto’
 to try an automatic mode, two fits are made - one with a
 predefined SNR and the other with the SNR deduced from the
 first fit). If None a classical fit is made.</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
 <li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
@@ -623,7 +638,7 @@ dictionary containing the fit results (same output as
 
 <dl class="method">
 <dt id="orcs.core.HDFCube.fit_lines_in_region">
-<code class="descname">fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>binning=1</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>binning=1</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines in a given region of the cube. All the pixels in
 the defined region are fitted one by one and a set of maps
 containing the fitted paramaters are written. Note that the
@@ -649,6 +664,8 @@ be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
 fit. In this case two fits are made - one with a predefined
 SNR and the other with the SNR deduced from the first
 fit. If None a classical fit is made.</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
@@ -656,11 +673,21 @@ fit. If None a classical fit is made.</li>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can pass the fitting parameters (e.g. pos_cov,
+sigma_cov etc.) as maps (a 2d numy.ndarray instance or a
+path to a map). But you have to append the suffix ‘_map’ to
+the parameter you want to map. Any nan or inf in the map
+will be replaced by the median of the map. This mode can be
+used to map parameters at a given binning from the result of
+the fit made at a higher binning.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube.fit_lines_in_spectrum">
-<code class="descname">fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>r</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>r</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines of a spectrum extracted from a circular region of a
 given radius.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -685,6 +712,8 @@ to make a Bayesian fit (If unknown you can set it to ‘auto’
 to try an automatic mode, two fits are made - one with a
 predefined SNR and the other with the SNR deduced from the
 first fit). If None a classical fit is made.</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
 <li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
@@ -703,7 +732,7 @@ dictionary containing the fit results (same output as
 
 <dl class="method">
 <dt id="orcs.core.HDFCube.fit_lines_in_spectrum_bin">
-<code class="descname">fit_lines_in_spectrum_bin</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>b</em>, <em>lines</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_spectrum_bin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_lines_in_spectrum_bin</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>b</em>, <em>lines</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_spectrum_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines of a spectrum extracted from a squared region of a
 given size.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -728,6 +757,8 @@ to make a Bayesian fit (If unknown you can set it to ‘auto’
 to try an automatic mode, two fits are made - one with a
 predefined SNR and the other with the SNR deduced from the
 first fit). If None a classical fit is made.</li>
+<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</li>
 <li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
@@ -835,13 +866,6 @@ and the theoretical attained resolution.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="orcs.core.HDFCube.get_heliocentric_velocity">
-<code class="descname">get_heliocentric_velocity</code><span class="sig-paren">(</span><em>vobs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_heliocentric_velocity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return corrected heliocentric velocity and local standard of rest
-velocity for a given measured velocity.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="orcs.core.HDFCube.get_mask_from_ds9_region_file">
 <code class="descname">get_mask_from_ds9_region_file</code><span class="sig-paren">(</span><em>region</em>, <em>integrate=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_mask_from_ds9_region_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a mask from a ds9 region file.</p>
@@ -859,6 +883,49 @@ True)</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="orcs.core.HDFCube.get_radial_velocity_correction">
+<code class="descname">get_radial_velocity_correction</code><span class="sig-paren">(</span><em>kind='heliocentric'</em>, <em>date=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return heliocentric or barycentric velocity correction to apply on</dt>
+<dd>the observed target in km/s</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>kind</strong> – (Optional) ‘heliocentric’ or ‘barycentric’
+(default ‘heliocentric’).</li>
+<li><strong>date</strong> – (Optional) Corrected date for the
+observation. Must be a string with the following format
+YYYY-MM-DDTHH:MM:SS.S (default None).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For m/s precision the returned float should simply be
+added. But more care must be taken if a better precision is
+needed. Please see
+<a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a>
+for more informations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(heliocentric or barycentric) velocities.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">This is based on the astropy methods. See</p>
+</div>
+<p><a class="reference external" href="http://docs.astropy.org/en/stable/coordinates/velocities.html">http://docs.astropy.org/en/stable/coordinates/velocities.html</a>
+for more information on how to use the returned quantities.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1094,14 +1161,6 @@ instance binning is used (default None).</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="orcs.core.LineMaps._load_maps">
-<code class="descname">_load_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._load_maps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load already computed maps with the smallest binning but
-still higher than requested. Loaded maps can be used to get
-initial fitting parameters.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="orcs.core.LineMaps.get_map">
 <code class="descname">get_map</code><span class="sig-paren">(</span><em>param</em>, <em>x_range=None</em>, <em>y_range=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get map values</p>
@@ -1167,7 +1226,7 @@ None)</li>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral" title="Heliocentric velocity correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
