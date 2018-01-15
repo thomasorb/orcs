@@ -1684,14 +1684,22 @@ class HDFCube(orb.core.HDFCube):
 
         return noise_flux
 
-    def get_radial_velocity_correction(self, kind='heliocentric'):
+    def get_radial_velocity_correction(self, kind='heliocentric', date=None):
         """Return heliocentric or barycentric velocity correction to apply on
            the observed target in km/s
         
-        :param kind: (Optional) 'heliocentric' or 'barycentric' (default 'heliocentric').
+        :param kind: (Optional) 'heliocentric' or 'barycentric'
+          (default 'heliocentric').
 
-        For m/s precision it should be added. But more care must be
-        taken if a better precision is needed. Please see http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction for more informations.
+        :param date: (Optional) Corrected date for the
+          observation. Must be a string with the following format
+          YYYY-MM-DDTHH:MM:SS.S (default None).
+
+        For m/s precision the returned float should simply be
+        added. But more care must be taken if a better precision is
+        needed. Please see
+        http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction
+        for more informations.
 
         :return: (heliocentric or barycentric) velocities.
 
@@ -1701,7 +1709,7 @@ class HDFCube(orb.core.HDFCube):
 
         """
         kinds = ['heliocentric', 'barycentric']
-        if kind not in kinds: raise ValueError('kind must be {}'.format(kinds))
+        if kind not in kinds: raise ValueError('kind must be in {}'.format(kinds))
         obslat = astropy.coordinates.Latitude(self.config.OBS_LAT, unit=astropy.units.deg)
         obslon = astropy.coordinates.Longitude(self.config.OBS_LON, unit=astropy.units.deg)
         obsalt = self.config.OBS_ALT * astropy.units.meter
@@ -1712,14 +1720,21 @@ class HDFCube(orb.core.HDFCube):
         sc = astropy.coordinates.SkyCoord(
             ra=self.params.target_ra * astropy.units.deg,
             dec=self.params.target_dec * astropy.units.deg)
-        time_str = ('-'.join(self.params.obs_date.astype(str)) + ' '
-                    + '{}:{}:{}'.format(
-                        int(self.params.hour_ut[0]),
-                        int(self.params.hour_ut[1]),
-                        float(self.params.hour_ut[2])))
+
+        if date is None:
+            time_str = ('-'.join(self.params.obs_date.astype(str)) + 'T'
+                        + '{}:{}:{}'.format(
+                            int(self.params.hour_ut[0]),
+                            int(self.params.hour_ut[1]),
+                            float(self.params.hour_ut[2])))
+        else:
+            if not isinstance(date, str):
+                raise TypeError('date must be a string with format YYYY-MM-DDTHH:MM:SS.S')
+            time_str = str(date)
+
         obstime = astropy.time.Time(
             time_str,
-            format='iso', scale='utc')
+            format='isot', scale='utc')
 
         logging.info('Observation date: {} = {} Julian days'.format(
             obstime, obstime.jd))
