@@ -442,7 +442,8 @@ class HDFCube(orb.core.HDFCube):
 
             stime = time.time()
             if debug:
-                pass#logging.getLogger().setLevel(logging.DEBUG)
+                import orb.utils.log
+                orb.utils.log.setup_socket_logging()
             else:
                 warnings.simplefilter('ignore', RuntimeWarning)
 
