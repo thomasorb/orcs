@@ -93,7 +93,6 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
 
     logging.debug('SNR guess: {}'.format(snr_guess))
 
-
     # recompute the fwhm guess
     if 'fwhm_guess' in kwargs:
         raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
