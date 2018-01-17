@@ -575,15 +575,15 @@ class HDFCube(orb.core.HDFCube):
             flux_uncertainty = orb.utils.image.nanbin_image(
                 np.ones((self.dimx, self.dimy), dtype=float), binning) * binning**2.
 
-        cjs = CubeJobServer(self, debug=self.debug)
+        cjs = CubeJobServer(self)
         out = cjs.process_by_pixel(fit_lines_in_pixel,
-                             args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
-                                   theta_map, snr_guess, sky_velocity_map,
-                                   flux_uncertainty, self.debug, max_iter],
-                             kwargs=mapped_kwargs,
-                             modules=['numpy as np', 'gvar', 'orcs.utils',
-                                      'logging', 'warnings', 'time'],
-                             mask=mask,
+                                   args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
+                                         theta_map, snr_guess, sky_velocity_map,
+                                         flux_uncertainty, self.debug, max_iter],
+                                   kwargs=mapped_kwargs,
+                                   modules=['numpy as np', 'gvar', 'orcs.utils',
+                                            'logging', 'warnings', 'time'],
+                                   mask=mask,
                                    binning=binning, timeout=timeout)
 
         for key in out:
@@ -659,7 +659,7 @@ class HDFCube(orb.core.HDFCube):
         if not hasattr(self, 'inputparams'):
             raise StandardError('Input params not defined')
       
-        cjs = CubeJobServer(self, debug=self.debug)
+        cjs = CubeJobServer(self)
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
             args=(self.params.convert(), self.inputparams.convert(),
@@ -1878,14 +1878,15 @@ class CubeJobServer(object):
         results returned are maps.
 
         :param func: The parallelized function. Must be func(spectrum,
-          *args) which returns a dict of floating values (e.g. {a:1.9,
-          b:5.6, ...}) or a 1d array of floats. If it returns a dict out
-          must be set to dict(), its default value. If a 1d array of
-          size N is returned, the out param must be set to a 3d array of
-          shape (cube.dimx, cube.dimy, N). If supplied, kwargs are
-          passed to the function as the last argument in a dict object. 
-          Note also that velocity will not be corrected on the fly at 
-          data extraction so that the called function must handle it.
+          *args, kwargs_dict) which returns a dict of floating values
+          (e.g. {a:1.9, b:5.6, ...}) or a 1d array of floats. If it
+          returns a dict out must be set to dict(), its default
+          value. If a 1d array of size N is returned, the out param must
+          be set to a 3d array of shape (cube.dimx, cube.dimy, N). If
+          supplied, kwargs are passed to the function as the last
+          argument in a dict object.  Note also that velocity will not
+          be corrected on the fly at data extraction so that the called
+          function must handle it.
 
         :param args: List of arguments passed to the function
 
@@ -1959,8 +1960,8 @@ class CubeJobServer(object):
                     ikwargs[ikwargs_keys[-(ikey + 1)]] = iargs_list.pop(-1)
                 for ikey in ikwargs:
                     logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
-                if len(ikwargs) > 0:
-                    iargs_list.append(ikwargs)
+                #if len(ikwargs) > 0:
+                iargs_list.append(ikwargs)
                 try:
                     out_line.append(_func(iline_data[i,:], *iargs_list))
                 except Exception, e:
