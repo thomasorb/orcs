@@ -45,6 +45,7 @@ import time
 import gvar
 import warnings
 import copy
+import multiprocessing
 
 # import ORB
 import orb.core
@@ -147,8 +148,7 @@ class HDFCube(orb.core.HDFCube):
                                       return_spec_nb=False,
                                       return_mean_theta=False,
                                       return_gvar=False,
-                                      output_axis=None,
-                                      parallel = True):
+                                      output_axis=None):
         """
         Extract the integrated spectrum from a region of the cube.
 
@@ -188,9 +188,6 @@ class HDFCube(orb.core.HDFCube):
         :param output_axis: (Optional) If not None, the spectrum is
           projected on the output axis. Else a scipy.UnivariateSpline
           object is returned (defautl None).
-
-        :param parallel: (Optional) If True, the algorithm takes advantage of
-          mutiple cores (default True)
 
         :return: A scipy.UnivariateSpline object or a spectrum
           projected on the ouput_axis if it is not None.
@@ -280,7 +277,13 @@ class HDFCube(orb.core.HDFCube):
                 QUAD_NB = self.config.QUAD_NB
                 DIV_NB = self.config.DIV_NB
 
-
+            #check if paralell extraction is necessary
+            parallel_extraction = True
+            #It takes roughly ncpus/4 s to initiate the parallel server
+            #The non-parallel algo runs at ~400 pixel/s
+            ncpus = multiprocessing.cpu_count()
+            if ncpus/4. > np.sum(mask)/400:
+                parallel_extraction = False
             for iquad in range(0, QUAD_NB):
 
                 if quadrant_extraction:
@@ -289,8 +292,8 @@ class HDFCube(orb.core.HDFCube):
 
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max,
                                            0, self.dimz, silent=silent)
-                if parallel:
-                    logging.info('Parallel Integration')
+                if parallel_extraction:
+                    logging.debug('Parallel extraction')
                     # multi-processing server init
                     job_server, ncpus = self._init_pp_server(silent=silent)
                     if not silent: progress = orb.core.ProgressBar(x_max - x_min)
@@ -329,7 +332,7 @@ class HDFCube(orb.core.HDFCube):
                     if not silent: progress.end()
 
                 else:
-                    logging.info('Non Parallel Integration')
+                    logging.debug('Non Parallel extraction')
                     local_mask = mask[x_min:x_max, y_min:y_max]
                     local_calibration_coeff_map = calibration_coeff_map[x_min:x_max, y_min:y_max]
                     if not silent:
