@@ -436,8 +436,8 @@ class HDFCube(orb.core.HDFCube):
 
         """        
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
-                               theta_map_ij, snr_guess, sky_vel_ij, flux_sdev_ij,
-                               debug, max_iter, mapped_kwargs):
+                               theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
+                               flux_sdev_ij, debug, max_iter, mapped_kwargs):
 
 
             stime = time.time()
@@ -449,6 +449,16 @@ class HDFCube(orb.core.HDFCube):
 
             # correct spectrum for nans
             spectrum[np.isnan(spectrum)] = 0.
+
+
+            # correct spectrum for sky velocity
+            if calib_coeff_ij != params['axis_corr']:
+                logging.debug('spectrum is interpolated to correct for wavelength calibration change: {} km/s'.format(sky_vel_ij))
+                base_axis = params['base_axis']
+                corr_axis = orb.utils.spectrum.create_cm1_axis(
+                    spectrum.shape[0], params['step'], params['order'], corr=calib_coeff_ij)
+                spectrum = orb.utils.vector.interpolate_axis(
+                    spectrum, base_axis.astype(float), 5, old_axis=corr_axis.astype(float))
 
             # add flux uncertainty to the spectrum
             spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
@@ -486,14 +496,14 @@ class HDFCube(orb.core.HDFCube):
             if ifit != []:
                 logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
                 logging.debug('fit function time: {} s'.format(time.time() - stime))
-                logging.debug('velocity: {}'.format(ifit['velocity_gvar'] + sky_vel_ij))
+                logging.debug('velocity: {}'.format(ifit['velocity_gvar']))
                 logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
 
                 return {
                     'height': ifit['lines_params'][:,0],
                     'amplitude': ifit['lines_params'][:,1],
                     'fwhm': ifit['lines_params'][:,3],
-                    'velocity': ifit['velocity'] + sky_vel_ij,
+                    'velocity': ifit['velocity'],
                     'sigma': ifit['broadening'],
                     'flux': ifit['flux'],
                     'height-err': ifit['lines_params_err'][:,0],
@@ -569,6 +579,9 @@ class HDFCube(orb.core.HDFCube):
             sky_velocity_map = orb.utils.image.nanbin_image(
                 np.zeros((self.dimx, self.dimy), dtype=float), binning)
 
+        calibration_coeff_map = orb.utils.image.nanbin_image(
+            self.get_calibration_coeff_map(), binning)
+
         flux_uncertainty = self.get_flux_uncertainty()
         if flux_uncertainty is not None:
             flux_uncertainty = orb.utils.image.nanbin_image(flux_uncertainty, binning)
@@ -581,10 +594,13 @@ class HDFCube(orb.core.HDFCube):
                                    args=[self.params.convert(), self.inputparams.convert(),
                                          self.fit_tol,
                                          theta_map, snr_guess, sky_velocity_map,
+                                         calibration_coeff_map,
                                          flux_uncertainty, self.debug, max_iter],
                                    kwargs=mapped_kwargs,
                                    modules=['numpy as np', 'gvar', 'orcs.utils',
-                                            'logging', 'warnings', 'time'],
+                                            'logging', 'warnings', 'time',
+                                            'import orb.utils.spectrum',
+                                            'import orb.utils.vector'],
                                    mask=mask,
                                    binning=binning, timeout=timeout)
 
