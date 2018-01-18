@@ -2152,7 +2152,7 @@ class CubeJobServer(object):
             unfinished_jobs = list()
             for i in range(len(self.jobs)):
                 ijob, (ix, iy), stime, timer, ijob_index = self.jobs[i]
-                if ijob.finished:
+                if ijob.finished or True:
                     logging.debug('job {} ({}, {}) finished'.format(ijob_index, ix, iy))
                     logging.debug('job {} time since submission: {} s'.format(
                         ijob_index, time.time() - stime))
