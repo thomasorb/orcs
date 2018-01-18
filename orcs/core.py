@@ -282,7 +282,7 @@ class HDFCube(orb.core.HDFCube):
             #It takes roughly ncpus/4 s to initiate the parallel server
             #The non-parallel algo runs at ~400 pixel/s
             ncpus = multiprocessing.cpu_count()
-            if ncpus/4. > np.sum(mask)/400:
+            if ncpus/4. > np.sum(mask)/400.:
                 parallel_extraction = False
             for iquad in range(0, QUAD_NB):
 
