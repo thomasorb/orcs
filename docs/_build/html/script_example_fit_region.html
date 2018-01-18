@@ -424,7 +424,7 @@ velocity of the gas</li>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -466,7 +466,7 @@ INFO| Cube is CALIBRATED in wavenumber
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO| Data written as deep_frame.fits in 0.17 s
+INFO| Data written as deep_frame.fits in 0.24 s
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -577,7 +577,7 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.012 s]
+ [==========] [100%] [completed in 0.013 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -585,7 +585,7 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO| Init of the parallel processing server with 16 threads
+INFO| Init of the parallel processing server with 4 threads
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -593,7 +593,8 @@ INFO| Init of the parallel processing server with 16 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.654 s]
+
+ [==========] [100%] [completed in 0.460 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -645,11 +646,11 @@ velocity: 47.1970433253 km/s
                                                  <span class="p">(</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6716&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">),</span>
                                                  <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
                                                  <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                                                 <span class="n">pos_cov</span><span class="o">=</span><span class="n">vel</span><span class="p">,</span>
+                                                 <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">vel</span><span class="p">,</span> <span class="n">vel</span><span class="p">],</span>
                                                  <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                                                 <span class="n">sigma_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                                                 <span class="n">sigma_cov</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
                                                  <span class="n">snr_guess</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                                                 <span class="n">no_filter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                                                 <span class="n">nofilter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 <span class="k">print</span> <span class="s1">&#39;Velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="s1">&#39;Broadening (km/s)&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
@@ -677,7 +678,7 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.035 s]
+ [==========] [100%] [completed in 0.011 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -685,7 +686,7 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO| Init of the parallel processing server with 16 threads
+INFO| Init of the parallel processing server with 4 threads
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -693,7 +694,8 @@ INFO| Init of the parallel processing server with 16 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.674 s]
+
+ [==========] [100%] [completed in 0.468 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -701,7 +703,7 @@ INFO| Init of the parallel processing server with 16 threads
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1546: RuntimeWarning: invalid value encountered in sqrt
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1673: RuntimeWarning: invalid value encountered in sqrt
   noise_counts = np.sqrt(total_counts)
 </span>
 </pre></div></div>
@@ -712,15 +714,32 @@ INFO| Init of the parallel processing server with 16 threads
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
-Velocity (km/s):  [77.66(41) 68.09(16) 77.66(41) 77.66(41) 77.66(41)]
-Broadening (km/s) [22.0(1.1) 20.16(45) 22.0(1.1) 22.0(1.1) 22.0(1.1)]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2074: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+  warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Velocity (km/s):  [77.74(32) 68.20(13) 77.74(32) 77.74(32) 77.74(32)]
+Broadening (km/s) [21.43(88) 20.13(36) 21.43(88) 21.43(88) 21.43(88)]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_12_6.png" src="_images/script_example_fit_region_12_6.png" />
+<img alt="_images/script_example_fit_region_12_8.png" src="_images/script_example_fit_region_12_8.png" />
 </div>
 </div>
 </div>
@@ -752,21 +771,32 @@ is done more than one time. Just restart the kernel as a workaround.</li>
 <h3>3x3 binning<a class="headerlink" href="#3x3-binning" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [13]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_region</span><span class="p">(</span><span class="s1">&#39;region.reg&#39;</span><span class="p">,</span>
+<span></span><span class="n">orb</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Logger</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_region</span><span class="p">(</span><span class="s1">&#39;region.reg&#39;</span><span class="p">,</span>
                          <span class="p">(</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6716&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">),</span>
-                         <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                         <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
                          <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
                          <span class="n">pos_cov</span><span class="o">=</span><span class="n">new_vel</span><span class="p">,</span>
-                         <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                         <span class="n">sigma_cov</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                         <span class="c1">#sigma_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],</span>
+                         <span class="c1">#sigma_cov=[10, 10],</span>
                          <span class="n">binning</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">snr_guess</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-                         <span class="n">no_filter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                         <span class="n">nofilter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/core.py:242: UserWarning: Exception occured during logging server init (maybe it is already initialized): [Errno 98] Address already in use
+  warnings.warn(&#39;Exception occured during logging server init (maybe it is already initialized): {}&#39;.format(e))
+</span>
+</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -783,8 +813,9 @@ is done more than one time. Just restart the kernel as a workaround.</li>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
 INFO| Number of spectra to fit: 501
-INFO| Init of the parallel processing server with 16 threads
-INFO| 26 lines to fit
+INFO| Init of the parallel processing server with 4 threads
+INFO| passed mapped kwargs : []
+INFO| 26 rows to fit
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -792,7 +823,24 @@ INFO| 26 lines to fit
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 1m59s]
+ [==========] [100%] [completed in 4m11s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Writing height maps
+<span class="ansi-yellow-fg">WARNING| param height is the same for all lines</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -800,21 +848,19 @@ INFO| 26 lines to fit
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-INFO| Writing height maps
-<span class="ansi-yellow-fg">WARNING| param height is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.height.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.height.fits in 0.03 s
 INFO| Writing height-err maps
 <span class="ansi-yellow-fg">WARNING| param height-err is the same for all lines</span>
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.height-err.fits in 0.01 s
 INFO| Writing amplitude maps
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.3x3.amplitude.fits in 0.01 s
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.amplitude.fits in 0.02 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.amplitude.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.3x3.amplitude.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.amplitude.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.amplitude.fits in 0.01 s
 INFO| Writing amplitude-err maps
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.3x3.amplitude-err.fits in 0.01 s
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.amplitude-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.amplitude-err.fits in 0.02 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.3x3.amplitude-err.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.amplitude-err.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.amplitude-err.fits in 0.01 s
@@ -832,13 +878,16 @@ INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.ve
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.velocity-err.fits in 0.01 s
 INFO| Writing fwhm maps
 <span class="ansi-yellow-fg">WARNING| param fwhm is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.fwhm.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.fwhm.fits in 0.04 s
 INFO| Writing fwhm-err maps
 <span class="ansi-yellow-fg">WARNING| param fwhm-err is the same for all lines</span>
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.fwhm-err.fits in 0.01 s
 INFO| Writing sigma maps
-<span class="ansi-yellow-fg">WARNING| param sigma is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.3x3.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.3x3.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.sigma.fits in 0.01 s
 INFO| Writing sigma-err maps
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.3x3.sigma-err.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.sigma-err.fits in 0.01 s
@@ -862,10 +911,10 @@ INFO| Writing logGBF maps
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.logGBF.fits in 0.01 s
 INFO| Writing chi2 maps
 <span class="ansi-yellow-fg">WARNING| param chi2 is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.chi2.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.chi2.fits in 0.02 s
 INFO| Writing rchi2 maps
 <span class="ansi-yellow-fg">WARNING| param rchi2 is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.rchi2.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.rchi2.fits in 0.02 s
 INFO| Writing ks_pvalue maps
 <span class="ansi-yellow-fg">WARNING| param ks_pvalue is the same for all lines</span>
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.ks_pvalue.fits in 0.01 s
@@ -876,7 +925,7 @@ INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.ks_
 <h3>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>

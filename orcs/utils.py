@@ -25,9 +25,6 @@
 Utils module contains core functions that are used by the processing
 classes of ORCS
 """
-# import ORB
-import orb.utils.spectrum
-import orb.fit
 
 import numpy as np
 import logging
@@ -35,9 +32,14 @@ import warnings
 import gvar
 import scipy
 
+# import ORB
+import orb.utils.log
+import orb.utils.spectrum
+import orb.fit
+
 def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                           theta_orig, snr_guess=None, max_iter=None,
-                          **kwargs):
+                          debug=False, **kwargs):
     """Basic wrapping function for spectrum fitting.
 
     :param params: HDFCube.params dictionary
@@ -61,7 +63,14 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     :param kwargs: (Optional) Model parameters that must be
       changed in the InputParams instance.
     """
+    import orb.utils.spectrum
+    
     kwargs_orig = dict(kwargs)
+    if debug:
+        import orb.utils.log
+        orb.utils.log.setup_socket_logging()
+        
+    
     # check snr guess param
     auto_mode = False
     bad_snr_param = False
@@ -88,7 +97,6 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
 
     logging.debug('SNR guess: {}'.format(snr_guess))
 
-
     # recompute the fwhm guess
     if 'fwhm_guess' in kwargs:
         raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
@@ -99,13 +107,15 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
         orb.utils.spectrum.theta2corr(theta_orig),
         wavenumber=params['wavenumber'])
 
-    kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams.allparams.line_nb
+    kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams.allparams['line_nb']
 
     logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
 
     if bad_snr_param:
         raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
+    if max_iter is None:
+        max_iter = max(100 * inputparams.allparams['line_nb'], 1000)
     try:
         warnings.simplefilter('ignore')
         _fit = orb.fit._fit_lines_in_spectrum(

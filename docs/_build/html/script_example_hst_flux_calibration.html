@@ -107,12 +107,12 @@
 <li class="toctree-l3"><a class="reference internal" href="script_example_image_registration.html">Image registration</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Flux Calibration Example Using HST image</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Instanciation-of-a-Filter">Instanciation of a Filter</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#Flux-Calibration">Flux Calibration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#The-End">The End</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Integration-of-SITELLE-data-in-HST-filter-bandpass">Integration of SITELLE data in HST filter bandpass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Reprojection-of-HST-data-in-SITELLE-coordinates">Reprojection of HST data in SITELLE coordinates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Histogram">Histogram</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Cleaning">Cleaning</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Gaussian-smoothing">Gaussian smoothing</a></li>
 </ul>
 </li>
 </ul>
@@ -125,7 +125,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
@@ -514,8 +513,9 @@ file</p>
 </pre></div>
 </div>
 </div>
+</div>
 <div class="section" id="Integration-of-SITELLE-data-in-HST-filter-bandpass">
-<h3>Integration of SITELLE data in HST filter bandpass<a class="headerlink" href="#Integration-of-SITELLE-data-in-HST-filter-bandpass" title="Permalink to this headline">¶</a></h3>
+<h2>Integration of SITELLE data in HST filter bandpass<a class="headerlink" href="#Integration-of-SITELLE-data-in-HST-filter-bandpass" title="Permalink to this headline">¶</a></h2>
 <p>For speed concerns, we don’t need to perform this integration over the
 whole SITELLE field of view, as HST images are usually much smaller.
 From image study, we determined here that our HST images was contained
@@ -569,7 +569,7 @@ in SITELLE cube between pixels <code class="docutils literal"><span class="pre">
 </div>
 </div>
 <div class="section" id="Reprojection-of-HST-data-in-SITELLE-coordinates">
-<h3>Reprojection of HST data in SITELLE coordinates<a class="headerlink" href="#Reprojection-of-HST-data-in-SITELLE-coordinates" title="Permalink to this headline">¶</a></h3>
+<h2>Reprojection of HST data in SITELLE coordinates<a class="headerlink" href="#Reprojection-of-HST-data-in-SITELLE-coordinates" title="Permalink to this headline">¶</a></h2>
 <p>HST pixel scale is about 10 times smaller that SITELLE’s. Therefore, we
 are going to interpolate HST values on an ovsersampled grid taken from
 SN2</p>
@@ -651,11 +651,8 @@ SITELLE grid.</p>
 <img alt="_images/script_example_hst_flux_calibration_20_1.png" src="_images/script_example_hst_flux_calibration_20_1.png" />
 </div>
 </div>
-</div>
-</div>
-</div>
 <div class="section" id="Flux-Calibration">
-<h1>Flux Calibration<a class="headerlink" href="#Flux-Calibration" title="Permalink to this headline">¶</a></h1>
+<h3>Flux Calibration<a class="headerlink" href="#Flux-Calibration" title="Permalink to this headline">¶</a></h3>
 <p>From this two maps, we can get the flux ratio (i.e. bias) between our
 datacube and HST data</p>
 <div class="nbinput docutils container">
@@ -692,6 +689,10 @@ datacube and HST data</p>
 <img alt="_images/script_example_hst_flux_calibration_22_1.png" src="_images/script_example_hst_flux_calibration_22_1.png" />
 </div>
 </div>
+</div>
+</div>
+<div class="section" id="Histogram">
+<h2>Histogram<a class="headerlink" href="#Histogram" title="Permalink to this headline">¶</a></h2>
 <p>This can also be plotted as an histogram</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
@@ -713,14 +714,15 @@ datacube and HST data</p>
 <img alt="_images/script_example_hst_flux_calibration_24_0.png" src="_images/script_example_hst_flux_calibration_24_0.png" />
 </div>
 </div>
-</div>
 <div class="section" id="The-End">
-<h1>The End<a class="headerlink" href="#The-End" title="Permalink to this headline">¶</a></h1>
+<h3>The End<a class="headerlink" href="#The-End" title="Permalink to this headline">¶</a></h3>
 <p>From now on, it’s up to the user to choose what to do with this : use it
 as is or try to clean this map/histogram from obvious outliers (edge
 effects, center of the frame).</p>
 <p>What follows may thus be applicable only to this specific data, and be
 conceptually arguable</p>
+</div>
+</div>
 <div class="section" id="Cleaning">
 <h2>Cleaning<a class="headerlink" href="#Cleaning" title="Permalink to this headline">¶</a></h2>
 <p>There is edge effects we want to correct</p>
@@ -852,8 +854,10 @@ of outliers around our ratio map, that we correct here.</p>
 </div>
 <div class="section" id="Optional">
 <h3>Optional<a class="headerlink" href="#Optional" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
 <div class="section" id="Gaussian-smoothing">
-<h4>Gaussian smoothing<a class="headerlink" href="#Gaussian-smoothing" title="Permalink to this headline">¶</a></h4>
+<h2>Gaussian smoothing<a class="headerlink" href="#Gaussian-smoothing" title="Permalink to this headline">¶</a></h2>
 <p>For our purpose, it can make sense to smooth the maps before dividing
 them to get a smoother output</p>
 <div class="nbinput nblast docutils container">
@@ -921,8 +925,6 @@ them to get a smoother output</p>
 </div>
 <div class="output_area docutils container">
 <img alt="_images/script_example_hst_flux_calibration_37_1.png" src="_images/script_example_hst_flux_calibration_37_1.png" />
-</div>
-</div>
 </div>
 </div>
 </div>

@@ -463,7 +463,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.067 s]
+ [==========] [100%] [completed in 0.016 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -479,7 +479,8 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.440 s]
+
+ [==========] [100%] [completed in 0.428 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -488,7 +489,7 @@ INFO| Init of the parallel processing server with 4 threads
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>[&lt;matplotlib.lines.Line2D at 0x7f9e26fc5b10&gt;]
+<span></span>[&lt;matplotlib.lines.Line2D at 0x7f1db1ae1f10&gt;]
 </pre></div>
 </div>
 </div>
@@ -512,20 +513,17 @@ cm-1, could also be given directly). Remember that:</li>
 realistic model of a cardinal sinus convoluted with a gaussian
 <code class="docutils literal"><span class="pre">sincgauss</span></code>:</li>
 </ul>
-<p><code class="docutils literal"><span class="pre">fmodel</span> <span class="pre">=</span> <span class="pre">'sincgauss'</span></code></p>
+<p><code class="docutils literal"><span class="pre">python</span>&#160;&#160; <span class="pre">fmodel</span> <span class="pre">=</span> <span class="pre">'sinc'</span></code></p>
 <ul class="simple">
 <li>The velocity of the lines is -513 km/s. It is passed with the
 argument:</li>
 </ul>
-<p><code class="docutils literal"><span class="pre">pos_cov</span> <span class="pre">=</span> <span class="pre">-513</span></code></p>
+<p><code class="docutils literal"><span class="pre">python</span>&#160;&#160; <span class="pre">pos_cov</span> <span class="pre">=</span> <span class="pre">-513`,</span>&#160;&#160; <span class="pre">pos_def</span> <span class="pre">=</span> <span class="pre">['1','1']</span></code></p>
 <p>The velocity is considered as a covarying parameter. By default all the
-lines are considered to share the same velocity, i.e. they all have the
-same covarying group. That’s why the fitted velocity is the same for
-both lines.</p>
-<ul class="simple">
-<li>The broadening is considered to be a free parameter by default. It
-can be different for each line.</li>
-</ul>
+lines are considered to have a free velocity parameter. If we want to
+set the same velocity to all the lines we must set the definition of the
+position of eachline to the same covaying group with
+<code class="docutils literal"><span class="pre">pos_def</span> <span class="pre">=</span> <span class="pre">['1','1']</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [5]:
@@ -533,11 +531,11 @@ can be different for each line.</li>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
-                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                                     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">)</span>
+                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                                                     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
+                                                     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">])</span>
 <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
 <span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
-<span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="s1">&#39;Flux: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="s1">&#39;====================&#39;</span>
 </pre></div>
@@ -556,7 +554,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.012 s]
+ [==========] [100%] [completed in 0.020 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -573,7 +571,7 @@ INFO| Init of the parallel processing server with 4 threads
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
- [==========] [100%] [completed in 0.436 s]
+ [==========] [100%] [completed in 0.431 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -581,7 +579,7 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1537: RuntimeWarning: invalid value encountered in sqrt
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1673: RuntimeWarning: invalid value encountered in sqrt
   noise_counts = np.sqrt(total_counts)
 </span>
 </pre></div></div>
@@ -594,9 +592,8 @@ INFO| Init of the parallel processing server with 4 threads
 
 
 ===== Results ======
-Velocity:  [-506.4(1.3) -506.4(1.3)]
-Broadening:  [25.8(1.7) 27.4(6.5)]
-Flux:  [1.678(88)e-15 4.52(92)e-16]
+Velocity:  [-507.4(1.0) -507.4(1.0)]
+Flux:  [1.181(44)e-15 2.96(44)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -614,12 +611,11 @@ the precision will also be worsen.</p>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
-                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                                     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
+                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                                                     <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,</span> <span class="o">-</span><span class="mi">513</span><span class="p">),</span>
                                                      <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">])</span>
 <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
 <span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
-<span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="s1">&#39;Flux: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="s1">&#39;====================&#39;</span>
 </pre></div>
@@ -638,7 +634,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.021 s]
+ [==========] [100%] [completed in 0.015 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -655,26 +651,29 @@ INFO| Init of the parallel processing server with 4 threads
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
- [==========] [100%] [completed in 0.426 s]
+ [==========] [100%] [completed in 0.500 s]
 
 ===== Results ======
-Velocity:  [-506.0(1.3) -512.8(5.3)]
-Broadening:  [25.8(1.7) 27.7(6.4)]
-Flux:  [1.679(88)e-15 4.59(92)e-16]
+Velocity:  [-506.9(1.1) -513.7(4.2)]
+Flux:  [1.182(44)e-15 3.01(44)e-16]
 ====================
 </pre></div></div>
 </div>
 </div>
-<div class="section" id="Group-the-broadening-parameter">
-<h3>Group the broadening parameter<a class="headerlink" href="#Group-the-broadening-parameter" title="Permalink to this headline">¶</a></h3>
-<p>We can group the broadening parameter of the emission lines by giving
-the same group label to the lines. We can set:</p>
-<p><code class="docutils literal"><span class="pre">sigma_def=['1',</span> <span class="pre">'1']</span></code></p>
+<div class="section" id="using-a-sincgauss-model-with-a-single-broadening-parameter">
+<h3>using a sincgauss model with a single broadening parameter<a class="headerlink" href="#using-a-sincgauss-model-with-a-single-broadening-parameter" title="Permalink to this headline">¶</a></h3>
+<p>We can try the broadened sincgauss model (sinc instrumental function
+convoluted with a gaussian). We can group the broadening parameter of
+the emission lines by giving the same group label to the lines. We can
+set:</p>
+<p><code class="docutils literal"><span class="pre">python</span>&#160;&#160; <span class="pre">fmodel='sincgauss',</span>&#160;&#160; <span class="pre">sigma_def=['1',</span> <span class="pre">'1'],</span>&#160;&#160; <span class="pre">sigma_cov=20</span></code></p>
 <p>I this case the measured broadening will be the same for both lines and
-the precision of the estimations are better.</p>
+the precision of the estimations are better. Note that the broadening
+must be initialized to a nonzero value for the fit to work
+<code class="docutils literal"><span class="pre">sigma_cov=20</span></code></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -683,7 +682,8 @@ the precision of the estimations are better.</p>
     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">])</span>
+    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
 <span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
 <span class="k">print</span> <span class="s1">&#39;Broadening: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
@@ -705,7 +705,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.018 s]
+ [====      ] [44%] [Loading data] [remains: 0.008 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -713,6 +713,23 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.030 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
 INFO| Init of the parallel processing server with 4 threads
 </pre></div></div>
 </div>
@@ -722,12 +739,12 @@ INFO| Init of the parallel processing server with 4 threads
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
- [==========] [100%] [completed in 0.426 s]
+ [==========] [100%] [completed in 0.497 s]
 
 ===== Results ======
 Velocity:  [-506.4(1.3) -506.4(1.3)]
 Broadening:  [25.9(1.6) 25.9(1.6)]
-Flux:  [1.681(86)e-15 4.40(60)e-16]
+Flux:  [1.681(86)e-15 4.40(59)e-16]
 ====================
 </pre></div></div>
 </div>
@@ -736,7 +753,7 @@ Flux:  [1.681(86)e-15 4.40(60)e-16]
 <h3>Plotting the result<a class="headerlink" href="#Plotting-the-result" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -749,7 +766,7 @@ Flux:  [1.681(86)e-15 4.40(60)e-16]
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[8]:
+<span></span>Out[11]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -773,7 +790,7 @@ setting the option</p>
 <p><code class="docutils literal"><span class="pre">nofilter</span> <span class="pre">=</span> <span class="pre">True</span></code></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -783,6 +800,7 @@ setting the option</p>
     <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">513</span><span class="p">,</span>
     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
     <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">nofilter</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
 <span class="k">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
@@ -809,7 +827,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.012 s]
+ [==========] [100%] [completed in 0.025 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -817,6 +835,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
 INFO| Init of the parallel processing server with 4 threads
 </pre></div></div>
 </div>
@@ -826,7 +845,7 @@ INFO| Init of the parallel processing server with 4 threads
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
- [==========] [100%] [completed in 0.508 s]
+ [==========] [100%] [completed in 0.443 s]
 
 ===== Results ======
 Velocity:  [-506.4(1.5) -506.4(1.5)]
@@ -837,7 +856,7 @@ Flux:  [1.676(98)e-15 4.47(68)e-16]
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[9]:
+<span></span>Out[12]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -845,12 +864,2344 @@ Flux:  [1.676(98)e-15 4.47(68)e-16]
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <img alt="_images/script_example_fit_a_single_spectrum_14_5.png" src="_images/script_example_fit_a_single_spectrum_14_5.png" />
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Number of integrated pixels: 13
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+INFO| Init of the parallel processing server with 4 threads
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+</pre></div></div>
 </div>
 </div>
 </div>

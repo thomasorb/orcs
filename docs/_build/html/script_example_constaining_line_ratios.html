@@ -396,7 +396,7 @@ the number of free parameters (especially if the SNR is low and if small
 variations of the ratio could not be measured anyway).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [2]:
+<span></span>In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -413,26 +413,29 @@ variations of the ratio could not be measured anyway).</p>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-17-07-25|11:24:38 # SpectralCube.__init__ &gt; Data shape : (2048, 2064, 840)
-17-07-25|11:24:38 # SpectralCube.__init__ &gt; Cube is in WAVENUMBER (cm-1)
-17-07-25|11:24:38 # SpectralCube.__init__ &gt; Cube is CALIBRATED
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/core.py:241: UserWarning: Exception occured during logging server init (maybe it is already initialized): [Errno 98] Address already in use
+  warnings.warn(&#39;Exception occured during logging server init (maybe it is already initialized): {}&#39;.format(e))
+</span>
+INFO| Data shape : (2048, 2064, 840)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
 </pre></div></div>
 </div>
 <div class="section" id="Fit-with-no-amplitude-constraint">
 <h2>Fit with no amplitude constraint<a class="headerlink" href="#Fit-with-no-amplitude-constraint" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
                                                  <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
-                                                 <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span> <span class="n">vel_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                                                 <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
-                                                 <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">])</span>
+                                                 <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                                                 <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                                                 <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">)</span>
 
 
 <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
@@ -450,23 +453,44 @@ variations of the ratio could not be measured anyway).</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-25|09:46:14 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
- [==========] [100%] [completed in 0.014 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.426 s]
-SNR GUESS None
+ [==========] [100%] [completed in 0.020 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ [==========] [100%] [completed in 0.473 s]
 
 ===== Results ======
-Velocity:  [-293.04(96) -293.04(96) -293.04(96)]
-Flux: [6.74(73)e-16 2.115(73)e-15 2.252(73)e-15]
-NII 6584/6548 ratio 3.34376422476
+Velocity:  [-293.11(96) -293.11(96) -293.11(96)]
+Flux: [6.75(73)e-16 2.120(73)e-15 2.257(73)e-15]
+NII 6584/6548 ratio 3.34348459029
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[11]:
+<span></span>Out[4]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -478,7 +502,7 @@ NII 6584/6548 ratio 3.34376422476
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_constaining_line_ratios_3_2.png" src="_images/script_example_constaining_line_ratios_3_2.png" />
+<img alt="_images/script_example_constaining_line_ratios_3_5.png" src="_images/script_example_constaining_line_ratios_3_5.png" />
 </div>
 </div>
 </div>
@@ -509,11 +533,11 @@ amplitude of 3.2e-17 while the second one will have a final amplitude of
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
                                                  <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
-                                                 <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span> <span class="n">vel_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                                                 <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                                                 <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
                                                  <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
-                                                 <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
                                                  <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                                                 <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+                                                 <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
 
 <span class="k">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
@@ -533,17 +557,37 @@ amplitude of 3.2e-17 while the second one will have a final amplitude of
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-25|11:25:42 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
  [==========] [100%] [completed in 0.013 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.452 s]
-SNR GUESS None
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 1.46 s]
 
 ===== Results ======
-Velocity:  [-292.81(95) -292.81(95) -292.81(95)]
-Flux: [7.36(23)e-16 2.116(73)e-15 2.232(69)e-15]
+Velocity:  [-292.68(95) -292.68(95) -292.68(95)]
+Flux: [7.38(23)e-16 2.120(73)e-15 2.237(69)e-15]
 NII 6584/6548 amplitude ratio 3.0
 NII 6584/6548 flux ratio 3.03250649287
 </pre></div></div>
@@ -562,7 +606,7 @@ NII 6584/6548 flux ratio 3.03250649287
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_constaining_line_ratios_5_2.png" src="_images/script_example_constaining_line_ratios_5_2.png" />
+<img alt="_images/script_example_constaining_line_ratios_5_5.png" src="_images/script_example_constaining_line_ratios_5_5.png" />
 </div>
 </div>
 </div>
@@ -576,7 +620,7 @@ a flux ratio of 3 you can use the method
 correct amplitude ratio.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [8]:
+<span></span>In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -595,15 +639,15 @@ correct amplitude ratio.</p>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [9]:
+<span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
                                                  <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
-                                                 <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span> <span class="n">vel_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                                                 <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                                                 <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
                                                  <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
-                                                 <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
                                                  <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
                                                  <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">amp_ratio</span><span class="p">])</span>
 
@@ -625,24 +669,44 @@ correct amplitude ratio.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 13
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-17-07-25|11:32:42 # SpectralCube._extract_spectrum_from_region &gt; Number of integrated pixels: 13
- [==========] [100%] [completed in 0.022 s]
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 0.453 s]
-SNR GUESS None
+ [==========] [100%] [completed in 0.023 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 1.33 s]
 
 ===== Results ======
-Velocity:  [-292.81(95) -292.81(95) -292.81(95)]
-Flux: [7.43(23)e-16 2.116(73)e-15 2.229(69)e-15]
+Velocity:  [-292.68(95) -292.68(95) -292.68(95)]
+Flux: [7.45(23)e-16 2.120(73)e-15 2.234(69)e-15]
 NII 6584/6548 amplitude ratio 2.96784195554
 NII 6584/6548 flux ratio 3.0
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[9]:
+<span></span>Out[7]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -654,7 +718,7 @@ NII 6584/6548 flux ratio 3.0
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_constaining_line_ratios_8_2.png" src="_images/script_example_constaining_line_ratios_8_2.png" />
+<img alt="_images/script_example_constaining_line_ratios_8_5.png" src="_images/script_example_constaining_line_ratios_8_5.png" />
 </div>
 </div>
 </div>

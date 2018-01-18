@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.2.4 documentation</title>
+  <title>Core module &mdash; Orcs 2.2.3 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
         <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Heliocentric velocity correction" href="script_example_heliocentric_velocity.html"/> 
+        <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.2.4
+                2.2.3
               </div>
             
           
@@ -887,7 +887,7 @@ True)</li>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube.get_radial_velocity_correction">
-<code class="descname">get_radial_velocity_correction</code><span class="sig-paren">(</span><em>kind='heliocentric'</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_radial_velocity_correction</code><span class="sig-paren">(</span><em>kind='heliocentric'</em>, <em>date=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Return heliocentric or barycentric velocity correction to apply on</dt>
 <dd>the observed target in km/s</dd>
@@ -896,12 +896,22 @@ True)</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kind</strong> – (Optional) ‘heliocentric’ or ‘barycentric’ (default ‘heliocentric’).</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>kind</strong> – (Optional) ‘heliocentric’ or ‘barycentric’
+(default ‘heliocentric’).</li>
+<li><strong>date</strong> – (Optional) Corrected date for the
+observation. Must be a string with the following format
+YYYY-MM-DDTHH:MM:SS.S (default None).</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
-<p>For m/s precision it should be added. But more care must be
-taken if a better precision is needed. Please see <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a> for more informations.</p>
+<p>For m/s precision the returned float should simply be
+added. But more care must be taken if a better precision is
+needed. Please see
+<a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a>
+for more informations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1216,7 +1226,7 @@ None)</li>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral" title="Heliocentric velocity correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1247,7 +1257,7 @@ None)</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.4',
+            VERSION:'2.2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

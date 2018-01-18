@@ -4,78 +4,2551 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Heliocentric velocity correction\n",
+    "# Radial Velocity Correction\n",
     "\n",
-    "Measured velocity can be projected into the heliocentric reference system or the local standard of rest with the function ```SpectralCube.get_heliocentric_velocity()```\n",
-    "\n",
-    "The correction is based on the module orcs/rvcorrect.py which has been created using David Nidever IDL function RVCORRECT itself translated from the IRAF function RVCORRECT.\n",
-    "\n",
-    "The IDL code can be found at::\n",
-    "    \n",
-    "  http://www.astro.virginia.edu/~dln5q/research/idl/rvcorrect.pro\n",
-    "\n",
-    "The description of the IRAF function can be found at::\n",
-    "    \n",
-    "  http://stsdas.stsci.edu/cgi-bin/gethelp.cgi?rvcorrect\n"
+    "Be careful with the fact that the date/hours recorded in the HDF file can be different than the real hours when the cube has been taken at least because there is only one date recorded in the HDF5 file but your data may have been taken over multiple nights at different hours. Is is possible to get a more precise radial velocity correction from the exact moment when each individual image of the data cube has been recorded."
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 1,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": [
+    "%matplotlib inline\n",
+    "from orcs.process import SpectralCube"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "\u001b[0mINFO| Data shape : (2048, 2064, 840)\u001b[0m\n",
+      "\u001b[0mINFO| Data shape : (2048, 2064, 289)\u001b[0m\n",
       "\u001b[0mINFO| Cube is in WAVENUMBER (cm-1)\u001b[0m\n",
-      "\u001b[0mINFO| Cube is CALIBRATED in wavenumber\u001b[0m\n",
-      "\u001b[0mINFO| VOBS: 0.000000 km.s-1\u001b[0m\n",
-      "\u001b[0mINFO| HJD: 2457625.495001\u001b[0m\n",
-      "\u001b[0mINFO| VHELIO: 3.579457 km.s-1\u001b[0m\n",
-      "\u001b[0mINFO| VLSR: 5.577777 km.s-1\u001b[0m\n",
-      "\u001b[0mINFO| VDIURNAL: 0.171531 km.s-1\u001b[0m\n",
-      "\u001b[0mINFO| VLUNAR: -0.010128 km.s-1\u001b[0m\n",
-      "\u001b[0mINFO| VANNUAL: 3.418055 km.s-1\u001b[0m\n",
-      "\u001b[0mINFO| VSOLAR: 1.998319 km.s-1\u001b[0m\n"
+      "\u001b[0mINFO| Cube is CALIBRATED in wavenumber\u001b[0m\n"
+     ]
+    }
+   ],
+   "source": [
+    "cube = SpectralCube('A0426_SN3.merged.cm1.1.0.hdf5')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Print default barycentric radial velocity correction "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T00:00:00.000 = 2457397.5 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
      ]
     },
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "measured velocity (km/s): 0.0\n",
-      "heliocentric velocity (km/s): 3.57945729968\n",
-      "local standard of rest velocity (kms): 5.57777679718\n"
+      "Barycentric velocity correction: -21.1861652948 km/s\n"
      ]
     }
    ],
    "source": [
-    "from orcs.process import SpectralCube\n",
+    "corr = cube.get_radial_velocity_correction(kind='barycentric')\n",
+    "print 'Barycentric velocity correction: {} km/s'.format(corr)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Use more precise dates\n",
+    "Here we have created a file (`abell426.dates.list`) which records all the dates at which the individual files have been taken (as supplied by the keyword DATE of each individual FITS file).\n",
     "\n",
-    "v = 0. # km/s\n",
+    "```\n",
+    "~/data/1867004o.fits 2016-01-10T05:06:02\n",
+    "~/data/1867005o.fits 2016-01-10T05:06:32\n",
+    "~/data/1867006o.fits 2016-01-10T05:07:03\n",
+    "~/data/1867007o.fits 2016-01-10T05:07:33\n",
+    "~/data/1867008o.fits 2016-01-10T05:08:06\n",
+    "~/data/1867009o.fits 2016-01-10T05:08:36\n",
+    "~/data/1867010o.fits 2016-01-10T05:09:06\n",
+    "~/data/1867011o.fits 2016-01-10T05:09:36\n",
+    "~/data/1867012o.fits 2016-01-10T05:10:08\n",
+    "~/data/1867013o.fits 2016-01-10T05:10:39\n",
+    "~/data/1867014o.fits 2016-01-10T05:11:09\n",
+    "~/data/1867015o.fits 2016-01-10T05:11:40\n",
+    "~/data/1867016o.fits 2016-01-10T05:12:11\n",
+    "~/data/1867017o.fits 2016-01-10T05:12:42\n",
+    "...\n",
+    "```\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:06:02.000 = 2457397.71252 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:06:32.000 = 2457397.71287 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:07:03.000 = 2457397.71323 Julian days\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:06:02 -21.4663846704\n",
+      "2016-01-10T05:06:32 -21.4671673847\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:07:33.000 = 2457397.71358 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:08:06.000 = 2457397.71396 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:08:36.000 = 2457397.71431 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:07:03 -21.4679767479\n",
+      "2016-01-10T05:07:33 -21.4687605397\n",
+      "2016-01-10T05:08:06 -21.4696233171\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:09:06.000 = 2457397.71465 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:09:36.000 = 2457397.715 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:10:08.000 = 2457397.71537 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:08:36 -21.4704082077\n",
+      "2016-01-10T05:09:06 -21.4711936166\n",
+      "2016-01-10T05:09:36 -21.4719795406\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:10:39.000 = 2457397.71573 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:11:09.000 = 2457397.71608 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:11:40.000 = 2457397.71644 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:10:08 -21.4728184234\n",
+      "2016-01-10T05:10:39 -21.4736316427\n",
+      "2016-01-10T05:11:09 -21.4744191425\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:12:11.000 = 2457397.71679 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:12:42.000 = 2457397.71715 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:13:12.000 = 2457397.7175 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:11:40 -21.4752334194\n",
+      "2016-01-10T05:12:11 -21.4760482283\n",
+      "2016-01-10T05:12:42 -21.4768635658\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:13:43.000 = 2457397.71786 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:14:14.000 = 2457397.71822 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:14:45.000 = 2457397.71858 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:13:12 -21.4776531019\n",
+      "2016-01-10T05:13:43 -21.4784694689\n",
+      "2016-01-10T05:14:14 -21.4792863537\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:15:15.000 = 2457397.71892 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:15:45.000 = 2457397.71927 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:16:18.000 = 2457397.71965 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:14:45 -21.4801037528\n",
+      "2016-01-10T05:15:15 -21.4808952705\n",
+      "2016-01-10T05:15:45 -21.4816872631\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:16:48.000 = 2457397.72 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:17:19.000 = 2457397.72036 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:17:49.000 = 2457397.72071 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:16:18 -21.4825589996\n",
+      "2016-01-10T05:16:48 -21.483351979\n",
+      "2016-01-10T05:17:19 -21.4841718794\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:18:20.000 = 2457397.72106 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:18:51.000 = 2457397.72142 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:19:21.000 = 2457397.72177 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:17:49 -21.4849658005\n",
+      "2016-01-10T05:18:20 -21.4857866669\n",
+      "2016-01-10T05:18:51 -21.4866080189\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:19:51.000 = 2457397.72212 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:20:24.000 = 2457397.7225 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:20:54.000 = 2457397.72285 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:19:21 -21.4874033346\n",
+      "2016-01-10T05:19:51 -21.4881990985\n",
+      "2016-01-10T05:20:24 -21.4890749523\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:21:24.000 = 2457397.72319 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:21:54.000 = 2457397.72354 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:22:27.000 = 2457397.72392 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:20:54 -21.4898716464\n",
+      "2016-01-10T05:21:24 -21.4906687784\n",
+      "2016-01-10T05:21:54 -21.491466345\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:22:57.000 = 2457397.72427 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:23:27.000 = 2457397.72462 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:23:57.000 = 2457397.72497 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:22:27 -21.4923441663\n",
+      "2016-01-10T05:22:57 -21.4931426348\n",
+      "2016-01-10T05:23:27 -21.4939415277\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:24:30.000 = 2457397.72535 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:25:00.000 = 2457397.72569 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:25:31.000 = 2457397.72605 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:23:57 -21.4947408416\n",
+      "2016-01-10T05:24:30 -21.4956205693\n",
+      "2016-01-10T05:25:00 -21.4964207567\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:26:01.000 = 2457397.7264 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:26:33.000 = 2457397.72677 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:27:03.000 = 2457397.72712 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:25:31 -21.4972480486\n",
+      "2016-01-10T05:26:01 -21.4980490679\n",
+      "2016-01-10T05:26:33 -21.4989039337\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:27:34.000 = 2457397.72748 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:28:06.000 = 2457397.72785 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:28:37.000 = 2457397.72821 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:27:03 -21.4997057845\n",
+      "2016-01-10T05:27:34 -21.5005347808\n",
+      "2016-01-10T05:28:06 -21.5013909599\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:29:07.000 = 2457397.72855 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:29:39.000 = 2457397.72892 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:30:09.000 = 2457397.72927 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:28:37 -21.502220807\n",
+      "2016-01-10T05:29:07 -21.503024278\n",
+      "2016-01-10T05:29:39 -21.5038817364\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:30:40.000 = 2457397.72963 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:31:10.000 = 2457397.72998 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:31:42.000 = 2457397.73035 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:30:09 -21.5046859964\n",
+      "2016-01-10T05:30:40 -21.5055174606\n",
+      "2016-01-10T05:31:10 -21.5063224828\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:32:13.000 = 2457397.73071 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:32:43.000 = 2457397.73105 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:33:14.000 = 2457397.73141 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:31:42 -21.5071815808\n",
+      "2016-01-10T05:32:13 -21.5080142294\n",
+      "2016-01-10T05:32:43 -21.5088203873\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:33:45.000 = 2457397.73177 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:34:15.000 = 2457397.73212 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:34:46.000 = 2457397.73248 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:33:14 -21.5096537947\n",
+      "2016-01-10T05:33:45 -21.5104875823\n",
+      "2016-01-10T05:34:15 -21.5112948321\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:35:17.000 = 2457397.73284 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:35:48.000 = 2457397.73319 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:36:18.000 = 2457397.73354 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:34:46 -21.512129357\n",
+      "2016-01-10T05:35:17 -21.5129642512\n",
+      "2016-01-10T05:35:48 -21.513799511\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:36:48.000 = 2457397.73389 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:37:20.000 = 2457397.73426 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:37:50.000 = 2457397.73461 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:36:18 -21.5146081714\n",
+      "2016-01-10T05:36:48 -21.5154171673\n",
+      "2016-01-10T05:37:20 -21.5162804624\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:38:21.000 = 2457397.73497 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:38:51.000 = 2457397.73531 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:39:23.000 = 2457397.73568 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:37:50 -21.5170901411\n",
+      "2016-01-10T05:38:21 -21.5179271508\n",
+      "2016-01-10T05:38:51 -21.5187374874\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:39:53.000 = 2457397.73603 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:40:23.000 = 2457397.73638 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:40:54.000 = 2457397.73674 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:39:23 -21.5196021972\n",
+      "2016-01-10T05:39:53 -21.5204131882\n",
+      "2016-01-10T05:40:23 -21.5212244905\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:41:26.000 = 2457397.73711 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:41:56.000 = 2457397.73745 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:42:26.000 = 2457397.7378 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:40:54 -21.52206316\n",
+      "2016-01-10T05:41:26 -21.5229292244\n",
+      "2016-01-10T05:41:56 -21.523741471\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:42:56.000 = 2457397.73815 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:43:29.000 = 2457397.73853 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:43:59.000 = 2457397.73888 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:42:26 -21.5245540152\n",
+      "2016-01-10T05:42:56 -21.5253668538\n",
+      "2016-01-10T05:43:29 -21.5262613121\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:44:29.000 = 2457397.73922 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:45:00.000 = 2457397.73958 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:45:32.000 = 2457397.73995 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:43:59 -21.5270747577\n",
+      "2016-01-10T05:44:29 -21.5278884872\n",
+      "2016-01-10T05:45:00 -21.5287296356\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:46:02.000 = 2457397.7403 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:46:33.000 = 2457397.74066 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:47:03.000 = 2457397.74101 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:45:32 -21.529598228\n",
+      "2016-01-10T05:46:02 -21.530412816\n",
+      "2016-01-10T05:46:33 -21.5312548405\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:47:35.000 = 2457397.74138 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:48:05.000 = 2457397.74172 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:48:35.000 = 2457397.74207 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:47:03 -21.5320699739\n",
+      "2016-01-10T05:47:35 -21.5329397396\n",
+      "2016-01-10T05:48:05 -21.5337554131\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:49:06.000 = 2457397.74243 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:49:38.000 = 2457397.7428 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:50:08.000 = 2457397.74315 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:48:35 -21.5345713428\n",
+      "2016-01-10T05:49:06 -21.5354147356\n",
+      "2016-01-10T05:49:38 -21.5362856138\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:50:38.000 = 2457397.7435 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:51:08.000 = 2457397.74384 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:51:40.000 = 2457397.74421 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:50:08 -21.537102316\n",
+      "2016-01-10T05:50:38 -21.5379192605\n",
+      "2016-01-10T05:51:08 -21.5387364439\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:52:10.000 = 2457397.74456 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:52:41.000 = 2457397.74492 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:53:11.000 = 2457397.74527 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:51:40 -21.5396083656\n",
+      "2016-01-10T05:52:10 -21.5404260319\n",
+      "2016-01-10T05:52:41 -21.5412711937\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:53:43.000 = 2457397.74564 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:54:13.000 = 2457397.74598 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:54:43.000 = 2457397.74633 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:53:11 -21.5420893209\n",
+      "2016-01-10T05:53:43 -21.5429622341\n",
+      "2016-01-10T05:54:13 -21.5437808155\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:55:13.000 = 2457397.74668 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:55:45.000 = 2457397.74705 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:56:15.000 = 2457397.7474 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:54:43 -21.5445996115\n",
+      "2016-01-10T05:55:13 -21.5454186186\n",
+      "2016-01-10T05:55:45 -21.5462924551\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:56:45.000 = 2457397.74774 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:57:15.000 = 2457397.74809 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:57:47.000 = 2457397.74846 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:56:15 -21.5471118878\n",
+      "2016-01-10T05:56:45 -21.5479315212\n",
+      "2016-01-10T05:57:15 -21.5487513519\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:58:17.000 = 2457397.74881 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:58:47.000 = 2457397.74916 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:59:17.000 = 2457397.7495 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:57:47 -21.5496260517\n",
+      "2016-01-10T05:58:17 -21.5504462794\n",
+      "2016-01-10T05:58:47 -21.551266694\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T05:59:49.000 = 2457397.74987 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:00:19.000 = 2457397.75022 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:00:49.000 = 2457397.75057 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T05:59:17 -21.5520872921\n",
+      "2016-01-10T05:59:49 -21.5529627951\n",
+      "2016-01-10T06:00:19 -21.5537837615\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:01:19.000 = 2457397.75091 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:01:51.000 = 2457397.75128 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:02:21.000 = 2457397.75163 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:00:49 -21.554604901\n",
+      "2016-01-10T06:01:19 -21.55542621\n",
+      "2016-01-10T06:01:51 -21.5563024561\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:02:51.000 = 2457397.75198 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:03:21.000 = 2457397.75233 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:03:53.000 = 2457397.7527 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:02:21 -21.5571241049\n",
+      "2016-01-10T06:02:51 -21.5579459128\n",
+      "2016-01-10T06:03:21 -21.5587678764\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:04:23.000 = 2457397.75304 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:04:53.000 = 2457397.75339 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:05:23.000 = 2457397.75374 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:03:53 -21.5596448054\n",
+      "2016-01-10T06:04:23 -21.5604670801\n",
+      "2016-01-10T06:04:53 -21.5612895\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:05:56.000 = 2457397.75412 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:06:25.000 = 2457397.75446 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:06:55.000 = 2457397.7548 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:05:23 -21.5621120618\n",
+      "2016-01-10T06:05:56 -21.5630170394\n",
+      "2016-01-10T06:06:25 -21.5638124575\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:07:25.000 = 2457397.75515 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:07:57.000 = 2457397.75552 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:08:28.000 = 2457397.75588 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:06:55 -21.564635433\n",
+      "2016-01-10T06:07:25 -21.5654585363\n",
+      "2016-01-10T06:07:57 -21.5663366504\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:08:58.000 = 2457397.75623 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:09:28.000 = 2457397.75657 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:10:00.000 = 2457397.75694 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:08:28 -21.5671874547\n",
+      "2016-01-10T06:08:58 -21.5680109329\n",
+      "2016-01-10T06:09:28 -21.5688345251\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:10:30.000 = 2457397.75729 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:11:00.000 = 2457397.75764 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:11:29.000 = 2457397.75797 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:10:00 -21.5697131452\n",
+      "2016-01-10T06:10:30 -21.5705369619\n",
+      "2016-01-10T06:11:00 -21.5713608821\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:12:02.000 = 2457397.75836 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:12:32.000 = 2457397.7587 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:13:01.000 = 2457397.75904 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:11:29 -21.5721574334\n",
+      "2016-01-10T06:12:02 -21.5730639636\n",
+      "2016-01-10T06:12:32 -21.5738881796\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:13:31.000 = 2457397.75939 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:14:04.000 = 2457397.75977 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:14:34.000 = 2457397.76012 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:13:01 -21.5746850069\n",
+      "2016-01-10T06:13:31 -21.5755093956\n",
+      "2016-01-10T06:14:04 -21.5764163188\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:15:04.000 = 2457397.76046 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:15:34.000 = 2457397.76081 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:16:06.000 = 2457397.76118 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:14:34 -21.5772408774\n",
+      "2016-01-10T06:15:04 -21.5780655116\n",
+      "2016-01-10T06:15:34 -21.5788902179\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:16:36.000 = 2457397.76153 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:17:06.000 = 2457397.76187 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:17:36.000 = 2457397.76222 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:16:06 -21.5797699803\n",
+      "2016-01-10T06:16:36 -21.5805948249\n",
+      "2016-01-10T06:17:06 -21.5814197311\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:18:08.000 = 2457397.76259 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:18:38.000 = 2457397.76294 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:19:08.000 = 2457397.76329 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:17:36 -21.5822446955\n",
+      "2016-01-10T06:18:08 -21.5831247178\n",
+      "2016-01-10T06:18:38 -21.5839497916\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:19:38.000 = 2457397.76363 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:20:10.000 = 2457397.764 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:20:40.000 = 2457397.76435 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:19:08 -21.5847749131\n",
+      "2016-01-10T06:19:38 -21.5856000789\n",
+      "2016-01-10T06:20:10 -21.5864803006\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:21:10.000 = 2457397.7647 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:21:40.000 = 2457397.76505 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:22:12.000 = 2457397.76542 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:20:40 -21.587305547\n",
+      "2016-01-10T06:21:10 -21.5881308271\n",
+      "2016-01-10T06:21:40 -21.5889561375\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:22:42.000 = 2457397.76576 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:23:12.000 = 2457397.76611 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:23:42.000 = 2457397.76646 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:22:12 -21.5898364982\n",
+      "2016-01-10T06:22:42 -21.5906618604\n",
+      "2016-01-10T06:23:12 -21.5914872424\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:24:14.000 = 2457397.76683 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:24:44.000 = 2457397.76718 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:25:14.000 = 2457397.76752 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:23:42 -21.5923126407\n",
+      "2016-01-10T06:24:14 -21.5931930798\n",
+      "2016-01-10T06:24:44 -21.5940185011\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:25:44.000 = 2457397.76787 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:26:16.000 = 2457397.76824 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:26:46.000 = 2457397.76859 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:25:14 -21.5948439282\n",
+      "2016-01-10T06:25:44 -21.5956693578\n",
+      "2016-01-10T06:26:16 -21.5965498147\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:27:16.000 = 2457397.76894 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:27:46.000 = 2457397.76928 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:28:18.000 = 2457397.76965 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:26:46 -21.5973752384\n",
+      "2016-01-10T06:27:16 -21.5982006539\n",
+      "2016-01-10T06:27:46 -21.5990260579\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:28:48.000 = 2457397.77 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:29:18.000 = 2457397.77035 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:29:48.000 = 2457397.77069 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:28:18 -21.5999064723\n",
+      "2016-01-10T06:28:48 -21.6007318416\n",
+      "2016-01-10T06:29:18 -21.6015571888\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:30:21.000 = 2457397.77108 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:30:50.000 = 2457397.77141 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:31:20.000 = 2457397.77176 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:29:48 -21.6023825105\n",
+      "2016-01-10T06:30:21 -21.6032903309\n",
+      "2016-01-10T06:30:50 -21.6040880799\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:31:50.000 = 2457397.77211 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:32:23.000 = 2457397.77249 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:32:53.000 = 2457397.77284 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:31:20 -21.604913302\n",
+      "2016-01-10T06:31:50 -21.6057384848\n",
+      "2016-01-10T06:32:23 -21.6066461361\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:33:23.000 = 2457397.77318 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:33:52.000 = 2457397.77352 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:34:25.000 = 2457397.7739 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:32:53 -21.6074712248\n",
+      "2016-01-10T06:33:23 -21.6082962635\n",
+      "2016-01-10T06:33:52 -21.6090937501\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:34:55.000 = 2457397.77425 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:35:24.000 = 2457397.77458 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:35:54.000 = 2457397.77493 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:34:25 -21.61000117\n",
+      "2016-01-10T06:34:55 -21.6108260337\n",
+      "2016-01-10T06:35:24 -21.6116233412\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:36:27.000 = 2457397.77531 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:36:57.000 = 2457397.77566 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:37:27.000 = 2457397.77601 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:35:54 -21.6124480758\n",
+      "2016-01-10T06:36:27 -21.6133552019\n",
+      "2016-01-10T06:36:57 -21.614179784\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:37:56.000 = 2457397.77634 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:38:29.000 = 2457397.77672 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:38:59.000 = 2457397.77707 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:37:27 -21.6150042881\n",
+      "2016-01-10T06:37:56 -21.6158012314\n",
+      "2016-01-10T06:38:29 -21.6167080014\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:39:29.000 = 2457397.77742 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:39:59.000 = 2457397.77777 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:40:31.000 = 2457397.77814 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:38:59 -21.6175322451\n",
+      "2016-01-10T06:39:29 -21.6183563969\n",
+      "2016-01-10T06:39:59 -21.6191804534\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:41:01.000 = 2457397.77848 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:41:31.000 = 2457397.77883 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:42:01.000 = 2457397.77918 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:40:31 -21.620059338\n",
+      "2016-01-10T06:41:01 -21.6208831867\n",
+      "2016-01-10T06:41:31 -21.6217069296\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:42:33.000 = 2457397.77955 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-10T06:43:03.000 = 2457397.7799 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:37:27.000 = 2457400.81767 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-10T06:42:01 -21.6225305632\n",
+      "2016-01-10T06:42:33 -21.6234089815\n",
+      "2016-01-10T06:43:03 -21.6242323785\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:37:56.000 = 2457400.81801 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:38:26.000 = 2457400.81836 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:38:55.000 = 2457400.81869 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:37:27 -22.6318662679\n",
+      "2016-01-13T07:37:56 -22.6326104603\n",
+      "2016-01-13T07:38:26 -22.6333797594\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:39:27.000 = 2457400.81906 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:39:57.000 = 2457400.81941 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:40:26.000 = 2457400.81975 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:38:55 -22.6341228756\n",
+      "2016-01-13T07:39:27 -22.6349422467\n",
+      "2016-01-13T07:39:57 -22.6357098138\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:40:55.000 = 2457400.82008 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:41:27.000 = 2457400.82045 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:41:57.000 = 2457400.8208 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:40:26 -22.6364512465\n",
+      "2016-01-13T07:40:55 -22.6371921368\n",
+      "2016-01-13T07:41:27 -22.6380090379\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:42:26.000 = 2457400.82113 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:42:55.000 = 2457400.82147 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:43:27.000 = 2457400.82184 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:41:57 -22.6387742763\n",
+      "2016-01-13T07:42:26 -22.6395134458\n",
+      "2016-01-13T07:42:55 -22.6402520609\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:43:57.000 = 2457400.82219 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:44:26.000 = 2457400.82252 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:44:56.000 = 2457400.82287 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:43:27 -22.6410664377\n",
+      "2016-01-13T07:43:57 -22.6418292964\n",
+      "2016-01-13T07:44:26 -22.6425661534\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:45:27.000 = 2457400.82323 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:45:57.000 = 2457400.82358 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:46:26.000 = 2457400.82391 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:44:56 -22.6433278235\n",
+      "2016-01-13T07:45:27 -22.6441142427\n",
+      "2016-01-13T07:45:57 -22.644874671\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:46:56.000 = 2457400.82426 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:47:27.000 = 2457400.82462 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:47:57.000 = 2457400.82497 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:46:26 -22.6456091666\n",
+      "2016-01-13T07:46:56 -22.6463683814\n",
+      "2016-01-13T07:47:27 -22.6471522503\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:48:26.000 = 2457400.8253 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:48:56.000 = 2457400.82565 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:49:27.000 = 2457400.82601 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:47:57 -22.6479101976\n",
+      "2016-01-13T07:48:26 -22.6486422831\n",
+      "2016-01-13T07:48:56 -22.6493989923\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:49:57.000 = 2457400.82635 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:50:26.000 = 2457400.82669 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:50:56.000 = 2457400.82704 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:49:27 -22.6501802587\n",
+      "2016-01-13T07:49:57 -22.6509356748\n",
+      "2016-01-13T07:50:26 -22.6516653015\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:51:28.000 = 2457400.82741 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:51:57.000 = 2457400.82774 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:52:27.000 = 2457400.82809 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:50:56 -22.6524194547\n",
+      "2016-01-13T07:51:28 -22.6532231718\n",
+      "2016-01-13T07:51:57 -22.6539509016\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:52:56.000 = 2457400.82843 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:53:28.000 = 2457400.8288 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:53:57.000 = 2457400.82913 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:52:27 -22.6547030833\n",
+      "2016-01-13T07:52:56 -22.6554295684\n",
+      "2016-01-13T07:53:28 -22.656230492\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:54:26.000 = 2457400.82947 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:54:56.000 = 2457400.82981 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:55:28.000 = 2457400.83019 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:53:57 -22.656955678\n",
+      "2016-01-13T07:54:26 -22.657680242\n",
+      "2016-01-13T07:54:56 -22.6584291335\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:55:57.000 = 2457400.83052 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:56:27.000 = 2457400.83087 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:56:56.000 = 2457400.8312 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:55:28 -22.6592272106\n",
+      "2016-01-13T07:55:57 -22.6599498047\n",
+      "2016-01-13T07:56:27 -22.6606966491\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:57:28.000 = 2457400.83157 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:57:57.000 = 2457400.83191 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:58:27.000 = 2457400.83226 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:56:56 -22.6614179512\n",
+      "2016-01-13T07:57:28 -22.6622131289\n",
+      "2016-01-13T07:57:57 -22.6629330832\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:58:56.000 = 2457400.83259 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:59:28.000 = 2457400.83296 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T07:59:57.000 = 2457400.8333 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:58:27 -22.6636771846\n",
+      "2016-01-13T07:58:56 -22.6643958235\n",
+      "2016-01-13T07:59:28 -22.6651880491\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:00:27.000 = 2457400.83365 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:00:56.000 = 2457400.83398 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:01:28.000 = 2457400.83435 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T07:59:57 -22.6659053159\n",
+      "2016-01-13T08:00:27 -22.6666466251\n",
+      "2016-01-13T08:00:56 -22.6673625532\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:01:57.000 = 2457400.83469 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:02:27.000 = 2457400.83503 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:02:56.000 = 2457400.83537 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:01:28 -22.6681517742\n",
+      "2016-01-13T08:01:57 -22.6688663061\n",
+      "2016-01-13T08:02:27 -22.669604774\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:03:28.000 = 2457400.83574 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:03:58.000 = 2457400.83609 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:04:27.000 = 2457400.83642 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:02:56 -22.6703179439\n",
+      "2016-01-13T08:03:28 -22.671104108\n",
+      "2016-01-13T08:03:58 -22.6718403887\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:04:56.000 = 2457400.83676 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:05:28.000 = 2457400.83713 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:05:58.000 = 2457400.83748 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:04:27 -22.6725514355\n",
+      "2016-01-13T08:04:56 -22.6732618\n",
+      "2016-01-13T08:05:28 -22.6740448554\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:06:27.000 = 2457400.83781 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:06:56.000 = 2457400.83815 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:07:28.000 = 2457400.83852 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:05:58 -22.6747782091\n",
+      "2016-01-13T08:06:27 -22.6754864149\n",
+      "2016-01-13T08:06:56 -22.676193927\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:07:58.000 = 2457400.83887 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:08:27.000 = 2457400.8392 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:08:57.000 = 2457400.83955 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:07:28 -22.6769738219\n",
+      "2016-01-13T08:07:58 -22.6777042001\n",
+      "2016-01-13T08:08:27 -22.6784095181\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:09:28.000 = 2457400.83991 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:09:58.000 = 2457400.84025 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:10:27.000 = 2457400.84059 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:08:57 -22.6791384156\n",
+      "2016-01-13T08:09:28 -22.6798908141\n",
+      "2016-01-13T08:09:58 -22.6806181686\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:10:57.000 = 2457400.84094 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:11:28.000 = 2457400.8413 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:11:58.000 = 2457400.84164 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:10:27 -22.6813205522\n",
+      "2016-01-13T08:10:57 -22.6820464024\n",
+      "2016-01-13T08:11:28 -22.6827956394\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:12:27.000 = 2457400.84198 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:12:57.000 = 2457400.84233 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:13:29.000 = 2457400.8427 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:11:58 -22.6835199221\n",
+      "2016-01-13T08:12:27 -22.6842193251\n",
+      "2016-01-13T08:12:57 -22.6849420801\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:13:58.000 = 2457400.84303 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:14:28.000 = 2457400.84338 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:14:57.000 = 2457400.84372 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:13:29 -22.6857121576\n",
+      "2016-01-13T08:13:58 -22.6864092694\n",
+      "2016-01-13T08:14:28 -22.6871296454\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:15:29.000 = 2457400.84409 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:15:58.000 = 2457400.84442 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:16:28.000 = 2457400.84477 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:14:57 -22.6878252577\n",
+      "2016-01-13T08:15:29 -22.6885919697\n",
+      "2016-01-13T08:15:58 -22.68928602\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:16:57.000 = 2457400.8451 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:17:29.000 = 2457400.84547 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:17:58.000 = 2457400.84581 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:16:28 -22.6900032172\n",
+      "2016-01-13T08:16:57 -22.6906957454\n",
+      "2016-01-13T08:17:29 -22.6914590414\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:18:28.000 = 2457400.84616 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:18:57.000 = 2457400.84649 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:19:29.000 = 2457400.84686 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:17:58 -22.6921499844\n",
+      "2016-01-13T08:18:28 -22.6928639555\n",
+      "2016-01-13T08:18:57 -22.693553354\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:19:58.000 = 2457400.8472 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:20:27.000 = 2457400.84753 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:20:57.000 = 2457400.84788 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:19:29 -22.6943131838\n",
+      "2016-01-13T08:19:58 -22.695000974\n",
+      "2016-01-13T08:20:27 -22.6956879955\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:21:29.000 = 2457400.84825 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:21:58.000 = 2457400.84859 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:22:28.000 = 2457400.84894 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:20:57 -22.6963978956\n",
+      "2016-01-13T08:21:29 -22.6971542093\n",
+      "2016-01-13T08:21:58 -22.6978388014\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:22:57.000 = 2457400.84927 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:23:29.000 = 2457400.84964 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:23:58.000 = 2457400.84998 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:22:28 -22.6985461798\n",
+      "2016-01-13T08:22:57 -22.6992291831\n",
+      "2016-01-13T08:23:29 -22.6999819309\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:24:28.000 = 2457400.85032 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:24:57.000 = 2457400.85066 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n",
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:25:29.000 = 2457400.85103 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:23:58 -22.7006632801\n",
+      "2016-01-13T08:24:28 -22.7013672923\n",
+      "2016-01-13T08:24:57 -22.7020470306\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[0mINFO| Observation date: 2016-01-13T08:25:58.000 = 2457400.85137 Julian days\u001b[0m\n",
+      "\u001b[0mINFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m\u001b[0m\n",
+      "\u001b[0mINFO| Observed Target: 03h19m53.19s +41d33m51s\u001b[0m\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "2016-01-13T08:25:29 -22.7027961631\n",
+      "2016-01-13T08:25:58 -22.7034742246\n"
+     ]
+    }
+   ],
+   "source": [
+    "# The results of the radial velocity correction for \n",
+    "# each individual file of the initial inteferometric \n",
+    "# cube are recorded here\n",
+    "fout = open('abell426.barycorr.list', 'w') \n",
     "\n",
-    "cube = SpectralCube('/home/thomas/M31_SN3.merged.cm1.1.0.hdf5')\n",
-    "vhelio, vlsr = cube.get_heliocentric_velocity(v)\n",
-    "print 'measured velocity (km/s):', v\n",
-    "print 'heliocentric velocity (km/s):', vhelio\n",
-    "print 'local standard of rest velocity (kms):', vlsr"
+    "# we loop in the dates file\n",
+    "with open('abell426.dates.list', 'r') as f:\n",
+    "    for line in f:\n",
+    "        date = line.split()[1]\n",
+    "        \n",
+    "        corr = cube.get_radial_velocity_correction(\n",
+    "            kind='barycentric', date=date)\n",
+    "        \n",
+    "        fout.write('{} {}\\n'.format(date, corr))\n",
+    "        print date, corr"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## output\n",
+    "File `abell426.barycorr.list` has been created with the previous code.\n",
+    "\n",
+    "```\n",
+    "2016-01-10T05:06:02 -21.4663846704\n",
+    "2016-01-10T05:06:32 -21.4671673847\n",
+    "2016-01-10T05:07:03 -21.4679767479\n",
+    "2016-01-10T05:07:33 -21.4687605397\n",
+    "2016-01-10T05:08:06 -21.4696233171\n",
+    "2016-01-10T05:08:36 -21.4704082077\n",
+    "2016-01-10T05:09:06 -21.4711936166\n",
+    "2016-01-10T05:09:36 -21.4719795406\n",
+    "2016-01-10T05:10:08 -21.4728184234\n",
+    "2016-01-10T05:10:39 -21.4736316427\n",
+    "2016-01-10T05:11:09 -21.4744191425\n",
+    "2016-01-10T05:11:40 -21.4752334194\n",
+    "2016-01-10T05:12:11 -21.4760482283\n",
+    "2016-01-10T05:12:42 -21.4768635658\n",
+    "2016-01-10T05:13:12 -21.4776531019\n",
+    "2016-01-10T05:13:43 -21.4784694689\n",
+    "2016-01-10T05:14:14 -21.4792863537\n",
+    "2016-01-10T05:14:45 -21.4801037528\n",
+    "2016-01-10T05:15:15 -21.4808952705\n",
+    "2016-01-10T05:15:45 -21.4816872631\n",
+    "2016-01-10T05:16:18 -21.4825589996\n",
+    "...\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.text.Text at 0x7fc52519e850>"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\ne4f4AtF9AAAAAElFTkSuQmCC\n",
+      "text/plain": [
+       "<matplotlib.figure.Figure at 0x7fc524c0efd0>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# Now, we can then display the output file, \n",
+    "# i.e. the barycentric velocity correction\n",
+    "\n",
+    "import astropy.time\n",
+    "\n",
+    "dates = list() ; corrs = list()\n",
+    "with open('abell426.barycorr.list', 'r') as f:\n",
+    "    for line in f:\n",
+    "        line = line.split()\n",
+    "        dates.append(line[0])\n",
+    "        corrs.append(float(line[1]))\n",
+    "\n",
+    "dates = astropy.time.Time(dates, format='isot', scale='utc')\n",
+    "        \n",
+    "import pylab as pl\n",
+    "pl.plot_date(dates.plot_date, corrs, ls='None', marker='+', c='orange')\n",
+    "pl.grid()\n",
+    "pl.xlabel('Date (UTC)')\n",
+    "pl.ylabel('Barycentric velocity correction (in km/s)')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# How to use the computed correction\n",
+    "\n",
+    "In general, for km/s precision, just add the barycentric velocity to the measured velocity. For higher precision you can refer to http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": null,
-   "metadata": {},
+   "metadata": {
+    "collapsed": true
+   },
    "outputs": [],
    "source": []
   }
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "orb",
+   "display_name": "Python 2",
    "language": "python",
-   "name": "orb"
+   "name": "python2"
   },
   "language_info": {
    "codemirror_mode": {
@@ -87,7 +2560,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython2",
-   "version": "2.7.14"
+   "version": "2.7.12"
   }
  },
  "nbformat": 4,

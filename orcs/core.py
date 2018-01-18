@@ -51,9 +51,9 @@ try:
     import orb.core
     import orb.fit
     import orb.utils.astrometry
+    import orb.utils.validate
 except Exception, e:
-    print "ORB could not be found !"
-    print e
+    print "ORB import error: {}".format(e)
     import sys
     sys.exit(2)
 
@@ -78,7 +78,7 @@ class HDFCube(orb.core.HDFCube):
 
         :param kwargs: Kwargs are :meth:`orb.core.HDFCube` properties.
         """
-        self.debug = debug
+        self.debug = bool(debug)
         self.logger = orb.core.Logger(debug=self.debug)
         FIT_TOL = 1e-10
         self.cube_path = cube_path
@@ -380,9 +380,8 @@ class HDFCube(orb.core.HDFCube):
 
     def _fit_lines_in_region(self, region, subtract_spectrum=None,
                              binning=1, snr_guess=None, mapped_kwargs=None,
-                             max_iter=None):
-        """
-        Raw function that fit lines in a given region of the cube.
+                             max_iter=None, timeout=None):
+        """Raw function that fit lines in a given region of the cube.
 
         All the pixels in the defined region are fitted one by one
         and a set of maps containing the fitted paramaters are
@@ -417,6 +416,9 @@ class HDFCube(orb.core.HDFCube):
         :param mapped_kwargs: If a kwarg is mapped, its value will be
           replaced by the value at the fitted pixel.
 
+        :timeout: (Optional) max processing time per pixel. If reached, the given
+          pixel is passed (default None).
+
         .. note:: Maps of the parameters of the fit can be found in
           the directory created by ORCS:
           ``OBJECT_NAME_FILTER.ORCS/MAPS/``.
@@ -432,20 +434,31 @@ class HDFCube(orb.core.HDFCube):
           Each fitted parameter is associated an uncertainty (``*_err``
           maps) given in the same unit.
 
-        """
+        """        
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
-                               theta_map_ij, snr_guess, sky_vel_ij, flux_sdev_ij,
-                               debug, max_iter, mapped_kwargs):
+                               theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
+                               flux_sdev_ij, debug, max_iter, mapped_kwargs):
 
-
+            import orb.utils.spectrum
             stime = time.time()
             if debug:
-                logging.getLogger().setLevel(logging.DEBUG)
+                import orb.utils.log
+                orb.utils.log.setup_socket_logging()
             else:
                 warnings.simplefilter('ignore', RuntimeWarning)
 
             # correct spectrum for nans
             spectrum[np.isnan(spectrum)] = 0.
+
+
+            # correct spectrum for sky velocity
+            if calib_coeff_ij != params['axis_corr']:
+                logging.debug('spectrum is interpolated to correct for wavelength calibration change: {} km/s'.format(sky_vel_ij))
+                base_axis = params['base_axis']
+                corr_axis = orb.utils.spectrum.create_cm1_axis(
+                    spectrum.shape[0], params['step'], params['order'], corr=calib_coeff_ij)
+                spectrum = orb.utils.vector.interpolate_axis(
+                    spectrum, base_axis.astype(float), 5, old_axis=corr_axis.astype(float))
 
             # add flux uncertainty to the spectrum
             spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
@@ -473,7 +486,7 @@ class HDFCube(orb.core.HDFCube):
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, max_iter=max_iter,
+                    snr_guess=snr_guess, max_iter=max_iter, debug=debug,
                     **mapped_kwargs)
                 
             except Exception, e:
@@ -483,14 +496,14 @@ class HDFCube(orb.core.HDFCube):
             if ifit != []:
                 logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
                 logging.debug('fit function time: {} s'.format(time.time() - stime))
-                logging.debug('velocity: {}'.format(ifit['velocity_gvar'] + sky_vel_ij))
+                logging.debug('velocity: {}'.format(ifit['velocity_gvar']))
                 logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
 
                 return {
                     'height': ifit['lines_params'][:,0],
                     'amplitude': ifit['lines_params'][:,1],
                     'fwhm': ifit['lines_params'][:,3],
-                    'velocity': ifit['velocity'] + sky_vel_ij,
+                    'velocity': ifit['velocity'],
                     'sigma': ifit['broadening'],
                     'flux': ifit['flux'],
                     'height-err': ifit['lines_params_err'][:,0],
@@ -566,6 +579,9 @@ class HDFCube(orb.core.HDFCube):
             sky_velocity_map = orb.utils.image.nanbin_image(
                 np.zeros((self.dimx, self.dimy), dtype=float), binning)
 
+        calibration_coeff_map = orb.utils.image.nanbin_image(
+            self.get_calibration_coeff_map(), binning)
+
         flux_uncertainty = self.get_flux_uncertainty()
         if flux_uncertainty is not None:
             flux_uncertainty = orb.utils.image.nanbin_image(flux_uncertainty, binning)
@@ -575,14 +591,18 @@ class HDFCube(orb.core.HDFCube):
 
         cjs = CubeJobServer(self)
         out = cjs.process_by_pixel(fit_lines_in_pixel,
-                             args=[self.params.convert(), self.inputparams.convert(), self.fit_tol,
-                                   theta_map, snr_guess, sky_velocity_map,
-                                   flux_uncertainty, self.debug, max_iter],
-                             kwargs=mapped_kwargs,
-                             modules=['numpy as np', 'gvar', 'orcs.utils',
-                                      'logging', 'warnings', 'time'],
-                             mask=mask,
-                             binning=binning)
+                                   args=[self.params.convert(), self.inputparams.convert(),
+                                         self.fit_tol,
+                                         theta_map, snr_guess, sky_velocity_map,
+                                         calibration_coeff_map,
+                                         flux_uncertainty, self.debug, max_iter],
+                                   kwargs=mapped_kwargs,
+                                   modules=['numpy as np', 'gvar', 'orcs.utils',
+                                            'logging', 'warnings', 'time',
+                                            'import orb.utils.spectrum',
+                                            'import orb.utils.vector'],
+                                   mask=mask,
+                                   binning=binning, timeout=timeout)
 
         for key in out:
             linemaps.set_map(key, out[key],
@@ -627,11 +647,13 @@ class HDFCube(orb.core.HDFCube):
           (default None)
         """
         def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
-                       snr_guess, max_iter):
-            return utils.fit_lines_in_spectrum(
+                       snr_guess, max_iter, debug):
+            _fit = utils.fit_lines_in_spectrum(
                 params, inputparams, fit_tol,
                 spectrum, theta_orig,
-                snr_guess=snr_guess, max_iter=max_iter).convert()
+                snr_guess=snr_guess, max_iter=max_iter, debug=debug)
+            if _fit != []: return _fit.convert()
+            else: return _fit
 
 
         if verbose:
@@ -654,13 +676,12 @@ class HDFCube(orb.core.HDFCube):
 
         if not hasattr(self, 'inputparams'):
             raise StandardError('Input params not defined')
-
-
+      
         cjs = CubeJobServer(self)
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
             args=(self.params.convert(), self.inputparams.convert(),
-                  self.fit_tol, snr_guess, max_iter),
+                  self.fit_tol, snr_guess, max_iter, self.debug),
             modules=('import logging',
                      'import orcs.utils as utils'))
 
@@ -811,7 +832,7 @@ class HDFCube(orb.core.HDFCube):
         return utils.fit_lines_in_spectrum(
             self.params, self.inputparams, self.fit_tol,
             spectrum, theta_orig,
-            snr_guess=snr_guess, max_iter=max_iter,
+            snr_guess=snr_guess, max_iter=max_iter, debug=self.debug,
             **kwargs)
 
     def _prepare_input_params(self, lines, nofilter=False, **kwargs):
@@ -1216,7 +1237,7 @@ class HDFCube(orb.core.HDFCube):
 
     def fit_lines_in_region(self, region, lines, binning=1, nofilter=False,
                             subtract_spectrum=None, snr_guess=None, max_iter=None,
-                            **kwargs):
+                            timeout=None, **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
         the defined region are fitted one by one and a set of maps
         containing the fitted paramaters are written. Note that the
@@ -1245,6 +1266,9 @@ class HDFCube(orb.core.HDFCube):
 
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
+
+        :timeout: (Optional) max processing time per pixel. If reached, the given
+          pixel is passed (default None).
 
         :param kwargs: Keyword arguments of the function
           :py:meth:`~HDFCube._fit_lines_in_spectrum`.
@@ -1303,7 +1327,7 @@ class HDFCube(orb.core.HDFCube):
         self._fit_lines_in_region(
             region, subtract_spectrum=subtract_spectrum,
             binning=binning, snr_guess=snr_guess,
-            max_iter=max_iter, mapped_kwargs=mapped_kwargs)
+            max_iter=max_iter, timeout=timeout, mapped_kwargs=mapped_kwargs)
 
     def get_mask_from_ds9_region_file(self, region, integrate=True):
         """Return a mask from a ds9 region file.
@@ -1683,14 +1707,22 @@ class HDFCube(orb.core.HDFCube):
 
         return noise_flux
 
-    def get_radial_velocity_correction(self, kind='heliocentric'):
+    def get_radial_velocity_correction(self, kind='heliocentric', date=None):
         """Return heliocentric or barycentric velocity correction to apply on
            the observed target in km/s
         
-        :param kind: (Optional) 'heliocentric' or 'barycentric' (default 'heliocentric').
+        :param kind: (Optional) 'heliocentric' or 'barycentric'
+          (default 'heliocentric').
 
-        For m/s precision it should be added. But more care must be
-        taken if a better precision is needed. Please see http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction for more informations.
+        :param date: (Optional) Corrected date for the
+          observation. Must be a string with the following format
+          YYYY-MM-DDTHH:MM:SS.S (default None).
+
+        For m/s precision the returned float should simply be
+        added. But more care must be taken if a better precision is
+        needed. Please see
+        http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction
+        for more informations.
 
         :return: (heliocentric or barycentric) velocities.
 
@@ -1700,7 +1732,7 @@ class HDFCube(orb.core.HDFCube):
 
         """
         kinds = ['heliocentric', 'barycentric']
-        if kind not in kinds: raise ValueError('kind must be {}'.format(kinds))
+        if kind not in kinds: raise ValueError('kind must be in {}'.format(kinds))
         obslat = astropy.coordinates.Latitude(self.config.OBS_LAT, unit=astropy.units.deg)
         obslon = astropy.coordinates.Longitude(self.config.OBS_LON, unit=astropy.units.deg)
         obsalt = self.config.OBS_ALT * astropy.units.meter
@@ -1711,14 +1743,21 @@ class HDFCube(orb.core.HDFCube):
         sc = astropy.coordinates.SkyCoord(
             ra=self.params.target_ra * astropy.units.deg,
             dec=self.params.target_dec * astropy.units.deg)
-        time_str = ('-'.join(self.params.obs_date.astype(str)) + ' '
-                    + '{}:{}:{}'.format(
-                        int(self.params.hour_ut[0]),
-                        int(self.params.hour_ut[1]),
-                        float(self.params.hour_ut[2])))
+
+        if date is None:
+            time_str = ('-'.join(self.params.obs_date.astype(str)) + 'T'
+                        + '{}:{}:{}'.format(
+                            int(self.params.hour_ut[0]),
+                            int(self.params.hour_ut[1]),
+                            float(self.params.hour_ut[2])))
+        else:
+            if not isinstance(date, str):
+                raise TypeError('date must be a string with format YYYY-MM-DDTHH:MM:SS.S')
+            time_str = str(date)
+
         obstime = astropy.time.Time(
             time_str,
-            format='iso', scale='utc')
+            format='isot', scale='utc')
 
         logging.info('Observation date: {} = {} Julian days'.format(
             obstime, obstime.jd))
@@ -1738,15 +1777,25 @@ class HDFCube(orb.core.HDFCube):
 
 class CubeJobServer(object):
 
-    def __init__(self, cube):
-        self.job_server, self.ncpus = orb.utils.parallel.init_pp_server()
-        self.cube = cube
 
+    GET_DATA_TIMEOUT = 10 # timeout to get a data vector in s
+    
+    def __init__(self, cube):
+        """
+        Init class
+
+        :param cube: A HDFCube or SpectralCube instance
+        """
+        if not isinstance(cube, HDFCube): raise TypeError('Must be an orcs.core.HDFCube instance')
+        self.cube = cube
+        self.debug = bool(cube.debug)
+        logging.debug('debug set to {}'.format(self.debug))
+        self.job_server, self.ncpus = orb.utils.parallel.init_pp_server()
 
     def process_by_region(self, func, regions, subtract, axis, args=list(), modules=list(),
                           depfuncs=list()):
 
-        """Parallelize a function applied to a list of intergrated
+        """Parallelize a function applied to a list of integrated
         regions extracted from the spectral cube.
 
         the function must be func(spectrum, theta_orig, *args)
@@ -1839,27 +1888,66 @@ class CubeJobServer(object):
 
     def process_by_pixel(self, func, args=list(), modules=list(), out=dict(),
                          depfuncs=list(), kwargs=dict(),
-                         mask=None, binning=1):
+                         mask=None, binning=1,
+                         timeout=None):
         """Parallelize a function taking binned spectra of the cube as
         an input. All pixels are gone through unless a mask is passed
         which indicates the pixels that must be processed. The typical
         results returned are maps.
 
-        The function must be func(spectrum, *args)
+        :param func: The parallelized function. Must be func(spectrum,
+          *args, kwargs_dict) which returns a dict of floating values
+          (e.g. {a:1.9, b:5.6, ...}) or a 1d array of floats. If it
+          returns a dict out must be set to dict(), its default
+          value. If a 1d array of size N is returned, the out param must
+          be set to a 3d array of shape (cube.dimx, cube.dimy, N). If
+          supplied, kwargs are passed to the function as the last
+          argument in a dict object.  Note also that velocity will not
+          be corrected on the fly at data extraction so that the called
+          function must handle it.
 
-        Any argument with a shape equal to the x,y shape of the cube
-        (or the binned x,y shape) will be mapped, i.e., the argument
-        passed to the vector function will be the value corresponding
-        to the position of the extracted spectrum. (works also for 3d
-        shaped arguments, the 3rd dimension can have any size)
+        :param args: List of arguments passed to the function
+
+        :param modules: Modules to import to run the function.
+
+        :param out: depends on the returned values of func. See param
+          func.
+
+        :param depfuncs: Functions of which func depends.
+
+        :param kwargs: kwargs of the function func. If supplied,
+          kwargs are passed to the function as the last argument in a
+          dict object.
+
+        :param mask: a 2d array of bool. Ones giving the pixels on
+          which the function must be applied.
+
+        :param binning: On-the-fly data binning.
+
+        .. note:: Any argument with a shape equal to the x,y shape of
+          the cube (or the binned x,y shape) will be mapped, i.e., the
+          argument passed to the vector function will be the value
+          corresponding to the position of the extracted
+          spectrum. (works also for 3d shaped arguments, the 3rd
+          dimension can have any size)
+
         """
 
         def process_in_row(*args):
             """Basic line processing for a vector function"""
             import marshal, types
             import numpy as np
+            import logging
+            import orb.utils.log
 
-                              
+            # remove last argument which gives the process_in_row options as a dict
+            # WARNING :must be the first line of the function
+            process_in_row_args = args[-1]
+            args = tuple(args[:-1])
+
+            if process_in_row_args['debug']:
+                orb.utils.log.setup_socket_logging()
+
             ## function is unpicked
             _code = marshal.loads(args[0])
             _func = types.FunctionType(_code, globals(), '_func')
@@ -1868,6 +1956,7 @@ class CubeJobServer(object):
             out_line = list()
             for i in range(iline_data.shape[0]):
                 iargs_list = list()
+                
                 # remap arguments
                 for iarg in args[2:]:
                     try:
@@ -1881,7 +1970,7 @@ class CubeJobServer(object):
                             iarg = iarg[i]
 
                     iargs_list.append(iarg)
-                    
+
                 # last arg gives the kwargs which are eventually passed as a dict
                 ikwargs_keys = iargs_list.pop(-1)
                 ikwargs = dict()
@@ -1891,13 +1980,18 @@ class CubeJobServer(object):
                     logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
                 iargs_list.append(ikwargs)
                 try:
-                    out_line.append(_func(iline_data[i,:], *iargs_list))
+                    out_line.append(_func(iline_data[i,:], *iargs_list))                    
                 except Exception, e:
                     out_line.append(None)
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
             return out_line
 
+        def get_data(cube, ix, iy, binning, outdict):
+            outdict['iline'] = cube.get_data(
+                min(ix) * binning, (max(ix) + 1) * binning,
+                iy[0] * binning, (iy[0] + 1) * binning,
+                0, cube.dimz, silent=True)
 
         ## function must be serialized (or picked)
         func = marshal.dumps(func.func_code)
@@ -1922,29 +2016,28 @@ class CubeJobServer(object):
         self.out_is_dict = True
         if not isinstance(out, dict):
             self.out_is_dict = False
-            if not isinstance(out, np.ndarray):
-                raise TypeError('out must be a numpy.ndarray')
-            elif out.ndim < 2:
-                raise ValueError('out must be at least a 2d numpy.ndarray')
-            elif out.shape[0] != int(self.cube.dimx)/int(binning) or out.shape[1] != int(self.cube.dimy)/int(binning):
-                raise ValueError(
-                    'out.shape[0] and out.shape[1] must be equal to cube.dimx and cube.dimy')
-
+            orb.utils.validate.is_ndarray(out, object_name='out')
+            if out.ndim < 2:
+                raise TypeError('out must be at least a 2d numpy.ndarray')
+            elif (out.shape[0], out.shape[1]) != (int(self.cube.dimx), int(self.cube.dimy)):
+                raise TypeError('out.shape must be {}'.format((self.cube.dimx, self.cube.dimy)))
+            
         # check mask
         if not mask is None:
-            try:
-                mask.shape == (self.cube.dimx, self.cube.dimy)
-            except TypeError:
-                raise TypeError('mask must be a numpy.ndarray')
-            except Exception, e:
-                logging.error('Bad mask format{}', e)
-
+            orb.utils.validate.is_2darray(mask, object_name='mask')
+            if mask.shape != (self.cube.dimx, self.cube.dimy):
+                raise TypeError('mask.shape must be {}'.format((self.cube.dimx, self.cube.dimy)))
+        
         else:
             mask = np.ones((self.cube.dimx, self.cube.dimy), dtype=bool)
 
         if binning > 1:
             if not isbinned(mask):
                 mask = orb.utils.image.nanbin_image(mask, int(binning))
+                
+        mask[np.nonzero(mask)] = 1
+        mask = mask.astype(bool)
+                
 
         # add kwargs to args
         kwargs_keys = kwargs.keys()
@@ -1953,6 +2046,7 @@ class CubeJobServer(object):
         args.append(kwargs_keys)
         logging.info('passed mapped kwargs : {}'.format(kwargs_keys))
 
+        
         # check arguments
         # reshape passed arguments
         for i in range(len(args)):
@@ -1990,11 +2084,29 @@ class CubeJobServer(object):
 
         # jobs submit / retrieve loop
         self.jobs = list()
-        progress = orb.core.ProgressBar(all_jobs_nb)
-        while len(self.all_jobs_indexes) > 0 or len(self.jobs) > 0:
 
+        # timeout setup
+        process_start_time = time.time()
+
+        def check_timesup():
+            if timeout is not None:
+                if time.time() - process_start_time > timeout * float(np.sum(mask)):
+                    warnings.warn('process time reached timeout * number of binned pixels = {}*{} s'.format(timeout, np.nansum(mask)))
+                    logging.info(orb.utils.parallel.get_stats_str(self.job_server))
+                    return True
+            return False
+
+        progress = orb.core.ProgressBar(all_jobs_nb)        
+        while len(self.all_jobs_indexes) > 0 or len(self.jobs) > 0:
+            if check_timesup(): break
+
+            
             # submit jobs
             while len(self.jobs) < self.ncpus and len(self.all_jobs_indexes) > 0:
+                if check_timesup(): break
+                
+                timesup = check_timesup()
+                
                 timer = dict()
                 timer['job_submit_start'] = time.time()
 
@@ -2004,10 +2116,15 @@ class CubeJobServer(object):
 
                 # raw lines extraction (warning: velocity must be
                 # corrected by the function itself)
-
-                iline = self.cube.get_data(min(ix) * binning, (max(ix) + 1) * binning,
-                                           iy[0] * binning, (iy[0] + 1) * binning,
-                                           0, self.cube.dimz, silent=True)
+                
+                
+                outdict = orb.utils.parallel.timed_process(
+                    get_data, self.GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
+                if 'iline' in outdict:
+                    iline = outdict['iline']
+                else:
+                    warnings.warn('timeout reached on data extraction')
+                    break
 
                 if binning > 1:
                     iline = orb.utils.image.nanbin_image(iline, binning) * binning**2
@@ -2028,6 +2145,11 @@ class CubeJobServer(object):
                     else:
                         all_args.append(iarg[0])
 
+                # process in row args are passed as the last argument (WARNING do not add
+                # other arguments afterward)
+                all_args.append({'debug':self.debug,
+                                 'timeout':timeout})
+
                 timer['job_submit_end'] = time.time()
 
                 # job submission
@@ -2037,7 +2159,7 @@ class CubeJobServer(object):
                         args=tuple(all_args),
                         modules=tuple(modules),
                         depfuncs=tuple(depfuncs)),
-                    (ix, iy), time.time(), timer])
+                    (ix, iy), time.time(), timer, self.all_jobs_indexes[0]])
                 self.all_jobs_indexes.pop(0)
                 progress.update(all_jobs_nb - len(self.all_jobs_indexes))
 
@@ -2045,19 +2167,19 @@ class CubeJobServer(object):
             # retrieve all finished jobs
             unfinished_jobs = list()
             for i in range(len(self.jobs)):
-                ijob, (ix, iy), stime, timer = self.jobs[i]
+                ijob, (ix, iy), stime, timer, ijob_index = self.jobs[i]
                 if ijob.finished:
+                    logging.debug('job {} ({}, {}) finished'.format(ijob_index, ix, iy))
+                    logging.debug('job {} time since submission: {} s'.format(
+                        ijob_index, time.time() - stime))
+                    logging.debug('job {} submit time: {} s'.format(
+                        ijob_index, timer['job_submit_end'] - timer['job_submit_start']))
+                    logging.debug('job {} load data time: {} s'.format(
+                        ijob_index, timer['job_load_data_end'] - timer['job_load_data_start']))
 
-                    logging.debug('job time since submission: {} s'.format(
-                        time.time() - stime))
-                    logging.debug('job submit time: {} s'.format(
-                        timer['job_submit_end'] - timer['job_submit_start']))
-                    logging.debug('job load data time: {} s'.format(
-                        timer['job_load_data_end'] - timer['job_load_data_start']))
-
-                    res_line = ijob()
-                    for iline in range(len(res_line)):
-                        res = res_line[iline]
+                    res_row = ijob()
+                    for irow in range(len(res_row)):
+                        res = res_row[irow]
                         if self.out_is_dict:
                             if not isinstance(res, dict):
                                 raise TypeError('function result must be a dict if out is a dict')
@@ -2065,7 +2187,8 @@ class CubeJobServer(object):
                                 # create the output array if not set
                                 if ikey not in out and res[ikey] is not None:
                                     if np.size(res[ikey]) > 1:
-                                        if res[ikey].ndim > 1: raise TypeError('must be a 1d array of floats')
+                                        if res[ikey].ndim > 1:
+                                            raise TypeError('must be a 1d array of floats')
                                         try: float(res[ikey][0])
                                         except TypeError: raise TypeError('must be an array of floats')
                                     else:
@@ -2084,10 +2207,19 @@ class CubeJobServer(object):
                                     out[ikey].fill(np.nan)
 
                                 if res[ikey] is not None:
-                                    out[ikey][ix[iline], iy[iline], ...] = res[ikey]
+                                    out[ikey][ix[irow], iy[irow], ...] = res[ikey]
                         else:
-                            out[ix[iline], iy[iline], ...] = ijob()
-                    logging.debug('job time (whole loop): {} s'.format(time.time() - stime))
+                            out[ix[irow], iy[irow], ...] = res
+                    logging.debug('job {} time (whole loop): {} s'.format(
+                        ijob_index, time.time() - stime))
+                    
+                elif timeout is not None:
+                    _job_elapsed_time_by_pixel = (time.time() - stime) / np.size(ix)
+                    if _job_elapsed_time_by_pixel < timeout:
+                        unfinished_jobs.append(self.jobs[i]) # continue waiting
+                    else:
+                        warnings.warn('job {} timeout for pixels {}, {}'.format(ijob_index, ix, iy[0]))
+                        logging.info(orb.utils.parallel.get_stats_str(self.job_server))
                 else:
                     unfinished_jobs.append(self.jobs[i])
             self.jobs = unfinished_jobs
@@ -2451,6 +2583,9 @@ class LineMaps(orb.core.Tools):
 
                 if same_param: break
 
+#################################################
+#### CLASS Filter ###############################
+#################################################
 
 
 class Filter(object):
