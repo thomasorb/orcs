@@ -1964,7 +1964,8 @@ class CubeJobServer(object):
                 #if len(ikwargs) > 0:
                 iargs_list.append(ikwargs)
                 try:
-                    out_line.append(_func(iline_data[i,:], *iargs_list))
+                    #out_line.append(_func(iline_data[i,:], *iargs_list))
+                    pass
                 except Exception, e:
                     out_line.append(None)
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
@@ -2567,6 +2568,9 @@ class LineMaps(orb.core.Tools):
 
                 if same_param: break
 
+#################################################
+#### CLASS Filter ###############################
+#################################################
 
 
 class Filter(object):
