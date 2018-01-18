@@ -439,7 +439,7 @@ class HDFCube(orb.core.HDFCube):
                                theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
                                flux_sdev_ij, debug, max_iter, mapped_kwargs):
 
-
+            import orb.utils.spectrum
             stime = time.time()
             if debug:
                 import orb.utils.log
@@ -1980,8 +1980,7 @@ class CubeJobServer(object):
                     logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
                 iargs_list.append(ikwargs)
                 try:
-                    out_line.append(_func(iline_data[i,:], *iargs_list))
-                    
+                    out_line.append(_func(iline_data[i,:], *iargs_list))                    
                 except Exception, e:
                     out_line.append(None)
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))

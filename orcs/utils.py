@@ -25,16 +25,17 @@
 Utils module contains core functions that are used by the processing
 classes of ORCS
 """
-# import ORB
-import orb.utils.spectrum
-import orb.fit
 
 import numpy as np
 import logging
 import warnings
 import gvar
 import scipy
+
+# import ORB
 import orb.utils.log
+import orb.utils.spectrum
+import orb.fit
 
 def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                           theta_orig, snr_guess=None, max_iter=None,
@@ -62,10 +63,13 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     :param kwargs: (Optional) Model parameters that must be
       changed in the InputParams instance.
     """
+    import orb.utils.spectrum
+    
     kwargs_orig = dict(kwargs)
-
     if debug:
+        import orb.utils.log
         orb.utils.log.setup_socket_logging()
+        
     
     # check snr guess param
     auto_mode = False
