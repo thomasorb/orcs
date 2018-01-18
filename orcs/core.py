@@ -434,10 +434,7 @@ class HDFCube(orb.core.HDFCube):
           Each fitted parameter is associated an uncertainty (``*_err``
           maps) given in the same unit.
 
-        """
-        def fit_lines_in_pixel_test(*args):
-            return None
-        
+        """        
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
                                theta_map_ij, snr_guess, sky_vel_ij, flux_sdev_ij,
                                debug, max_iter, mapped_kwargs):
@@ -580,7 +577,7 @@ class HDFCube(orb.core.HDFCube):
                 np.ones((self.dimx, self.dimy), dtype=float), binning) * binning**2.
 
         cjs = CubeJobServer(self)
-        out = cjs.process_by_pixel(fit_lines_in_pixel_test,
+        out = cjs.process_by_pixel(fit_lines_in_pixel,
                                    args=[self.params.convert(), self.inputparams.convert(),
                                          self.fit_tol,
                                          theta_map, snr_guess, sky_velocity_map,
@@ -2156,7 +2153,7 @@ class CubeJobServer(object):
             unfinished_jobs = list()
             for i in range(len(self.jobs)):
                 ijob, (ix, iy), stime, timer, ijob_index = self.jobs[i]
-                if ijob.finished or True:
+                if ijob.finished:
                     logging.debug('job {} ({}, {}) finished'.format(ijob_index, ix, iy))
                     logging.debug('job {} time since submission: {} s'.format(
                         ijob_index, time.time() - stime))
