@@ -541,7 +541,7 @@ class HDFCube(orb.core.HDFCube):
         ## init LineMaps object
         linemaps = LineMaps(
             self.dimx, self.dimy, gvar.mean(
-                self.inputparams.allparams['pos_guess']),
+                self.inputparams['allparams']['pos_guess']),
             self.params.wavenumber,
             binning, self.config.DIV_NB,
             instrument=self.instrument,
