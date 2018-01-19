@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Differences between fitting a sincgauss model and two sinc lines &mdash; Orcs 2.2.4 documentation</title>
+  <title>Differences between fitting a sincgauss model and two sinc lines &mdash; Orcs 2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model+fit_1_line.html"/>
         <link rel="prev" title="Make a fit over an entire region of the field" href="script_example_fit_region.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.4
+                2.3
               </div>
             
           
@@ -121,7 +121,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
@@ -407,7 +406,7 @@ sinc model, i.e. 5 times slower than a model based on two sinc lines)</li>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [3]:
+<span></span>In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -432,7 +431,7 @@ different.</p>
 lines of equal amplitude.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [1]:
+<span></span>In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -445,7 +444,7 @@ lines of equal amplitude.</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -465,7 +464,7 @@ real <code class="docutils literal"><span class="pre">sigma/fwhm</span></code> r
 FWHM is around 1.5 channels with SITELLE).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [23]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -484,9 +483,11 @@ FWHM is around 1.5 channels with SITELLE).</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<img alt="_images/script_example_sincgauss_vs_2_sinc_7_0.png" src="_images/script_example_sincgauss_vs_2_sinc_7_0.png" />
-</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/home/thomas/Astro/Python/ORB/Orb/orb/fit.py:142: UserWarning: No SNR guess given. Fit mode is classic.
+  warnings.warn(&#39;No SNR guess given. Fit mode is classic.&#39;)
+</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -544,16 +545,23 @@ FWHM is around 1.5 channels with SITELLE).</p>
 <img alt="_images/script_example_sincgauss_vs_2_sinc_7_8.png" src="_images/script_example_sincgauss_vs_2_sinc_7_8.png" />
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <img alt="_images/script_example_sincgauss_vs_2_sinc_7_9.png" src="_images/script_example_sincgauss_vs_2_sinc_7_9.png" />
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_sincgauss_vs_2_sinc_7_10.png" src="_images/script_example_sincgauss_vs_2_sinc_7_10.png" />
+</div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [21]:
+<span></span>In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -645,7 +653,7 @@ FWHM is around 1.5 channels with SITELLE).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.4',
+            VERSION:'2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

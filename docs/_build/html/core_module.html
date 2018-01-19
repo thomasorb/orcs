@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.2.3 documentation</title>
+  <title>Core module &mdash; Orcs 2.3 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.3 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.3 documentation" href="index.html"/>
         <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html"/> 
+        <link rel="prev" title="Radial Velocity Correction" href="script_example_heliocentric_velocity.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                2.2.3
+                2.3
               </div>
             
           
@@ -103,7 +103,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
@@ -327,7 +326,7 @@ fit. If None a classical fit is made. (default None).</li>
 
 <dl class="method">
 <dt id="orcs.core.HDFCube._fit_lines_in_region">
-<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em>, <em>snr_guess=None</em>, <em>mapped_kwargs=None</em>, <em>max_iter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em>, <em>snr_guess=None</em>, <em>mapped_kwargs=None</em>, <em>max_iter=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raw function that fit lines in a given region of the cube.</p>
 <p>All the pixels in the defined region are fitted one by one
 and a set of maps containing the fitted paramaters are
@@ -345,7 +344,7 @@ written. Note that the pixels can be binned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>region</strong> – Region to fit. Multiple regions can be used to
 define the fitted region. They do not need to be contiguous.</li>
 <li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
@@ -364,6 +363,10 @@ fit. If None a classical fit is made. (default None).</li>
 <li><strong>mapped_kwargs</strong> – If a kwarg is mapped, its value will be
 replaced by the value at the fitted pixel.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Timeout:</th><td class="field-body"><p class="first last">(Optional) max processing time per pixel. If reached, the given
+pixel is passed (default None).</p>
 </td>
 </tr>
 </tbody>
@@ -638,7 +641,7 @@ dictionary containing the fit results (same output as
 
 <dl class="method">
 <dt id="orcs.core.HDFCube.fit_lines_in_region">
-<code class="descname">fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>binning=1</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>binning=1</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines in a given region of the cube. All the pixels in
 the defined region are fitted one by one and a set of maps
 containing the fitted paramaters are written. Note that the
@@ -647,7 +650,7 @@ pixels can be binned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
 cube is in wavenumber. must be in nm otherwise).</li>
 <li><strong>region</strong> – Region to fit. Multiple regions can be used to
@@ -669,6 +672,10 @@ fit. If None a classical fit is made.</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
 <a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Timeout:</th><td class="field-body"><p class="first last">(Optional) max processing time per pixel. If reached, the given
+pixel is passed (default None).</p>
 </td>
 </tr>
 </tbody>
@@ -1226,7 +1233,7 @@ None)</li>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1257,7 +1264,7 @@ None)</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.3',
+            VERSION:'2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

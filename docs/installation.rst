@@ -16,18 +16,8 @@ The archive and the installation instructions for ORB_ can be found on github::
 Install / update ORCS
 ---------------------
 
-With pip
-~~~~~~~~
 
-you just have to do (but don't forget to update ORB_ version as well !)::
-
-  pip install orcs
-
-
-Without pip
-~~~~~~~~~~~
-
-Then ORCS_ can be downloaded and installed from github also::
+ORCS_ can be downloaded and installed from github also::
   
   https://github.com/thomasorb/orcs
 
@@ -37,7 +27,6 @@ extract it in a temporary folder. Then cd into the extracted folder
 and type::
 
   python setup.py install
-
 
 
 .. _ORB: https://github.com/thomasorb/orb

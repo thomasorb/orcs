@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Constraining line ratios &mdash; Orcs 2.2.4 documentation</title>
+  <title>Constraining line ratios &mdash; Orcs 2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Automatic source detection" href="script_example_automatic_source_detection.html"/>
         <link rel="prev" title="Flux Calibration Example Using HST image" href="script_example_hst_flux_calibration.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.4
+                2.3
               </div>
             
           
@@ -119,7 +119,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
@@ -415,9 +414,6 @@ variations of the ratio could not be measured anyway).</p>
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/core.py:241: UserWarning: Exception occured during logging server init (maybe it is already initialized): [Errno 98] Address already in use
-  warnings.warn(&#39;Exception occured during logging server init (maybe it is already initialized): {}&#39;.format(e))
-</span>
 INFO| Data shape : (2048, 2064, 840)
 INFO| Cube is in WAVENUMBER (cm-1)
 INFO| Cube is CALIBRATED in wavenumber
@@ -427,7 +423,7 @@ INFO| Cube is CALIBRATED in wavenumber
 <h2>Fit with no amplitude constraint<a class="headerlink" href="#Fit-with-no-amplitude-constraint" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [4]:
+<span></span>In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -463,7 +459,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.020 s]
+ [==========] [100%] [completed in 0.062 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -479,8 +475,25 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+ [==========] [100%] [completed in 0.734 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1673: RuntimeWarning: invalid value encountered in sqrt
+  noise_counts = np.sqrt(total_counts)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
 
- [==========] [100%] [completed in 0.473 s]
 
 ===== Results ======
 Velocity:  [-293.11(96) -293.11(96) -293.11(96)]
@@ -490,7 +503,7 @@ NII 6584/6548 ratio 3.34348459029
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[4]:
+<span></span>Out[2]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -502,7 +515,7 @@ NII 6584/6548 ratio 3.34348459029
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_constaining_line_ratios_3_5.png" src="_images/script_example_constaining_line_ratios_3_5.png" />
+<img alt="_images/script_example_constaining_line_ratios_3_7.png" src="_images/script_example_constaining_line_ratios_3_7.png" />
 </div>
 </div>
 </div>
@@ -527,7 +540,7 @@ amplitude of 3.2e-17 while the second one will have a final amplitude of
 9.6e-17.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -567,7 +580,7 @@ INFO| Number of integrated pixels: 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.013 s]
+ [==========] [100%] [completed in 0.021 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -583,7 +596,8 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 1.46 s]
+
+ [==========] [100%] [completed in 0.481 s]
 
 ===== Results ======
 Velocity:  [-292.68(95) -292.68(95) -292.68(95)]
@@ -594,7 +608,7 @@ NII 6584/6548 flux ratio 3.03250649287
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[5]:
+<span></span>Out[3]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -620,7 +634,7 @@ a flux ratio of 3 you can use the method
 correct amplitude ratio.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -639,7 +653,7 @@ correct amplitude ratio.</p>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [7]:
+<span></span>In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -695,7 +709,8 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 1.33 s]
+
+ [==========] [100%] [completed in 0.458 s]
 
 ===== Results ======
 Velocity:  [-292.68(95) -292.68(95) -292.68(95)]
@@ -706,7 +721,7 @@ NII 6584/6548 flux ratio 3.0
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[7]:
+<span></span>Out[5]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -768,7 +783,7 @@ NII 6584/6548 flux ratio 3.0
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.4',
+            VERSION:'2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

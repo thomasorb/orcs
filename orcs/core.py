@@ -47,15 +47,10 @@ import warnings
 import copy
 
 # import ORB
-try:
-    import orb.core
-    import orb.fit
-    import orb.utils.astrometry
-    import orb.utils.validate
-except Exception, e:
-    print "ORB import error: {}".format(e)
-    import sys
-    sys.exit(2)
+import orb.core
+import orb.fit
+import orb.utils.astrometry
+import orb.utils.validate
 
 import utils
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Image registration &mdash; Orcs 2.2.4 documentation</title>
+  <title>Image registration &mdash; Orcs 2.3 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.2.4 documentation" href="index.html"/>
+    <link rel="top" title="Orcs 2.3 documentation" href="index.html"/>
         <link rel="up" title="Examples" href="examples.html"/>
         <link rel="next" title="Flux Calibration Example Using HST image" href="script_example_hst_flux_calibration.html"/>
         <link rel="prev" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                2.2.4
+                2.3
               </div>
             
           
@@ -111,8 +111,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_hst_flux_calibration.html">Flux Calibration Example Using HST image</a></li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_hst_flux_calibration.html#Flux-Calibration">Flux Calibration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_hst_flux_calibration.html#The-End">The End</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
@@ -123,7 +121,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rvcorrect_module.html">RVCorrect module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
 <ul>
@@ -402,12 +399,13 @@ as is and only the basic registration parameters are recomputed (see
 Martin el al. 2017, <a class="reference external" href="http://adsabs.harvard.edu/abs/2017arXiv170701366M">http://adsabs.harvard.edu/abs/2017arXiv170701366M</a>)</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [1]:
+<span></span>In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">orb.astrometry</span> <span class="kn">import</span> <span class="n">Astrometry</span>
 <span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="kn">as</span> <span class="nn">io</span>
+<span class="kn">from</span> <span class="nn">orb.core</span> <span class="kn">import</span> <span class="n">Logger</span>
 </pre></div>
 </div>
 </div>
@@ -420,17 +418,19 @@ to register and can be obtained using, e.g. the Digital Sky Survey
 <p><strong>warning</strong> don’t forget that ds9 is indexed (1,1) and python is indexed
 (0,0). i.e. you must subtract 1 to x and y image coordinates if you read
 your image with ds9.</p>
-<p>The process is best done two times. The first time only the center of
-the field of view is considered and a rough primary distortion field is
-obtained that can be used the second time to compute a distortion model
-over the whole field of view.</p>
+<p><strong>note: This process is best done two times. The first time only the
+center of the field of view is considered and a rough primary distortion
+field is obtained that can be used the second time to compute a
+distortion model over the whole field of view</strong>. Here it is done only
+once for the sake of clarity.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [2]:
+<span></span>In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">)</span>
+<span></span><span class="n">Logger</span><span class="p">()</span> <span class="c1"># used to get clean log info</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">)</span>
 <span class="n">wcs</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">),</span>
                                <span class="n">target_xy</span><span class="o">=</span><span class="p">(</span><span class="mi">1036</span><span class="p">,</span> <span class="mi">1032</span><span class="p">))</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">compute_distortion</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
@@ -439,27 +439,9 @@ over the whole field of view.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:15:54|astrometry:1875:register|INFO&gt; Computing WCS
-170729-10:15:54|astrometry:1877:register|INFO&gt; Initial scale: 0.32373046875 arcsec/pixel
-170729-10:15:54|astrometry:1878:register|INFO&gt; Initial rotation: 2.09 degrees
-170729-10:15:54|astrometry:1880:register|INFO&gt; Initial target position in the image (X,Y): 1036 1032
-170729-10:15:54|core:1029:_get_tuning_parameter|INFO&gt; looking for tuning parameter: Astrometry.detect_stars.PRE_DETECT_COEFF
-170729-10:15:54|astrometry:1476:detect_stars|INFO&gt; Detecting stars
-170729-10:15:54|astrometry:1483:detect_stars|INFO&gt; Filtering master image
-170729-10:15:56|astrometry:1486:detect_stars|INFO&gt; Master image filtered in 1.98992991447 s
-170729-10:15:56|astrometry:1491:detect_stars|INFO&gt; Stars preselection
-170729-10:16:00|astrometry:1531:detect_stars|INFO&gt; Bad stars rejection based on fitting
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 3.20 s]
+ [==========] [100%] [completed in 3.00 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -467,412 +449,10 @@ Init of the parallel processing server with 4 threads
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-170729-10:16:04|astrometry:1570:detect_stars|INFO&gt; Fit check
-170729-10:16:04|astrometry:1614:detect_stars|INFO&gt; 60 stars detected
-170729-10:16:04|astrometry:1616:detect_stars|INFO&gt; Detected stars FWHM : 3.276040 pixels, 1.060554 arc-seconds
-170729-10:16:04|astrometry:1619:detect_stars|INFO&gt; SNR Min: 5.2e+01, Max:5.3e+02, Median:1.3e+02
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-Star list of 60 stars loaded
-Sending query to VizieR server (catalog: gaia)
-Looking for stars at RA: 294.112073 DEC: 19.706786
-8523 stars recorded in the given field
-Magnitude min: 9.578, max:21.217
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:16:32|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -6.0, dx -69.7889447236, dy -598.753768844
-170729-10:16:35|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.69230769231, dx 13.1859296482, dy -743.959798995
-170729-10:16:38|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -5.38461538462, dx 127.27638191, dy -59.4170854271
-170729-10:16:42|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -5.07692307692, dx -28.3015075377, dy 2.81407035176
-170729-10:16:45|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.76923076923, dx -28.3015075377, dy 2.81407035176
-170729-10:16:48|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -4.46153846154, dx -505.407035176, dy 230.994974874
-170729-10:16:51|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.15384615385, dx 2.81407035176, dy 469.547738693
-170729-10:16:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.84615384615, dx 220.623115578, dy -163.135678392
-170729-10:16:58|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.53846153846, dx 220.623115578, dy -152.763819095
-170729-10:17:01|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.23076923077, dx -17.9296482412, dy 2.81407035176
-170729-10:17:04|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -2.92307692308, dx -59.4170854271, dy -567.638190955
-170729-10:17:07|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle -2.61538461538, dx 2.81407035176, dy -7.55778894472
-170729-10:17:10|astrometry:1968:register|INFO&gt; histogram check: correlation level 11.0, angle -2.30769230769, dx 2.81407035176, dy 2.81407035176
-170729-10:17:13|astrometry:1968:register|INFO&gt; histogram check: correlation level 11.0, angle -2.0, dx 2.81407035176, dy 2.81407035176
-170729-10:17:16|astrometry:1968:register|INFO&gt; histogram check: correlation level 23.0, angle -1.69230769231, dx 2.81407035176, dy 2.81407035176
-170729-10:17:19|astrometry:1968:register|INFO&gt; histogram check: correlation level 32.0, angle -1.38461538462, dx 2.81407035176, dy 2.81407035176
-170729-10:17:22|astrometry:1968:register|INFO&gt; histogram check: correlation level 37.0, angle -1.07692307692, dx 2.81407035176, dy 2.81407035176
-170729-10:17:25|astrometry:1968:register|INFO&gt; histogram check: correlation level 32.0, angle -0.769230769231, dx 2.81407035176, dy 2.81407035176
-170729-10:17:28|astrometry:1968:register|INFO&gt; histogram check: correlation level 25.0, angle -0.461538461538, dx 2.81407035176, dy 2.81407035176
-170729-10:17:31|astrometry:1968:register|INFO&gt; histogram check: correlation level 15.0, angle -0.153846153846, dx 2.81407035176, dy 2.81407035176
-170729-10:17:34|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 0.153846153846, dx 2.81407035176, dy 2.81407035176
-170729-10:17:37|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 0.461538461538, dx 2.81407035176, dy 2.81407035176
-170729-10:17:40|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 0.769230769231, dx 2.81407035176, dy 2.81407035176
-170729-10:17:43|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 1.07692307692, dx -287.59798995, dy 521.407035176
-170729-10:17:46|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 1.38461538462, dx 303.59798995, dy -214.994974874
-170729-10:17:49|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 1.69230769231, dx -671.35678392, dy -121.648241206
-170729-10:17:52|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 2.0, dx -163.135678392, dy -100.904522613
-170729-10:17:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 2.30769230769, dx 262.110552764, dy -370.572864322
-170729-10:17:58|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 2.61538461538, dx 251.738693467, dy 552.522613065
-170729-10:18:01|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 2.92307692308, dx 313.969849246, dy -204.623115578
-170729-10:18:04|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 3.23076923077, dx -38.6733668342, dy 13.1859296482
-170729-10:18:07|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 3.53846153846, dx -339.457286432, dy 96.1608040201
-170729-10:18:11|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 3.84615384615, dx 313.969849246, dy 168.763819095
-170729-10:18:14|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.15384615385, dx -297.969849246, dy -401.688442211
-170729-10:18:17|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.46153846154, dx 241.366834171, dy 376.201005025
-170729-10:18:20|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 4.76923076923, dx 241.366834171, dy 376.201005025
-170729-10:18:23|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 5.07692307692, dx -422.432160804, dy 386.572864322
-170729-10:18:26|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 5.38461538462, dx -412.060301508, dy 241.366834171
-170729-10:18:29|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 5.69230769231, dx -163.135678392, dy 531.778894472
-170729-10:18:32|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 6.0, dx -163.135678392, dy 531.778894472
-170729-10:18:32|astrometry:1988:register|INFO&gt; Histogram guess of the parameters:
-&gt; Rotation angle [in degree]: -1.077
-&gt; Target position [in pixel]: (1038.814, 1034.814)
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Brute force range:
-X = -20.64:20.64:2.17
-Y = -20.64:20.64:2.17
-R = -2.40:2.40:0.12
-Init of the parallel processing server with 4 threads
-Brute force guess:
-dx = 1.08631578947
-dy = -1.08631578947
-dr = -2.15384615385
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:18:59|astrometry:2032:register|INFO&gt; Checking with zoom 0.9925: dx=-1.37071393014, dy=1.37071393014, dr=-2.1694255112, score=858924.759689
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:03|astrometry:2032:register|INFO&gt; Checking with zoom 0.993289473684: dx=-1.37071393014, dy=1.37071393014, dr=-2.1694255112, score=906678.819141
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:07|astrometry:2032:register|INFO&gt; Checking with zoom 0.994078947368: dx=1.08631578947, dy=-1.08631578947, dr=-2.25043816943, score=1035672.75131
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:12|astrometry:2032:register|INFO&gt; Checking with zoom 0.994868421053: dx=1.08631578947, dy=-1.08631578947, dr=-2.20681596884, score=1185465.95767
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:16|astrometry:2032:register|INFO&gt; Checking with zoom 0.995657894737: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1288436.12191
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:20|astrometry:2032:register|INFO&gt; Checking with zoom 0.996447368421: dx=1.08631578947, dy=-1.08631578947, dr=-2.20681596884, score=1448202.77324
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:25|astrometry:2032:register|INFO&gt; Checking with zoom 0.997236842105: dx=1.08631578947, dy=-1.08631578947, dr=-2.22551119766, score=1467212.53822
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:29|astrometry:2032:register|INFO&gt; Checking with zoom 0.998026315789: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1555660.40271
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:33|astrometry:2032:register|INFO&gt; Checking with zoom 0.998815789474: dx=1.08631578947, dy=-1.08631578947, dr=-2.22551119766, score=1619617.22804
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:38|astrometry:2032:register|INFO&gt; Checking with zoom 0.999605263158: dx=1.08631578947, dy=-1.08631578947, dr=-2.20681596884, score=1568369.3327
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:42|astrometry:2032:register|INFO&gt; Checking with zoom 1.00039473684: dx=1.08631578947, dy=-1.08631578947, dr=-2.21304771178, score=1553290.65515
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:46|astrometry:2032:register|INFO&gt; Checking with zoom 1.00118421053: dx=1.08631578947, dy=-1.08631578947, dr=-2.22551119766, score=1453944.01287
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:51|astrometry:2032:register|INFO&gt; Checking with zoom 1.00197368421: dx=1.08631578947, dy=-1.08631578947, dr=-2.21927945472, score=1376873.31798
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:19:55|astrometry:2032:register|INFO&gt; Checking with zoom 1.00276315789: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1258182.0462
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:00|astrometry:2032:register|INFO&gt; Checking with zoom 1.00355263158: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=1130281.8256
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:04|astrometry:2032:register|INFO&gt; Checking with zoom 1.00434210526: dx=1.08631578947, dy=-1.08631578947, dr=-2.21927945472, score=1034159.94595
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:09|astrometry:2032:register|INFO&gt; Checking with zoom 1.00513157895: dx=1.08631578947, dy=-1.08631578947, dr=-2.17565725414, score=886712.812047
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:13|astrometry:2032:register|INFO&gt; Checking with zoom 1.00592105263: dx=1.08631578947, dy=-1.08631578947, dr=-2.2005842259, score=821874.226597
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:18|astrometry:2032:register|INFO&gt; Checking with zoom 1.00671052632: dx=1.08631578947, dy=-1.08631578947, dr=-2.28782862707, score=687177.96354
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:22|astrometry:2032:register|INFO&gt; Checking with zoom 1.0075: dx=1.08631578947, dy=-1.08631578947, dr=-2.17565725414, score=610834.60082
-170729-10:20:22|astrometry:2052:register|INFO&gt; Brute force guess of the parameters:
-&gt; Rotation angle [in degree]: 1.149
-&gt; Target position [in pixel]: (1037.728, 1035.900)
-&gt; Scale X (arcsec/pixel): 0.32335
-&gt; Scale Y (arcsec/pixel): 0.32335
-170729-10:20:22|astrometry:2079:register|INFO&gt; Computing SIP coefficients
-<span class="ansi-yellow-fg">170729-10:20:22|astrometry:2081:register|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2081: UserWarning: As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:2034: UserWarning: CD_ij based WCS is not recommended. Please prefer a PC_ij representation.
+  warnings.warn(&#39;CD_ij based WCS is not recommended. Please prefer a PC_ij representation.&#39;)
+/home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2085: UserWarning: As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class
   warnings.warn(&#39;As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class&#39;)
-</span>
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -888,37 +468,29 @@ Init of the parallel processing server with 4 threads
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">170729-10:20:23|astrometry:579:fit_star|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:579: UserWarning: fit_star leastsq exception: Improper input: N=3 must not exceed M=0
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:580: UserWarning: fit_star leastsq exception: Improper input: N=3 must not exceed M=0
   warnings.warn(&#39;fit_star leastsq exception: {}&#39;.format(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:28|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 20 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 3 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 10 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 8 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 14 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:29|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 12 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
-<span class="ansi-yellow-fg">170729-10:20:30|astrometry:1860:diff|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1860: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
 After 11 iterations, the solution is diverging at least for one input point.
   warnings.warn(str(e))
-</span>
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -926,23 +498,6 @@ After 11 iterations, the solution is diverging at least for one input point.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Optimized average radius for direct transformation (in pixel) 2.87948923016
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:20:39|astrometry:2132:register|INFO&gt; Computing distortion maps
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Optimized average radius for reverse transformation (in pixel) 1.54421285883e-07
 
 </pre></div></div>
 </div>
@@ -951,41 +506,21 @@ Optimized average radius for reverse transformation (in pixel) 1.54421285883e-07
 </div>
 <div class="stderr output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">170729-10:20:45|astrometry:2159:register|WARNING&gt; /home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2159: RuntimeWarning: invalid value encountered in greater
+/home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2163: RuntimeWarning: invalid value encountered in greater
   _x[np.nonzero(_r &gt; rmax)] = np.nan
-</span>
-170729-10:20:57|astrometry:2217:register|INFO&gt; Computing astrometrical precision
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Standard deviation of the residual: 1.71037516194
-Median relative error (err/val)): 47.54%
-Standard deviation of the residual: 1.70853839412
-Median relative error (err/val)): 44.08%
-
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-170729-10:21:03|astrometry:2291:register|INFO&gt; Astrometrical precision [in arcsec]: 0.446 [+/-0.199] computed over 1626 stars
-170729-10:21:03|astrometry:2317:register|INFO&gt; Optimization parameters:
-&gt; Rotation angle [in degree]: 1.149
-&gt; Target position [in pixel]: (1037.728, 1035.900)
-&gt; Scale X (arcsec/pixel): 0.32335
-&gt; Scale Y (arcsec/pixel): 0.32335
-170729-10:21:03|astrometry:2321:register|INFO&gt; Corrected WCS computed
+
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [3]:
+<span></span>In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -993,17 +528,9 @@ Median relative error (err/val)): 44.08%
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Data written as M1-71.deep_frame.wcs.init.fits in 0.22 s
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[3]:
+<span></span>Out[6]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -1018,7 +545,7 @@ Data written as M1-71.deep_frame.wcs.init.fits in 0.22 s
 whole field of view can be considered.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [4]:
+<span></span>In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1032,16 +559,6 @@ whole field of view can be considered.</p>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-yellow-fg">170729-10:21:04|wcs:2729:__repr__|WARNING&gt; /usr/local/lib/python2.7/dist-packages/astropy/wcs/wcs.py:2729: RuntimeWarning: cdelt will be ignored since cd is present
-  description.append(s.format(*self.wcs.cdelt))
-</span>
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -1059,9 +576,18 @@ NAXIS : 0  0
 1.14858812074
 </pre></div></div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/home/thomas/.virtualenvs/orb/local/lib/python2.7/site-packages/astropy/wcs/wcs.py:2729: RuntimeWarning: cdelt will be ignored since cd is present
+  description.append(s.format(*self.wcs.cdelt))
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [5]:
+<span></span>In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1072,519 +598,20 @@ NAXIS : 0  0
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:21:04|astrometry:1875:register|INFO&gt; Computing WCS
-170729-10:21:04|astrometry:1877:register|INFO&gt; Initial scale: 0.32373046875 arcsec/pixel
-170729-10:21:04|astrometry:1878:register|INFO&gt; Initial rotation: 1.14858812074 degrees
-170729-10:21:04|astrometry:1880:register|INFO&gt; Initial target position in the image (X,Y): 1037.72775456 1035.90038614
-170729-10:21:04|core:1029:_get_tuning_parameter|INFO&gt; looking for tuning parameter: Astrometry.detect_stars.PRE_DETECT_COEFF
-170729-10:21:04|astrometry:1476:detect_stars|INFO&gt; Detecting stars
-170729-10:21:04|astrometry:1483:detect_stars|INFO&gt; Filtering master image
-170729-10:21:06|astrometry:1486:detect_stars|INFO&gt; Master image filtered in 1.91952419281 s
-170729-10:21:06|astrometry:1491:detect_stars|INFO&gt; Stars preselection
-170729-10:21:11|astrometry:1531:detect_stars|INFO&gt; Bad stars rejection based on fitting
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
- [==========] [100%] [completed in 3.46 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:21:14|astrometry:1570:detect_stars|INFO&gt; Fit check
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:21:14|astrometry:1614:detect_stars|INFO&gt; 60 stars detected
-170729-10:21:14|astrometry:1616:detect_stars|INFO&gt; Detected stars FWHM : 3.276040 pixels, 1.060554 arc-seconds
-170729-10:21:14|astrometry:1619:detect_stars|INFO&gt; SNR Min: 5.2e+01, Max:5.3e+02, Median:1.3e+02
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Star list of 60 stars loaded
-Sending query to VizieR server (catalog: gaia)
-Looking for stars at RA: 294.112073 DEC: 19.706786
-8523 stars recorded in the given field
-Magnitude min: 9.578, max:21.217
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:21:21|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -6.0, dx 148.020100503, dy -225.366834171
-170729-10:21:24|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.69230769231, dx -474.291457286, dy 583.638190955
-170729-10:21:27|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.38461538462, dx -598.753768844, dy 116.904522613
-170729-10:21:30|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle -5.07692307692, dx -422.432160804, dy -204.623115578
-170729-10:21:33|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.76923076923, dx -526.150753769, dy 2.81407035176
-170729-10:21:37|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.46153846154, dx 313.969849246, dy -546.894472362
-170729-10:21:40|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -4.15384615385, dx 511.035175879, dy 272.48241206
-170729-10:21:43|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.84615384615, dx 521.407035176, dy 272.48241206
-170729-10:21:46|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -3.53846153846, dx -69.7889447236, dy -308.341708543
-170729-10:21:49|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -3.23076923077, dx 189.507537688, dy -370.572864322
-170729-10:21:52|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -2.92307692308, dx -235.738693467, dy -277.226130653
-170729-10:21:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -2.61538461538, dx -49.0452261307, dy -225.366834171
-170729-10:21:59|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -2.30769230769, dx -412.060301508, dy -308.341708543
-170729-10:22:02|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle -2.0, dx -17.9296482412, dy -7.55778894472
-170729-10:22:05|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle -1.69230769231, dx -7.55778894472, dy 13.1859296482
-170729-10:22:08|astrometry:1968:register|INFO&gt; histogram check: correlation level 11.0, angle -1.38461538462, dx -7.55778894472, dy -7.55778894472
-170729-10:22:11|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle -1.07692307692, dx -7.55778894472, dy -7.55778894472
-170729-10:22:14|astrometry:1968:register|INFO&gt; histogram check: correlation level 18.0, angle -0.769230769231, dx 2.81407035176, dy 2.81407035176
-170729-10:22:18|astrometry:1968:register|INFO&gt; histogram check: correlation level 28.0, angle -0.461538461538, dx 2.81407035176, dy 2.81407035176
-170729-10:22:21|astrometry:1968:register|INFO&gt; histogram check: correlation level 39.0, angle -0.153846153846, dx 2.81407035176, dy 2.81407035176
-170729-10:22:24|astrometry:1968:register|INFO&gt; histogram check: correlation level 39.0, angle 0.153846153846, dx 2.81407035176, dy 2.81407035176
-170729-10:22:27|astrometry:1968:register|INFO&gt; histogram check: correlation level 28.0, angle 0.461538461538, dx 2.81407035176, dy 2.81407035176
-170729-10:22:30|astrometry:1968:register|INFO&gt; histogram check: correlation level 18.0, angle 0.769230769231, dx 2.81407035176, dy 2.81407035176
-170729-10:22:33|astrometry:1968:register|INFO&gt; histogram check: correlation level 12.0, angle 1.07692307692, dx 13.1859296482, dy 2.81407035176
-170729-10:22:36|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 1.38461538462, dx 13.1859296482, dy 2.81407035176
-170729-10:22:40|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 1.69230769231, dx 96.1608040201, dy 386.572864322
-170729-10:22:43|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 2.0, dx -132.020100503, dy 552.522613065
-170729-10:22:46|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 2.30769230769, dx -671.35678392, dy -121.648241206
-170729-10:22:49|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 2.61538461538, dx -671.35678392, dy -121.648241206
-170729-10:22:52|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 2.92307692308, dx -163.135678392, dy 293.226130653
-170729-10:22:55|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 3.23076923077, dx -225.366834171, dy -152.763819095
-170729-10:22:58|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 3.53846153846, dx -256.48241206, dy -80.1608040201
-170729-10:23:01|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 3.84615384615, dx 313.969849246, dy 158.391959799
-170729-10:23:04|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.15384615385, dx 313.969849246, dy -204.623115578
-170729-10:23:07|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 4.46153846154, dx 272.48241206, dy -370.572864322
-170729-10:23:10|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 4.76923076923, dx 54.6733668342, dy 521.407035176
-170729-10:23:13|astrometry:1968:register|INFO&gt; histogram check: correlation level 8.0, angle 5.07692307692, dx 13.1859296482, dy -17.9296482412
-170729-10:23:16|astrometry:1968:register|INFO&gt; histogram check: correlation level 7.0, angle 5.38461538462, dx -318.713567839, dy -246.110552764
-170729-10:23:19|astrometry:1968:register|INFO&gt; histogram check: correlation level 9.0, angle 5.69230769231, dx -163.135678392, dy -858.050251256
-170729-10:23:22|astrometry:1968:register|INFO&gt; histogram check: correlation level 10.0, angle 6.0, dx 96.1608040201, dy 148.020100503
-170729-10:23:22|astrometry:1988:register|INFO&gt; Histogram guess of the parameters:
-&gt; Rotation angle [in degree]: -0.154
-&gt; Target position [in pixel]: (1040.542, 1038.714)
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Brute force range:
-X = -20.64:20.64:2.17
-Y = -20.64:20.64:2.17
-R = -2.40:2.40:0.12
-Init of the parallel processing server with 4 threads
-Brute force guess:
-dx = 1.08631578947
-dy = 3.25894736842
-dr = -1.29230769231
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:23:56|astrometry:2032:register|INFO&gt; Checking with zoom 0.9925: dx=-1.37071393014, dy=5.71597708803, dr=-1.16455696203, score=612193.994701
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:01|astrometry:2032:register|INFO&gt; Checking with zoom 0.993289473684: dx=-1.37071393014, dy=5.71597708803, dr=-1.13962999026, score=687707.631323
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:06|astrometry:2032:register|INFO&gt; Checking with zoom 0.994078947368: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=847397.982554
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:11|astrometry:2032:register|INFO&gt; Checking with zoom 0.994868421053: dx=1.08631578947, dy=3.25894736842, dr=-1.27672833496, score=1003268.35827
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:17|astrometry:2032:register|INFO&gt; Checking with zoom 0.995657894737: dx=1.08631578947, dy=3.25894736842, dr=-1.28919182084, score=1187839.46266
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:22|astrometry:2032:register|INFO&gt; Checking with zoom 0.996447368421: dx=1.08631578947, dy=3.25894736842, dr=-1.3141187926, score=1340898.77933
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:27|astrometry:2032:register|INFO&gt; Checking with zoom 0.997236842105: dx=1.08631578947, dy=3.25894736842, dr=-1.27672833496, score=1499846.95769
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:32|astrometry:2032:register|INFO&gt; Checking with zoom 0.998026315789: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=1606385.43482
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:37|astrometry:2032:register|INFO&gt; Checking with zoom 0.998815789474: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=1725315.96525
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:42|astrometry:2032:register|INFO&gt; Checking with zoom 0.999605263158: dx=1.08631578947, dy=3.25894736842, dr=-1.2829600779, score=1755936.31639
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:47|astrometry:2032:register|INFO&gt; Checking with zoom 1.00039473684: dx=1.08631578947, dy=3.25894736842, dr=-1.25180136319, score=1779163.1384
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:52|astrometry:2032:register|INFO&gt; Checking with zoom 1.00118421053: dx=1.08631578947, dy=3.25894736842, dr=-1.30165530672, score=1759394.47143
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:24:57|astrometry:2032:register|INFO&gt; Checking with zoom 1.00197368421: dx=1.08631578947, dy=3.25894736842, dr=-1.32658227848, score=1735133.17176
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:03|astrometry:2032:register|INFO&gt; Checking with zoom 1.00276315789: dx=1.08631578947, dy=3.25894736842, dr=-1.29542356378, score=1616301.53868
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:08|astrometry:2032:register|INFO&gt; Checking with zoom 1.00355263158: dx=1.08631578947, dy=3.25894736842, dr=-1.30788704966, score=1525970.41357
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:13|astrometry:2032:register|INFO&gt; Checking with zoom 1.00434210526: dx=1.08631578947, dy=3.25894736842, dr=-1.30165530672, score=1302438.05509
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:19|astrometry:2032:register|INFO&gt; Checking with zoom 1.00513157895: dx=1.08631578947, dy=3.25894736842, dr=-1.27049659202, score=1133583.95829
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:24|astrometry:2032:register|INFO&gt; Checking with zoom 1.00592105263: dx=1.08631578947, dy=3.25894736842, dr=-1.27672833496, score=951431.285256
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:29|astrometry:2032:register|INFO&gt; Checking with zoom 1.00671052632: dx=3.54334550909, dy=3.25894736842, dr=-1.21441090555, score=827734.505597
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:25:34|astrometry:2032:register|INFO&gt; Checking with zoom 1.0075: dx=3.54334550909, dy=3.25894736842, dr=-1.27672833496, score=708478.076106
-170729-10:25:34|astrometry:2052:register|INFO&gt; Brute force guess of the parameters:
-&gt; Rotation angle [in degree]: 1.098
-&gt; Target position [in pixel]: (1039.456, 1035.456)
-&gt; Scale X (arcsec/pixel): 0.32386
-&gt; Scale Y (arcsec/pixel): 0.32386
-170729-10:25:34|astrometry:2079:register|INFO&gt; Computing SIP coefficients
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-Optimized average radius for direct transformation (in pixel) 3.10729317092
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:26:04|astrometry:2132:register|INFO&gt; Computing distortion maps
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Optimized average radius for reverse transformation (in pixel) 1.52684951295e-08
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-170729-10:26:21|astrometry:2217:register|INFO&gt; Computing astrometrical precision
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Standard deviation of the residual: 1.4572560119
-Median relative error (err/val)): 37.59%
-Standard deviation of the residual: 1.56875749803
-Median relative error (err/val)): 46.56%
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-170729-10:26:27|astrometry:2291:register|INFO&gt; Astrometrical precision [in arcsec]: 0.428 [+/-0.203] computed over 1617 stars
-170729-10:26:27|astrometry:2317:register|INFO&gt; Optimization parameters:
-&gt; Rotation angle [in degree]: 1.098
-&gt; Target position [in pixel]: (1039.456, 1035.456)
-&gt; Scale X (arcsec/pixel): 0.32386
-&gt; Scale Y (arcsec/pixel): 0.32386
-170729-10:26:27|astrometry:2321:register|INFO&gt; Corrected WCS computed
+ [==========] [100%] [completed in 2.97 s]
+
+
+
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<span></span>In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1594,19 +621,9 @@ Median relative error (err/val)): 46.56%
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Data written as M1-71.deep_frame.wcs.best.fits in 0.07 s
-Data written as M1-71.wcs.dxmap.fits in 0.01 s
-Data written as M1-71.wcs.dymap.fits in 0.01 s
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[6]:
+<span></span>Out[9]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
@@ -1620,9 +637,9 @@ Data written as M1-71.wcs.dymap.fits in 0.01 s
 <p>You might want to check the quality of the calibration by choosing a
 catalog and plot the positions of the stars with the wcs only and with
 the micro-shifting maps (dxmap, dymap).</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [11]:
+<span></span>In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1638,22 +655,11 @@ the micro-shifting maps (dxmap, dymap).</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Sending query to VizieR server (catalog: gaia)
-Looking for stars at RA: 294.112073 DEC: 19.706786
-11226 stars recorded in the given field
-Magnitude min: 9.578, max:21.282
-</pre></div></div>
-</div>
 <div class="section" id="Only-the-WCS-(SIP-but-no-dx/dy-maps)">
 <h3>Only the WCS (SIP but no dx/dy maps)<a class="headerlink" href="#Only-the-WCS-(SIP-but-no-dx/dy-maps)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1672,7 +678,7 @@ Magnitude min: 9.578, max:21.282
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1690,7 +696,7 @@ Magnitude min: 9.578, max:21.282
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [28]:
+<span></span>In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1714,12 +720,21 @@ Magnitude min: 9.578, max:21.282
 </div>
 </div>
 <div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/home/thomas/.virtualenvs/orb/local/lib/python2.7/site-packages/matplotlib/cbook/deprecation.py:106: MatplotlibDeprecationWarning: Adding an axes using the same arguments as a previous axes currently reuses the earlier instance.  In a future version, a new instance will always be created and returned.  Meanwhile, this warning can be suppressed, and the future behavior ensured, by passing a unique label to each axes instance.
+  warnings.warn(message, mplDeprecation, stacklevel=1)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[28]:
+<span></span>Out[13]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.collections.PathCollection at 0x7f82f050ff10&gt;
+<span></span>&lt;matplotlib.collections.PathCollection at 0x7fe8d0c67090&gt;
 </pre></div>
 </div>
 </div>
@@ -1727,7 +742,7 @@ Magnitude min: 9.578, max:21.282
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_image_registration_14_1.png" src="_images/script_example_image_registration_14_1.png" />
+<img alt="_images/script_example_image_registration_14_2.png" src="_images/script_example_image_registration_14_2.png" />
 </div>
 </div>
 </div>
@@ -1739,7 +754,7 @@ Micro-shifting maps (<code class="docutils literal"><span class="pre">dxmap</spa
 a really good precision on the astrometry.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [22]:
+<span></span>In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1752,7 +767,7 @@ a really good precision on the astrometry.</p>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [27]:
+<span></span>In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1778,11 +793,11 @@ a really good precision on the astrometry.</p>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[27]:
+<span></span>Out[15]:
 </pre></div>
 </div>
 <div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.collections.PathCollection at 0x7f82f0576550&gt;
+<span></span>&lt;matplotlib.collections.PathCollection at 0x7fe8d06deb10&gt;
 </pre></div>
 </div>
 </div>
@@ -1841,7 +856,7 @@ a really good precision on the astrometry.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.2.4',
+            VERSION:'2.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
