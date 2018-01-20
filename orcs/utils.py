@@ -69,8 +69,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     if debug:
         import orb.utils.log
         orb.utils.log.setup_socket_logging()
-        
-    
+            
     # check snr guess param
     auto_mode = False
     bad_snr_param = False
@@ -141,10 +140,11 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
 
     if auto_mode and _fit != []:
         snr_guess = np.nanmax(gvar.mean(spectrum)) / np.nanstd(gvar.mean(spectrum) - _fit['fitted_vector'])
-        return fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
-                                     theta_orig, snr_guess=snr_guess,
-                                     max_iter=max_iter,
-                                     **kwargs_orig)
+        return fit_lines_in_spectrum(
+            params, inputparams, fit_tol, spectrum,
+            theta_orig, snr_guess=snr_guess,
+            max_iter=max_iter,
+            **kwargs_orig)
     else:
         return _fit
 
