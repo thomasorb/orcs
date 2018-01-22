@@ -45,7 +45,6 @@ import time
 import gvar
 import warnings
 import copy
-import multiprocessing
 
 # import ORB
 import orb.core
@@ -92,6 +91,9 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('fov', float(self._get_config_parameter('FIELD_OF_VIEW_1')))
         self.set_param('init_wcs_rotation', float(self._get_config_parameter('INIT_ANGLE')))
 
+        js, ncpus = self._init_pp_server(silent=True)
+        self._close_pp_server(js)
+        self.set_param('ncpus', int(ncpus))
 
         self.fit_tol = FIT_TOL
 
@@ -281,7 +283,7 @@ class HDFCube(orb.core.HDFCube):
             parallel_extraction = True
             #It takes roughly ncpus/4 s to initiate the parallel server
             #The non-parallel algo runs at ~400 pixel/s
-            ncpus = multiprocessing.cpu_count()
+            ncpus = self.params['ncpus']
             if ncpus/4. > np.sum(mask)/400.:
                 parallel_extraction = False
             for iquad in range(0, QUAD_NB):
