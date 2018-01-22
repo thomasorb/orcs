@@ -284,7 +284,8 @@ class HDFCube(orb.core.HDFCube):
                     x_min, x_max, y_min, y_max = self.get_quadrant_dims(iquad)
 
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max,
-                                           0, self.dimz, silent=silent)
+                                           0, self.dimz, silent=silent).reshape(
+                                               (x_max-x_min, y_max-y_min, self.dimz))
 
                 # multi-processing server init
                 job_server, ncpus = self._init_pp_server(silent=silent)
@@ -429,7 +430,7 @@ class HDFCube(orb.core.HDFCube):
           Each fitted parameter is associated an uncertainty (``*_err``
           maps) given in the same unit.
 
-        """        
+        """
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
                                theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
                                flux_sdev_ij, debug, max_iter, mapped_kwargs):
@@ -474,16 +475,16 @@ class HDFCube(orb.core.HDFCube):
                         newentry.append(mapped_kwargs.pop(key))
                         fmapped_kwargs[rkey] = newentry
             mapped_kwargs = fmapped_kwargs
-        
-            
+
+
             logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
-            
+
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
                     snr_guess=snr_guess, max_iter=max_iter, debug=debug,
                     **mapped_kwargs)
-                
+
             except Exception, e:
                 logging.debug('Exception occured during fit: {}'.format(e))
                 ifit = []
@@ -550,7 +551,7 @@ class HDFCube(orb.core.HDFCube):
             data_prefix=self._data_prefix,
             ncpus=self.ncpus)
 
-        
+
         # check subtract spectrum
         if np.all(subtract_spectrum == 0.): subtract_spectrum = None
 
@@ -671,7 +672,7 @@ class HDFCube(orb.core.HDFCube):
 
         if not hasattr(self, 'inputparams'):
             raise StandardError('Input params not defined')
-      
+
         cjs = CubeJobServer(self)
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
@@ -1167,7 +1168,7 @@ class HDFCube(orb.core.HDFCube):
             return_mean_theta=True, return_gvar=True)
 
         self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
-    
+
         fit_res = self._fit_lines_in_spectrum(
             spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
 
@@ -1288,11 +1289,11 @@ class HDFCube(orb.core.HDFCube):
                 vmaps = kwargs.pop(key)
                 if not isinstance(vmaps, tuple) and not isinstance(vmaps, list):
                     vmaps = list([vmaps])
-        
+
                 for i in range(len(vmaps)):
                     ivmap = vmaps[i]
                     if isinstance(ivmap, str):
-                        ivmap = self.read_fits(ivmap)                    
+                        ivmap = self.read_fits(ivmap)
                     elif not isinstance(ivmap, np.ndarray):
                         raise TypeError('parameter map {} must be a path to a fits file or a numpy.ndarray instance'.format(key))
                     if ivmap.ndim != 2:
@@ -1315,10 +1316,10 @@ class HDFCube(orb.core.HDFCube):
                     ivmap[np.isnan(ivmap)] = kwargs[rkey]
                     ivmap[np.isinf(ivmap)] = kwargs[rkey]
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
-                
+
         self._prepare_input_params(
             lines, nofilter=nofilter, **kwargs)
-        
+
         self._fit_lines_in_region(
             region, subtract_spectrum=subtract_spectrum,
             binning=binning, snr_guess=snr_guess,
@@ -1705,7 +1706,7 @@ class HDFCube(orb.core.HDFCube):
     def get_radial_velocity_correction(self, kind='heliocentric', date=None):
         """Return heliocentric or barycentric velocity correction to apply on
            the observed target in km/s
-        
+
         :param kind: (Optional) 'heliocentric' or 'barycentric'
           (default 'heliocentric').
 
@@ -1731,10 +1732,10 @@ class HDFCube(orb.core.HDFCube):
         obslat = astropy.coordinates.Latitude(self.config.OBS_LAT, unit=astropy.units.deg)
         obslon = astropy.coordinates.Longitude(self.config.OBS_LON, unit=astropy.units.deg)
         obsalt = self.config.OBS_ALT * astropy.units.meter
-        
+
         location = astropy.coordinates.EarthLocation.from_geodetic(
             lat=obslat, lon=obslon, height=obsalt)
-        
+
         sc = astropy.coordinates.SkyCoord(
             ra=self.params.target_ra * astropy.units.deg,
             dec=self.params.target_dec * astropy.units.deg)
@@ -1774,7 +1775,7 @@ class CubeJobServer(object):
 
 
     GET_DATA_TIMEOUT = 10 # timeout to get a data vector in s
-    
+
     def __init__(self, cube):
         """
         Init class
@@ -1951,7 +1952,7 @@ class CubeJobServer(object):
             out_line = list()
             for i in range(iline_data.shape[0]):
                 iargs_list = list()
-                
+
                 # remap arguments
                 for iarg in args[2:]:
                     try:
@@ -1975,7 +1976,7 @@ class CubeJobServer(object):
                     logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
                 iargs_list.append(ikwargs)
                 try:
-                    out_line.append(_func(iline_data[i,:], *iargs_list))                    
+                    out_line.append(_func(iline_data[i,:], *iargs_list))
                 except Exception, e:
                     out_line.append(None)
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
@@ -2016,23 +2017,23 @@ class CubeJobServer(object):
                 raise TypeError('out must be at least a 2d numpy.ndarray')
             elif (out.shape[0], out.shape[1]) != (int(self.cube.dimx), int(self.cube.dimy)):
                 raise TypeError('out.shape must be {}'.format((self.cube.dimx, self.cube.dimy)))
-            
+
         # check mask
         if not mask is None:
             orb.utils.validate.is_2darray(mask, object_name='mask')
             if mask.shape != (self.cube.dimx, self.cube.dimy):
                 raise TypeError('mask.shape must be {}'.format((self.cube.dimx, self.cube.dimy)))
-        
+
         else:
             mask = np.ones((self.cube.dimx, self.cube.dimy), dtype=bool)
 
         if binning > 1:
             if not isbinned(mask):
                 mask = orb.utils.image.nanbin_image(mask, int(binning))
-                
+
         mask[np.nonzero(mask)] = 1
         mask = mask.astype(bool)
-                
+
 
         # add kwargs to args
         kwargs_keys = kwargs.keys()
@@ -2041,7 +2042,7 @@ class CubeJobServer(object):
         args.append(kwargs_keys)
         logging.info('passed mapped kwargs : {}'.format(kwargs_keys))
 
-        
+
         # check arguments
         # reshape passed arguments
         for i in range(len(args)):
@@ -2091,17 +2092,17 @@ class CubeJobServer(object):
                     return True
             return False
 
-        progress = orb.core.ProgressBar(all_jobs_nb)        
+        progress = orb.core.ProgressBar(all_jobs_nb)
         while len(self.all_jobs_indexes) > 0 or len(self.jobs) > 0:
             if check_timesup(): break
 
-            
+
             # submit jobs
             while len(self.jobs) < self.ncpus and len(self.all_jobs_indexes) > 0:
                 if check_timesup(): break
-                
+
                 timesup = check_timesup()
-                
+
                 timer = dict()
                 timer['job_submit_start'] = time.time()
 
@@ -2111,8 +2112,8 @@ class CubeJobServer(object):
 
                 # raw lines extraction (warning: velocity must be
                 # corrected by the function itself)
-                
-                
+
+
                 outdict = orb.utils.parallel.timed_process(
                     get_data, self.GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
                 if 'iline' in outdict:
@@ -2207,7 +2208,7 @@ class CubeJobServer(object):
                             out[ix[irow], iy[irow], ...] = res
                     logging.debug('job {} time (whole loop): {} s'.format(
                         ijob_index, time.time() - stime))
-                    
+
                 elif timeout is not None:
                     _job_elapsed_time_by_pixel = (time.time() - stime) / np.size(ix)
                     if _job_elapsed_time_by_pixel < timeout:
@@ -2411,7 +2412,7 @@ class LineMaps(orb.core.Tools):
     ##         all_ok = True
     ##         for param in self.lineparams:
     ##             if not os.path.exists(self._get_map_path(
-    ##                 None, param, binning)): # check *.all.* map                    
+    ##                 None, param, binning)): # check *.all.* map
     ##                 for line_name in self.line_names:
     ##                     ## if binning == 30:
     ##                     ##     print self._get_map_path(
