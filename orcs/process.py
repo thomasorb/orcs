@@ -128,8 +128,9 @@ class SpectralCube(HDFCube):
     def map_sky_velocity(self, mean_sky_vel, div_nb=20, plot=True,
                          x_range=None, y_range=None,
                          exclude_reg_file_path=None,
-                         no_fit=False, threshold=None):
-        """Map the sky velocity on rectangular grid and interpolate it
+                         no_fit=False, threshold=None,
+                         sky_lines=None):
+        """Map the sky velocity on a rectangular grid and interpolate it
         to return a map of the velocity zero point that can be
         subtracted to the returned velocity map of the cube fit.
 
@@ -217,7 +218,11 @@ class SpectralCube(HDFCube):
 
             logging.info('{} regions to fit'.format(len(regions)))
 
-            sky_lines = self.get_sky_lines()
+            if sky_lines is None:
+                sky_lines = self.get_sky_lines()
+            else:
+                orb.utils.validate.is_iterable(sky_lines, object_name='sky_lines')
+
             logging.info('{} sky lines to fit'.format(len(sky_lines)))
             
             self._prepare_input_params(sky_lines, fmodel='sinc',
