@@ -474,7 +474,8 @@ class HDFCube(orb.core.HDFCube):
         """
         def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
                                theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
-                               flux_sdev_ij, debug, max_iter, mapped_kwargs):
+                               flux_sdev_ij, debug, max_iter, subtract_spectrum, binning,
+                               mapped_kwargs):
 
             import orb.utils.spectrum
             stime = time.time()
@@ -487,6 +488,9 @@ class HDFCube(orb.core.HDFCube):
             # correct spectrum for nans
             spectrum[np.isnan(spectrum)] = 0.
 
+            # subtract spectrum
+            if subtract_spectrum is not None:
+                spectrum -= subtract_spectrum * binning ** 2.
 
             # correct spectrum for sky velocity
             if calib_coeff_ij != params['axis_corr']:
@@ -594,7 +598,9 @@ class HDFCube(orb.core.HDFCube):
 
 
         # check subtract spectrum
-        if np.all(subtract_spectrum == 0.): subtract_spectrum = None
+        if subtract_spectrum is not None:
+            orb.utils.validate.is_1darray(subtract_spectrum, object_name='subtract_spectrum')
+            if np.all(subtract_spectrum == 0.): subtract_spectrum = None
 
         mask = np.zeros((self.dimx, self.dimy), dtype=bool)
         mask[region] = True
@@ -632,14 +638,16 @@ class HDFCube(orb.core.HDFCube):
                                          self.fit_tol,
                                          theta_map, snr_guess, sky_velocity_map,
                                          calibration_coeff_map,
-                                         flux_uncertainty, self.debug, max_iter],
+                                         flux_uncertainty, self.debug, max_iter,
+                                         subtract_spectrum, binning],
                                    kwargs=mapped_kwargs,
                                    modules=['numpy as np', 'gvar', 'orcs.utils',
                                             'logging', 'warnings', 'time',
                                             'import orb.utils.spectrum',
                                             'import orb.utils.vector'],
                                    mask=mask,
-                                   binning=binning, timeout=timeout)
+                                   binning=binning,
+                                   timeout=timeout)
 
         for key in out:
             linemaps.set_map(key, out[key],
@@ -2024,11 +2032,11 @@ class CubeJobServer(object):
 
             return out_line
 
-        def get_data(cube, ix, iy, binning, outdict):
-            outdict['iline'] = cube.get_data(
-                min(ix) * binning, (max(ix) + 1) * binning,
-                iy[0] * binning, (iy[0] + 1) * binning,
-                0, cube.dimz, silent=True)
+        # def get_data(cube, ix, iy, binning, outdict):
+        #     outdict['iline'] = cube.get_data(
+        #         min(ix) * binning, (max(ix) + 1) * binning,
+        #         iy[0] * binning, (iy[0] + 1) * binning,
+        #         0, cube.dimz, silent=True)
 
         ## function must be serialized (or picked)
         func = marshal.dumps(func.func_code)
@@ -2097,13 +2105,15 @@ class CubeJobServer(object):
                 shape = None
 
             if shape is not None:
-                if not isbinned(new_arg) and new_arg.ndim == 2:
-                    new_arg = orb.utils.image.nanbin_image(new_arg, int(binning))
-                    is_map = True
-                elif isbinned(new_arg):
-                    is_map = True
+                if new_arg.ndim < 2: pass
                 else:
-                    raise TypeError('Data shape {} not handled'.format(new_arg.shape))
+                    if not isbinned(new_arg) and new_arg.ndim < 4:
+                        new_arg = orb.utils.image.nanbin_image(new_arg, int(binning))
+                        is_map = True
+                    elif isbinned(new_arg):
+                        is_map = True
+                    else:
+                        raise TypeError('Data shape {} not handled'.format(new_arg.shape))
 
             args[i] = (new_arg, is_map)
 
@@ -2154,14 +2164,19 @@ class CubeJobServer(object):
                 # raw lines extraction (warning: velocity must be
                 # corrected by the function itself)
 
+                # commented but useful if we want to timeout data access
+                # outdict = orb.utils.parallel.timed_process(
+                #     get_data, self.GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
+                # if 'iline' in outdict:
+                #     iline = outdict['iline']
+                # else:
+                #     warnings.warn('timeout reached on data extraction')
+                #     break
+                iline = self.cube.get_data(
+                    min(ix) * binning, (max(ix) + 1) * binning,
+                    iy[0] * binning, (iy[0] + 1) * binning,
+                    0, self.cube.dimz, silent=True)
 
-                outdict = orb.utils.parallel.timed_process(
-                    get_data, self.GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
-                if 'iline' in outdict:
-                    iline = outdict['iline']
-                else:
-                    warnings.warn('timeout reached on data extraction')
-                    break
 
                 if binning > 1:
                     iline = orb.utils.image.nanbin_image(iline, binning) * binning**2
