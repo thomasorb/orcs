@@ -91,6 +91,9 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('fov', float(self._get_config_parameter('FIELD_OF_VIEW_1')))
         self.set_param('init_wcs_rotation', float(self._get_config_parameter('INIT_ANGLE')))
 
+        js, ncpus = self._init_pp_server(silent=True)
+        self._close_pp_server(js)
+        self.set_param('ncpus', int(ncpus))
 
         self.fit_tol = FIT_TOL
 
@@ -276,7 +279,13 @@ class HDFCube(orb.core.HDFCube):
                 QUAD_NB = self.config.QUAD_NB
                 DIV_NB = self.config.DIV_NB
 
-
+            #check if paralell extraction is necessary
+            parallel_extraction = True
+            #It takes roughly ncpus/4 s to initiate the parallel server
+            #The non-parallel algo runs at ~400 pixel/s
+            ncpus = self.params['ncpus']
+            if ncpus/4. > np.sum(mask)/400.:
+                parallel_extraction = False
             for iquad in range(0, QUAD_NB):
 
                 if quadrant_extraction:
@@ -286,43 +295,76 @@ class HDFCube(orb.core.HDFCube):
                 iquad_data = self.get_data(x_min, x_max, y_min, y_max,
                                            0, self.dimz, silent=silent).reshape(
                                                (x_max-x_min, y_max-y_min, self.dimz))
+                if parallel_extraction:
+                    logging.debug('Parallel extraction')
+                    # multi-processing server init
+                    job_server, ncpus = self._init_pp_server(silent=silent)
+                    if not silent: progress = orb.core.ProgressBar(x_max - x_min)
+                    for ii in range(0, x_max - x_min, ncpus):
+                        # no more jobs than columns
+                        if (ii + ncpus >= x_max - x_min):
+                            ncpus = x_max - x_min - ii
 
-                # multi-processing server init
-                job_server, ncpus = self._init_pp_server(silent=silent)
-                if not silent: progress = orb.core.ProgressBar(x_max - x_min)
-                for ii in range(0, x_max - x_min, ncpus):
-                    # no more jobs than columns
-                    if (ii + ncpus >= x_max - x_min):
-                        ncpus = x_max - x_min - ii
+                        # jobs creation
+                        jobs = [(ijob, job_server.submit(
+                            _extract_spectrum_in_column,
+                            args=(iquad_data[ii+ijob,:,:],
+                                  calibration_coeff_map[x_min + ii + ijob,
+                                                        y_min:y_max],
+                                  mask[x_min + ii + ijob, y_min:y_max],
+                                  median, self.params.wavenumber,
+                                  self.params.base_axis, self.params.step,
+                                  self.params.order, self.params.axis_corr),
+                            modules=("import logging",
+                                     'import numpy as np',
+                                     'import orb.utils.spectrum',
+                                     'import orb.utils.vector'),
+                            depfuncs=(_interpolate_spectrum,)))
+                                for ijob in range(ncpus)]
 
-                    # jobs creation
-                    jobs = [(ijob, job_server.submit(
-                        _extract_spectrum_in_column,
-                        args=(iquad_data[ii+ijob,:,:],
-                              calibration_coeff_map[x_min + ii + ijob,
-                                                    y_min:y_max],
-                              mask[x_min + ii + ijob, y_min:y_max],
-                              median, self.params.wavenumber,
-                              self.params.base_axis, self.params.step,
-                              self.params.order, self.params.axis_corr),
-                        modules=("import logging",
-                                 'import numpy as np',
-                                 'import orb.utils.spectrum',
-                                 'import orb.utils.vector'),
-                        depfuncs=(_interpolate_spectrum,)))
-                            for ijob in range(ncpus)]
+                        for ijob, job in jobs:
+                            spec_to_add, spec_nb = job()
+                            if not np.all(np.isnan(spec_to_add)):
+                                spectrum += spec_to_add
+                                counts += spec_nb
 
-                    for ijob, job in jobs:
-                        spec_to_add, spec_nb = job()
-                        if not np.all(np.isnan(spec_to_add)):
-                            spectrum += spec_to_add
-                            counts += spec_nb
+                        if not silent:
+                            progress.update(ii, info="ext column : {}/{}".format(
+                                ii, int(self.dimx/float(DIV_NB))))
+                    self._close_pp_server(job_server)
+                    if not silent: progress.end()
 
+                else:
+                    logging.debug('Non Parallel extraction')
+                    local_mask = mask[x_min:x_max, y_min:y_max]
+                    local_calibration_coeff_map = calibration_coeff_map[x_min:x_max, y_min:y_max]
                     if not silent:
-                        progress.update(ii, info="ext column : {}/{}".format(
-                            ii, int(self.dimx/float(DIV_NB))))
-                self._close_pp_server(job_server)
-                if not silent: progress.end()
+                        progress = orb.core.ProgressBar(local_mask.size)
+                        k = 0
+                    for i,j in np.ndindex(iquad_data.shape[:-1]):
+                        if local_mask[i,j]:
+                            corr = local_calibration_coeff_map[i,j]
+                            if corr != self.params.axis_corr:
+                                iquad_data[i,j] = _interpolate_spectrum(
+                                    iquad_data[i,j], corr, self.params.wavenumber,
+                                    self.params.step, self.params.order, self.params.base_axis)
+                        else:
+                            iquad_data[i,j].fill(np.nan)
+                        if not silent:
+                            k+=1
+                            progress.update(k)
+                    if not silent: progress.end()
+                    if median:
+                        with np.warnings.catch_warnings():
+                            np.warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+                            spec_to_add = np.nanmedian(iquad_data, axis=(0,1)) * np.nansum(local_mask)
+                            spec_nb = np.nansum(local_mask)
+                    else:
+                        spec_to_add = np.nansum(iquad_data, axis=(0,1))
+                        spec_nb = np.nansum(local_mask)
+                    if not np.all(np.isnan(spec_to_add)):
+                        spectrum += spec_to_add
+                        counts += spec_nb
 
 
         # add uncertainty on the spectrum
