@@ -488,10 +488,6 @@ class HDFCube(orb.core.HDFCube):
             # correct spectrum for nans
             spectrum[np.isnan(spectrum)] = 0.
 
-            # subtract spectrum
-            if subtract_spectrum is not None:
-                spectrum -= subtract_spectrum * binning ** 2.
-
             # correct spectrum for sky velocity
             if calib_coeff_ij != params['axis_corr']:
                 logging.debug('spectrum is interpolated to correct for wavelength calibration change: {} km/s'.format(sky_vel_ij))
@@ -500,6 +496,10 @@ class HDFCube(orb.core.HDFCube):
                     spectrum.shape[0], params['step'], params['order'], corr=calib_coeff_ij)
                 spectrum = orb.utils.vector.interpolate_axis(
                     spectrum, base_axis.astype(float), 5, old_axis=corr_axis.astype(float))
+
+            # subtract spectrum
+            if subtract_spectrum is not None:
+                spectrum -= subtract_spectrum * binning ** 2.
 
             # add flux uncertainty to the spectrum
             spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
