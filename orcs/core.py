@@ -527,7 +527,7 @@ class HDFCube(orb.core.HDFCube):
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, max_iter=max_iter, debug=debug,
+                    snr_guess=snr_guess, max_iter=max_iter, debug=debug, cov_fwhm=False,
                     **mapped_kwargs)
 
             except Exception, e:
@@ -693,6 +693,9 @@ class HDFCube(orb.core.HDFCube):
         """
         def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
                        snr_guess, max_iter, debug):
+
+            inputparams['params']=orb.utils.fit.pick2paramslist(inputparams['params'])
+
             _fit = utils.fit_lines_in_spectrum(
                 params, inputparams, fit_tol,
                 spectrum, theta_orig,
@@ -723,12 +726,22 @@ class HDFCube(orb.core.HDFCube):
             raise StandardError('Input params not defined')
 
         cjs = CubeJobServer(self)
+        ### DEBUG
+        #ispectrum,itheta_orig=cjs.cube._extract_spectrum_from_region(
+        #    regions[0],
+        #    subtract_spectrum=subtract,
+        #    silent=True, output_axis=axis, return_mean_theta=True)
+        #ifit = _fit_lines(ispectrum,itheta_orig,self.params.convert(),self.inputparams.convert(),self.fit_tol,snr_guess,max_iter,self.debug)
+        #ifit = orb.utils.fit.pickdict2gvardict(ifit)
+        #logging.info('Velocity of the first line (km/s): {}'.format(ifit['velocity_gvar'][0]))
+        ######
         all_fit = cjs.process_by_region(
             _fit_lines, regions, subtract, axis,
             args=(self.params.convert(), self.inputparams.convert(),
                   self.fit_tol, snr_guess, max_iter, self.debug),
             modules=('import logging',
-                     'import orcs.utils as utils'))
+                     'import orcs.utils as utils',
+                     'import orb.utils.fit'))
 
         lines = gvar.mean(self.inputparams.allparams.pos_guess)
 
@@ -737,7 +750,7 @@ class HDFCube(orb.core.HDFCube):
             ifit, ispectrum = all_fit[iregion]
 
             if ifit != []:
-
+                ifit=orb.utils.fit.pickdict2gvardict(ifit)
                 all_fit_results = list()
                 logging.info('Velocity of the first line (km/s): {}'.format(ifit['velocity_gvar'][0]))
                 line_names = list()
