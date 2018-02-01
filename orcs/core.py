@@ -527,7 +527,7 @@ class HDFCube(orb.core.HDFCube):
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, max_iter=max_iter, debug=debug, cov_fwhm=False,
+                    snr_guess=snr_guess, max_iter=max_iter, debug=debug, 
                     **mapped_kwargs)
 
             except Exception, e:
