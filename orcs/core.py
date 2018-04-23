@@ -501,8 +501,9 @@ class HDFCube(orb.core.HDFCube):
             if subtract_spectrum is not None:
                 spectrum -= subtract_spectrum * binning ** 2.
 
-            # add flux uncertainty to the spectrum
-            spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
+            # add flux uncertainty to the spectrum ### MEMORY LEAK IS IN THE FOLLOWING LINE ###
+            tmp_gvar = gvar.gvar_factory()
+            spectrum = tmp_gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
 
             logging.debug('passed mapped kwargs: {}'.format(mapped_kwargs))
 
@@ -527,8 +528,9 @@ class HDFCube(orb.core.HDFCube):
             try:
                 ifit = orcs.utils.fit_lines_in_spectrum(
                     params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, max_iter=max_iter, debug=debug, 
+                    snr_guess=snr_guess, max_iter=max_iter, debug=debug,
                     **mapped_kwargs)
+
 
             except Exception, e:
                 logging.debug('Exception occured during fit: {}'.format(e))
@@ -2216,6 +2218,9 @@ class CubeJobServer(object):
                                  'timeout':timeout})
 
                 timer['job_submit_end'] = time.time()
+
+                ### to DEBUG outside parallel region uncomment the following
+                ##process_in_row(*all_args)
 
                 # job submission
                 self.jobs.append([
