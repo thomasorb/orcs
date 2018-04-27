@@ -1581,7 +1581,10 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('object_name', str(self.header['OBJECT']))
         self.set_param('filter_name', str(self.header['FILTER']))
         self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
-        self.set_param('apodization', float(self.header['APODIZ']))
+        if self.header['APODIZ'] != 'None':
+            self.set_param('apodization', float(self.header['APODIZ']))
+        else:
+            self.set_param('apodization', 1.)
         self.set_param('exposure_time', float(self.header['EXPTIME']))
         if 'FLAMBDA' in self.header:
             self.set_param('flambda', float(self.header['FLAMBDA']))
