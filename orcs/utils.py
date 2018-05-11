@@ -106,9 +106,8 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
         params['step'], params['order'],
         orb.utils.spectrum.theta2corr(theta_orig),
         wavenumber=params['wavenumber'])
-
     
-    kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams['allparams']['line_nb']
+    kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams.allparams['line_nb']
 
     
     logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
@@ -118,7 +117,7 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
         raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
     if max_iter is None:
-        max_iter = max(100 * inputparams['allparams']['line_nb'], 1000)
+        max_iter = max(100 * inputparams.allparams['line_nb'], 1000)
 
     try:
         warnings.simplefilter('ignore')
