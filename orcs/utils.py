@@ -64,12 +64,12 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
       changed in the InputParams instance.
     """
     import orb.utils.spectrum
-        
+
     kwargs_orig = dict(kwargs)
     if debug:
         import orb.utils.log
         orb.utils.log.setup_socket_logging()
-            
+
     # check snr guess param
     auto_mode = False
     bad_snr_param = False
@@ -100,19 +100,19 @@ def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
     if 'fwhm_guess' in kwargs:
         raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
 
-    
+
     fwhm_guess_cm1 = orb.utils.spectrum.compute_line_fwhm(
         params['step_nb'] - params['zpd_index'],
         params['step'], params['order'],
         orb.utils.spectrum.theta2corr(theta_orig),
         wavenumber=params['wavenumber'])
-    
+
     kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams.allparams['line_nb']
 
-    
+
     logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
 
-    
+
     if bad_snr_param:
         raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
 
@@ -339,3 +339,34 @@ def fit_velocity_error_model(x, y, vel, vel_err, nm_laser,
         wavenumber=False)
 
     return model_calib_map, wf, final_vel_map, new_nm_laser
+
+
+def image_streamer(dimx, dimy, bsize, start=None, stop=None,
+                   strides=[1,1]):
+
+    if start is None: start = [0,0]
+    if stop is None: stop = [dimx - bsize[0], dimy - bsize[1]]
+
+    orb.utils.validate.is_iterable(bsize, object_name='bsize')
+    orb.utils.validate.is_iterable(strides, object_name='strides')
+    orb.utils.validate.is_iterable(start, object_name='start')
+    orb.utils.validate.is_iterable(start, object_name='stop')
+    if len(bsize) != 2: raise ValueError('bsize must be a tuple of len 2')
+    if len(strides) != 2: raise ValueError('strides must be a tuple of len 2')
+    if len(start) != 2: raise ValueError('start must be a tuple of len 2')
+    if len(stop) != 2: raise ValueError('stop must be a tuple of len 2')
+
+    start = np.array(start)
+    stop = np.array(stop)
+    bsize = np.array(bsize)
+    strides = np.array(strides)
+
+    if ((np.any(start) < 0)
+        or stop[0] >= dimx
+        or stop[1] >= dimy
+        or np.any(stop - start < bsize)):
+        raise ValueError('invalid coordinates given in start, stop or bsize')
+
+    for ii in range(start[0], stop[0], strides[0]):
+        for ij in range(start[1], stop[1], strides[1]):
+            yield slice(ii, ii+bsize[0]), slice(ij, ij+bsize[1])

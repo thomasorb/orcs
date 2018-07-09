@@ -3,7 +3,7 @@
 # Author: Thomas Martin <thomas.martin.1@ulaval.ca>
 # File: process.py
 
-## Copyright (c) 2010-2017 Thomas Martin <thomas.martin.1@ulaval.ca>
+## Copyright (c) 2010-2018 Thomas Martin <thomas.martin.1@ulaval.ca>
 ##
 ## This file is part of ORCS
 ##
@@ -46,7 +46,9 @@ import scipy.interpolate
 import marshal
 
 # import core
-from core import HDFCube, LineMaps, Filter
+import core
+import fit
+from core import LineMaps, Filter
 import utils
 
 # import ORB
@@ -63,9 +65,9 @@ from orb.astrometry import Astrometry
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
-class SpectralCube(HDFCube):
+class SpectralCube(fit.HDFCube):
 
-    """ORCS spectral cube fitting class.
+    """ORCS spectral cube general processing class.
 
     .. note:: parent class HDFCube is the ORCS implementation of
       HDFCube.
@@ -224,7 +226,7 @@ class SpectralCube(HDFCube):
                 orb.utils.validate.is_iterable(sky_lines, object_name='sky_lines')
 
             logging.info('{} sky lines to fit'.format(len(sky_lines)))
-            
+
             self._prepare_input_params(sky_lines, fmodel='sinc',
                                        pos_def=['1'] * len(sky_lines),
                                        pos_cov=[mean_sky_vel],
@@ -268,7 +270,7 @@ class SpectralCube(HDFCube):
         logging.debug('x: {}'.format(x))
         logging.debug('y: {}'.format(y))
         logging.debug('v: {}'.format(sky_vel_map))
-        
+
         nans = np.isnan(sky_vel_map)
         sky_vel_map[nans] = 0.
         sky_vel_map_err = np.array(sky_vel_map_err)
