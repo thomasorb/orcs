@@ -213,16 +213,16 @@ class SourceDetector3d(NNWorker):
     DIMX = 16  # x size of the box
     DIMY = 16  # y size of the box
     DIMZ = 32  # number of channels in the box
-    SKY_BACKGROUND = 100  # background level (in counts)
     SOURCE_FWHM = [2.5, 3.5]  # source FWHM
     SINC_WIDTH = [0.9,1.1]  # SINC FWHM = 1.20671 * WIDTH
-    AMP = (0.05, 20)  # min max amplitude ratio - log uniform distribution
+    TIPTILT = np.pi / 8
+    SNR = (0.1, 30)  # min max SNR - log uniform distribution
 
     def __init__(self):
 
         NNWorker.__init__(self, (self.DIMX, self.DIMY, self.DIMZ))
 
-    def simulate(self, ampr=None):
+    def simulate(self, snr=None):
 
         dxr = self.dimx/2. - 1 + np.random.uniform()
         dyr = self.dimy/2. - 1 + np.random.uniform()
@@ -231,17 +231,17 @@ class SourceDetector3d(NNWorker):
         #src3d_continuum = np.zeros(self.shape, dtype=np.float32)
         src3d_sky = np.zeros(self.shape, dtype=np.float32)
 
-        if ampr is None:
+        if snr is None:
             has_source = np.random.randint(0, 2)
-            if has_source:
-                ampr = 10**(np.random.uniform(
-                    np.log10(self.AMP[0]),
-                    np.log10(self.AMP[1])))
+            if has_source: # log uniform distribution of the SNR
+                snr = 10**(np.random.uniform(
+                    np.log10(self.SNR[0]),
+                    np.log10(self.SNR[1])))
             else:
-                ampr = 0.
+                snr = 0.
         else:
             has_source = 1
-            ampr = float(ampr)
+            snr = float(snr)
 
         source_fwhmr = np.random.uniform(self.SOURCE_FWHM[0], self.SOURCE_FWHM[1])
 
@@ -254,15 +254,13 @@ class SourceDetector3d(NNWorker):
 
         # emission line source
         if has_source:
-            src2d = np.copy(src2d_normalized) * ampr * self.SKY_BACKGROUND
+            src2d = np.copy(src2d_normalized)
         else:
             src2d = 0.
 
         # continuum source
         #source_backgroundr = np.random.uniform(0., 0.1) *  self.SKY_BACKGROUND
-        source_backgroundr = 0
         #src2d_continuum = np.copy(src2d_normalized) * source_backgroundr
-        src2d_continuum = 0.
 
         # emission line spectrum
         if has_source:
@@ -277,36 +275,38 @@ class SourceDetector3d(NNWorker):
             src3d += spec_emissionline
             src3d *= src2d
 
+        # compute noise
+        if has_source:
+            noise = 1. / snr
+        else: noise = 1.
+
+        src3d += (np.random.standard_normal(src3d.shape) * noise)
+
         # create continuum source in 3d
         #spec_continuum = np.random.uniform(0.9, 1.1, self.dimz)
         #src3d_continuum += spec_continuum
         #src3d_continuum *= src2d_continuum
 
         # create sky spectrum
-        #spec_sky = (np.random.uniform(0.9, 1.1, self.dimz)) * self.SKY_BACKGROUND
-        spec_sky = self.SKY_BACKGROUND
+        spec_sky = noise * 3
+        X, Y = np.mgrid[:self.dimx:1., :self.dimy:1.]
+        X /= float(self.dimx)
+        Y /= float(self.dimy)
+
+        sky2d = (1 + X * np.sin(np.random.uniform(-self.TIPTILT, self.TIPTILT))
+                 + Y * np.sin(np.random.uniform(-self.TIPTILT,self.TIPTILT)))
+        sky2d = sky2d.reshape((self.dimx, self.dimy, 1))
         src3d_sky += spec_sky
+        src3d_sky *= sky2d
 
         # merge all
         src3d += src3d_sky #+ src3d_continuum
 
-
-        # compute snr
-        snr = (ampr * self.SKY_BACKGROUND
-               / np.sqrt(ampr * self.SKY_BACKGROUND
-                         + self.SKY_BACKGROUND
-                         + source_backgroundr))
-
-        src3d += (np.random.standard_normal(src3d.shape)
-                  * np.sqrt(src2d
-                            + self.SKY_BACKGROUND
-                            + src2d_continuum))
-
+        # noramlization
         src3d /= np.max(src3d)
 
         return {'data': src3d.astype(np.float32),
                 'snr': np.array(snr).astype(np.float32),
-                'ampr': np.array(ampr).astype(np.float32),
                 'label': np.array(has_source).astype(np.int32)}
 
     def generate_graph(self):
