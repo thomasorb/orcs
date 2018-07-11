@@ -86,9 +86,9 @@ class NNWorker(orb.core.Tools):
     def get_model_path(self):
         return self.data_prefix + 'model.ckpt'
 
-    def load_dataset(self):
+    def load_dataset(self, force=True):
 
-        if self.dataset is not None:
+        if self.dataset is not None and not force:
             logging.warning('dataset already loaded')
             return
 
@@ -123,23 +123,43 @@ class NNWorker(orb.core.Tools):
                 logging.info('{} shape: {}'.format(
                     test_key, self.dataset[test_key].shape))
 
-    def generate_dataset(self, size):
+    def generate_dataset(self, size, rotate=True, noise_samples=10):
         if not isinstance(size, int): raise TypeError('size must be an int')
         if not size > 0: raise ValueError('size must be > 0')
 
         dataset = dict()
 
-        progress = orb.core.ProgressBar(size)
-        for isim in range(size):
-            progress.update(isim, info='generating dataset')
-            sim_dict = self.simulate()
+        if rotate:
+            rotation_nb = 4
+        else:
+            rotation_nb = 1
 
-            for ikey in sim_dict:
-                if isim == 0:
-                    if ikey in dataset.keys(): raise ValueError(
-                        '{} already appended'.format(ikey))
-                    dataset[ikey] = list()
-                dataset[ikey].append(np.array(sim_dict[ikey]).flatten())
+        loopsize = size // rotation_nb // noise_samples
+
+        progress = orb.core.ProgressBar(loopsize)
+        first_sim = True
+        for isim in range(loopsize):
+            progress.update(isim, info='generating dataset')
+            sim_list = self.simulate(samples=noise_samples)
+            for sim_dict in sim_list:
+
+                for irot in range(rotation_nb):
+                    rotated_sim_dict = dict(sim_dict)
+                    if irot == 1:
+                        rotated_sim_dict['data'] = np.flip(sim_dict['data'], 0)
+                    elif irot == 2:
+                        rotated_sim_dict['data'] = np.flip(sim_dict['data'], 1)
+                    elif irot == 3:
+                        rotated_sim_dict['data'] = np.flip(sim_dict['data'], 0)
+                        rotated_sim_dict['data'] = np.flip(sim_dict['data'], 1)
+
+                    for ikey in sim_dict:
+                        if first_sim:
+                            if ikey in dataset.keys(): raise ValueError(
+                                '{} already appended'.format(ikey))
+                            dataset[ikey] = list()
+                        dataset[ikey].append(np.array(rotated_sim_dict[ikey]).flatten())
+                    first_sim = False
         progress.end()
 
         path = self.get_dataset_path()
@@ -151,7 +171,7 @@ class NNWorker(orb.core.Tools):
                     ikey, idata.shape))
         return path
 
-    def train(self, n_epochs=4, batch_size=50):
+    def train(self, n_epochs=4, batch_size=500):
 
         def shuffle_batch(X, y, batch_size):
             rnd_idx = np.random.permutation(len(X))
@@ -210,9 +230,9 @@ class NNWorker(orb.core.Tools):
 
 class SourceDetector3d(NNWorker):
 
-    DIMX = 16  # x size of the box
-    DIMY = 16  # y size of the box
-    DIMZ = 32  # number of channels in the box
+    DIMX = 8  # x size of the box
+    DIMY = 8  # y size of the box
+    DIMZ = 4  # number of channels in the box
     SOURCE_FWHM = [2.5, 3.5]  # source FWHM
     SINC_WIDTH = [0.9,1.1]  # SINC FWHM = 1.20671 * WIDTH
     TIPTILT = np.pi / 8
@@ -222,7 +242,7 @@ class SourceDetector3d(NNWorker):
 
         NNWorker.__init__(self, (self.DIMX, self.DIMY, self.DIMZ))
 
-    def simulate(self, snr=None):
+    def simulate(self, snr=None, samples=1):
 
         dxr = self.dimx/2. - 1 + np.random.uniform()
         dyr = self.dimy/2. - 1 + np.random.uniform()
@@ -275,12 +295,10 @@ class SourceDetector3d(NNWorker):
             src3d += spec_emissionline
             src3d *= src2d
 
-        # compute noise
+        # compute noise level
         if has_source:
             noise = 1. / snr
         else: noise = 1.
-
-        src3d += (np.random.standard_normal(src3d.shape) * noise)
 
         # create continuum source in 3d
         #spec_continuum = np.random.uniform(0.9, 1.1, self.dimz)
@@ -302,30 +320,81 @@ class SourceDetector3d(NNWorker):
         # merge all
         src3d += src3d_sky #+ src3d_continuum
 
-        # noramlization
-        src3d /= np.max(src3d)
+        # add noise
 
-        return {'data': src3d.astype(np.float32),
-                'snr': np.array(snr).astype(np.float32),
-                'label': np.array(has_source).astype(np.int32)}
+        out_list = list()
+        for isample in range(samples):
+            isrc3d = np.copy(src3d)
+
+            isrc3d += (np.random.standard_normal(src3d.shape) * noise)
+
+            # normalization
+            isrc3d /= np.max(isrc3d)
+
+            out_list.append({'data': isrc3d.astype(np.float32),
+                             'snr': np.array(snr).astype(np.float32),
+                             'label': np.array(has_source).astype(np.int32)})
+        if samples == 1:
+            return out_list[0]
+        else:
+            return out_list
 
     def generate_graph(self):
 
-        CONV1_FILTERS = 32
+        CONV1_FILTERS = 4
         CONV1_KERNEL = 3
-        CONV1_STRIDE = 1
+        CONV1_STRIDE = 2
         CONV1_PAD = "SAME"
 
-        CONV2_FILTERS = 64
+        CONV2_FILTERS = 8
         CONV2_KERNEL = 3
         CONV2_STRIDE = 2
         CONV2_PAD = "SAME"
 
-        POOL3_FILTERS = CONV2_FILTERS
+        POOL3_FILTERS = 8
         POOL3_STRIDE = 2
         POOL3_KERNEL = 2
 
-        FULLY_CONNECTED_LAYER_SIZE = CONV2_FILTERS
+        FULLY_CONNECTED_LAYER_SIZE = 8
+
+
+
+
+        def add_convolutional_layer(input_layer, input_shape,
+                                    filters, kernel_size=3,
+                                    padding='SAME', flatten=False):
+
+            total_stride = 2
+            if len(input_shape) != 3:
+                raise TypeError('input shape must be a tuple (dimx, dimy, dimz)')
+            output_shape = [input_shape[0]//total_stride,
+                            input_shape[1]//total_stride,
+                            filters]
+
+            with tf.name_scope('convolution_layer'):
+                input_layer = tf.layers.conv2d(input_layer, filters=filters,
+                                         kernel_size=kernel_size,
+                                         strides=1, padding=padding,
+                                         activation=None)
+
+                input_layer = tf.layers.conv2d(input_layer, filters=filters,
+                                         kernel_size=kernel_size,
+                                         strides=1, padding=padding,
+                                         activation=tf.nn.relu)
+
+                input_layer = tf.nn.max_pool(input_layer,
+                                       ksize=[1, 2, 2, 1],
+                                       strides=[1, 2, 2, 1],
+                                       padding="VALID")
+                if flatten:
+                    input_layer = tf.reshape(
+                        input_layer,
+                        shape=[-1, np.multiply.reduce(output_shape)])
+                    output_shape = [np.multiply.reduce(output_shape)]
+
+                return input_layer, output_shape
+
+
 
         tf.reset_default_graph()
 
@@ -335,36 +404,24 @@ class SourceDetector3d(NNWorker):
                 shape=(None, np.multiply.reduce(self.shape)),
                 name='X')
             self.X_reshaped = tf.reshape(
-                self.X, shape=[-1, self.dimx, self.dimy, self.dimz])
+                self.X,
+                shape=[-1, self.dimx, self.dimy, self.dimz])
             self.y = tf.placeholder(tf.int32, shape=(None), name='y')
 
+        pool3, pool3_shape = add_convolutional_layer(
+            self.X_reshaped, [self.dimy, self.dimx, self.dimz], 16)
 
-        conv1 = tf.layers.conv2d(self.X_reshaped, filters=CONV1_FILTERS,
-                                 kernel_size=CONV1_KERNEL,
-                                 strides=CONV1_STRIDE, padding=CONV1_PAD,
-                                 activation=tf.nn.relu, name="conv1")
+        pool3, pool3_shape = add_convolutional_layer(
+            pool3, pool3_shape, 16)
 
-        conv2 = tf.layers.conv2d(conv1, filters=CONV2_FILTERS, kernel_size=CONV2_KERNEL,
-                                 strides=CONV2_STRIDE, padding=CONV2_PAD,
-                                 activation=tf.nn.relu, name="conv2")
-
-        with tf.name_scope("pool3"):
-            pool3 = tf.nn.max_pool(
-                conv2,
-                ksize=[1, POOL3_KERNEL, POOL3_KERNEL, 1],
-                strides=[1, POOL3_STRIDE, POOL3_STRIDE, 1],
-                padding="VALID")
-            pool3_xy_stride = CONV1_STRIDE * CONV2_STRIDE * POOL3_STRIDE
-            pool3_flat = tf.reshape(
-                pool3,
-                shape=[-1, POOL3_FILTERS
-                       * int(self.dimx/pool3_xy_stride)
-                       * int(self.dimy/pool3_xy_stride)])
-
+        pool3, pool3_shape = add_convolutional_layer(
+            pool3, pool3_shape, 16, flatten=True)
 
         with tf.name_scope("fc4"):
-            fc4 = tf.layers.dense(pool3_flat, FULLY_CONNECTED_LAYER_SIZE,
-                                  activation=tf.nn.relu, name="fc4")
+
+            fc4 = tf.layers.dense(
+                pool3, FULLY_CONNECTED_LAYER_SIZE,
+                activation=tf.nn.relu, name="fc4")
 
         with tf.name_scope("output"):
             logits = tf.layers.dense(fc4, 2, name="output")
