@@ -347,7 +347,7 @@ class SourceDetector3d(NNWorker):
             channelr = (np.random.uniform(-0.5, 0.5) + self.dimz / 2. - 0.5)
             spec_emissionline = orb.utils.spectrum.sinc1d(
                 np.arange(self.dimz),
-                0, 1, channelr,
+                0, snr, channelr,
                 sinc_widthr)
 
             # create emission line source in 3d
@@ -356,7 +356,7 @@ class SourceDetector3d(NNWorker):
 
         # compute noise level
         if has_source:
-            noise = 1. / snr
+            noise = 1. #/ snr
         else: noise = 1.
 
         # create continuum source in 3d
@@ -365,7 +365,7 @@ class SourceDetector3d(NNWorker):
         #src3d_continuum *= src2d_continuum
 
         # create sky background
-        spec_sky = noise * 3
+        spec_sky = 0
         X, Y = np.mgrid[:self.dimx:1., :self.dimy:1.]
         X /= float(self.dimx)
         Y /= float(self.dimy)
@@ -390,7 +390,7 @@ class SourceDetector3d(NNWorker):
             # normalization
             #isrc3d += 1
             #isrc3d -= np.median(np.median(isrc3d, axis=0), axis=0)
-            isrc3d /= np.max(isrc3d)
+            #isrc3d /= np.max(isrc3d)
             #isrc3d += 1
             #isrc3d /= np.std(isrc3d)
 
