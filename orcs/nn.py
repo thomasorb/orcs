@@ -28,6 +28,7 @@ This module contains the fitting classes
 """
 import logging
 import numpy as np
+import time
 
 import orcs.core
 import orcs.utils
@@ -47,6 +48,7 @@ class NNWorker(orb.core.Tools):
     TRAIN_RATIO = 0.8
     VALID_RATIO = 0.1
     TEST_RATIO = 0.1
+    BATCH_SIZE = 1000
 
     def __init__(self, shape, data_prefix=None):
         if data_prefix is None:
@@ -68,6 +70,7 @@ class NNWorker(orb.core.Tools):
             raise ValueError('TRAIN_RATIO + VALID_RATIO + TEST_RATIO must equal 1')
 
         self.dataset = None
+        self.is_training = True
 
     def get_session(self):
         return tf.Session(config=tf.ConfigProto(log_device_placement=True))
@@ -171,35 +174,80 @@ class NNWorker(orb.core.Tools):
                     ikey, idata.shape))
         return path
 
-    def train(self, n_epochs=4, batch_size=500):
+    def train(self, n_epochs=4, sorting_dict=None):
 
-        def shuffle_batch(X, y, batch_size):
-            rnd_idx = np.random.permutation(len(X))
-            n_batches = len(X) // batch_size
+        def shuffle_batch(dataset, batch_size, sorting_dict=None):
+            """
+            :param sorting_dict: must be a dictionary giving for each label its
+              sorting key (e.g. {1:'snr'} to sort label 1 by snr (), if a 'snr'
+              is provided in the dataset).
+            """
+            if sorting_dict is not None:
+                if not isinstance(sorting_dict, dict):
+                    raise TypeError('sorting_dict must be a dict')
+
+            rnd_idx = np.random.permutation(len(self.dataset['data_train']))
+
+            for ilabel in sorting_dict:
+                # get indexes corresponding to the label in the permuted dataset
+                label_idx = np.nonzero(
+                    self.dataset['label_train'][rnd_idx] == ilabel)[0]
+                # sort indexes corresponding to the label against the set
+                # specified in sorting_dict (high values first)
+                sorted_label_idx = label_idx[np.argsort(
+                    self.dataset[sorting_dict[ilabel] + '_train'][rnd_idx][label_idx])[::-1]]
+                # replace the unsorted indexes corresponding to the label with
+                # the sorted ones
+                rnd_idx[label_idx] = rnd_idx[sorted_label_idx]
+
+
+            n_batches = len(self.dataset['data_train']) // batch_size
             for batch_idx in np.array_split(rnd_idx, n_batches):
-                X_batch, y_batch = X[batch_idx], y[batch_idx]
+                if sorting_dict is not None:
+                    # each batch is shuffled again because some labels have been
+                    # sorted in the batch
+                    np.random.shuffle(batch_idx)
+
+                X_batch = self.dataset['data_train'][batch_idx]
+                y_batch = self.dataset['label_train'][batch_idx]
                 yield X_batch, y_batch
 
         self.load_dataset()
+        self.is_training = True
         self.generate_graph()
+
 
         with self.get_session() as sess:
             self.init.run()
 
             for epoch in range(n_epochs):
+                stime = time.time()
+
+                progress = orb.core.ProgressBar(
+                    len(self.dataset['data_train']) // self.BATCH_SIZE)
+                iloop = 1
                 for X_batch, y_batch in shuffle_batch(
-                    self.dataset['data_train'],
-                    self.dataset['label_train'],
-                    batch_size):
+                    self.dataset,
+                    self.BATCH_SIZE, sorting_dict=sorting_dict):
+                    progress.update(iloop, info='training')
                     sess.run(self.training_op,
                              feed_dict={self.X: X_batch, self.y: y_batch})
+                    iloop += 1
+                progress.end()
+
                 acc_batch = self.accuracy.eval(
                     feed_dict={self.X: X_batch, self.y: y_batch})
-                acc_val = self.accuracy.eval(
-                    feed_dict={self.X: self.dataset['data_valid'],
-                               self.y: self.dataset['label_valid']})
-                logging.info('epoch {}: batch accuracy: {}, val accuracy: {}'.format(
-                    epoch, acc_batch, acc_val))
+
+                acc_val_list = list()
+
+                for X_batch, y_batch in shuffle_batch(
+                    self.dataset,
+                    self.BATCH_SIZE, sorting_dict=sorting_dict):
+                    acc_val_list.append(self.accuracy.eval(
+                        feed_dict={self.X: X_batch, self.y: y_batch}))
+                logging.info('training time: {} epoch {}: batch accuracy: {}, val accuracy: {} [{}]'.format(
+                    time.time() - stime, epoch, acc_batch,
+                    np.median(acc_val_list), np.std(acc_val_list)))
 
                 self.saver.save(sess, self.get_model_path())
                 logging.info('model saved as {}'.format(self.get_model_path()))
@@ -217,11 +265,21 @@ class NNWorker(orb.core.Tools):
 
     def run_on_sample(self, sample):
         self.generate_graph()
+        sample = np.array(sample)
         with self.get_session() as sess:
             self.saver.restore(sess, self.get_model_path())
-            probas = self.proba.eval(
-                feed_dict={self.X: sample})
-            predictions = tf.argmax(probas, axis=1).eval()
+            probas_list = list()
+            predictions_list = list()
+            for ibatch in range(0, sample.shape[0], self.BATCH_SIZE):
+                X_batch = sample[ibatch:ibatch+self.BATCH_SIZE, ...]
+                probas_list.append(np.array(self.proba.eval(
+                    feed_dict={self.X: X_batch})))
+                predictions_list.append(
+                    np.array(tf.argmax(probas_list[-1], axis=1).eval()))
+
+            predictions = np.concatenate(predictions_list)
+            probas = np.concatenate(probas_list)
+
         return predictions, probas
 
 
@@ -232,11 +290,11 @@ class SourceDetector3d(NNWorker):
 
     DIMX = 8  # x size of the box
     DIMY = 8  # y size of the box
-    DIMZ = 4  # number of channels in the box
+    DIMZ = 8  # number of channels in the box
     SOURCE_FWHM = [2.5, 3.5]  # source FWHM
     SINC_WIDTH = [0.9,1.1]  # SINC FWHM = 1.20671 * WIDTH
     TIPTILT = np.pi / 8
-    SNR = (0.1, 30)  # min max SNR - log uniform distribution
+    SNR = (2.5, 30)  # min max SNR (log uniform)
 
     def __init__(self):
 
@@ -244,8 +302,8 @@ class SourceDetector3d(NNWorker):
 
     def simulate(self, snr=None, samples=1):
 
-        dxr = self.dimx/2. - 1 + np.random.uniform()
-        dyr = self.dimy/2. - 1 + np.random.uniform()
+        dxr = self.dimx/2. - 0.5 + np.random.uniform(-0.5, 0.5)
+        dyr = self.dimy/2. - 0.5 + np.random.uniform(-0.5, 0.5)
 
         src3d = np.zeros(self.shape, dtype=np.float32)
         #src3d_continuum = np.zeros(self.shape, dtype=np.float32)
@@ -257,6 +315,7 @@ class SourceDetector3d(NNWorker):
                 snr = 10**(np.random.uniform(
                     np.log10(self.SNR[0]),
                     np.log10(self.SNR[1])))
+                #snr = np.random.uniform(self.SNR[0], self.SNR[1])
             else:
                 snr = 0.
         else:
@@ -285,7 +344,7 @@ class SourceDetector3d(NNWorker):
         # emission line spectrum
         if has_source:
             sinc_widthr = np.random.uniform(self.SINC_WIDTH[0], self.SINC_WIDTH[1])
-            channelr = ((np.random.uniform() - 0.5) + self.dimz / 2. - 0.5)
+            channelr = (np.random.uniform(-0.5, 0.5) + self.dimz / 2. - 0.5)
             spec_emissionline = orb.utils.spectrum.sinc1d(
                 np.arange(self.dimz),
                 0, 1, channelr,
@@ -305,7 +364,7 @@ class SourceDetector3d(NNWorker):
         #src3d_continuum += spec_continuum
         #src3d_continuum *= src2d_continuum
 
-        # create sky spectrum
+        # create sky background
         spec_sky = noise * 3
         X, Y = np.mgrid[:self.dimx:1., :self.dimy:1.]
         X /= float(self.dimx)
@@ -313,6 +372,7 @@ class SourceDetector3d(NNWorker):
 
         sky2d = (1 + X * np.sin(np.random.uniform(-self.TIPTILT, self.TIPTILT))
                  + Y * np.sin(np.random.uniform(-self.TIPTILT,self.TIPTILT)))
+        #sky2d -= np.mean(sky2d)
         sky2d = sky2d.reshape((self.dimx, self.dimy, 1))
         src3d_sky += spec_sky
         src3d_sky *= sky2d
@@ -321,7 +381,6 @@ class SourceDetector3d(NNWorker):
         src3d += src3d_sky #+ src3d_continuum
 
         # add noise
-
         out_list = list()
         for isample in range(samples):
             isrc3d = np.copy(src3d)
@@ -329,7 +388,11 @@ class SourceDetector3d(NNWorker):
             isrc3d += (np.random.standard_normal(src3d.shape) * noise)
 
             # normalization
+            #isrc3d += 1
+            #isrc3d -= np.median(np.median(isrc3d, axis=0), axis=0)
             isrc3d /= np.max(isrc3d)
+            #isrc3d += 1
+            #isrc3d /= np.std(isrc3d)
 
             out_list.append({'data': isrc3d.astype(np.float32),
                              'snr': np.array(snr).astype(np.float32),
@@ -341,87 +404,83 @@ class SourceDetector3d(NNWorker):
 
     def generate_graph(self):
 
-        CONV1_FILTERS = 4
-        CONV1_KERNEL = 3
-        CONV1_STRIDE = 2
-        CONV1_PAD = "SAME"
-
-        CONV2_FILTERS = 8
-        CONV2_KERNEL = 3
-        CONV2_STRIDE = 2
-        CONV2_PAD = "SAME"
-
-        POOL3_FILTERS = 8
-        POOL3_STRIDE = 2
-        POOL3_KERNEL = 2
-
-        FULLY_CONNECTED_LAYER_SIZE = 8
-
-
-
-
         def add_convolutional_layer(input_layer, input_shape,
-                                    filters, kernel_size=3,
-                                    padding='SAME', flatten=False):
+                                    filters, kernel_size=2,
+                                    padding='SAME',
+                                    max_pool=True,
+                                    flatten=False,
+                                    conv_stride=1):
 
-            total_stride = 2
-            if len(input_shape) != 3:
-                raise TypeError('input shape must be a tuple (dimx, dimy, dimz)')
+            POOL_STRIDE = 2
+            if max_pool:
+                total_stride = POOL_STRIDE * conv_stride
+            else:
+                total_stride = 1 * conv_stride
+
+            #print input_shape, total_stride
+
+            if len(input_shape) != 4:
+                raise TypeError('input shape must be a tuple (dimx, dimy, dimz, filters)')
             output_shape = [input_shape[0]//total_stride,
                             input_shape[1]//total_stride,
+                            input_shape[2]//total_stride,
                             filters]
 
             with tf.name_scope('convolution_layer'):
-                input_layer = tf.layers.conv2d(input_layer, filters=filters,
+                input_layer = tf.layers.conv3d(input_layer, filters=filters,
                                          kernel_size=kernel_size,
-                                         strides=1, padding=padding,
-                                         activation=None)
-
-                input_layer = tf.layers.conv2d(input_layer, filters=filters,
-                                         kernel_size=kernel_size,
-                                         strides=1, padding=padding,
+                                         strides=conv_stride, padding=padding,
                                          activation=tf.nn.relu)
 
-                input_layer = tf.nn.max_pool(input_layer,
-                                       ksize=[1, 2, 2, 1],
-                                       strides=[1, 2, 2, 1],
-                                       padding="VALID")
+                if max_pool:
+                    input_layer = tf.nn.max_pool3d(input_layer,
+                                           ksize=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
+                                           strides=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
+                                           padding=padding)
                 if flatten:
                     input_layer = tf.reshape(
                         input_layer,
                         shape=[-1, np.multiply.reduce(output_shape)])
                     output_shape = [np.multiply.reduce(output_shape)]
 
+                #print output_shape
                 return input_layer, output_shape
 
-
+        FILTERS = 16
 
         tf.reset_default_graph()
+
+        #is_training = tf.placeholder(tf.bool, shape = (), name='is_training')
+
 
         with tf.name_scope('inputs'):
             self.X = tf.placeholder(
                 tf.float32,
                 shape=(None, np.multiply.reduce(self.shape)),
                 name='X')
-            self.X_reshaped = tf.reshape(
+            X_reshaped= tf.reshape(
                 self.X,
-                shape=[-1, self.dimx, self.dimy, self.dimz])
+                shape=[-1, self.dimx, self.dimy, self.dimz, 1])
             self.y = tf.placeholder(tf.int32, shape=(None), name='y')
 
         pool3, pool3_shape = add_convolutional_layer(
-            self.X_reshaped, [self.dimy, self.dimx, self.dimz], 16)
+            X_reshaped, [self.dimy, self.dimx, self.dimz, 1],
+            FILTERS, max_pool=True, conv_stride=1)
 
         pool3, pool3_shape = add_convolutional_layer(
-            pool3, pool3_shape, 16)
+            pool3, pool3_shape,
+            FILTERS * 2, max_pool=True, conv_stride=1)
 
         pool3, pool3_shape = add_convolutional_layer(
-            pool3, pool3_shape, 16, flatten=True)
+            pool3, pool3_shape,
+            FILTERS * 4, max_pool=True, conv_stride=1,
+            flatten=True)
+
 
         with tf.name_scope("fc4"):
-
             fc4 = tf.layers.dense(
-                pool3, FULLY_CONNECTED_LAYER_SIZE,
-                activation=tf.nn.relu, name="fc4")
+                pool3, pool3_shape[0] // 2,
+                activation= tf.nn.relu, name="fc4")
 
         with tf.name_scope("output"):
             logits = tf.layers.dense(fc4, 2, name="output")
@@ -465,7 +524,7 @@ class SourceDetector3d(NNWorker):
                 probas = self.proba.eval(
                     feed_dict={self.X: dataset_normed})
                 predictions = tf.argmax(probas, axis=1).eval()
-                print predictions
+
 
 class HDFCube(orcs.core.HDFCube):
 
