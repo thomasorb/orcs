@@ -344,6 +344,9 @@ def fit_velocity_error_model(x, y, vel, vel_err, nm_laser,
 def image_streamer(dimx, dimy, bsize, start=None, stop=None,
                    strides=[1,1]):
 
+    """ 
+    """
+
     if start is None: start = [0,0]
     if stop is None: stop = [dimx - bsize[0], dimy - bsize[1]]
 

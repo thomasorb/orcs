@@ -40,7 +40,6 @@ import orb.utils.validate
 import orb.utils.image
 
 import tensorflow as tf
-from tensorflow.contrib.layers import fully_connected
 
 
 class NNWorker(orb.core.Tools):
@@ -61,11 +60,14 @@ class NNWorker(orb.core.Tools):
         orb.utils.validate.is_iterable(shape, object_name='shape')
         self.shape = shape
 
-        self.dimx = self.shape[0]
+        if int(self.shape[0])&1: raise ValueError('shape[0] must be even')
+        self.dimx = int(self.shape[0])
         if len(shape) > 1:
-            self.dimy = self.shape[1]
+            if int(self.shape[1])&1: raise ValueError('shape[1] must be even')
+            self.dimy = int(self.shape[1])
         if len(shape) > 2:
-            self.dimz = self.shape[2]
+            if int(self.shape[2])&1: raise ValueError('shape[2] must be even')
+            self.dimz = int(self.shape[2])
         if self.TRAIN_RATIO + self.VALID_RATIO + self.TEST_RATIO != 1:
             raise ValueError('TRAIN_RATIO + VALID_RATIO + TEST_RATIO must equal 1')
 
@@ -283,8 +285,75 @@ class NNWorker(orb.core.Tools):
         return predictions, probas
 
 
-    def run(self):
-        pass
+    def run_in_cube(self, cube, start, stop):
+
+        SURFACE_THRESHOLD = 0.05
+
+        self.generate_graph()
+
+        orb.utils.validate.has_len(start, 2, object_name='start')
+        orb.utils.validate.has_len(stop, 2, object_name='start')
+
+        orb.utils.validate.index(start[0] - self.dimx//2, 0, cube.dimx, clip=False)
+        orb.utils.validate.index(stop[0] + self.dimx//2, 0, cube.dimx, clip=False)
+        orb.utils.validate.index(start[1] - self.dimy//2, 0, cube.dimy, clip=False)
+        orb.utils.validate.index(stop[1] + self.dimy//2, 0, cube.dimy, clip=False)
+
+        data_xrange = range(start[0] - self.dimx//2, stop[0] + self.dimx//2)
+        data_yrange = range(start[1] - self.dimy//2, stop[1] + self.dimy//2)
+
+        probas_frame = np.empty((stop[0] - start[0], stop[1] - start[1]),
+                                dtype=float)
+        probas_frame.fill(np.nan)
+        with self.get_session() as sess:
+            self.saver.restore(sess, self.get_model_path())
+
+            data_surface = len(data_xrange) * len(data_yrange)
+            if data_surface < SURFACE_THRESHOLD * cube.dimx * cube.dimy:
+                idata_slice = cube.get_data(data_xrange[0], data_xrange[-1],
+                                            data_yrange[0], data_yrange[-1],
+                                            0, cube.dimz, silent=False)
+                idata_slice[np.nonzero(np.isnan(idata_slice))] = 0.
+
+                slices = orcs.utils.image_streamer(
+                    idata_slice.shape[0],
+                    idata_slice.shape[1],
+                    [self.dimx, self.dimy])
+
+                slices_nb = (idata_slice.shape[0] - self.dimx) * (idata_slice.shape[1] - self.dimy)
+
+                progress = orb.core.ProgressBar(slices_nb)
+                iloop = 0
+                for islice in slices:
+                    iloop += 1
+                    progress.update(iloop, 'running on slice {}/{}'.format(iloop, slices_nb))
+                    idata_box = np.copy(idata_slice[islice[0], islice[1], :])
+                    idata_box -= np.nanmedian(idata_box, axis=[0,1])
+                    idata_box /= np.nanpercentile(idata_box, 99.995)
+                    boxes = list()
+
+
+
+                    for ik in range(0, cube.dimz - self.dimz):
+                        boxes.append(np.copy(idata_box[:,:,ik:ik+self.dimz]).flatten())
+                    boxes = np.array(boxes)
+
+                    probas_list = list()
+                    for ibatch in range(0, boxes.shape[0], self.BATCH_SIZE):
+                        X_batch = boxes[ibatch:ibatch+self.BATCH_SIZE, ...]
+                        probas_list.append(np.array(self.proba.eval(
+                            feed_dict={self.X: X_batch})))
+
+                    ## probas must be outputed for each label !!
+                    probas = np.concatenate(probas_list)[:,1]
+                    probas_frame[islice[0].start,
+                                 islice[1].start] = np.max(probas)
+                progress.end()
+
+            else: raise NotImplementedError()
+
+        orb.utils.io.write_fits('probas.fits', probas_frame, overwrite=True)
+        return probas_frame
 
 class SourceDetector3d(NNWorker):
 
@@ -502,37 +571,39 @@ class SourceDetector3d(NNWorker):
             self.saver = tf.train.Saver()
 
 
-    def run(self, cube, start=None, stop=None):
-        self.generate_graph()
 
-        streamer = cube.get_streamer(
-            bsize=[self.dimx, self.dimy],
-            start=start,
-            stop=stop,
-            strides=[1, 1])
-
-        with self.get_session() as sess:
-            self.saver.restore(sess, self.get_model_path())
-
-            for iquad in streamer:
-                iquad[np.nonzero(np.isnan(iquad))] = 0
-                dataset = list()
-                for iz in range(0, iquad.shape[2] - self.dimz):
-                    dataset.append(iquad[:, :, iz:iz + self.dimz].flatten())
-
-                dataset_normed = dataset / np.max(np.array(dataset))
-                probas = self.proba.eval(
-                    feed_dict={self.X: dataset_normed})
-                predictions = tf.argmax(probas, axis=1).eval()
+            # COLUMNS_PER_SLICE = 20
+            # slice_range = np.arange(start[0], stop[0], COLUMNS_PER_SLICE)
+            # #yrange = np.arange(start[1] - self.dimx//2, stop[1] + self.dimx//2)
+            # for islice in slice_range:
+            #     column_slice = cube.get_data(
+            #         ii - self.dimx//2, ii + self.dimx//2 + 1,
+            #         start[1], stop[1] + 1,
+            #         0, cube.dimz, silent=True)
+            #         print data_slice.shape
+            #     return
 
 
-class HDFCube(orcs.core.HDFCube):
+            #
+            # slices = orcs.utils.image_streamer(
+            #     self.dimx, self.dimy, bsize, start=start,
+            #     stop=stop, strides=strides)
+            #
+            # for islice in slices:
+            #     yield self[islice[0], islice[1], :]
+            #
+            # for iquad in streamer:
+            #     iquad[np.nonzero(np.isnan(iquad))] = 0
+            #     dataset = list()
+            #     for iz in range(0, iquad.shape[2] - self.dimz):
+            #         dataset.append(iquad[:, :, iz:iz + self.dimz].flatten())
+            #
+            #     dataset_normed = dataset / np.max(np.array(dataset))
+            #     probas = self.proba.eval(
+            #         feed_dict={self.X: dataset_normed})
+            #     predictions = tf.argmax(probas, axis=1).eval()
 
-    def get_streamer(self, bsize=[16, 16], start=None, stop=None, strides=[1,1]):
 
-        slices = orcs.utils.image_streamer(
-            self.dimx, self.dimy, bsize, start=start,
-            stop=stop, strides=strides)
-
-        for islice in slices:
-            yield self[islice[0], islice[1], :]
+# class HDFCube(orcs.core.HDFCube):
+#
+#     def get_streamer(self, bsize=[16, 16], start=None, stop=None, strides=[1,1]):
