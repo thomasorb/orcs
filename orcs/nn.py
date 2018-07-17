@@ -41,7 +41,6 @@ import orb.utils.image
 
 import tensorflow as tf
 
-
 class NNWorker(orb.core.Tools):
 
     TRAIN_RATIO = 0.8
@@ -75,7 +74,24 @@ class NNWorker(orb.core.Tools):
         self.is_training = True
 
     def get_session(self):
-        return tf.Session(config=tf.ConfigProto(log_device_placement=True))
+        self.session = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+        return self.session
+
+    def init_session(self, is_training=False):
+        if is_training:
+            self.load_dataset()
+            self.is_training = True
+        self.generate_graph()
+        self.get_session()
+        if not is_training:
+            self.saver.restore(self.session, self.get_model_path())
+        else:
+            self.init.run(session=self.session)
+        self.nclasses = int(self.proba.shape[-1]) # get number of output classes
+        return self.session
+
+    def save_graph(self):
+        self.saver.save(self.session, self.get_model_path())
 
     def simulate(self):
         pass
@@ -190,18 +206,18 @@ class NNWorker(orb.core.Tools):
 
             rnd_idx = np.random.permutation(len(self.dataset['data_train']))
 
-            for ilabel in sorting_dict:
-                # get indexes corresponding to the label in the permuted dataset
-                label_idx = np.nonzero(
-                    self.dataset['label_train'][rnd_idx] == ilabel)[0]
-                # sort indexes corresponding to the label against the set
-                # specified in sorting_dict (high values first)
-                sorted_label_idx = label_idx[np.argsort(
-                    self.dataset[sorting_dict[ilabel] + '_train'][rnd_idx][label_idx])[::-1]]
-                # replace the unsorted indexes corresponding to the label with
-                # the sorted ones
-                rnd_idx[label_idx] = rnd_idx[sorted_label_idx]
-
+            if sorting_dict is not None:
+                for ilabel in sorting_dict:
+                    # get indexes corresponding to the label in the permuted dataset
+                    label_idx = np.nonzero(
+                        self.dataset['label_train'][rnd_idx] == ilabel)[0]
+                    # sort indexes corresponding to the label against the set
+                    # specified in sorting_dict (high values first)
+                    sorted_label_idx = label_idx[np.argsort(
+                        self.dataset[sorting_dict[ilabel] + '_train'][rnd_idx][label_idx])[::-1]]
+                    # replace the unsorted indexes corresponding to the label with
+                    # the sorted ones
+                    rnd_idx[label_idx] = rnd_idx[sorted_label_idx]
 
             n_batches = len(self.dataset['data_train']) // batch_size
             for batch_idx in np.array_split(rnd_idx, n_batches):
@@ -214,13 +230,8 @@ class NNWorker(orb.core.Tools):
                 y_batch = self.dataset['label_train'][batch_idx]
                 yield X_batch, y_batch
 
-        self.load_dataset()
-        self.is_training = True
-        self.generate_graph()
 
-
-        with self.get_session() as sess:
-            self.init.run()
+        with self.init_session(is_training=True):
 
             for epoch in range(n_epochs):
                 stime = time.time()
@@ -232,7 +243,7 @@ class NNWorker(orb.core.Tools):
                     self.dataset,
                     self.BATCH_SIZE, sorting_dict=sorting_dict):
                     progress.update(iloop, info='training')
-                    sess.run(self.training_op,
+                    self.session.run(self.training_op,
                              feed_dict={self.X: X_batch, self.y: y_batch})
                     iloop += 1
                 progress.end()
@@ -251,7 +262,7 @@ class NNWorker(orb.core.Tools):
                     time.time() - stime, epoch, acc_batch,
                     np.median(acc_val_list), np.std(acc_val_list)))
 
-                self.saver.save(sess, self.get_model_path())
+                self.save_graph()
                 logging.info('model saved as {}'.format(self.get_model_path()))
 
 
@@ -266,10 +277,9 @@ class NNWorker(orb.core.Tools):
         return predictions, probas
 
     def run_on_sample(self, sample):
-        self.generate_graph()
         sample = np.array(sample)
-        with self.get_session() as sess:
-            self.saver.restore(sess, self.get_model_path())
+        with self.init_session():
+
             probas_list = list()
             predictions_list = list()
             for ibatch in range(0, sample.shape[0], self.BATCH_SIZE):
@@ -284,13 +294,138 @@ class NNWorker(orb.core.Tools):
 
         return predictions, probas
 
+    def _run_on_cube(self, cube, zlimits=None, slices=None):
+        """cube can be an np.ndarray or an HDFCube instance
 
-    def run_in_cube(self, cube, start, stop):
+        :param slices: A list of slices [[slice(xmin, xmax), slice(ymin, ymax)],
+          ...]. Note that there is a limit on the number of slices that can be
+          passed.
+        """
 
-        SURFACE_THRESHOLD = 0.05
+        def box_streamer(box, dimz):
+            for ik in range(box.shape[2] - dimz):
+                yield box[..., ik:ik+dimz].flatten()
 
-        self.generate_graph()
+        def get_slices():
+            return orcs.utils.image_streamer(
+                cube.shape[0], cube.shape[1], [self.dimx, self.dimy])
 
+        SLICES_NB_THRESHOLD = 2e5 # max number of slices
+        HIGHEST_NB = 20
+
+        if slices is None:
+            slices_nb = ((cube.shape[0] - self.dimx)
+                         * (cube.shape[1] - self.dimy))
+            slices = get_slices()
+        else:
+            orb.utils.validate.is_iterable(slices, object_name='slices')
+            slices_nb = len(slices)
+
+        if slices_nb > SLICES_NB_THRESHOLD:
+            raise MemoryError('too much slices: {} > {}'.format(
+                slices_nb, SLICES_NB_THRESHOLD))
+
+        with self.init_session():
+
+            # init output dict
+            output = dict()
+            output['proba_max'] = list()
+            output['proba_median'] = list()
+            output['proba_min'] = list()
+            output['proba_argmax'] = list()
+            output['proba_highest'] = list()
+            output['proba_arghighest'] = list()
+
+
+            # run detection
+            progress = orb.core.ProgressBar(slices_nb)
+            iloop = 0
+            for islice in slices:
+                if not iloop%100:
+                    progress.update(iloop, 'running on slice {}/{}'.format(iloop, slices_nb))
+
+                if zlimits is None:
+                    idata_box = np.copy(cube[islice[0], islice[1], :])
+                else:
+                    idata_box = np.copy(cube[islice[0], islice[1], zlimits[0]:zlimits[1]])
+
+                idata_box[np.nonzero(np.isnan(idata_box))] = 0.
+                imedian = np.median(idata_box, axis=[0,1])
+                #imax = np.max(imedian)
+                imax = np.percentile(idata_box, 99.95)
+
+                idata_box -= imedian
+                idata_box /= imax
+
+                boxes = list()
+                for ibox in box_streamer(idata_box, self.dimz):
+                    boxes.append(ibox)
+                boxes = np.array(boxes)
+
+                probas_list = list()
+                for ibatch in range(0, boxes.shape[0], self.BATCH_SIZE):
+
+                    X_batch = boxes[ibatch:ibatch+self.BATCH_SIZE, ...]
+                    probas_list.append(np.array(self.proba.eval(
+                        feed_dict={self.X: X_batch})))
+
+                ## probas must be outputed for each label !!
+                iprobas = np.concatenate(probas_list)
+                iprobas_sorted = np.argsort(iprobas, axis=0)
+                output['proba_argmax'].append(iprobas_sorted[-1,:])
+                output['proba_max'].append(
+                    np.diag(iprobas[iprobas_sorted[-1,:]]))
+                output['proba_median'].append(
+                    np.diag(iprobas[iprobas_sorted[iprobas.shape[0]//2,:]]))
+                output['proba_min'].append(
+                    np.diag(iprobas[iprobas_sorted[0,:]]))
+                output['proba_arghighest'].append(
+                    iprobas_sorted[-HIGHEST_NB:,:])
+                output['proba_highest'].append(
+                    np.diagonal(iprobas[iprobas_sorted[-HIGHEST_NB:,:]],
+                                axis1=2))
+
+                iloop += 1
+            progress.end()
+
+        formatted_output = list()
+        for iclass in range(self.nclasses):
+            formatted_output.append(dict())
+            for ikey in output:
+                output[ikey] = np.array(output[ikey])
+                formatted_output[iclass][ikey] = list(output[ikey][...,iclass])
+        return formatted_output
+
+
+    def run_on_cube_targets(self, cube, targets):
+
+        cube._silent_load = True
+        zlimits = np.array(cube.get_filter_range_pix()).astype(int)
+
+        targets = np.array(targets)
+        if targets.shape[1] != 2:
+            raise TypeError('badly formatted target list. Must have shape (n, 2) but has shape {}'.format(targets.shape))
+
+        # check targets
+        xmin = orb.utils.validate.index(
+            targets[:,0] - self.dimx//2, 0, cube.dimx - self.dimx, clip=False)
+        xmax = orb.utils.validate.index(
+            targets[:,0] + self.dimx//2, 0, cube.dimx, clip=False)
+        ymin = orb.utils.validate.index(
+            targets[:,1] - self.dimy//2, 0, cube.dimy - self.dimy, clip=False)
+        ymax = orb.utils.validate.index(
+            targets[:,1] + self.dimy//2, 0, cube.dimy, clip=False)
+
+        slices = list()
+        for i in range(targets.shape[0]):
+            slices.append([slice(xmin[i], xmax[i]), slice(ymin[i], ymax[i])])
+
+        return self._run_on_cube(cube, zlimits=zlimits, slices=slices)
+
+
+    def run_on_cube(self, cube, start, stop):
+
+        # validate input
         orb.utils.validate.has_len(start, 2, object_name='start')
         orb.utils.validate.has_len(stop, 2, object_name='start')
 
@@ -299,61 +434,42 @@ class NNWorker(orb.core.Tools):
         orb.utils.validate.index(start[1] - self.dimy//2, 0, cube.dimy, clip=False)
         orb.utils.validate.index(stop[1] + self.dimy//2, 0, cube.dimy, clip=False)
 
-        data_xrange = range(start[0] - self.dimx//2, stop[0] + self.dimx//2)
-        data_yrange = range(start[1] - self.dimy//2, stop[1] + self.dimy//2)
+        # prepare data
+        data_xrange = range(start[0] - self.dimx//2, stop[0] + self.dimx//2 + 1)
+        data_yrange = range(start[1] - self.dimy//2, stop[1] + self.dimy//2 + 1)
 
-        probas_frame = np.empty((stop[0] - start[0], stop[1] - start[1]),
-                                dtype=float)
-        probas_frame.fill(np.nan)
-        with self.get_session() as sess:
-            self.saver.restore(sess, self.get_model_path())
+        zlimits = np.array(cube.get_filter_range_pix()).astype(int)
 
-            data_surface = len(data_xrange) * len(data_yrange)
-            if data_surface < SURFACE_THRESHOLD * cube.dimx * cube.dimy:
-                idata_slice = cube.get_data(data_xrange[0], data_xrange[-1],
-                                            data_yrange[0], data_yrange[-1],
-                                            0, cube.dimz, silent=False)
-                idata_slice[np.nonzero(np.isnan(idata_slice))] = 0.
+        data_surface = len(data_xrange) * len(data_yrange)
+        if data_surface > 0.05 * cube.dimx * cube.dimy:
+            raise NotImplementedError()
 
-                slices = orcs.utils.image_streamer(
-                    idata_slice.shape[0],
-                    idata_slice.shape[1],
-                    [self.dimx, self.dimy])
+        idata_slice = cube.get_data(data_xrange[0], data_xrange[-1],
+                                    data_yrange[0], data_yrange[-1],
+                                    zlimits[0],
+                                    zlimits[1] - self.dimz,
+                                    silent=False)
 
-                slices_nb = (idata_slice.shape[0] - self.dimx) * (idata_slice.shape[1] - self.dimy)
+        output = self._run_on_cube(idata_slice, zlimits=None)
 
-                progress = orb.core.ProgressBar(slices_nb)
-                iloop = 0
-                for islice in slices:
-                    iloop += 1
-                    progress.update(iloop, 'running on slice {}/{}'.format(iloop, slices_nb))
-                    idata_box = np.copy(idata_slice[islice[0], islice[1], :])
-                    idata_box -= np.nanmedian(idata_box, axis=[0,1])
-                    idata_box /= np.nanpercentile(idata_box, 99.995)
-                    boxes = list()
+        timestamp = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
+        for iclass in range(len(output)):
+            for ikey in output[iclass]:
+                output[iclass][ikey] = np.reshape(
+                    output[iclass][ikey],
+                    (stop[0] - start[0], stop[1] - start[1], -1))
+                orb.utils.io.write_fits(
+                    './{}/outmap.{}.{}.fits'.format(timestamp, iclass, ikey),
+                    output[iclass][ikey], overwrite=True)
 
 
 
-                    for ik in range(0, cube.dimz - self.dimz):
-                        boxes.append(np.copy(idata_box[:,:,ik:ik+self.dimz]).flatten())
-                    boxes = np.array(boxes)
 
-                    probas_list = list()
-                    for ibatch in range(0, boxes.shape[0], self.BATCH_SIZE):
-                        X_batch = boxes[ibatch:ibatch+self.BATCH_SIZE, ...]
-                        probas_list.append(np.array(self.proba.eval(
-                            feed_dict={self.X: X_batch})))
 
-                    ## probas must be outputed for each label !!
-                    probas = np.concatenate(probas_list)[:,1]
-                    probas_frame[islice[0].start,
-                                 islice[1].start] = np.max(probas)
-                progress.end()
 
-            else: raise NotImplementedError()
+        #
 
-        orb.utils.io.write_fits('probas.fits', probas_frame, overwrite=True)
-        return probas_frame
+        return output
 
 class SourceDetector3d(NNWorker):
 
@@ -425,7 +541,7 @@ class SourceDetector3d(NNWorker):
 
         # compute noise level
         if has_source:
-            noise = 1. #/ snr
+            noise = 1.
         else: noise = 1.
 
         # create continuum source in 3d
@@ -434,7 +550,7 @@ class SourceDetector3d(NNWorker):
         #src3d_continuum *= src2d_continuum
 
         # create sky background
-        spec_sky = 0
+        spec_sky = np.random.uniform(size=self.dimz) * 0.1#0
         X, Y = np.mgrid[:self.dimx:1., :self.dimy:1.]
         X /= float(self.dimx)
         Y /= float(self.dimy)
@@ -457,11 +573,7 @@ class SourceDetector3d(NNWorker):
             isrc3d += (np.random.standard_normal(src3d.shape) * noise)
 
             # normalization
-            #isrc3d += 1
-            #isrc3d -= np.median(np.median(isrc3d, axis=0), axis=0)
-            #isrc3d /= np.max(isrc3d)
-            #isrc3d += 1
-            #isrc3d /= np.std(isrc3d)
+            # no need since with a snr of 0 the output has zero mean and unit variance
 
             out_list.append({'data': isrc3d.astype(np.float32),
                              'snr': np.array(snr).astype(np.float32),
@@ -515,7 +627,7 @@ class SourceDetector3d(NNWorker):
                 #print output_shape
                 return input_layer, output_shape
 
-        FILTERS = 16
+        FILTERS = 8
 
         tf.reset_default_graph()
 
@@ -536,13 +648,13 @@ class SourceDetector3d(NNWorker):
             X_reshaped, [self.dimy, self.dimx, self.dimz, 1],
             FILTERS, max_pool=True, conv_stride=1)
 
-        pool3, pool3_shape = add_convolutional_layer(
-            pool3, pool3_shape,
-            FILTERS * 2, max_pool=True, conv_stride=1)
+        # pool3, pool3_shape = add_convolutional_layer(
+        #     pool3, pool3_shape,
+        #     FILTERS * 2, max_pool=True, conv_stride=1)
 
         pool3, pool3_shape = add_convolutional_layer(
             pool3, pool3_shape,
-            FILTERS * 4, max_pool=True, conv_stride=1,
+            FILTERS * 2, max_pool=True, conv_stride=1,
             flatten=True)
 
 

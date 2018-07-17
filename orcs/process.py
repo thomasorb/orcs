@@ -448,13 +448,8 @@ class SpectralCube(fit.HDFCube):
 
 
         # get filter range
-        if self.params.wavenumber:
-            filter_range_pix = orb.utils.spectrum.cm12pix(
-                self.params.base_axis, self.params.filter_range)
 
-        else:
-            filter_range_pix = orb.utils.spectrum.nm2pix(
-                self.params.base_axis, self.params.filter_range)
+        filter_range_pix = self.get_filter_range_pix()
 
         fr = max(filter_range_pix) - min(filter_range_pix)
         fr_b = int(float(fr) * FILTER_BORDER)

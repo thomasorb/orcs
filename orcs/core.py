@@ -511,12 +511,29 @@ class HDFCube(orb.core.HDFCube):
     def get_filter_range(self):
         """Return the range of the filter in the unit of the spectral
         cube as a tuple (min, max)"""
+        if 'filter_range' in self.params:
+            return self.params.filter_range
+
         _range = orb.utils.filters.get_filter_bandpass(
             self.params.filter_file_path)
         if self.params.wavenumber:
             _range = orb.utils.spectrum.nm2cm1(_range)
         return [min(_range), max(_range)]
 
+    def get_filter_range_pix(self):
+        """Return the range of the filter in channel index as a tuple
+        (min, max)"""
+        filter_range = self.get_filter_range()
+
+        if self.params.wavenumber:
+            _range = orb.utils.spectrum.cm12pix(
+                self.params.base_axis, filter_range)
+
+        else:
+            _range = orb.utils.spectrum.nm2pix(
+                self.params.base_axis, filter_range)
+
+        return [min(_range), max(_range)]
 
     def get_sky_lines(self):
         """Return the wavenumber/wavelength of the sky lines in the
