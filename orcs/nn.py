@@ -41,11 +41,148 @@ import orb.utils.image
 
 import tensorflow as tf
 
+class Background(orb.core.Tools):
+
+    ROI_BORDER_FACTOR = 0.05
+    BATCH_SIZE = 1000
+    BBOX_FACTOR = 3
+    
+    def __init__(self, shape, data_prefix=None):
+        
+        orb.utils.validate.is_iterable(shape, object_name='shape')
+        self.shape = np.array(shape).astype(int)
+
+        self.dimx = int(self.shape[0])
+        if len(shape) > 1:
+            if int(self.shape[1])&1: raise ValueError('shape[1] must be even')
+            self.dimy = int(self.shape[1])
+        if len(shape) > 2:
+            if int(self.shape[2])&1: raise ValueError('shape[2] must be even')
+            self.dimz = int(self.shape[2])
+        
+
+        data_suffix = '.'.join(self.shape.astype(str))
+        if data_prefix is None:
+            data_prefix = self.__class__.__name__ + '.' + data_suffix + '.'
+            
+        elif not isinstance(data_prefix, str):
+            raise TypeError('data_prefix must be a string')
+
+        self.data_prefix = orcs.core.DataFiles().get_path(data_prefix)
+        self.load_dataset()
+
+
+    def get_hdf_batch_name(self, index):
+        return '/batch_{:05d}'.format(index)
+    
+    def get_hdf_batch_index(self, name):
+        return int(name.split('_')[1])
+
+    def load_dataset(self):
+        with orb.utils.io.open_hdf5(
+                self.get_backgrounds_file_path(), 'r') as f:
+            self.batch_nb = 0
+            self.box_nb = 0
+            for iname in f:
+                iindex = self.get_hdf_batch_index(iname)
+                if self.batch_nb <= iindex:
+                    self.batch_nb = iindex + 1
+                self.box_nb += f[iname].shape[0]
+            logging.debug('batch number: {}'.format(self.batch_nb))
+            logging.debug('box number: {}'.format(self.box_nb))
+
+    def get_backgrounds_file_path(self):
+        return self.data_prefix + 'dataset.hdf5'
+
+    def extract(self, cube_path, batch_number, reset=False):
+        cube = orcs.core.HDFCube(cube_path)
+        zlim = cube.get_filter_range_pix()
+        zlim[0] += self.ROI_BORDER_FACTOR * cube.dimz
+        zlim[1] -= self.ROI_BORDER_FACTOR * cube.dimz + self.dimz * self.BBOX_FACTOR
+        
+        xlim = self.ROI_BORDER_FACTOR * cube.dimx, (1 - self.ROI_BORDER_FACTOR) * cube.dimx - self.dimx * self.BBOX_FACTOR
+        ylim = self.ROI_BORDER_FACTOR * cube.dimy, (1 - self.ROI_BORDER_FACTOR) * cube.dimy - self.dimy * self.BBOX_FACTOR
+
+        if reset:
+            open_mode = 'w'
+            self.batch_nb = 0
+        else: open_mode = 'a'
+        
+        with orb.utils.io.open_hdf5(self.get_backgrounds_file_path(), open_mode) as f:
+
+            first_index = int(self.batch_nb)
+            logging.debug('first index: {}'.format(first_index))
+
+            boxes = list()
+            for ibatch in range(batch_number):
+                progress = orb.core.ProgressBar(self.BATCH_SIZE * self.BBOX_FACTOR**3)
+                batch = list()
+                for ii in range(self.BATCH_SIZE):
+                    if not ii % (self.BATCH_SIZE // 100):
+                        progress.update(ii*self.BBOX_FACTOR**3, info='extracting batch {}/{}: {}/{}'.format(
+                            ibatch, batch_number,
+                            ii*self.BBOX_FACTOR**3,
+                            self.BATCH_SIZE*self.BBOX_FACTOR**3))
+
+                    valid = False
+                    while not valid:
+                        xr = int(np.random.uniform(xlim[0], xlim[1]))
+                        yr = int(np.random.uniform(ylim[0], ylim[1]))
+                        zr = int(np.random.uniform(zlim[0], zlim[1]))
+                        bbox = cube.get_data(xr, xr + self.dimx * self.BBOX_FACTOR,
+                                             yr, yr + self.dimy * self.BBOX_FACTOR,
+                                             zr, zr + self.dimz * self.BBOX_FACTOR,
+                                             silent=True)
+                        if not np.any(np.isnan(bbox)): valid = True
+
+                    iboxes = list()
+                    for iib in range(self.BBOX_FACTOR):
+                        for ijb in range(self.BBOX_FACTOR):
+                            for ikb in range(self.BBOX_FACTOR):
+                                ibox = bbox[iib*self.dimx:(iib + 1)*self.dimx,
+                                            ijb*self.dimy:(ijb + 1)*self.dimy,
+                                            ikb*self.dimz:(ikb + 1)*self.dimz]
+                        
+                                ibox -= np.median(ibox, axis=[0,1])
+                                ibox /= np.std(ibox[(ibox < np.percentile(ibox, 98))
+                                                    * (ibox > np.percentile(ibox, 2))])
+                                iboxes.append(ibox)
+                    batch += iboxes
+                progress.end()
+                print np.array(batch).shape
+                f.create_dataset(
+                    self.get_hdf_batch_name(ibatch + first_index),
+                    data=np.array(batch))
+                
+        self.load_dataset()
+    
+    def get_batch(self, index):
+        if index >= self.batch_nb: raise ValueError('index must be < {}'.format(self.batch_nb))
+        with orb.utils.io.open_hdf5(
+                self.get_backgrounds_file_path(), 'r') as f:
+            return f[self.get_hdf_batch_name(index)][:]
+
+    def get_random_batch(self):
+        return self.get_batch(np.random.randint(self.batch_nb))
+
+    def get_random_box(self):
+        rbatch = np.random.randint(self.batch_nb)
+        with orb.utils.io.open_hdf5(
+                self.get_backgrounds_file_path(), 'r') as f:
+            rbox = np.random.randint(f[self.get_hdf_batch_name(rbatch)].shape[0])
+            outbox = f[self.get_hdf_batch_name(rbatch)][rbox, ...]
+            # returned box is flipped randomly
+            irot = np.random.randint(4)
+            if irot == 0: return outbox
+            elif irot == 1: return np.flip(outbox, 0)
+            elif irot == 2: return np.flip(outbox, 1)
+            elif irot == 3: return np.flip(np.flip(outbox, 0), 1)
+            else: raise ValueError('bad rotation type')
+
+
 class NNWorker(orb.core.Tools):
 
     TRAIN_RATIO = 0.8
-    VALID_RATIO = 0.1
-    TEST_RATIO = 0.1
     BATCH_SIZE = 1000
 
     def __init__(self, shape, data_prefix=None):
@@ -57,7 +194,7 @@ class NNWorker(orb.core.Tools):
         self.data_prefix = orcs.core.DataFiles().get_path(data_prefix)
 
         orb.utils.validate.is_iterable(shape, object_name='shape')
-        self.shape = shape
+        self.shape = np.array(shape).astype(int)
 
         if int(self.shape[0])&1: raise ValueError('shape[0] must be even')
         self.dimx = int(self.shape[0])
@@ -67,11 +204,11 @@ class NNWorker(orb.core.Tools):
         if len(shape) > 2:
             if int(self.shape[2])&1: raise ValueError('shape[2] must be even')
             self.dimz = int(self.shape[2])
-        if self.TRAIN_RATIO + self.VALID_RATIO + self.TEST_RATIO != 1:
-            raise ValueError('TRAIN_RATIO + VALID_RATIO + TEST_RATIO must equal 1')
+        if self.TRAIN_RATIO >= 1:
+            raise ValueError('TRAIN_RATIO must be < 1')
 
         self.dataset = None
-        self.is_training = True
+        self.is_training = False
 
     def get_session(self):
         self.session = tf.Session(config=tf.ConfigProto(log_device_placement=True))
@@ -81,6 +218,9 @@ class NNWorker(orb.core.Tools):
         if is_training:
             self.load_dataset()
             self.is_training = True
+        else:
+            self.is_training = False
+            
         self.generate_graph()
         self.get_session()
         if not is_training:
@@ -120,10 +260,8 @@ class NNWorker(orb.core.Tools):
             if 'label' not in inf.keys(): raise ValueError('label must be in dataset')
             size = inf['data'].shape[0]
             train_slice = slice(0, int(size * self.TRAIN_RATIO))
-            valid_slice = slice(
-                train_slice.stop, train_slice.stop + int(size * self.VALID_RATIO))
-            test_slice = slice(valid_slice.stop, size)
-
+            valid_slice = slice(train_slice.stop, size)
+            
             logging.info('dataset size: {}'.format(size))
             for ikey in inf.keys():
                 idat = inf[ikey][:]
@@ -131,19 +269,15 @@ class NNWorker(orb.core.Tools):
                 if np.any(np.isinf(idat)): raise Exception('inf in data')
                 train_key = ikey + '_train'
                 valid_key = ikey + '_valid'
-                test_key = ikey + '_test'
-
+                
                 self.dataset[train_key] = np.squeeze(idat[train_slice,:])
                 self.dataset[valid_key] = np.squeeze(idat[valid_slice,:])
-                self.dataset[test_key] = np.squeeze(idat[test_slice,:])
-
-                logging.info('{} shape: {}'.format(
+                
+                logging.debug('{} shape: {}'.format(
                     train_key, self.dataset[train_key].shape))
-                logging.info('{} shape: {}'.format(
+                logging.debug('{} shape: {}'.format(
                     valid_key, self.dataset[valid_key].shape))
-                logging.info('{} shape: {}'.format(
-                    test_key, self.dataset[test_key].shape))
-
+                
     def generate_dataset(self, size, rotate=True, noise_samples=10):
         if not isinstance(size, int): raise TypeError('size must be an int')
         if not size > 0: raise ValueError('size must be > 0')
@@ -171,8 +305,7 @@ class NNWorker(orb.core.Tools):
                     elif irot == 2:
                         rotated_sim_dict['data'] = np.flip(sim_dict['data'], 1)
                     elif irot == 3:
-                        rotated_sim_dict['data'] = np.flip(sim_dict['data'], 0)
-                        rotated_sim_dict['data'] = np.flip(sim_dict['data'], 1)
+                        rotated_sim_dict['data'] = np.flip(np.flip(sim_dict['data'], 0), 1)
 
                     for ikey in sim_dict:
                         if first_sim:
@@ -194,7 +327,7 @@ class NNWorker(orb.core.Tools):
 
     def train(self, n_epochs=4, sorting_dict=None):
 
-        def shuffle_batch(dataset, batch_size, sorting_dict=None):
+        def shuffle_batch(dataset, batch_size, sorting_dict=None, datatype='train'):
             """
             :param sorting_dict: must be a dictionary giving for each label its
               sorting key (e.g. {1:'snr'} to sort label 1 by snr (), if a 'snr'
@@ -204,84 +337,95 @@ class NNWorker(orb.core.Tools):
                 if not isinstance(sorting_dict, dict):
                     raise TypeError('sorting_dict must be a dict')
 
-            rnd_idx = np.random.permutation(len(self.dataset['data_train']))
+            rnd_idx = np.random.permutation(len(self.dataset['data_' + datatype]))
 
             if sorting_dict is not None:
                 for ilabel in sorting_dict:
                     # get indexes corresponding to the label in the permuted dataset
                     label_idx = np.nonzero(
-                        self.dataset['label_train'][rnd_idx] == ilabel)[0]
+                        self.dataset['label_' + datatype][rnd_idx] == ilabel)[0]
                     # sort indexes corresponding to the label against the set
                     # specified in sorting_dict (high values first)
                     sorted_label_idx = label_idx[np.argsort(
-                        self.dataset[sorting_dict[ilabel] + '_train'][rnd_idx][label_idx])[::-1]]
+                        self.dataset[sorting_dict[ilabel]
+                                     + '_' + datatype][rnd_idx][label_idx])[::-1]]
                     # replace the unsorted indexes corresponding to the label with
                     # the sorted ones
                     rnd_idx[label_idx] = rnd_idx[sorted_label_idx]
 
-            n_batches = len(self.dataset['data_train']) // batch_size
+            n_batches = len(self.dataset['data_' + datatype]) // batch_size
             for batch_idx in np.array_split(rnd_idx, n_batches):
                 if sorting_dict is not None:
                     # each batch is shuffled again because some labels have been
                     # sorted in the batch
                     np.random.shuffle(batch_idx)
 
-                X_batch = self.dataset['data_train'][batch_idx]
-                y_batch = self.dataset['label_train'][batch_idx]
+                X_batch = self.dataset['data_' + datatype][batch_idx]
+                y_batch = self.dataset['label_' + datatype][batch_idx]
                 yield X_batch, y_batch
 
+
+        losses = list()
+        accs = list()
 
         with self.init_session(is_training=True):
 
             for epoch in range(n_epochs):
-                stime = time.time()
-
+                
                 progress = orb.core.ProgressBar(
                     len(self.dataset['data_train']) // self.BATCH_SIZE)
                 iloop = 1
                 for X_batch, y_batch in shuffle_batch(
                     self.dataset,
                     self.BATCH_SIZE, sorting_dict=sorting_dict):
-                    progress.update(iloop, info='training')
-                    self.session.run(self.training_op,
+                    _, loss, acc = self.session.run([self.training_op, self.loss, self.accuracy],
                              feed_dict={self.X: X_batch, self.y: y_batch})
+                    losses.append(loss)
+                    accs.append(acc)
+                    progress.update(iloop, info='loss: {:.3f}, acc: {:.3f}'.format(
+                        loss, acc))
+                
                     iloop += 1
                 progress.end()
 
-                acc_batch = self.accuracy.eval(
-                    feed_dict={self.X: X_batch, self.y: y_batch})
-
+                # check validation set accuracy
+                stime = time.time()
                 acc_val_list = list()
-
                 for X_batch, y_batch in shuffle_batch(
-                    self.dataset,
-                    self.BATCH_SIZE, sorting_dict=sorting_dict):
+                        self.dataset,
+                        self.BATCH_SIZE, sorting_dict=sorting_dict,
+                        datatype='valid'):
                     acc_val_list.append(self.accuracy.eval(
                         feed_dict={self.X: X_batch, self.y: y_batch}))
-                logging.info('training time: {} epoch {}: batch accuracy: {}, val accuracy: {} [{}]'.format(
-                    time.time() - stime, epoch, acc_batch,
+                logging.info('validation time: {} epoch {}: validation accuracy: {} [{}]'.format(
+                    time.time() - stime, epoch,
                     np.median(acc_val_list), np.std(acc_val_list)))
+
 
                 self.save_graph()
                 logging.info('model saved as {}'.format(self.get_model_path()))
 
+        return losses, accs
 
-    def test(self):
-        self.load_dataset()
-        predictions, probas = self.run_on_sample(self.dataset['data_test'])
+    # def test(self):
+    #     self.load_dataset()
+    #     predictions, probas = self.run_on_sample(self.dataset['data_test'])
 
-        diff = (predictions - self.dataset['label_test']) != 0
-        logging.info('number of predictions: {}'.format(diff.size))
-        logging.info('number of errors: {}'.format(np.sum(diff)))
+    #     diff = (predictions - self.dataset['label_test']) != 0
+    #     logging.info('number of predictions: {}'.format(diff.size))
+    #     logging.info('number of errors: {}'.format(np.sum(diff)))
 
-        return predictions, probas
+    #     return predictions, probas
 
     def run_on_sample(self, sample):
+        """Note that there is no standardization of the sample.
+        """
         sample = np.array(sample)
         with self.init_session():
 
             probas_list = list()
             predictions_list = list()
+            
             for ibatch in range(0, sample.shape[0], self.BATCH_SIZE):
                 X_batch = sample[ibatch:ibatch+self.BATCH_SIZE, ...]
                 probas_list.append(np.array(self.proba.eval(
@@ -294,7 +438,7 @@ class NNWorker(orb.core.Tools):
 
         return predictions, probas
 
-    def _run_on_cube(self, cube, zlimits=None, slices=None):
+    def _run_on_cube(self, cube, zlimits=None, slices=None, record_proba=False):
         """cube can be an np.ndarray or an HDFCube instance
 
         :param slices: A list of slices [[slice(xmin, xmax), slice(ymin, ymax)],
@@ -312,6 +456,7 @@ class NNWorker(orb.core.Tools):
 
         SLICES_NB_THRESHOLD = 2e5 # max number of slices
         HIGHEST_NB = 20
+        SKYBOX_SIZE = 2 # must be even 
 
         if slices is None:
             slices_nb = ((cube.shape[0] - self.dimx)
@@ -325,6 +470,8 @@ class NNWorker(orb.core.Tools):
             raise MemoryError('too much slices: {} > {}'.format(
                 slices_nb, SLICES_NB_THRESHOLD))
 
+        timestamp = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
+
         with self.init_session():
 
             # init output dict
@@ -335,7 +482,9 @@ class NNWorker(orb.core.Tools):
             output['proba_argmax'] = list()
             output['proba_highest'] = list()
             output['proba_arghighest'] = list()
-
+            output['proba_highest_sum'] = list()
+            if record_proba:
+                output['proba_path'] = list()
 
             # run detection
             progress = orb.core.ProgressBar(slices_nb)
@@ -346,17 +495,26 @@ class NNWorker(orb.core.Tools):
 
                 if zlimits is None:
                     idata_box = np.copy(cube[islice[0], islice[1], :])
+                    zmin = zlimits[0]
                 else:
                     idata_box = np.copy(cube[islice[0], islice[1], zlimits[0]:zlimits[1]])
+                    zmin = 0
 
                 idata_box[np.nonzero(np.isnan(idata_box))] = 0.
-                imedian = np.median(idata_box, axis=[0,1])
-                #imax = np.max(imedian)
-                imax = np.percentile(idata_box, 99.95)
+                isky_box = np.copy(idata_box)
+                isky_box[self.dimx//2 - SKYBOX_SIZE//2:
+                         self.dimx//2 + SKYBOX_SIZE//2,
+                         self.dimy//2 - SKYBOX_SIZE//2:
+                         self.dimy//2 + SKYBOX_SIZE//2] = np.nan
 
-                idata_box -= imedian
-                idata_box /= imax
-
+                # standardization
+                idata_box -= np.nanmedian(isky_box, axis=[0,1])
+                idata_box -= np.median(idata_box)
+                # idata_box -= np.median(idata_box, axis=[0,1])
+                idata_box /= np.percentile(idata_box, 99)
+#                idata_box *= 2
+                
+                
                 boxes = list()
                 for ibox in box_streamer(idata_box, self.dimz):
                     boxes.append(ibox)
@@ -371,8 +529,9 @@ class NNWorker(orb.core.Tools):
 
                 ## probas must be outputed for each label !!
                 iprobas = np.concatenate(probas_list)
+
                 iprobas_sorted = np.argsort(iprobas, axis=0)
-                output['proba_argmax'].append(iprobas_sorted[-1,:])
+                output['proba_argmax'].append(iprobas_sorted[-1,:] + zmin)
                 output['proba_max'].append(
                     np.diag(iprobas[iprobas_sorted[-1,:]]))
                 output['proba_median'].append(
@@ -380,10 +539,24 @@ class NNWorker(orb.core.Tools):
                 output['proba_min'].append(
                     np.diag(iprobas[iprobas_sorted[0,:]]))
                 output['proba_arghighest'].append(
-                    iprobas_sorted[-HIGHEST_NB:,:])
+                    iprobas_sorted[-HIGHEST_NB:,:] + zmin)
                 output['proba_highest'].append(
                     np.diagonal(iprobas[iprobas_sorted[-HIGHEST_NB:,:]],
                                 axis1=2))
+                output['proba_highest_sum'].append(
+                    np.sum(output['proba_highest'][-1], axis=0))
+
+                if record_proba:
+
+                    iproba_paths = list()
+                    for iclass in range(self.nclasses):
+                        iproba_path = './{}/proba.{}.{}.fits'.format(
+                            timestamp, iclass, iloop)
+                        iproba_paths.append(iproba_path)
+                        orb.utils.io.write_fits(
+                            iproba_path,
+                            iprobas[:, iclass], overwrite=True)
+                    output['proba_path'].append(iproba_paths)
 
                 iloop += 1
             progress.end()
@@ -397,12 +570,16 @@ class NNWorker(orb.core.Tools):
         return formatted_output
 
 
-    def run_on_cube_targets(self, cube, targets):
+    def run_on_cube_targets(self, cube, targets, record_proba=False):
 
         cube._silent_load = True
-        zlimits = np.array(cube.get_filter_range_pix()).astype(int)
-
-        targets = np.array(targets)
+        zlimits = np.round(np.array(cube.get_filter_range_pix())).astype(int)
+        zlimits[0] += cube.dimz * 0.02
+        zlimits[1] -= cube.dimz * 0.02
+        
+        logging.debug('computation restricted to filter limits: {}'.format(zlimits))
+        
+        targets = np.round(np.array(targets))
         if targets.shape[1] != 2:
             raise TypeError('badly formatted target list. Must have shape (n, 2) but has shape {}'.format(targets.shape))
 
@@ -420,7 +597,8 @@ class NNWorker(orb.core.Tools):
         for i in range(targets.shape[0]):
             slices.append([slice(xmin[i], xmax[i]), slice(ymin[i], ymax[i])])
 
-        return self._run_on_cube(cube, zlimits=zlimits, slices=slices)
+        return self._run_on_cube(cube, zlimits=zlimits, slices=slices,
+                                 record_proba=record_proba)
 
 
     def run_on_cube(self, cube, start, stop):
@@ -462,38 +640,41 @@ class NNWorker(orb.core.Tools):
                     './{}/outmap.{}.{}.fits'.format(timestamp, iclass, ikey),
                     output[iclass][ikey], overwrite=True)
 
-
-
-
-
-
-        #
-
         return output
 
 class SourceDetector3d(NNWorker):
 
     DIMX = 8  # x size of the box
-    DIMY = 8  # y size of the box
+    DIMY = 8 # y size of the box
     DIMZ = 8  # number of channels in the box
-    SOURCE_FWHM = [2.5, 3.5]  # source FWHM
-    SINC_WIDTH = [0.9,1.1]  # SINC FWHM = 1.20671 * WIDTH
+    SOURCE_FWHM = [2.5, 4.]  # source FWHM
+    SOURCE_BETA = [3., 4.] # source moffat beta parameter
+    SINC_WIDTH = [0.9, 1.1]  # SINC FWHM = 1.20671 * WIDTH
     TIPTILT = np.pi / 8
-    SNR = (2.5, 30)  # min max SNR (log uniform)
+    CHANNEL_R = 1 # uniform distribution of channel
+    POS_R = 1 # uniform distribution of the position
+    SNR = (2.8, 30)  # min max SNR (log uniform)
 
+    # hyperparameters
+    FILTERS = 16
+    LEARNING_RATE = 0.0008 # 0.001 by default for AdamOptimizer
+    EPSILON = 1e-8 # 1e-8 by default for AdamOptimizer
+    BETA1 = 0.9 # 0.9
+    BETA2 = 0.999 # 0.999
+    HIDDEN_DROPOUT_RATE = 0. # dropout rate of hidden layers (usually around 0.5) (Srivastava 2014)
+    INPUT_DROPOUT_RATE = 0. # dropout rate of input unit (better if close to 1) (Srivastava 2014)
+    KERNEL_SIZE = 2
+    
     def __init__(self):
 
         NNWorker.__init__(self, (self.DIMX, self.DIMY, self.DIMZ))
-
+        self.background = Background(self.shape)
+        
     def simulate(self, snr=None, samples=1):
 
-        dxr = self.dimx/2. - 0.5 + np.random.uniform(-0.5, 0.5)
-        dyr = self.dimy/2. - 0.5 + np.random.uniform(-0.5, 0.5)
-
+        # simulate source
         src3d = np.zeros(self.shape, dtype=np.float32)
-        #src3d_continuum = np.zeros(self.shape, dtype=np.float32)
-        src3d_sky = np.zeros(self.shape, dtype=np.float32)
-
+ 
         if snr is None:
             has_source = np.random.randint(0, 2)
             if has_source: # log uniform distribution of the SNR
@@ -507,29 +688,24 @@ class SourceDetector3d(NNWorker):
             has_source = 1
             snr = float(snr)
 
-        source_fwhmr = np.random.uniform(self.SOURCE_FWHM[0], self.SOURCE_FWHM[1])
-
-        src2d_normalized = orb.cutils.gaussian_array2d(
-            0, 1,
-            dxr, dyr,
-            source_fwhmr,
-            self.dimx, self.dimy)
-        src2d_normalized = src2d_normalized.reshape((self.dimx, self.dimy, 1))
-
-        # emission line source
         if has_source:
-            src2d = np.copy(src2d_normalized)
-        else:
-            src2d = 0.
+            # emission line source
+            dxr = self.dimx // 2. - 0.5 + np.random.uniform(-self.POS_R, self.POS_R)
+            dyr = self.dimy // 2. - 0.5 + np.random.uniform(-self.POS_R, self.POS_R)
+            source_fwhmr = np.random.uniform(self.SOURCE_FWHM[0], self.SOURCE_FWHM[1])
+            source_betar = np.random.uniform(self.SOURCE_BETA[0], self.SOURCE_BETA[1])
+            src2d = orb.cutils.moffat_array2d(
+                0, 1,
+                dxr, dyr,
+                source_fwhmr,
+                source_betar,
+                self.dimx, self.dimy)
+            src2d = src2d.reshape((self.dimx, self.dimy, 1))
 
-        # continuum source
-        #source_backgroundr = np.random.uniform(0., 0.1) *  self.SKY_BACKGROUND
-        #src2d_continuum = np.copy(src2d_normalized) * source_backgroundr
-
-        # emission line spectrum
-        if has_source:
+            # simulate emission line spectrum
             sinc_widthr = np.random.uniform(self.SINC_WIDTH[0], self.SINC_WIDTH[1])
-            channelr = (np.random.uniform(-0.5, 0.5) + self.dimz / 2. - 0.5)
+            channelr = (np.random.uniform(-self.CHANNEL_R, self.CHANNEL_R)
+                        + self.dimz // 2. - 0.5)
             spec_emissionline = orb.utils.spectrum.sinc1d(
                 np.arange(self.dimz),
                 0, snr, channelr,
@@ -539,38 +715,29 @@ class SourceDetector3d(NNWorker):
             src3d += spec_emissionline
             src3d *= src2d
 
-        # compute noise level
-        if has_source:
-            noise = 1.
-        else: noise = 1.
-
-        # create continuum source in 3d
-        #spec_continuum = np.random.uniform(0.9, 1.1, self.dimz)
-        #src3d_continuum += spec_continuum
-        #src3d_continuum *= src2d_continuum
-
-        # create sky background
-        spec_sky = np.random.uniform(size=self.dimz) * 0.1#0
-        X, Y = np.mgrid[:self.dimx:1., :self.dimy:1.]
-        X /= float(self.dimx)
-        Y /= float(self.dimy)
-
-        sky2d = (1 + X * np.sin(np.random.uniform(-self.TIPTILT, self.TIPTILT))
-                 + Y * np.sin(np.random.uniform(-self.TIPTILT,self.TIPTILT)))
-        #sky2d -= np.mean(sky2d)
-        sky2d = sky2d.reshape((self.dimx, self.dimy, 1))
-        src3d_sky += spec_sky
-        src3d_sky *= sky2d
-
-        # merge all
-        src3d += src3d_sky #+ src3d_continuum
-
-        # add noise
+        # add noise +  random background
         out_list = list()
         for isample in range(samples):
             isrc3d = np.copy(src3d)
 
-            isrc3d += (np.random.standard_normal(src3d.shape) * noise)
+            # if has_source:
+                # add source noise
+                # source_noise = np.sqrt(src2d)
+                # isrc3d += (np.random.standard_normal(src3d.shape) * source_noise)
+
+            # add random background
+            # X, Y = np.mgrid[:self.dimx:1., :self.dimy:1.]
+            # X /= float(self.dimx)
+            # Y /= float(self.dimy)
+
+            # sky2d = (1 + X * np.sin(np.random.uniform(-self.TIPTILT, self.TIPTILT))
+            #          + Y * np.sin(np.random.uniform(-self.TIPTILT,self.TIPTILT))).reshape(
+            #          (self.dimx, self.dimy, 1))
+            # sky2d -= np.median(sky2d)
+
+            isky3d = self.background.get_random_box() #+ sky2d
+            isky3d /= np.std(isky3d)
+            isrc3d += isky3d
 
             # normalization
             # no need since with a snr of 0 the output has zero mean and unit variance
@@ -585,29 +752,25 @@ class SourceDetector3d(NNWorker):
 
     def generate_graph(self):
 
-        def add_convolutional_layer(input_layer, input_shape,
-                                    filters, kernel_size=2,
+        def add_dropout_layer(input_layer, dropout_rate):
+            with tf.name_scope('dropout_layer'):
+                return tf.layers.dropout(
+                    input_layer, rate=dropout_rate,
+                    training=self.is_training, name='dropout')
+
+        
+        def add_convolutional_layer(input_layer,
+                                    filters, kernel_size,
                                     padding='SAME',
                                     max_pool=True,
                                     flatten=False,
                                     conv_stride=1):
 
+            logging.debug('shape before entering convolution layer: {}'.format(input_layer.shape))
+
             POOL_STRIDE = 2
-            if max_pool:
-                total_stride = POOL_STRIDE * conv_stride
-            else:
-                total_stride = 1 * conv_stride
 
-            #print input_shape, total_stride
-
-            if len(input_shape) != 4:
-                raise TypeError('input shape must be a tuple (dimx, dimy, dimz, filters)')
-            output_shape = [input_shape[0]//total_stride,
-                            input_shape[1]//total_stride,
-                            input_shape[2]//total_stride,
-                            filters]
-
-            with tf.name_scope('convolution_layer'):
+            with tf.name_scope('convolutional_layer'):
                 input_layer = tf.layers.conv3d(input_layer, filters=filters,
                                          kernel_size=kernel_size,
                                          strides=conv_stride, padding=padding,
@@ -618,50 +781,52 @@ class SourceDetector3d(NNWorker):
                                            ksize=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
                                            strides=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
                                            padding=padding)
+
                 if flatten:
+                    logging.debug('convolutional layer before flattening shape: {}'.format(input_layer.shape))
                     input_layer = tf.reshape(
                         input_layer,
-                        shape=[-1, np.multiply.reduce(output_shape)])
-                    output_shape = [np.multiply.reduce(output_shape)]
+                        shape=[-1, orcs.utils.get_layer_size(input_layer)])
 
-                #print output_shape
-                return input_layer, output_shape
 
-        FILTERS = 8
+            logging.debug('convolutional layer output shape: {}'.format(input_layer.shape))
+            return input_layer
 
         tf.reset_default_graph()
-
-        #is_training = tf.placeholder(tf.bool, shape = (), name='is_training')
-
 
         with tf.name_scope('inputs'):
             self.X = tf.placeholder(
                 tf.float32,
                 shape=(None, np.multiply.reduce(self.shape)),
                 name='X')
-            X_reshaped= tf.reshape(
+            pool3= tf.reshape(
                 self.X,
                 shape=[-1, self.dimx, self.dimy, self.dimz, 1])
             self.y = tf.placeholder(tf.int32, shape=(None), name='y')
 
-        pool3, pool3_shape = add_convolutional_layer(
-            X_reshaped, [self.dimy, self.dimx, self.dimz, 1],
-            FILTERS, max_pool=True, conv_stride=1)
+        pool3 = add_dropout_layer(pool3, self.INPUT_DROPOUT_RATE)
 
-        # pool3, pool3_shape = add_convolutional_layer(
-        #     pool3, pool3_shape,
-        #     FILTERS * 2, max_pool=True, conv_stride=1)
-
-        pool3, pool3_shape = add_convolutional_layer(
-            pool3, pool3_shape,
-            FILTERS * 2, max_pool=True, conv_stride=1,
+        pool3 = add_convolutional_layer(
+            pool3,
+            self.FILTERS, self.KERNEL_SIZE, max_pool=True, conv_stride=1)
+        pool3 = add_dropout_layer(pool3, self.HIDDEN_DROPOUT_RATE)
+        
+        pool3 = add_convolutional_layer(
+            pool3, 
+            self.FILTERS * 2, self.KERNEL_SIZE, max_pool=True, conv_stride=1)
+        pool3 = add_dropout_layer(pool3, self.HIDDEN_DROPOUT_RATE)
+        
+        pool3 = add_convolutional_layer(
+            pool3,
+            self.FILTERS * 4, self.KERNEL_SIZE, max_pool=True, conv_stride=1,
             flatten=True)
-
+        pool3 = add_dropout_layer(pool3, self.HIDDEN_DROPOUT_RATE)
 
         with tf.name_scope("fc4"):
             fc4 = tf.layers.dense(
-                pool3, pool3_shape[0] // 2,
+                pool3, pool3.shape[-1],
                 activation= tf.nn.relu, name="fc4")
+            fc4 = add_dropout_layer(fc4, self.HIDDEN_DROPOUT_RATE)
 
         with tf.name_scope("output"):
             logits = tf.layers.dense(fc4, 2, name="output")
@@ -670,9 +835,13 @@ class SourceDetector3d(NNWorker):
         with tf.name_scope("train"):
             xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
                 logits=logits, labels=self.y)
-            loss = tf.reduce_mean(xentropy)
-            optimizer = tf.train.AdamOptimizer()
-            self.training_op = optimizer.minimize(loss)
+            self.loss = tf.reduce_mean(xentropy)
+            optimizer = tf.train.AdamOptimizer(
+                learning_rate=self.LEARNING_RATE,
+                epsilon=self.EPSILON,
+                beta1=self.BETA1,
+                beta2=self.BETA2)
+            self.training_op = optimizer.minimize(self.loss)
 
         with tf.name_scope("eval"):
             correct = tf.nn.in_top_k(logits, self.y, 1)
@@ -683,39 +852,3 @@ class SourceDetector3d(NNWorker):
             self.saver = tf.train.Saver()
 
 
-
-            # COLUMNS_PER_SLICE = 20
-            # slice_range = np.arange(start[0], stop[0], COLUMNS_PER_SLICE)
-            # #yrange = np.arange(start[1] - self.dimx//2, stop[1] + self.dimx//2)
-            # for islice in slice_range:
-            #     column_slice = cube.get_data(
-            #         ii - self.dimx//2, ii + self.dimx//2 + 1,
-            #         start[1], stop[1] + 1,
-            #         0, cube.dimz, silent=True)
-            #         print data_slice.shape
-            #     return
-
-
-            #
-            # slices = orcs.utils.image_streamer(
-            #     self.dimx, self.dimy, bsize, start=start,
-            #     stop=stop, strides=strides)
-            #
-            # for islice in slices:
-            #     yield self[islice[0], islice[1], :]
-            #
-            # for iquad in streamer:
-            #     iquad[np.nonzero(np.isnan(iquad))] = 0
-            #     dataset = list()
-            #     for iz in range(0, iquad.shape[2] - self.dimz):
-            #         dataset.append(iquad[:, :, iz:iz + self.dimz].flatten())
-            #
-            #     dataset_normed = dataset / np.max(np.array(dataset))
-            #     probas = self.proba.eval(
-            #         feed_dict={self.X: dataset_normed})
-            #     predictions = tf.argmax(probas, axis=1).eval()
-
-
-# class HDFCube(orcs.core.HDFCube):
-#
-#     def get_streamer(self, bsize=[16, 16], start=None, stop=None, strides=[1,1]):

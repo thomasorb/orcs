@@ -373,3 +373,12 @@ def image_streamer(dimx, dimy, bsize, start=None, stop=None,
     for ii in range(start[0], stop[0], strides[0]):
         for ij in range(start[1], stop[1], strides[1]):
             yield slice(ii, ii+bsize[0]), slice(ij, ij+bsize[1])
+
+
+def get_layer_size(layer):
+    """Return the size of a tensorflow layer considering only one element in the
+    batch.
+    Must be used during graph initialization.
+    """
+    return np.multiply.reduce(
+        np.array(layer.get_shape().as_list())[1:])
