@@ -149,7 +149,6 @@ class Background(orb.core.Tools):
                                 iboxes.append(ibox)
                     batch += iboxes
                 progress.end()
-                print np.array(batch).shape
                 f.create_dataset(
                     self.get_hdf_batch_name(ibatch + first_index),
                     data=np.array(batch))
@@ -208,7 +207,6 @@ class NNWorker(orb.core.Tools):
             raise ValueError('TRAIN_RATIO must be < 1')
 
         self.dataset = None
-        self.is_training = False
 
     def get_session(self):
         self.session = tf.Session(config=tf.ConfigProto(log_device_placement=True))
@@ -216,10 +214,8 @@ class NNWorker(orb.core.Tools):
 
     def init_session(self, is_training=False):
         if is_training:
-            self.load_dataset()
-            self.is_training = True
-        else:
-            self.is_training = False
+            if self.dataset is None:
+                raise StandardError('dataset must be loaded first')
             
         self.generate_graph()
         self.get_session()
@@ -294,7 +290,8 @@ class NNWorker(orb.core.Tools):
         progress = orb.core.ProgressBar(loopsize)
         first_sim = True
         for isim in range(loopsize):
-            progress.update(isim, info='generating dataset')
+            if not isim%1000:
+                progress.update(isim, info='generating dataset')
             sim_list = self.simulate(samples=noise_samples)
             for sim_dict in sim_list:
 
@@ -325,9 +322,9 @@ class NNWorker(orb.core.Tools):
                     ikey, idata.shape))
         return path
 
-    def train(self, n_epochs=4, sorting_dict=None):
 
-        def shuffle_batch(dataset, batch_size, sorting_dict=None, datatype='train'):
+    def get_shuffler(self, sorting_dict=None,
+                     datatype='train'):
             """
             :param sorting_dict: must be a dictionary giving for each label its
               sorting key (e.g. {1:'snr'} to sort label 1 by snr (), if a 'snr'
@@ -353,7 +350,7 @@ class NNWorker(orb.core.Tools):
                     # the sorted ones
                     rnd_idx[label_idx] = rnd_idx[sorted_label_idx]
 
-            n_batches = len(self.dataset['data_' + datatype]) // batch_size
+            n_batches = len(self.dataset['data_' + datatype]) // self.BATCH_SIZE
             for batch_idx in np.array_split(rnd_idx, n_batches):
                 if sorting_dict is not None:
                     # each batch is shuffled again because some labels have been
@@ -365,47 +362,92 @@ class NNWorker(orb.core.Tools):
                 yield X_batch, y_batch
 
 
-        losses = list()
-        accs = list()
+    def get_training_shuffler(self, sorting_dict=None):
+        return self.get_shuffler(
+            sorting_dict=sorting_dict,
+            datatype='train')
 
+    def get_validation_shuffler(self, sorting_dict=None):
+        return self.get_shuffler(
+            sorting_dict=sorting_dict,
+            datatype='valid')
+                
+    def train(self, n_epochs=4, sorting_dict=None):
+
+        LOOP_UPDATE = 30
+        
+        output = dict()
+        output['train_loss'] = list()
+        output['train_accu'] = list()
+        output['valid_loss'] = list()
+        output['valid_accu'] = list()
+        
         with self.init_session(is_training=True):
 
             for epoch in range(n_epochs):
-                
                 progress = orb.core.ProgressBar(
                     len(self.dataset['data_train']) // self.BATCH_SIZE)
                 iloop = 1
-                for X_batch, y_batch in shuffle_batch(
-                    self.dataset,
-                    self.BATCH_SIZE, sorting_dict=sorting_dict):
-                    _, loss, acc = self.session.run([self.training_op, self.loss, self.accuracy],
-                             feed_dict={self.X: X_batch, self.y: y_batch})
-                    losses.append(loss)
-                    accs.append(acc)
-                    progress.update(iloop, info='loss: {:.3f}, acc: {:.3f}'.format(
-                        loss, acc))
-                
+                training_shuffler = self.get_training_shuffler()
+                for X_batch, y_batch in training_shuffler:
+                    # train on batch                    
+                    _, tloss, tacc = self.session.run(
+                        [self.training_op, self.loss, self.accuracy],
+                        feed_dict={
+                            self.X: X_batch, self.y: y_batch,
+                            self.is_training: True})
+                    output['train_loss'].append(tloss)
+                    output['train_accu'].append(tacc)
+
+                    # get validation loss                    
+                    X_valid_batch, y_valid_batch = self.get_validation_shuffler().next()
+                    vloss, vacc = self.session.run(
+                        [self.loss, self.accuracy],
+                        feed_dict={
+                            self.X: X_valid_batch, self.y: y_valid_batch,
+                            self.is_training:False})
+                    output['valid_loss'].append(vloss)
+                    output['valid_accu'].append(vacc)
+
+                    if not iloop%LOOP_UPDATE and iloop>1:
+                        progress.update(
+                            iloop, info='loss: {:.2e}|{:.2e}, acc: {:.2e}|{:.2e}'.format(
+                                np.median(output['train_loss'][:-LOOP_UPDATE]),
+                                np.median(output['valid_loss'][:-LOOP_UPDATE]),
+                                np.median(output['train_accu'][:-LOOP_UPDATE]),
+                                np.median(output['valid_accu'][:-LOOP_UPDATE])))
+
+                    
                     iloop += 1
                 progress.end()
 
-                # check validation set accuracy
-                stime = time.time()
-                acc_val_list = list()
-                for X_batch, y_batch in shuffle_batch(
-                        self.dataset,
-                        self.BATCH_SIZE, sorting_dict=sorting_dict,
-                        datatype='valid'):
-                    acc_val_list.append(self.accuracy.eval(
-                        feed_dict={self.X: X_batch, self.y: y_batch}))
-                logging.info('validation time: {} epoch {}: validation accuracy: {} [{}]'.format(
-                    time.time() - stime, epoch,
-                    np.median(acc_val_list), np.std(acc_val_list)))
-
-
                 self.save_graph()
                 logging.info('model saved as {}'.format(self.get_model_path()))
+                
+        self.validate()
+        
+        return output
 
-        return losses, accs
+
+    def validate(self):
+        with self.init_session(is_training=False):
+            # check validation set accuracy
+            stime = time.time()
+            acc_list = list()
+            loss_list = list()
+            for X_batch, y_batch in self.get_validation_shuffler():
+                vloss, vacc = self.session.run(
+                    [self.loss, self.accuracy],
+                    feed_dict={
+                        self.X: X_batch, self.y: y_batch,
+                        self.is_training: False})
+                acc_list.append(vacc)
+                loss_list.append(vloss)
+            logging.info('validation: time: {:.1f}s | loss: {:.3f} [{:.3f}] | accuracy: {:.3f} [{:.3f}]'.format(
+                time.time() - stime,
+                np.median(loss_list), np.std(loss_list),
+                np.median(acc_list), np.std(acc_list)))
+
 
     # def test(self):
     #     self.load_dataset()
@@ -429,7 +471,7 @@ class NNWorker(orb.core.Tools):
             for ibatch in range(0, sample.shape[0], self.BATCH_SIZE):
                 X_batch = sample[ibatch:ibatch+self.BATCH_SIZE, ...]
                 probas_list.append(np.array(self.proba.eval(
-                    feed_dict={self.X: X_batch})))
+                    feed_dict={self.X: X_batch, self.is_training: False})))
                 predictions_list.append(
                     np.array(tf.argmax(probas_list[-1], axis=1).eval()))
 
@@ -480,9 +522,9 @@ class NNWorker(orb.core.Tools):
             output['proba_median'] = list()
             output['proba_min'] = list()
             output['proba_argmax'] = list()
-            output['proba_highest'] = list()
-            output['proba_arghighest'] = list()
-            output['proba_highest_sum'] = list()
+            # output['proba_highest'] = list()
+            # output['proba_arghighest'] = list()
+            # output['proba_highest_sum'] = list()
             if record_proba:
                 output['proba_path'] = list()
 
@@ -495,12 +537,12 @@ class NNWorker(orb.core.Tools):
 
                 if zlimits is None:
                     idata_box = np.copy(cube[islice[0], islice[1], :])
-                    zmin = zlimits[0]
-                else:
-                    idata_box = np.copy(cube[islice[0], islice[1], zlimits[0]:zlimits[1]])
                     zmin = 0
 
-                idata_box[np.nonzero(np.isnan(idata_box))] = 0.
+                else:
+                    idata_box = np.copy(cube[islice[0], islice[1], zlimits[0]:zlimits[1]])
+                    zmin = zlimits[0]
+                                                            
                 isky_box = np.copy(idata_box)
                 isky_box[self.dimx//2 - SKYBOX_SIZE//2:
                          self.dimx//2 + SKYBOX_SIZE//2,
@@ -509,12 +551,10 @@ class NNWorker(orb.core.Tools):
 
                 # standardization
                 idata_box -= np.nanmedian(isky_box, axis=[0,1])
-                idata_box -= np.median(idata_box)
-                # idata_box -= np.median(idata_box, axis=[0,1])
-                idata_box /= np.percentile(idata_box, 99)
-#                idata_box *= 2
-                
-                
+                idata_box /= np.median(np.nanstd(isky_box, axis=(0,1)))
+
+                idata_box[np.nonzero(np.isnan(idata_box))] = 0.
+                                
                 boxes = list()
                 for ibox in box_streamer(idata_box, self.dimz):
                     boxes.append(ibox)
@@ -525,7 +565,7 @@ class NNWorker(orb.core.Tools):
 
                     X_batch = boxes[ibatch:ibatch+self.BATCH_SIZE, ...]
                     probas_list.append(np.array(self.proba.eval(
-                        feed_dict={self.X: X_batch})))
+                        feed_dict={self.X: X_batch, self.is_training: False})))
 
                 ## probas must be outputed for each label !!
                 iprobas = np.concatenate(probas_list)
@@ -538,13 +578,13 @@ class NNWorker(orb.core.Tools):
                     np.diag(iprobas[iprobas_sorted[iprobas.shape[0]//2,:]]))
                 output['proba_min'].append(
                     np.diag(iprobas[iprobas_sorted[0,:]]))
-                output['proba_arghighest'].append(
-                    iprobas_sorted[-HIGHEST_NB:,:] + zmin)
-                output['proba_highest'].append(
-                    np.diagonal(iprobas[iprobas_sorted[-HIGHEST_NB:,:]],
-                                axis1=2))
-                output['proba_highest_sum'].append(
-                    np.sum(output['proba_highest'][-1], axis=0))
+                # output['proba_arghighest'].append(
+                #     iprobas_sorted[-HIGHEST_NB:,:] + zmin)
+                # output['proba_highest'].append(
+                #     np.diagonal(iprobas[iprobas_sorted[-HIGHEST_NB:,:]],
+                #                 axis1=2))
+                # output['proba_highest_sum'].append(
+                #     np.sum(output['proba_highest'][-1], axis=0))
 
                 if record_proba:
 
@@ -570,7 +610,7 @@ class NNWorker(orb.core.Tools):
         return formatted_output
 
 
-    def run_on_cube_targets(self, cube, targets, record_proba=False):
+    def run_on_cube_targets(self, cube, targets, record_proba=False, aper=0):
 
         cube._silent_load = True
         zlimits = np.round(np.array(cube.get_filter_range_pix())).astype(int)
@@ -585,21 +625,34 @@ class NNWorker(orb.core.Tools):
 
         # check targets
         xmin = orb.utils.validate.index(
-            targets[:,0] - self.dimx//2, 0, cube.dimx - self.dimx, clip=False)
+            targets[:,0] - self.dimx//2, aper * 2, cube.dimx - self.dimx - aper * 2, clip=False)
         xmax = orb.utils.validate.index(
-            targets[:,0] + self.dimx//2, 0, cube.dimx, clip=False)
+            targets[:,0] + self.dimx//2, aper * 2, cube.dimx - aper * 2, clip=False)
         ymin = orb.utils.validate.index(
-            targets[:,1] - self.dimy//2, 0, cube.dimy - self.dimy, clip=False)
+            targets[:,1] - self.dimy//2, aper * 2, cube.dimy - self.dimy - aper * 2, clip=False)
         ymax = orb.utils.validate.index(
-            targets[:,1] + self.dimy//2, 0, cube.dimy, clip=False)
+            targets[:,1] + self.dimy//2, aper * 2, cube.dimy - aper * 2, clip=False)
 
         slices = list()
         for i in range(targets.shape[0]):
-            slices.append([slice(xmin[i], xmax[i]), slice(ymin[i], ymax[i])])
+            for iaper in range(-(aper), aper+1):
+                for japer in range(-(aper), aper+1):
+                    slices.append([slice(xmin[i] + iaper, xmax[i] + iaper),
+                                   slice(ymin[i] + japer, ymax[i] + japer)])
 
-        return self._run_on_cube(cube, zlimits=zlimits, slices=slices,
-                                 record_proba=record_proba)
+        output = self._run_on_cube(cube, zlimits=zlimits, slices=slices,
+                                   record_proba=record_proba)
 
+        for iout in output:
+            for ikey in iout:
+                if isinstance(iout[ikey][0], str):
+                    iout[ikey] = [isplit[((aper*2)+1 ** 2)//2] for isplit
+                                  in np.split(np.array(iout[ikey]), len(targets))]
+                else:
+                    iout[ikey] = np.mean(np.split(np.array(iout[ikey]), len(targets)),
+                                         axis=1)
+
+        return output
 
     def run_on_cube(self, cube, start, stop):
 
@@ -647,21 +700,22 @@ class SourceDetector3d(NNWorker):
     DIMX = 8  # x size of the box
     DIMY = 8 # y size of the box
     DIMZ = 8  # number of channels in the box
-    SOURCE_FWHM = [2.5, 4.]  # source FWHM
+    OVERSAMPLING_RATIO = [1.2, 1.3] # total step_nb / step_nb at the right of ZPD
+    SINC_SIGMA = [0, 0.5] # sinc broadening 
     SOURCE_BETA = [3., 4.] # source moffat beta parameter
-    SINC_WIDTH = [0.9, 1.1]  # SINC FWHM = 1.20671 * WIDTH
-    TIPTILT = np.pi / 8
+    SOURCE_FWHM = [2.5, 4]  # SINC FWHM = 1.20671 * WIDTH
+    #TIPTILT = np.pi / 8
     CHANNEL_R = 1 # uniform distribution of channel
     POS_R = 1 # uniform distribution of the position
-    SNR = (2.8, 30)  # min max SNR (log uniform)
+    SNR = (1, 30)  # min max SNR (log uniform)
 
     # hyperparameters
-    FILTERS = 16
-    LEARNING_RATE = 0.0008 # 0.001 by default for AdamOptimizer
+    FILTERS = 8
+    LEARNING_RATE = 0.01 # 0.001 by default for AdamOptimizer
     EPSILON = 1e-8 # 1e-8 by default for AdamOptimizer
     BETA1 = 0.9 # 0.9
     BETA2 = 0.999 # 0.999
-    HIDDEN_DROPOUT_RATE = 0. # dropout rate of hidden layers (usually around 0.5) (Srivastava 2014)
+    OUTPUT_DROPOUT_RATE = 0.97 # dropout rate of output layer 
     INPUT_DROPOUT_RATE = 0. # dropout rate of input unit (better if close to 1) (Srivastava 2014)
     KERNEL_SIZE = 2
     
@@ -686,7 +740,7 @@ class SourceDetector3d(NNWorker):
                 snr = 0.
         else:
             has_source = 1
-            snr = float(snr)
+            snr = float(snr)        
 
         if has_source:
             # emission line source
@@ -703,13 +757,22 @@ class SourceDetector3d(NNWorker):
             src2d = src2d.reshape((self.dimx, self.dimy, 1))
 
             # simulate emission line spectrum
-            sinc_widthr = np.random.uniform(self.SINC_WIDTH[0], self.SINC_WIDTH[1])
+            sinc_fwhm_limits = orb.utils.spectrum.compute_line_fwhm_pix(
+                oversampling_ratio=np.array(self.OVERSAMPLING_RATIO))
+
+            sinc_fwhmr = np.random.uniform(sinc_fwhm_limits[0],
+                                           sinc_fwhm_limits[1])
+            sinc_sigmar = np.random.uniform(self.SINC_SIGMA[0],
+                                            self.SINC_SIGMA[1])
+            
             channelr = (np.random.uniform(-self.CHANNEL_R, self.CHANNEL_R)
                         + self.dimz // 2. - 0.5)
-            spec_emissionline = orb.utils.spectrum.sinc1d(
+
+            spec_emissionline = orb.utils.spectrum.sincgauss1d(
                 np.arange(self.dimz),
                 0, snr, channelr,
-                sinc_widthr)
+                sinc_fwhmr,
+                sinc_sigmar)
 
             # create emission line source in 3d
             src3d += spec_emissionline
@@ -777,10 +840,11 @@ class SourceDetector3d(NNWorker):
                                          activation=tf.nn.relu)
 
                 if max_pool:
-                    input_layer = tf.nn.max_pool3d(input_layer,
-                                           ksize=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
-                                           strides=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
-                                           padding=padding)
+                    input_layer = tf.nn.max_pool3d(
+                        input_layer,
+                        ksize=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
+                        strides=[1, POOL_STRIDE, POOL_STRIDE, POOL_STRIDE, 1],
+                        padding='VALID')
 
                 if flatten:
                     logging.debug('convolutional layer before flattening shape: {}'.format(input_layer.shape))
@@ -803,30 +867,31 @@ class SourceDetector3d(NNWorker):
                 self.X,
                 shape=[-1, self.dimx, self.dimy, self.dimz, 1])
             self.y = tf.placeholder(tf.int32, shape=(None), name='y')
-
+            self.is_training = tf.placeholder(
+                tf.bool, shape=(), name='is_training')
+        
         pool3 = add_dropout_layer(pool3, self.INPUT_DROPOUT_RATE)
 
         pool3 = add_convolutional_layer(
             pool3,
-            self.FILTERS, self.KERNEL_SIZE, max_pool=True, conv_stride=1)
-        pool3 = add_dropout_layer(pool3, self.HIDDEN_DROPOUT_RATE)
-        
-        pool3 = add_convolutional_layer(
-            pool3, 
-            self.FILTERS * 2, self.KERNEL_SIZE, max_pool=True, conv_stride=1)
-        pool3 = add_dropout_layer(pool3, self.HIDDEN_DROPOUT_RATE)
-        
-        pool3 = add_convolutional_layer(
-            pool3,
-            self.FILTERS * 4, self.KERNEL_SIZE, max_pool=True, conv_stride=1,
+            self.FILTERS, self.KERNEL_SIZE, max_pool=True, conv_stride=1,
             flatten=True)
-        pool3 = add_dropout_layer(pool3, self.HIDDEN_DROPOUT_RATE)
-
+        
+        # pool3 = add_convolutional_layer(
+        #     pool3, 
+        #     self.FILTERS * 2, self.KERNEL_SIZE, max_pool=True, conv_stride=1,
+        #     flatten=True)
+        
+        # pool3 = add_convolutional_layer(
+        #     pool3,
+        #     self.FILTERS * 4, self.KERNEL_SIZE, max_pool=True, conv_stride=1,
+        #     flatten=True)
+        
         with tf.name_scope("fc4"):
             fc4 = tf.layers.dense(
                 pool3, pool3.shape[-1],
                 activation= tf.nn.relu, name="fc4")
-            fc4 = add_dropout_layer(fc4, self.HIDDEN_DROPOUT_RATE)
+            fc4 = add_dropout_layer(fc4, self.OUTPUT_DROPOUT_RATE)
 
         with tf.name_scope("output"):
             logits = tf.layers.dense(fc4, 2, name="output")
