@@ -382,3 +382,8 @@ def get_layer_size(layer):
     """
     return np.multiply.reduce(
         np.array(layer.get_shape().as_list())[1:])
+
+def get_timestamp():
+    """Return a formatted timestamp.
+    """
+    return time.strftime("%Y-%m-%d_%H%M%S", time.localtime())

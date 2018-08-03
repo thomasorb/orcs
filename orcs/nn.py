@@ -183,6 +183,7 @@ class NNWorker(orb.core.Tools):
 
     TRAIN_RATIO = 0.8
     BATCH_SIZE = 1000
+    MAX_SURFACE_COEFF = 0.05
 
     def __init__(self, shape, data_prefix=None):
         if data_prefix is None:
@@ -480,7 +481,7 @@ class NNWorker(orb.core.Tools):
 
         return predictions, probas
 
-    def _run_on_cube(self, cube, zlimits=None, slices=None, record_proba=False):
+    def _run_on_cube(self, cube, zlimits=None, slices=None, record=False):
         """cube can be an np.ndarray or an HDFCube instance
 
         :param slices: A list of slices [[slice(xmin, xmax), slice(ymin, ymax)],
@@ -512,8 +513,7 @@ class NNWorker(orb.core.Tools):
             raise MemoryError('too much slices: {} > {}'.format(
                 slices_nb, SLICES_NB_THRESHOLD))
 
-        timestamp = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
-
+        
         with self.init_session():
 
             # init output dict
@@ -525,7 +525,8 @@ class NNWorker(orb.core.Tools):
             # output['proba_highest'] = list()
             # output['proba_arghighest'] = list()
             # output['proba_highest_sum'] = list()
-            if record_proba:
+            if record:
+                timestamp = orcs.utils.get_timestamp()
                 output['proba_path'] = list()
 
             # run detection
@@ -586,8 +587,7 @@ class NNWorker(orb.core.Tools):
                 # output['proba_highest_sum'].append(
                 #     np.sum(output['proba_highest'][-1], axis=0))
 
-                if record_proba:
-
+                if record:
                     iproba_paths = list()
                     for iclass in range(self.nclasses):
                         iproba_path = './{}/proba.{}.{}.fits'.format(
@@ -610,7 +610,7 @@ class NNWorker(orb.core.Tools):
         return formatted_output
 
 
-    def run_on_cube_targets(self, cube, targets, record_proba=False, aper=0):
+    def run_on_cube_targets(self, cube, targets, record=False, aper=0):
 
         cube._silent_load = True
         zlimits = np.round(np.array(cube.get_filter_range_pix())).astype(int)
@@ -641,7 +641,7 @@ class NNWorker(orb.core.Tools):
                                    slice(ymin[i] + japer, ymax[i] + japer)])
 
         output = self._run_on_cube(cube, zlimits=zlimits, slices=slices,
-                                   record_proba=record_proba)
+                                   record=record)
 
         for iout in output:
             for ikey in iout:
@@ -654,8 +654,11 @@ class NNWorker(orb.core.Tools):
 
         return output
 
-    def run_on_cube(self, cube, start, stop):
 
+    def run_on_cube_subregion(self, cube, start, stop, record=True):
+
+        MAX_DATA_SURFACE = self.MAX_SURFACE_COEFF * cube.dimx * cube.dimy
+        
         # validate input
         orb.utils.validate.has_len(start, 2, object_name='start')
         orb.utils.validate.has_len(stop, 2, object_name='start')
@@ -672,8 +675,12 @@ class NNWorker(orb.core.Tools):
         zlimits = np.array(cube.get_filter_range_pix()).astype(int)
 
         data_surface = len(data_xrange) * len(data_yrange)
-        if data_surface > 0.05 * cube.dimx * cube.dimy:
-            raise NotImplementedError()
+        if data_surface > MAX_DATA_SURFACE:
+            raise MemoryError('subregion surface is {} and must be smaller than {}'.format(
+                data_surface, MAX_DATA_SURFACE))
+
+        # return ({'test':np.zeros((stop[0] - start[0], stop[1] - start[1], 1))},
+        #         {'test':np.zeros((stop[0] - start[0], stop[1] - start[1], 1))})
 
         idata_slice = cube.get_data(data_xrange[0], data_xrange[-1],
                                     data_yrange[0], data_yrange[-1],
@@ -683,17 +690,64 @@ class NNWorker(orb.core.Tools):
 
         output = self._run_on_cube(idata_slice, zlimits=None)
 
-        timestamp = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
+        timestamp = orcs.utils.get_timestamp()
         for iclass in range(len(output)):
             for ikey in output[iclass]:
                 output[iclass][ikey] = np.reshape(
                     output[iclass][ikey],
                     (stop[0] - start[0], stop[1] - start[1], -1))
-                orb.utils.io.write_fits(
-                    './{}/outmap.{}.{}.fits'.format(timestamp, iclass, ikey),
-                    output[iclass][ikey], overwrite=True)
+                if record:
+                    orb.utils.io.write_fits(
+                        './{}/outmap.{}.{}.fits'.format(timestamp, iclass, ikey),
+                        output[iclass][ikey], overwrite=True)
 
         return output
+
+    def run_on_cube(self, cube):
+
+        max_size = int(np.sqrt(self.MAX_SURFACE_COEFF * 0.9) * min(cube.dimx, cube.dimy))
+        output = list()
+        timestamp = orcs.utils.get_timestamp()
+        x_range = range(self.dimx//2, cube.dimx - self.dimx, max_size)
+        y_range = range(self.dimy//2, cube.dimy - self.dimy, max_size)
+        isubregion = 0
+        stime = time.time()
+        for ii in x_range:
+            for ij in y_range:
+                isubregion += 1
+                start = [ii, ij]
+                
+                stop = [min(ii + max_size,
+                            cube.dimx - self.dimx//2 - 1),
+                        min(ij + max_size,
+                            cube.dimy - self.dimy//2 - 1)]
+                if np.any(np.array(stop) - np.array(start)
+                          - np.array([self.dimx, self.dimy]) < 0): continue
+                
+                logging.info('working on subregion {}/{} [{}:{},{}:{}] (remains: {:.2f}h)'.format(
+                    isubregion, len(x_range) * len(y_range),
+                    start[0], stop[0], start[1], stop[1],
+                    (time.time() - stime) / isubregion * len(x_range) * len(y_range)))
+                iout = self.run_on_cube_subregion(cube, start, stop, record=False)
+                for iclass in range(len(iout)):
+                    if len(output) <= iclass: output.append(dict())
+                    for ikey in iout[iclass]:
+                        if ikey not in output[iclass]:
+                            if np.squeeze(iout[iclass][ikey]).ndim != 2:
+                                raise TypeError('expected output is a 2d map')
+                            output[iclass][ikey] = np.empty((cube.dimx, cube.dimy),
+                                                            dtype=float)
+                            output[iclass][ikey].fill(np.nan)
+                        output[iclass][ikey][start[0]:stop[0],
+                                             start[1]:stop[1]] = np.squeeze(
+                                                 iout[iclass][ikey])
+                        orb.utils.io.write_fits(
+                            './{}/outmap.{}.{}.fits'.format(timestamp, iclass, ikey),
+                            output[iclass][ikey], overwrite=True)
+
+                    
+        
+            
 
 class SourceDetector3d(NNWorker):
 
