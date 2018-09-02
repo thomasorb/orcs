@@ -9,3 +9,4 @@ build/
 orcs.egg-info/
 .eggs/
 *.dataset*
+*.sources_set*
