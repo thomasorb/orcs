@@ -394,13 +394,9 @@ class HDFCube(orcs.core.HDFCube):
                 logging.info('Velocity of the first line (km/s): {}'.format(ifit['velocity_gvar'][0]))
                 line_names = list()
                 for iline in range(np.size(lines)):
-                    if self.params.wavenumber:
-                        line_name = orb.core.Lines().round_nm2ang(
-                            orb.utils.spectrum.cm12nm(
-                                lines[iline]))
-                    else:
-                        line_name = orb.core.Lines().round_nm2ang(
-                            lines[iline])
+                    line_name = orb.core.Lines().round_nm2ang(
+                        orb.utils.spectrum.cm12nm(
+                            lines[iline]))
 
                     fit_params = ifit['lines_params']
                     err_params = ifit['lines_params_err']
@@ -434,11 +430,7 @@ class HDFCube(orcs.core.HDFCube):
                 fitted_vector = np.zeros_like(ispectrum)
                 fitted_models = list()
 
-            if self.params.wavenumber:
-                linesmodel = 'Cm1LinesModel'
-            else:
-                raise NotImplementedError()
-                linesmodel = 'NmLinesModel'
+            linesmodel = 'Cm1LinesModel'
 
             spectrum_header = (
                 self._get_integrated_spectrum_header(
@@ -535,8 +527,7 @@ class HDFCube(orcs.core.HDFCube):
     def _prepare_input_params(self, lines, nofilter=False, **kwargs):
         """prepare the InputParams instance for a fitting procedure.
 
-        :param lines: Emission lines to fit (must be in cm-1 if the
-          cube is in wavenumber. must be in nm otherwise).
+        :param lines: Emission lines to fit (must be in cm-1).
 
         :param nofilter: (Optional) If True, Filter model is not added
           and the fit is made with a single range set to the filter

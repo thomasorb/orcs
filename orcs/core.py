@@ -514,36 +514,21 @@ class HDFCube(orb.core.HDFCube):
         cube as a tuple (min, max)"""
         if 'filter_range' in self.params:
             return self.params.filter_range
-
-        _range = orb.utils.filters.get_filter_bandpass(
-            self.params.filter_file_path)
-        if self.params.wavenumber:
-            _range = orb.utils.spectrum.nm2cm1(_range)
-        return [min(_range), max(_range)]
+        return self.filterfile.get_filter_bandpass_cm1()
 
     def get_filter_range_pix(self):
         """Return the range of the filter in channel index as a tuple
         (min, max)"""
-        filter_range = self.get_filter_range()
+        return orb.utils.spectrum.cm12pix(
+            self.params.base_axis, self.get_filter_range())
 
-        if self.params.wavenumber:
-            _range = orb.utils.spectrum.cm12pix(
-                self.params.base_axis, filter_range)
-
-        else:
-            _range = orb.utils.spectrum.nm2pix(
-                self.params.base_axis, filter_range)
-
-        return [min(_range), max(_range)]
 
     def get_sky_lines(self):
         """Return the wavenumber/wavelength of the sky lines in the
         filter range"""
-        _delta_nm = self.params.axis_step
-        if self.params.wavenumber:
-            _delta_nm = orb.utils.spectrum.fwhm_cm12nm(
-                self.params.axis_step,
-                (self.params.axis_min + self.params.axis_max) / 2.)
+        _delta_nm = orb.utils.spectrum.fwhm_cm12nm(
+            self.params.axis_step,
+            (self.params.axis_min + self.params.axis_max) / 2.)
 
         _nm_min, _nm_max = self.get_filter_range()
 
@@ -552,17 +537,13 @@ class HDFCube(orb.core.HDFCube):
         _nm_min -= _nm_range * 0.05
         _nm_max += _nm_range * 0.05
 
-        if self.params.wavenumber:
-            _nm_max, _nm_min = orb.utils.spectrum.cm12nm([_nm_min, _nm_max])
+        _nm_max, _nm_min = orb.utils.spectrum.cm12nm([_nm_min, _nm_max])
 
         _lines_nm = orb.core.Lines().get_sky_lines(
             _nm_min, _nm_max, _delta_nm)
 
-        if self.params.wavenumber:
-            return orb.utils.spectrum.nm2cm1(_lines_nm)
-        else:
-            return _line_nm
-
+        return orb.utils.spectrum.nm2cm1(_lines_nm)
+        
     def extract_spectrum_bin(self, x, y, b, **kwargs):
         """Extract a spectrum integrated over a binned region.
 
@@ -820,7 +801,7 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('nm_laser', float(self.header['CALIBNM']))
         self.set_param('object_name', str(self.header['OBJECT']))
         self.set_param('filter_name', str(self.header['FILTER']))
-        self.set_param('filter_file_path', self._get_filter_file_path(self.params.filter_name))
+        self.filterfile = orb.core.FilterFile(self.params.filter_name)
         if self.header['APODIZ'] != 'None':
             self.set_param('apodization', float(self.header['APODIZ']))
         else:
@@ -860,19 +841,18 @@ class HDFCube(orb.core.HDFCube):
         self.set_param('resolution', resolution)
 
         # incident angle of reference (in degrees)
-        self.set_param('theta_proj', orb.utils.spectrum.corr2theta(self.params.axis_corr))
+        self.set_param(
+            'theta_proj',
+            orb.utils.spectrum.corr2theta(self.params.axis_corr))
 
         # wavenumber
         self.set_param('wavetype', str(self.header['WAVTYPE']))
         if self.params.wavetype == 'WAVELENGTH':
             raise Exception('ORCS cannot handle wavelength cubes')
-            self.params['wavenumber'] = False
-            logging.info('Cube is in WAVELENGTH (nm)')
-            self.unit = 'nm'
-        else:
-            self.params['wavenumber'] = True
-            logging.info('Cube is in WAVENUMBER (cm-1)')
-            self.unit = 'cm-1'
+        
+        self.params['wavenumber'] = True
+        logging.info('Cube is in WAVENUMBER (cm-1)')
+        self.unit = 'cm-1'
 
         # wavelength calibration
         self.set_param('wavelength_calibration', bool(self.header['WAVCALIB']))
@@ -903,14 +883,9 @@ class HDFCube(orb.core.HDFCube):
             self.params['hour_ut'] = np.array([0, 0, 0], dtype=float)
 
         # create base axis of the data
-        if self.params.wavenumber:
-            self.set_param('base_axis', orb.utils.spectrum.create_cm1_axis(
-                self.dimz, self.params.step, self.params.order,
-                corr=self.params.axis_corr))
-        else:
-            self.set_param('base_axis', orb.utils.spectrum.create_nm_axis(
-                self.dimz, self.params.step, self.params.order,
-                corr=self.params.axis_corr))
+        self.set_param('base_axis', orb.utils.spectrum.create_cm1_axis(
+            self.dimz, self.params.step, self.params.order,
+            corr=self.params.axis_corr))
 
         self.set_param('axis_min', np.min(self.params.base_axis))
         self.set_param('axis_max', np.max(self.params.base_axis))
@@ -1894,6 +1869,7 @@ class Filter(object):
         :param f: 1d array describing the transmission function  (note that the
         filter function must be defined between 0 and 1).
         """
+        raise NotImplementedError('should be reimplemented or replaced with orb.core.FilerFile. this class is used by orcs.process.integrate()')
         if not isinstance(x, np.ndarray):
             raise TypeError('x must be a numpy.ndarray')
         if not isinstance(f, np.ndarray):
