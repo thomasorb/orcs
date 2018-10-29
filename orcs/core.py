@@ -294,7 +294,7 @@ class HDFCube(orb.core.HDFCube):
                 QUAD_NB = self.config.QUAD_NB
                 DIV_NB = self.config.DIV_NB
 
-            # check if paralell extraction is necessary
+            # check if parallel extraction is necessary
             parallel_extraction = True
             # It takes roughly ncpus/4 s to initiate the parallel server
             # The non-parallel algo runs at ~400 pixel/s
@@ -366,7 +366,7 @@ class HDFCube(orb.core.HDFCube):
                             iquad_data[i,j].fill(np.nan)
                         if not silent:
                             k+=1
-                            progress.update(k)
+                            if not k%500: progress.update(k)
                     if not silent: progress.end()
                     if median:
                         with np.warnings.catch_warnings():
