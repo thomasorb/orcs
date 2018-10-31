@@ -35,6 +35,7 @@ import gvar
 
 import orb.utils.spectrum
 import orb.utils.log
+import orb.utils.io
 import orcs.core
 import utils
 
@@ -436,13 +437,13 @@ class HDFCube(orcs.core.HDFCube):
                 self._get_integrated_spectrum_header(
                     iregion))
 
-            self.write_fits(
+            orb.utils.io.write_fits(
                 self._get_integrated_spectrum_path(
                     iregion),
                 ispectrum, fits_header=spectrum_header,
                 overwrite=True, silent=True)
 
-            self.write_fits(
+            orb.utils.io.write_fits(
                 self._get_integrated_spectrum_fit_path(
                     iregion),
                 fitted_vector,
@@ -804,7 +805,7 @@ class HDFCube(orcs.core.HDFCube):
                 for i in range(len(vmaps)):
                     ivmap = vmaps[i]
                     if isinstance(ivmap, str):
-                        ivmap = self.read_fits(ivmap)
+                        ivmap = orb.utils.io.read_fits(ivmap)
                     elif not isinstance(ivmap, np.ndarray):
                         raise TypeError('parameter map {} must be a path to a fits file or a numpy.ndarray instance'.format(key))
                     if ivmap.ndim != 2:

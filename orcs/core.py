@@ -51,6 +51,7 @@ import orb.core
 import orb.fit
 import orb.utils.astrometry
 import orb.utils.validate
+import orb.utils.io
 
 import utils
 
@@ -642,7 +643,7 @@ class HDFCube(orb.core.HDFCube):
           is, it means that the given sky velocity map must be a
           correction map.
         """
-        sky_map = self.read_fits(sky_map_path)
+        sky_map = orb.utils.io.read_fits(sky_map_path)
         if sky_map.shape != (self.dimx, self.dimy):
             raise StandardError('Given sky map does not have the right shape')
 
@@ -659,8 +660,8 @@ class HDFCube(orb.core.HDFCube):
 
         :param dymap_path: Path to the dymap.
         """
-        dxmap = self.read_fits(dxmap_path)
-        dymap = self.read_fits(dymap_path)
+        dxmap = orb.utils.io.read_fits(dxmap_path)
+        dymap = orb.utils.io.read_fits(dymap_path)
         if dxmap.shape == (self.dimx, self.dimy):
             self.dxmap = dxmap
         else:
@@ -683,7 +684,7 @@ class HDFCube(orb.core.HDFCube):
         """
         hdr = self.get_header()
 
-        hdr.update(pywcs.WCS(self.read_fits(wcs_path, return_hdu_only=True)[0].header,
+        hdr.update(pywcs.WCS(orb.utils.io.read_fits(wcs_path, return_hdu_only=True)[0].header,
                              naxis=2, relax=True).to_header(relax=True))
         self.set_header(hdr)
 
@@ -936,7 +937,7 @@ class HDFCube(orb.core.HDFCube):
                 Xp.reshape(*idat.shape),
                 Yp.reshape(*idat.shape))
         progress.end()
-        self.write_fits(self._get_reprojected_cube_path(), reprojected_cube,
+        orb.utils.io.write_fits(self._get_reprojected_cube_path(), reprojected_cube,
                         overwrite=True)
 
     def get_flux_uncertainty(self):
@@ -1717,7 +1718,7 @@ class LineMaps(orb.core.Tools):
     ##                 else:
     ##                     map_path = self._get_map_path(
     ##                         self.line_names[iline], param, binning)
-    ##                 old_map = self.read_fits(map_path)
+    ##                 old_map = orb.utils.io.read_fits(map_path)
     ##                 # data is unbinned and rebinned : creates small
     ##                 # errors, but loaded maps are only used for initial
     ##                 # parameters
@@ -1839,12 +1840,12 @@ class LineMaps(orb.core.Tools):
 
                 # load old map if it exists
                 if os.path.exists(map_path):
-                    old_map = self.read_fits(map_path)
+                    old_map = orb.utils.io.read_fits(map_path)
                     nonans = np.nonzero(~np.isnan(new_map))
                     old_map[nonans] = new_map[nonans]
                     new_map = old_map
 
-                self.write_fits(
+                orb.utils.io.write_fits(
                     map_path, new_map,
                     overwrite=True,
                     fits_header=self._get_map_header(
