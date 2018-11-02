@@ -58,6 +58,7 @@ import orb.utils.image
 import orb.utils.stats
 import orb.utils.filters
 import orb.utils.misc
+import orb.utils.io
 import orb.fit
 from orb.astrometry import Astrometry
 
@@ -311,19 +312,19 @@ class SpectralCube(fit.HDFCube):
         sky_vel_map = -sky_vel_map
 
         # write new calibration laser map
-        self.write_fits(
+        orb.utils.io.write_fits(
             self._get_calibration_laser_map_path(),
             model_calib_map, overwrite=True,
             fits_header=[('CALIBNM', new_nm_laser, 'Calibration laser wl (nm)')])
 
         # write wavefront laser map
-        self.write_fits(
+        orb.utils.io.write_fits(
             self._get_wavefront_map_path(),
             wf, overwrite=True,
             fits_header=[('CALIBNM', new_nm_laser, 'Calibration laser wl (nm)')])
 
         # write new velocity correction map
-        self.write_fits(
+        orb.utils.io.write_fits(
             self._get_skymap_fits_path(),
             final_sky_vel_map, overwrite=True)
 
@@ -521,9 +522,9 @@ class SpectralCube(fit.HDFCube):
 
         self._close_pp_server(job_server)
 
-        self.write_fits(self._get_detection_frame_path(),
+        orb.utils.io.write_fits(self._get_detection_frame_path(),
                         det_frame, overwrite=True)
-        self.write_fits(self._get_detection_pos_frame_path(),
+        orb.utils.io.write_fits(self._get_detection_pos_frame_path(),
                         argdet_frame, overwrite=True)
 
 
@@ -543,7 +544,7 @@ class SpectralCube(fit.HDFCube):
         sip = None
         compute_distortion = True
         if distortion_map_path is not None:
-            dist_map_hdu = self.read_fits(distortion_map_path, return_hdu_only=True)[0]
+            dist_map_hdu = orb.utils.io.read_fits(distortion_map_path, return_hdu_only=True)[0]
             hdr = dist_map_hdu.header
             sip = pywcs.WCS(hdr, naxis=2, relax=True)
             # distortion are already defined and must not be recomputed
@@ -569,11 +570,11 @@ class SpectralCube(fit.HDFCube):
         newhdr['CD2_1'] = wcs.wcs.cd[1,0]
         newhdr['CD2_2'] = wcs.wcs.cd[1,1]
 
-        self.write_fits(self._get_deep_frame_wcs_path(), deep_frame,
+        orb.utils.io.write_fits(self._get_deep_frame_wcs_path(), deep_frame,
                         fits_header=newhdr, overwrite=True)
-        self.write_fits(self._get_dxmap_path(), dxmap,
+        orb.utils.io.write_fits(self._get_dxmap_path(), dxmap,
                         fits_header=newhdr, overwrite=True)
-        self.write_fits(self._get_dymap_path(), dymap,
+        orb.utils.io.write_fits(self._get_dymap_path(), dymap,
                         fits_header=newhdr, overwrite=True)
 
 

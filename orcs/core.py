@@ -769,7 +769,7 @@ class HDFCube(orb.core.HDFCube):
     def get_deep_frame(self):
         """Return deep frame if if exists. None if no deep frame is
         attached to the cube."""
-        with self.open_hdf5(self.cube_path, 'r') as f:
+        with orb.utils.io.open_hdf5(self.cube_path, 'r') as f:
             if 'deep_frame' in f:
                 return f['deep_frame'][:]
             else: return None
