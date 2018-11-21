@@ -48,6 +48,7 @@ import copy
 
 # import ORB
 import orb.core
+import orb.cube
 import orb.fit
 import orb.utils.astrometry
 import orb.utils.validate
@@ -83,20 +84,20 @@ class DataFiles(object):
 #### CLASS HDFCube ##############################
 #################################################
 
-class HDFCube(orb.core.HDFCube):
-    """Extension of :py:class:`orb.core.HDFCube`
+class HDFCube(orb.cube.HDFCube):
+    """Extension of :py:class:`orb.cube.HDFCube`
 
     Core class which gives access to an HDF5 cube. The child class
     :py:class:`~orcs.process.SpectralCube` may be prefered in general
     for its broader functionality.
 
-    .. seealso:: :py:class:`orb.core.HDFCube`
+    .. seealso:: :py:class:`orb.cube.HDFCube`
     """
     def __init__(self, cube_path, debug=False, **kwargs):
         """
         :param cube_path: Path to the HDF5 cube.
 
-        :param kwargs: Kwargs are :meth:`orb.core.HDFCube` properties.
+        :param kwargs: Kwargs are :meth:`orb.cube.HDFCube` properties.
         """
         self.debug = bool(debug)
         self.logger = orb.core.Logger(debug=self.debug)
@@ -108,7 +109,7 @@ class HDFCube(orb.core.HDFCube):
 
 
         kwargs['instrument'] = instrument
-        orb.core.HDFCube.__init__(self, cube_path, **kwargs)
+        orb.cube.HDFCube.__init__(self, cube_path, **kwargs)
 
         self.overwrite = True
 
@@ -502,7 +503,7 @@ class HDFCube(orb.core.HDFCube):
     def get_calibration_laser_map_orig(self):
         """Return the original calibration laser map (not the version
         computed by :py:meth:`~HDFCube.get_calibration_laser_map`)"""
-        return orb.core.HDFCube.get_calibration_laser_map(self)
+        return orb.cube.HDFCube.get_calibration_laser_map(self)
 
     def get_calibration_coeff_map_orig(self):
         """Return the original calibration coeff map (not the version
@@ -1050,7 +1051,7 @@ class CubeJobServer(object):
 
         :param cube: A HDFCube or SpectralCube instance
         """
-        if not isinstance(cube, HDFCube): raise TypeError('Must be an orcs.core.HDFCube instance')
+        if not isinstance(cube, HDFCube): raise TypeError('Must be an orcs.cube.HDFCube instance')
         self.cube = cube
         self.debug = bool(cube.debug)
         logging.debug('debug set to {}'.format(self.debug))
