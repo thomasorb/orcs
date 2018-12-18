@@ -678,16 +678,6 @@ class HDFCube(orb.cube.HDFCube):
             warnings.warn('dymap reshaped from {} to ({}, {})'.
                              format(dymap.shape, self.dimx, self.dimy))
 
-    def set_wcs(self, wcs_path):
-        """Reset WCS of the cube.
-
-        :param wcs_path: Path to a FITS image containing the new WCS.
-        """
-        hdr = self.get_header()
-
-        hdr.update(pywcs.WCS(orb.utils.io.read_fits(wcs_path, return_hdu_only=True)[0].header,
-                             naxis=2, relax=True).to_header(relax=True))
-        self.set_header(hdr)
 
     def pix2world(self, xy, deg=True):
         """Convert pixel coordinates to celestial coordinates
@@ -702,6 +692,7 @@ class HDFCube(orb.cube.HDFCube):
           coordinates than run the function for each couple of
           coordinates you want to transform.
         """
+        raise NotImplementedError('must use the Data method')
         xy = np.squeeze(xy).astype(float)
         if np.size(xy) == 2:
             x = [xy[0]]
@@ -742,6 +733,8 @@ class HDFCube(orb.cube.HDFCube):
           coordinates than run the function for each couple of
           coordinates you want to transform.
         """
+        raise NotImplementedError('must use the Data method')
+
         radec = np.squeeze(radec)
         if np.size(radec) == 2:
             ra = [radec[0]]
@@ -777,6 +770,7 @@ class HDFCube(orb.cube.HDFCube):
 
     def get_header(self):
         """Return cube header."""
+        raise NotImplementedError('must use the Data methods')
         if not hasattr(self, 'header'):
             header = self.get_cube_header()
             header['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
@@ -786,6 +780,8 @@ class HDFCube(orb.cube.HDFCube):
 
     def set_header(self, hdr):
         """Set cube header"""
+        raise NotImplementedError('must use the Data methods')
+
         if hdr is None: hdr = self.get_header()
         hdr['CTYPE3'] = 'WAVE-SIP' # avoid a warning for
                                    # inconsistency
@@ -795,6 +791,8 @@ class HDFCube(orb.cube.HDFCube):
 
     def reset_params(self):
         """Read header again and reset parameters"""
+        raise NotImplementedError('must comply with new Data class')
+
         if not hasattr(self, 'header'): raise AttributeError('header attribute not set')
 
         self.set_param('step', float(self.header['STEP']))
@@ -898,16 +896,6 @@ class HDFCube(orb.cube.HDFCube):
             corr=self.params.axis_corr,
             wavenumber=self.params.wavenumber))
         self.set_param('filter_range', self.get_filter_range())
-
-
-    def get_wcs(self):
-        """Return the WCS of the cube as a astropy.wcs.WCS instance """
-        return copy.copy(pywcs.WCS(self.get_header(), naxis=2, relax=True))
-
-    def get_wcs_header(self):
-        """Return the WCS of the cube as a astropy.wcs.WCS instance """
-        return copy.copy(self.get_wcs().to_header(relax=True))
-
 
     def reproject(self):
         """Reproject data cube in a distorsion-less WCS.
