@@ -19,4 +19,4 @@ pytz>=2017.2
 scipy>=0.19.1
 six>=1.10.0
 subprocess32>=3.2.7
-orb_kernel>=3.0.2
+#orb_kernel>=3.0.2
