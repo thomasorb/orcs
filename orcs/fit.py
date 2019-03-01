@@ -851,4 +851,4 @@ class HDFCube(orcs.core.HDFCube):
             line0 = orb.core.Lines().get_line_cm1(line0)
         if isinstance(line1, str):
             line1 = orb.core.Lines().get_line_cm1(line1)
-        return line0**2 / line1**2 * flux_ratio
+        return orb.utils.spectrum.amp_ratio_from_flux_ratio(line0, line1, flux_ratio)
