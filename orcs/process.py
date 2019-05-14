@@ -66,12 +66,12 @@ from orb.astrometry import Astrometry
 #################################################
 #### CLASS SpectralCube #########################
 #################################################
-class SpectralCube(fit.HDFCube):
+class SpectralCube(fit.SpectralCube):
 
     """ORCS spectral cube general processing class.
 
-    .. note:: parent class HDFCube is the ORCS implementation of
-      HDFCube.
+    .. note:: parent class SpectralCube is the ORCS implementation of
+      SpectralCube.
     """
 
     def _get_temp_reg_path(self):

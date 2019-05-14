@@ -42,18 +42,18 @@ import utils
 from orcs.core import LineMaps, CubeJobServer
 
 #################################################
-#### CLASS HDFCube ##############################
+#### CLASS SpectralCube ##############################
 #################################################
 
-class HDFCube(orcs.core.HDFCube):
-    """Extension of :py:class:`orcs.core.HDFCube`
+class SpectralCube(orcs.core.SpectralCube):
+    """Extension of :py:class:`orcs.core.SpectralCube`
 
     Gives access to an HDF5 cube with extended fit functionalities.
 
     The child class :py:class:`~orcs.process.SpectralCube` may be prefered in
     general for its broader functionality.
 
-    .. seealso:: :py:class:`orb.core.HDFCube`
+    .. seealso:: :py:class:`orb.core.SpectralCube`
     """
 
     def _get_integrated_spectrum_fit_path(self, region_name):
@@ -78,7 +78,7 @@ class HDFCube(orcs.core.HDFCube):
 
 
         .. note:: Need the InputParams class to be defined before call
-          (see :py:meth:`~orcs.core.HDFCube._prepare_input_params`).
+          (see :py:meth:`~orcs.core.SpectralCube._prepare_input_params`).
 
         .. note:: The fit will always use the Bayesian algorithm.
 
@@ -321,7 +321,7 @@ class HDFCube(orcs.core.HDFCube):
 
         .. note:: Raw function which needs self.inputparams to be
           defined before with
-          `:py:meth:~HDFCube._prepare_input_params`.
+          `:py:meth:~SpectralCube._prepare_input_params`.
 
         :param regions_file_path: Path to a ds9 reg file giving the
           positions of the regions. Each region is considered as a
@@ -497,7 +497,7 @@ class HDFCube(orcs.core.HDFCube):
         """Raw function for spectrum fitting.
 
         .. note:: Need the InputParams class to be defined before call
-        (see :py:meth:`~orcs.core.HDFCube._prepare_input_params`).
+        (see :py:meth:`~orcs.core.SpectralCube._prepare_input_params`).
 
         :param spectrum: The spectrum to fit (1d vector).
 
@@ -669,11 +669,11 @@ class HDFCube(orcs.core.HDFCube):
           is the mean flux of the extracted region (default False).
 
         :param kwargs: Keyword arguments of the function
-          :py:meth:`~HDFCube._fit_lines_in_spectrum`.
+          :py:meth:`~SpectralCube._fit_lines_in_spectrum`.
 
         :returns: a tuple (axis, spectrum, fit_dict). fit_dict is a
           dictionary containing the fit results (same output as
-          :py:meth:`~HDFCube._fit_lines_in_spectrum`)
+          :py:meth:`~SpectralCube._fit_lines_in_spectrum`)
         """
         axis, spectrum, theta_orig = self.extract_spectrum(
             x, y, r, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
@@ -725,11 +725,11 @@ class HDFCube(orcs.core.HDFCube):
           is the mean flux of the extracted region (default False).
 
         :param kwargs: Keyword arguments of the function
-          :py:meth:`~HDFCube._fit_lines_in_spectrum`.
+          :py:meth:`~SpectralCube._fit_lines_in_spectrum`.
 
         :returns: a tuple (axis, spectrum, fit_dict). fit_dict is a
           dictionary containing the fit results (same output as
-          :py:meth:`~HDFCube._fit_lines_in_spectrum`)
+          :py:meth:`~SpectralCube._fit_lines_in_spectrum`)
 
         """
         axis, spectrum, theta_orig = self.extract_integrated_spectrum(
@@ -779,7 +779,7 @@ class HDFCube(orcs.core.HDFCube):
           pixel is passed (default None).
 
         :param kwargs: Keyword arguments of the function
-          :py:meth:`~HDFCube._fit_lines_in_spectrum`.
+          :py:meth:`~SpectralCube._fit_lines_in_spectrum`.
 
         .. note:: You can pass the fitting parameters (e.g. pos_cov,
           sigma_cov etc.) as maps (a 2d numy.ndarray instance or a

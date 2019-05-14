@@ -81,23 +81,23 @@ class DataFiles(object):
 
 
 #################################################
-#### CLASS HDFCube ##############################
+#### CLASS SpectralCube #########################
 #################################################
 
-class HDFCube(orb.cube.SpectralCube):
-    """Extension of :py:class:`orb.cube.HDFCube`
+class SpectralCube(orb.cube.SpectralCube):
+    """Extension of :py:class:`orb.cube.SpectralCube`
 
     Core class which gives access to an HDF5 cube. The child class
     :py:class:`~orcs.process.SpectralCube` may be prefered in general
     for its broader functionality.
 
-    .. seealso:: :py:class:`orb.cube.HDFCube`
+    .. seealso:: :py:class:`orb.cube.SpectralCube`
     """
     def __init__(self, cube_path, debug=False, **kwargs):
         """
         :param cube_path: Path to the HDF5 cube.
 
-        :param kwargs: Kwargs are :meth:`orb.cube.HDFCube` properties.
+        :param kwargs: Kwargs are :meth:`orb.cube.SpectralCube` properties.
         """
         self.debug = bool(debug)
         self.logger = orb.core.Logger(debug=self.debug)
@@ -122,29 +122,6 @@ class HDFCube(orb.cube.SpectralCube):
     def _get_reprojected_cube_path(self):
         """Return the path to the reprojected cube"""
         return self._data_path_hdr + 'reprojected_cube.fits'
-
-    def _get_integrated_spectrum_path(self, region_name):
-        """Return the path to an integrated spectrum
-
-        :param region_name: Name of the region
-        """
-        dirname = os.path.dirname(self._data_path_hdr)
-        basename = os.path.basename(self._data_path_hdr)
-        return (dirname + os.sep + "INTEGRATED"
-                + os.sep + basename + "integrated_spectrum_{}.fits".format(region_name))
-
-
-    def _get_integrated_spectrum_header(self, region_name):
-        """Return integrated spectrum header
-
-        :param region_name: Region name
-        """
-        hdr = (self._get_basic_header('Integrated region {}'.format(region_name))
-               + self._project_header
-               + self._get_basic_spectrum_header(
-                   self.params.base_axis.astype(float),
-                   wavenumber=self.params.wavenumber))
-        return hdr
         
 
     def correct_wavelength(self, sky_map_path):
@@ -162,6 +139,7 @@ class HDFCube(orb.cube.SpectralCube):
           is, it means that the given sky velocity map must be a
           correction map.
         """
+        raise NotImplementedError()
         sky_map = orb.utils.io.read_fits(sky_map_path)
         if sky_map.shape != (self.dimx, self.dimy):
             raise StandardError('Given sky map does not have the right shape')
@@ -179,6 +157,7 @@ class HDFCube(orb.cube.SpectralCube):
 
         :param dymap_path: Path to the dymap.
         """
+        raise NotImplementedError()
         dxmap = orb.utils.io.read_fits(dxmap_path)
         dymap = orb.utils.io.read_fits(dymap_path)
         if dxmap.shape == (self.dimx, self.dimy):
@@ -284,6 +263,7 @@ class HDFCube(orb.cube.SpectralCube):
         .. warning:: The amount of available RAM must be larger than
           the cube size on disk.
         """
+        raise NotImplementedError()
         wcs = self.get_wcs()
         # removes automatically sip distortion
         new_wcs = pywcs.WCS(self.get_wcs().to_header())
@@ -317,6 +297,7 @@ class HDFCube(orb.cube.SpectralCube):
 
         :param wavenumber: Wavenumber (cm-1)
         """
+        raise NotImplementedError()
         deep_frame = self.get_deep_frame()
         if deep_frame is None:
             warnings.warn("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
@@ -418,9 +399,9 @@ class CubeJobServer(object):
         """
         Init class
 
-        :param cube: A HDFCube or SpectralCube instance
+        :param cube: A SpectralCube or SpectralCube instance
         """
-        if not isinstance(cube, HDFCube): raise TypeError('Must be an orcs.cube.HDFCube instance')
+        if not isinstance(cube, SpectralCube): raise TypeError('Must be an orcs.cube.SpectralCube instance')
         self.cube = cube
         self.debug = bool(cube.debug)
         logging.debug('debug set to {}'.format(self.debug))
