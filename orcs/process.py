@@ -60,7 +60,6 @@ import orb.utils.filters
 import orb.utils.misc
 import orb.utils.io
 import orb.fit
-from orb.astrometry import Astrometry
 
 
 #################################################
@@ -536,7 +535,7 @@ class SpectralCube(fit.SpectralCube):
           calibration field containing a lot of stars and taken during
           the same run as the science cube.
         """
-
+        raise NotImplementedError('outdated...')
         deep_frame = self.get_deep_frame()
         if deep_frame is None:
             raise Exception('No deep frame is attached to the cube. Please run the last step of the reduction process again.')
