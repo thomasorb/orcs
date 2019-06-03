@@ -15,7 +15,7 @@
    viewBox="0 0 604.60913 390.39495"
    width="755.76141"
    id="svg2"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="emission-line-params.svg">
   <metadata
      id="metadata455">
@@ -25,6 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,12 +39,12 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1014"
+     inkscape:window-height="1021"
      id="namedview453"
      showgrid="false"
-     inkscape:zoom="1.0685169"
-     inkscape:cx="457.63554"
-     inkscape:cy="174.99216"
+     inkscape:zoom="0.75555555"
+     inkscape:cx="334.77764"
+     inkscape:cy="175.27566"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -531,8 +532,7 @@
      style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
      x="-2.3554688"
      y="311.25134"
-     id="text4080"
-     sodipodi:linespacing="125%"><tspan
+     id="text4080"><tspan
        sodipodi:role="line"
        id="tspan4082"
        x="-2.3554688"
@@ -555,8 +555,7 @@
      style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
      x="-0.1875"
      y="199.53419"
-     id="text4080-6"
-     sodipodi:linespacing="125%"><tspan
+     id="text4080-6"><tspan
        sodipodi:role="line"
        id="tspan4082-5"
        x="-0.1875"
@@ -591,8 +590,7 @@
      style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
      x="349.86609"
      y="390.39496"
-     id="text4080-1"
-     sodipodi:linespacing="125%"><tspan
+     id="text4080-1"><tspan
        sodipodi:role="line"
        id="tspan4082-0"
        x="349.86609"

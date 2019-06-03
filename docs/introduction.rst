@@ -72,16 +72,24 @@ that it is not an optional keyword and can be specified with the
 ``lines`` parameter of the fitting method.
 
 The notion of covariation is a little more complex but is certainly
-the most useful. two lines can share the same broadening. In this case
-the broadening parameter of both lines must be replaced with one
-single parameter. You can define the covarying parameter by tagging
-them with the same symbol (a string or a number). let's say you have
-three lines (line0, line1, line2), you can group the broadening of
-line0 and line2 by passing to the fitting function the keyword
-``sigma_def=('1','2','1')``. The real broadening of the lines used to
-model the spectrum will be a function of the initial guess value of
-the broadening of both lines (0 km/s by default) which will be fixed
-during the fit and the covarying value which is a free parameter.
+the most useful. Two or more lines can share the same broadening. In
+this case the broadening parameter of both lines must be replaced with
+one single parameter. You can define the covarying parameter by
+tagging them with the same symbol (a string or a number). let's say
+you have three lines (line0, line1, line2), you can group the
+broadening of line0 and line2 by passing to the fitting function the
+keyword ``sigma_def=('1','2','1')``. The real broadening of the lines
+used to model the spectrum will be a function of the initial guess
+value of the broadening of both lines (0 km/s by default) which will
+be fixed during the fit and the covarying value which is a free
+parameter.
+
+In general the final value of a covarying line parameter is defined
+as: :math:`val = f(guess, cov)`. `val` is the final value (e.g. the
+observed wavenumber), `guess` is the fixed guess_value (e.g. rest
+wavenumber of the line), `cov` is the value of the covarying parameter
+(e.g. velocity in km/s), `f` is the covariation operation (in the case
+of the line wavenumber the Doppler shift equation).
 
 You can also group the lines with the same velocity. In this case, the
 base parameter is the wavenumber of the lines and the covarying
@@ -114,6 +122,37 @@ These examples are related to the definition of the fitting parameters:
    :width: 100%
    :align: center
 
+
+List of the fitting parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+position
+********
+
+* ``pos_def``: Definition of the position (i.e. wavenumber) parameter
+  of each line e.g. may be 'free', 'fixed' or a group key (e.g. '1',
+  'a' etc.), set to 'free' by default
+* ``pos_guess``: Cannot be passed, replaced by the parameter ``lines``
+  in the fitting function.
+* ``pos_cov``: velocity guess of the grouped lines in km/s. the
+  covariation operation is Doppler shifting.
+
+amplitude
+*********
+  
+* ``amp_def``: Definition of the amplitude parameter
+  of each line e.g. may be 'free', 'fixed' or a group key (e.g. '1',
+  'a' etc.), set to 'free' by default
+* ``amp_guess``: Initial guess on the amplitude value. May be used to set a fixed ratio to the lines.
+* ``amp_cov``: does not have to be set (1 by default). the covariation
+  operation is a multiplication.
+
+
+
+  
+
+  
+	   
 Uncertainties
 ~~~~~~~~~~~~~
 	   
@@ -125,7 +164,6 @@ Monte-Carlo-Markov-Chain algorithm and found that they are very
 reasonable. The uncertainties returned by the MCMC algorithm are also
 very close to the one returned by our algorithm (less than a few
 percents).
-
 
 
 
