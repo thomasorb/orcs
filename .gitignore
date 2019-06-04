@@ -8,3 +8,4 @@ dist/
 build/
 orcs.egg-info/
 .eggs/
+orcs/data/*set.hdf5
