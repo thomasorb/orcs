@@ -1,7 +1,7 @@
 Utils module
 ============
 
-.. automodule:: utils
+.. automodule:: orcs.utils
    :members:
    :private-members:
    :show-inheritance:

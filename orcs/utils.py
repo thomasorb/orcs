@@ -31,11 +31,15 @@ import logging
 import warnings
 import gvar
 import scipy
+import os
 
 # import ORB
-import orb.utils.log
-import orb.utils.spectrum
-import orb.fit
+if os.environ.get('READTHEDOCS', None) == 'True':
+    pass
+else:
+    import orb.utils.log
+    import orb.utils.spectrum
+    import orb.fit
 
 def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
                           theta_orig, snr_guess=None, max_iter=None,

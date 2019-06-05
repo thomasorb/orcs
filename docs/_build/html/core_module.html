@@ -8,71 +8,56 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.4 documentation</title>
+  <title>Core module &mdash; orcs  documentation</title>
   
 
   
   
-    <link rel="shortcut icon" href="_static/logo.ico"/>
-  
   
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Radial Velocity Correction" href="script_example_heliocentric_velocity.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Process module" href="process_module.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home"> orcs
           
 
-          
-            
-            <img src="_static/logo_sidebar.png" class="logo" />
           
           </a>
 
           
             
-            
-              <div class="version">
-                2.4
-              </div>
             
           
 
@@ -118,17 +103,18 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Orcs</a>
+          <a href="index.html">orcs</a>
         
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -170,41 +156,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast + .nbinput {
-    margin-top: -19px;
-}
-
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-</style>
-<div class="section" id="module-orcs.core">
+  <div class="section" id="module-orcs.core">
 <span id="core-module"></span><h1>Core module<a class="headerlink" href="#module-orcs.core" title="Permalink to this headline">¶</a></h1>
 <p>ORCS Core library.</p>
 <div class="admonition note">
@@ -214,14 +166,14 @@
 <dl class="class">
 <dt id="orcs.core.HDFCube">
 <em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">HDFCube</code><span class="sig-paren">(</span><em>cube_path</em>, <em>debug=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.HDFCube</span></code></p>
-<p>Extension of <code class="xref py py-class docutils literal"><span class="pre">orb.core.HDFCube</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.HDFCube</span></code></p>
+<p>Extension of <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.HDFCube</span></code></p>
 <p>Core class which gives access to an HDF5 cube. The child class
-<a class="reference internal" href="process_module.html#orcs.process.SpectralCube" title="orcs.process.SpectralCube"><code class="xref py py-class docutils literal"><span class="pre">SpectralCube</span></code></a> may be prefered in general
+<a class="reference internal" href="process_module.html#orcs.process.SpectralCube" title="orcs.process.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectralCube</span></code></a> may be prefered in general
 for its broader functionality.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal"><span class="pre">orb.core.HDFCube</span></code></p>
+<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.HDFCube</span></code></p>
 </div>
 <dl class="method">
 <dt id="orcs.core.HDFCube.__init__">
@@ -232,7 +184,7 @@ for its broader functionality.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>cube_path</strong> – Path to the HDF5 cube.</li>
-<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">orb.core.HDFCube()</span></code> properties.</li>
+<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.core.HDFCube()</span></code> properties.</li>
 </ul>
 </td>
 </tr>
@@ -334,7 +286,7 @@ written. Note that the pixels can be binned.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Need the InputParams class to be defined before call
-(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal"><span class="pre">_prepare_input_params()</span></code></a>).</p>
+(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare_input_params()</span></code></a>).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -375,14 +327,14 @@ pixel is passed (default None).</p>
 <p class="first admonition-title">Note</p>
 <p>Maps of the parameters of the fit can be found in
 the directory created by ORCS:
-<code class="docutils literal"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
 <p>Each line has 5 parameters (which gives 5 maps): height,
 amplitude, velocity, fwhm, sigma. Height and amplitude are
 given in ergs/cm^2/s/A. Velocity and broadening are given in
 km/s. FWHM is given in cm^-1.</p>
 <p>The flux map is also computed (from fwhm, amplitude and
 sigma parameters) and given in ergs/cm^2/s.</p>
-<p class="last">Each fitted parameter is associated an uncertainty (<code class="docutils literal"><span class="pre">*_err</span></code>
+<p class="last">Each fitted parameter is associated an uncertainty (<code class="docutils literal notranslate"><span class="pre">*_err</span></code>
 maps) given in the same unit.</p>
 </div>
 </dd></dl>
@@ -395,7 +347,7 @@ maps) given in the same unit.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">Need the InputParams class to be defined before call</p>
 </div>
-<p>(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal"><span class="pre">_prepare_input_params()</span></code></a>).</p>
+<p>(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare_input_params()</span></code></a>).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -488,7 +440,7 @@ cube is in wavenumber. must be in nm otherwise).</li>
 and the fit is made with a single range set to the filter
 bandpass.</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<code class="xref py py-meth docutils literal"><span class="pre">orb.fit._prepare_input_params()</span></code>.</li>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.fit._prepare_input_params()</span></code>.</li>
 </ul>
 </td>
 </tr>
@@ -501,7 +453,7 @@ bandpass.</li>
 <code class="descname">correct_wavelength</code><span class="sig-paren">(</span><em>sky_map_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.correct_wavelength" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct the wavelength of the cube based on the velocity of
 the sky lines computed with
-<a class="reference internal" href="process_module.html#orcs.process.SpectralCube.map_sky_velocity" title="orcs.process.SpectralCube.map_sky_velocity"><code class="xref py py-meth docutils literal"><span class="pre">map_sky_velocity()</span></code></a></p>
+<a class="reference internal" href="process_module.html#orcs.process.SpectralCube.map_sky_velocity" title="orcs.process.SpectralCube.map_sky_velocity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_sky_velocity()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -527,14 +479,14 @@ correction map.</p>
 <code class="descname">extract_integrated_spectrum</code><span class="sig-paren">(</span><em>region</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.extract_integrated_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract a spectrum integrated over a given region (can be a
 list of pixels as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region</strong> – Region to integrate (can be a list of pixel
 coordinates as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
 file). If it is a ds9 region file, multiple regions can be
 defined and all will be integrated into one spectrum.</td>
 </tr>
@@ -556,7 +508,7 @@ given radius.</p>
 <li><strong>y</strong> – Y position of the center</li>
 <li><strong>r</strong> – Radius. If 0, only the central pixel is extracted.</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
+<a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -580,7 +532,7 @@ given radius.</p>
 <li><strong>y</strong> – Y position of the bottom-left pixel</li>
 <li><strong>b</strong> – Binning. If 1, only the central pixel is extracted</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
+<a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -596,7 +548,7 @@ given radius.</p>
 <code class="descname">fit_lines_in_integrated_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_integrated_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit lines of a spectrum integrated over a given region (can
 be a list of pixels as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -604,7 +556,7 @@ be a list of pixels as returned by the function
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>region</strong> – Region to integrate (can be a list of pixel
 coordinates as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
 file). If it is a ds9 region file, multiple regions can be
 defined and all will be integrated into one spectrum.</li>
 <li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
@@ -626,13 +578,13 @@ first fit). If None a classical fit is made.</li>
 <li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
+<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple (axis, spectrum, fit_dict). fit_dict is a
 dictionary containing the fit results (same output as
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>)</p>
+<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code></a>)</p>
 </td>
 </tr>
 </tbody>
@@ -670,7 +622,7 @@ fit. If None a classical fit is made.</li>
 <li><strong>max_iter</strong> – (Optional) Maximum number of iterations
 (default None)</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
+<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -724,13 +676,13 @@ first fit). If None a classical fit is made.</li>
 <li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
+<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple (axis, spectrum, fit_dict). fit_dict is a
 dictionary containing the fit results (same output as
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>)</p>
+<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code></a>)</p>
 </td>
 </tr>
 </tbody>
@@ -769,13 +721,13 @@ first fit). If None a classical fit is made.</li>
 <li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
 is the mean flux of the extracted region (default False).</li>
 <li><strong>kwargs</strong> – Keyword arguments of the function
-<code class="xref py py-meth docutils literal"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>.</li>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple (axis, spectrum, fit_dict). fit_dict is a
 dictionary containing the fit results (same output as
-<code class="xref py py-meth docutils literal"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>)</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>)</p>
 </td>
 </tr>
 </tbody>
@@ -813,7 +765,7 @@ laser map and the laser wavelength.</p>
 <dt id="orcs.core.HDFCube.get_calibration_coeff_map_orig">
 <code class="descname">get_calibration_coeff_map_orig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_coeff_map_orig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the original calibration coeff map (not the version
-computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibration_coeff_map" title="orcs.core.HDFCube.get_calibration_coeff_map"><code class="xref py py-meth docutils literal"><span class="pre">get_calibration_coeff_map()</span></code></a>)</p>
+computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibration_coeff_map" title="orcs.core.HDFCube.get_calibration_coeff_map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_calibration_coeff_map()</span></code></a>)</p>
 </dd></dl>
 
 <dl class="method">
@@ -826,7 +778,7 @@ computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibrati
 <dt id="orcs.core.HDFCube.get_calibration_laser_map_orig">
 <code class="descname">get_calibration_laser_map_orig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_laser_map_orig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the original calibration laser map (not the version
-computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibration_laser_map" title="orcs.core.HDFCube.get_calibration_laser_map"><code class="xref py py-meth docutils literal"><span class="pre">get_calibration_laser_map()</span></code></a>)</p>
+computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibration_laser_map" title="orcs.core.HDFCube.get_calibration_laser_map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_calibration_laser_map()</span></code></a>)</p>
 </dd></dl>
 
 <dl class="method">
@@ -1009,7 +961,7 @@ the cube size on disk.</p>
 <dd><p>Reset the compute calibration laser map (and also the
 calibration coeff map). Must be called when the wavelength
 calibration has changed</p>
-<p>..seealso :: <a class="reference internal" href="#orcs.core.HDFCube.correct_wavelength" title="orcs.core.HDFCube.correct_wavelength"><code class="xref py py-meth docutils literal"><span class="pre">correct_wavelength()</span></code></a></p>
+<p>..seealso :: <a class="reference internal" href="#orcs.core.HDFCube.correct_wavelength" title="orcs.core.HDFCube.correct_wavelength"><code class="xref py py-meth docutils literal notranslate"><span class="pre">correct_wavelength()</span></code></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -1083,7 +1035,7 @@ coordinates you want to transform.</p>
 <dl class="class">
 <dt id="orcs.core.LineMaps">
 <em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">LineMaps</code><span class="sig-paren">(</span><em>dimx</em>, <em>dimy</em>, <em>lines</em>, <em>wavenumber</em>, <em>binning</em>, <em>div_nb</em>, <em>project_header=None</em>, <em>wcs_header=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.Tools</span></code></p>
 <p>Manage line parameters maps</p>
 <dl class="method">
 <dt id="orcs.core.LineMaps.__init__">
@@ -1105,7 +1057,7 @@ it is in wavelength.</li>
 written frames (default None).</li>
 <li><strong>wcs_header</strong> – (Optional) WCS header passed to the written
 frames (default None).</li>
-<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">__init__()</span></code> kwargs.</li>
+<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> kwargs.</li>
 </ul>
 </td>
 </tr>
@@ -1222,9 +1174,7 @@ None)</li>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1233,7 +1183,7 @@ None)</li>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1242,11 +1192,11 @@ None)</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        &copy; Copyright 2019, Thomas Martin
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1259,37 +1209,15 @@ None)</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>
