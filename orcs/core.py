@@ -47,10 +47,6 @@ import warnings
 import copy
 
 # import ORB
-
-if os.environ.get('READTHEDOCS', None) == 'True':
-    import orcs.orbmock as orb
-
 import orb.core
 import orb.fit
 import orb.utils.astrometry

@@ -14,8 +14,8 @@
 #
 import os
 import sys
+import orcs.orbmock
 
-os.environ['READTHEDOCS'] = 'True'
 sys.path.insert(0, os.path.abspath('../'))
 
 from mock import Mock as MagicMock
@@ -24,9 +24,9 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
         return Mock()
 
-MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas', 'scipy', 'astropy.wcs', 'astropy', 'gvar', 'lsqfit', 'bottleneck', 'astropy.io.fits', 'astropy.io', 'h5py', 'scipy.optimize', 'scipy.interpolate', 'scipy.special', 'astropy.coordinates', 'scipy.misc', 'astropy.wcs.utils', 'astropy.units', 'astropy.time', 'orb.cutils', 'orb.cgvar']
-                #, 'orb.fit', 'orb.utils', 'orb.utils.astrometry', 'orb.utils.validate', 'orb.utils.spectrum', 'orb.utils.log', 'orb.utils.image', 'orb.utils.stats', 'orb.utils.filters', 'orb.utils.misc', 'orb.astrometry']
+MOCK_MODULES = ['pygtk', 'gtk', 'gobject', 'argparse', 'numpy', 'pandas', 'scipy', 'astropy.wcs', 'astropy', 'gvar', 'lsqfit', 'bottleneck', 'astropy.io.fits', 'astropy.io', 'h5py', 'scipy.optimize', 'scipy.interpolate', 'scipy.special', 'astropy.coordinates', 'scipy.misc', 'astropy.wcs.utils', 'astropy.units', 'astropy.time', 'orb.cutils', 'orb.cgvar', 'orb.fit', 'orb.utils', 'orb.utils.astrometry', 'orb.utils.validate', 'orb.utils.spectrum', 'orb.utils.log', 'orb.utils.image', 'orb.utils.stats', 'orb.utils.filters', 'orb.utils.misc', 'orb.astrometry']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+sys.modules.update((('orb', orcs.orbmock),))
 
 # -- Project information -----------------------------------------------------
 

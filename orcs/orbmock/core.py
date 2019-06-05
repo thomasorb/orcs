@@ -9,3 +9,6 @@
 
 class HDFCube(object):
     pass
+
+class Tools(object):
+    pass

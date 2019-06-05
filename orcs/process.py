@@ -50,17 +50,14 @@ from core import HDFCube, LineMaps, Filter
 import utils
 
 # import ORB
-if os.environ.get('READTHEDOCS', None) == 'True':
-    pass
-else:
-    import orb.core
-    import orb.utils.spectrum
-    import orb.utils.image
-    import orb.utils.stats
-    import orb.utils.filters
-    import orb.utils.misc
-    import orb.fit
-    from orb.astrometry import Astrometry
+import orb.core
+import orb.utils.spectrum
+import orb.utils.image
+import orb.utils.stats
+import orb.utils.filters
+import orb.utils.misc
+import orb.fit
+from orb.astrometry import Astrometry
 
 
 #################################################
