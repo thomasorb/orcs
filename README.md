@@ -13,9 +13,9 @@
 
 * and much more ...
 
-**Examples** in Jupyter format can be found in the documentation:
+**Examples** in Jupyter notebook format can be found in the documentation:
 
-http://celeste.phy.ulaval.ca/orcs-doc/examples.html
+https://github.com/thomasorb/orcs/tree/master/docs/examples
     
    
 .. warning:: ORCS is always in fast development. You might see bugs or
@@ -27,10 +27,7 @@ http://celeste.phy.ulaval.ca/orcs-doc/examples.html
 
 ## Documentation
 
-You can find the up-to-date documentation here:
-
-http://celeste.phy.ulaval.ca/orcs-doc/index.html
-
+You can find the up-to-date documentation here: https://orcs.readthedocs.io/
 
 
 ## Publications
