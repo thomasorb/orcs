@@ -17,6 +17,8 @@ These examples show the basic usage of ORCS
    examples/fit_region.ipynb
    examples/sincgauss_vs_2_sinc.ipynb
 
+[test](examples/fit_a_single_spectrum.ipynb)
+
 
 Bayesian fitting vs. classical fitting
 --------------------------------------
@@ -52,12 +54,15 @@ your data.
 Advanced fitting
 ----------------
 
-These examples show advanced fitting procedures.
+These examples show advanced fitting procedures for:
+* constraining line ratios (e.g. [NII]6548,6584 or [OIII]5007,4959)
+* fitting regions with mapped input parameters (e.g. velocity/broadening maps as input)
 
 .. toctree::
    :maxdepth: 1
 
    examples/constaining_line_ratios.ipynb
+   examples/fit_region_w_mapped_params.ipynb
 
 Other Tools
 -----------

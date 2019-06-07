@@ -1,0 +1,963 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Use mapped inputs (e.g. for the velocity) &mdash; orcs  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Automatic source detection" href="automatic_source_detection.html" />
+    <link rel="prev" title="Constraining line ratios" href="constaining_line_ratios.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> orcs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#first-basic-examples">First basic examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#calibrating-your-data">Calibrating your data</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples.html#advanced-fitting">Advanced fitting</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="constaining_line_ratios.html">Constraining line ratios</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Use mapped inputs (e.g. for the velocity)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compute-highly-binned-map">compute highly binned map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Compute-final-map-with-input-from-highly-binned-computation">Compute final map with input from highly binned computation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#other-tools">Other Tools</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils_module.html">Utils module</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">orcs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Use mapped inputs (e.g. for the velocity)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/fit_region_w_mapped_params.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Use-mapped-inputs-(e.g.-for-the-velocity)">
+<h1>Use mapped inputs (e.g. for the velocity)<a class="headerlink" href="#Use-mapped-inputs-(e.g.-for-the-velocity)" title="Permalink to this headline">¶</a></h1>
+<p>In some cases, the input velocity changes too much in the field for a fit with the same input parameters to work everywhere.</p>
+<p>There are two possibilities :</p>
+<ul class="simple">
+<li><strong>fitting smaller ROIs</strong> and changing the input parameters accordingly (remember that the <em>output maps are updated at each fit, so you don’t have to merge them yourself</em>)</li>
+<li>using <strong>mapped input parameters</strong>. This is the option we are going to show in the following.</li>
+</ul>
+<p>The last possibility is particularly useful if you have already a model of you galactic disk velocity or if you have a velocity map computed with a <strong>higher binning value than the one you want to use now (e.g. use a 10x10 binned velocity map as an input for a 1x1 velocity map)</strong></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>from orcs.process import SpectralCube
+import pylab as pl
+import orb.utils.io
+import numpy as np
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>cube = SpectralCube(&#39;M57_SN3.merged.cm1.1.0.hdf5&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Data shape : (2048, 2064, 593)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
+</pre></div></div>
+</div>
+<div class="section" id="compute-highly-binned-map">
+<h2>compute highly binned map<a class="headerlink" href="#compute-highly-binned-map" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>orb.core.Logger(debug=True)
+
+cube.fit_lines_in_region(&#39;region.reg&#39;,
+                         (&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;),
+                         fmodel=&#39;sincgauss&#39;,
+                         pos_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                         sigma_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                         sigma_cov=[10, 10],
+                         binning=8, snr_guess=&#39;auto&#39;,
+                         nofilter=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ loading region: Shape : circle ( HMS(18:53:35.739),DMS(+33:02:03.821),Ang(12.264&#34;) )
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Number of spectra to fit: 70
+INFO| Init of the parallel processing server with 4 threads
+INFO| passed mapped kwargs : []
+INFO| 10 rows to fit
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 2m17s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Writing height maps
+<span class="ansi-yellow-fg">WARNING| param height is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.height.fits in 0.01 s
+INFO| Writing height-err maps
+<span class="ansi-yellow-fg">WARNING| param height-err is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.height-err.fits in 0.01 s
+INFO| Writing amplitude maps
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.amplitude.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.amplitude.fits in 0.02 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.amplitude.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.amplitude.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.amplitude.fits in 0.01 s
+INFO| Writing amplitude-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.amplitude-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.amplitude-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.amplitude-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.amplitude-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.amplitude-err.fits in 0.01 s
+INFO| Writing velocity maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.velocity.fits in 0.02 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.velocity.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.velocity.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.velocity.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.velocity.fits in 0.01 s
+INFO| Writing velocity-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.velocity-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.velocity-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.velocity-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.velocity-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.velocity-err.fits in 0.01 s
+INFO| Writing fwhm maps
+<span class="ansi-yellow-fg">WARNING| param fwhm is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.fwhm.fits in 0.01 s
+INFO| Writing fwhm-err maps
+<span class="ansi-yellow-fg">WARNING| param fwhm-err is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.fwhm-err.fits in 0.01 s
+INFO| Writing sigma maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.sigma.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.sigma.fits in 0.01 s
+INFO| Writing sigma-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.sigma-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.sigma-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.sigma-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.sigma-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.sigma-err.fits in 0.01 s
+INFO| Writing flux maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.flux.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.flux.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.flux.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.flux.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.flux.fits in 0.01 s
+INFO| Writing flux-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.8x8.flux-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.flux-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.flux-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.8x8.flux-err.fits in 0.01 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.8x8.flux-err.fits in 0.01 s
+INFO| Writing logGBF maps
+<span class="ansi-yellow-fg">WARNING| param logGBF is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.logGBF.fits in 0.01 s
+INFO| Writing chi2 maps
+<span class="ansi-yellow-fg">WARNING| param chi2 is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.chi2.fits in 0.02 s
+INFO| Writing rchi2 maps
+<span class="ansi-yellow-fg">WARNING| param rchi2 is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.rchi2.fits in 0.01 s
+INFO| Writing ks_pvalue maps
+<span class="ansi-yellow-fg">WARNING| param ks_pvalue is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.8x8.ks_pvalue.fits in 0.01 s
+</pre></div></div>
+</div>
+<div class="section" id="Check-the-results">
+<h3>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>def show_map(path, title):
+    fig = pl.figure()
+    ax = fig.add_subplot(111, projection=cube.get_wcs())
+    ax.coords[0].set_major_formatter(&#39;hh:mm:ss.s&#39;)
+    ax.coords[1].set_major_formatter(&#39;dd:mm:ss&#39;)
+    _map = orb.utils.io.read_fits(path)
+    pl.imshow(_map.T, origin=&#39;bottom-left&#39;,
+              vmin=np.nanpercentile(_map, 10),
+              vmax=np.nanpercentile(_map, 90))
+    pl.xlim((700/8,800/8))
+    pl.ylim((850/8,950/8))
+    pl.colorbar()
+    pl.title(title)
+
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.flux.fits&#39;, r&#39;H$\alpha$ flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.velocity.fits&#39;, r&#39;H$\alpha$ velocity (km/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.sigma.fits&#39;, r&#39;H$\alpha$ broadening (km/s)&#39;)
+
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.flux.fits&#39;, r&#39;[NII]6583 flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.velocity.fits&#39;, r&#39;[NII]6583 velocity (km/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.sigma.fits&#39;, r&#39;[NII]6583 broadening (km/s)&#39;)
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_7_0.png" src="../_images/examples_fit_region_w_mapped_params_7_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_7_1.png" src="../_images/examples_fit_region_w_mapped_params_7_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_7_2.png" src="../_images/examples_fit_region_w_mapped_params_7_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_7_3.png" src="../_images/examples_fit_region_w_mapped_params_7_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_7_4.png" src="../_images/examples_fit_region_w_mapped_params_7_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_7_5.png" src="../_images/examples_fit_region_w_mapped_params_7_5.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Compute-final-map-with-input-from-highly-binned-computation">
+<h2>Compute final map with input from highly binned computation<a class="headerlink" href="#Compute-final-map-with-input-from-highly-binned-computation" title="Permalink to this headline">¶</a></h2>
+<p>Here, passed maps are the output of the previous computation.</p>
+<p>But you could have made them yourself. The only important thing is that their shape must be the same as the shape of the cube (i.e. (cube.dimx, cube.dimy)).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># for strange reasons, cube should be reloaded before each fit_lines_in_region process.
+cube = SpectralCube(&#39;M57_SN3.merged.cm1.1.0.hdf5&#39;)
+
+cube.fit_lines_in_region(&#39;region.reg&#39;,
+                         (&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;),
+                         fmodel=&#39;sincgauss&#39;,
+                         pos_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                         sigma_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                         binning=1, snr_guess=&#39;auto&#39;,
+                         nofilter=True,
+                         pos_cov_map=[&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.velocity.fits&#39;,
+                                      &#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.velocity.fits&#39;],
+                         sigma_cov_map=[&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.8x8.sigma.fits&#39;,
+                                        &#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.8x8.sigma.fits&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Data shape : (2048, 2064, 593)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ loading region: Shape : circle ( HMS(18:53:35.739),DMS(+33:02:03.821),Ang(12.264&#34;) )
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| nans and infs in passed map pos_cov_map will be replaced by the median of the map</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| nans and infs in passed map pos_cov_map will be replaced by the median of the map</span>
+<span class="ansi-yellow-fg">WARNING| nans and infs in passed map sigma_cov_map will be replaced by the median of the map</span>
+<span class="ansi-yellow-fg">WARNING| nans and infs in passed map sigma_cov_map will be replaced by the median of the map</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2079: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+  warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
+</span>
+INFO| Number of spectra to fit: 4509
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1742: RuntimeWarning: invalid value encountered in sqrt
+  noise_counts = np.sqrt(total_counts)
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+INFO| Init of the parallel processing server with 4 threads
+INFO| passed mapped kwargs : [&#39;sigma_cov_1&#39;, &#39;sigma_cov_0&#39;, &#39;pos_cov_1&#39;, &#39;pos_cov_0&#39;]
+INFO| 76 rows to fit
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 1h8m48s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Writing height maps
+<span class="ansi-yellow-fg">WARNING| param height is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.height.fits in 0.16 s
+INFO| Writing height-err maps
+<span class="ansi-yellow-fg">WARNING| param height-err is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.height-err.fits in 0.03 s
+INFO| Writing amplitude maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.amplitude.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.amplitude.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.amplitude.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.amplitude.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.amplitude.fits in 0.04 s
+INFO| Writing amplitude-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.amplitude-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.amplitude-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.amplitude-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.amplitude-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.amplitude-err.fits in 0.03 s
+INFO| Writing velocity maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.velocity.fits in 0.04 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.velocity.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.velocity.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.velocity.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.velocity.fits in 0.03 s
+INFO| Writing velocity-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.velocity-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.velocity-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.velocity-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.velocity-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.velocity-err.fits in 0.03 s
+INFO| Writing fwhm maps
+<span class="ansi-yellow-fg">WARNING| param fwhm is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.fwhm.fits in 0.03 s
+INFO| Writing fwhm-err maps
+<span class="ansi-yellow-fg">WARNING| param fwhm-err is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.fwhm-err.fits in 0.05 s
+INFO| Writing sigma maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.sigma.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.sigma.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.sigma.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.sigma.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.sigma.fits in 0.03 s
+INFO| Writing sigma-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.sigma-err.fits in 0.07 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.sigma-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.sigma-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.sigma-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.sigma-err.fits in 0.03 s
+INFO| Writing flux maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.flux.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.flux.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.flux.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.flux.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.flux.fits in 0.03 s
+INFO| Writing flux-err maps
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.1x1.flux-err.fits in 0.06 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.flux-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.flux-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.1x1.flux-err.fits in 0.03 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.1x1.flux-err.fits in 0.06 s
+INFO| Writing logGBF maps
+<span class="ansi-yellow-fg">WARNING| param logGBF is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.logGBF.fits in 0.03 s
+INFO| Writing chi2 maps
+<span class="ansi-yellow-fg">WARNING| param chi2 is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.chi2.fits in 0.03 s
+INFO| Writing rchi2 maps
+<span class="ansi-yellow-fg">WARNING| param rchi2 is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.rchi2.fits in 0.05 s
+INFO| Writing ks_pvalue maps
+<span class="ansi-yellow-fg">WARNING| param ks_pvalue is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.1x1.ks_pvalue.fits in 0.03 s
+</pre></div></div>
+</div>
+<div class="section" id="Check-the-results">
+<h3>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>def show_map(path, title):
+    fig = pl.figure()
+    ax = fig.add_subplot(111, projection=cube.get_wcs())
+    ax.coords[0].set_major_formatter(&#39;hh:mm:ss.s&#39;)
+    ax.coords[1].set_major_formatter(&#39;dd:mm:ss&#39;)
+    _map = orb.utils.io.read_fits(path)
+    pl.imshow(_map.T, origin=&#39;bottom-left&#39;,
+              vmin=np.nanpercentile(_map, 10),
+              vmax=np.nanpercentile(_map, 90))
+    pl.xlim((700,800))
+    pl.ylim((850,950))
+    pl.colorbar()
+    pl.title(title)
+
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.flux.fits&#39;, r&#39;H$\alpha$ flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.velocity.fits&#39;, r&#39;H$\alpha$ velocity (km/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.1x1.sigma.fits&#39;, r&#39;H$\alpha$ broadening (km/s)&#39;)
+
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.flux.fits&#39;, r&#39;[NII]6583 flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.velocity.fits&#39;, r&#39;[NII]6583 velocity (km/s)&#39;)
+show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.sigma.fits&#39;, r&#39;[NII]6583 broadening (km/s)&#39;)
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_12_0.png" src="../_images/examples_fit_region_w_mapped_params_12_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_12_1.png" src="../_images/examples_fit_region_w_mapped_params_12_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_12_2.png" src="../_images/examples_fit_region_w_mapped_params_12_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_12_3.png" src="../_images/examples_fit_region_w_mapped_params_12_3.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_12_4.png" src="../_images/examples_fit_region_w_mapped_params_12_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_fit_region_w_mapped_params_12_5.png" src="../_images/examples_fit_region_w_mapped_params_12_5.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="automatic_source_detection.html" class="btn btn-neutral float-right" title="Automatic source detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="constaining_line_ratios.html" class="btn btn-neutral float-left" title="Constraining line ratios" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas Martin
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

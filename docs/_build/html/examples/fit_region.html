@@ -415,8 +415,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>%matplotlib inline
-from orcs.process import SpectralCube
+<span></span>from orcs.process import SpectralCube
 import pylab as pl
 import orb.utils.io
 import numpy as np
@@ -428,7 +427,7 @@ import numpy as np
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>cube = SpectralCube(&#39;/home/thomas/M57_SN3.merged.cm1.1.0.hdf5&#39;, debug=False)
+<span></span>cube = SpectralCube(&#39;M57_SN3.merged.cm1.1.0.hdf5&#39;, debug=False)
 </pre></div>
 </div>
 </div>
@@ -469,7 +468,7 @@ orb.utils.io.write_fits(&#39;deep_frame.fits&#39;, deep_frame, fits_header=cube.
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Data written as deep_frame.fits in 0.24 s
+INFO| Data written as deep_frame.fits in 0.25 s
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -497,7 +496,7 @@ global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman" select=
 fk5
 circle(18:53:35.739,+33:02:03.821,12.264")<p>It can be plotted (for checking purpose) with pyregion (<a class="reference external" href="http://pyregion.readthedocs.io/en/latest/index.html">http://pyregion.readthedocs.io/en/latest/index.html</a>) like this</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -538,7 +537,7 @@ for t in artist_list:
 <div class="section" id="Extract-a-spectrum-of-the-region-to-define-the-fit-parameters">
 <h2>Extract a spectrum of the region to define the fit parameters<a class="headerlink" href="#Extract-a-spectrum-of-the-region-to-define-the-fit-parameters" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -572,42 +571,26 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.013 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Init of the parallel processing server with 4 threads
+ [==========] [100%] [completed in 0.129 s]
+ [==========] [100%] [completed in 0.174 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-
- [==========] [100%] [completed in 0.460 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/examples_fit_region_10_4.png" src="../_images/examples_fit_region_10_4.png" />
+<img alt="../_images/examples_fit_region_10_2.png" src="../_images/examples_fit_region_10_2.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/examples_fit_region_10_5.png" src="../_images/examples_fit_region_10_5.png" />
+<img alt="../_images/examples_fit_region_10_3.png" src="../_images/examples_fit_region_10_3.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -625,11 +608,11 @@ print &#39;velocity: {} km/s&#39;.format(vel)
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-velocity: 47.1970433253 km/s
+velocity: 46.3291137345 km/s
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -671,7 +654,8 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.011 s]
+ [==========] [100%] [completed in 0.154 s]
+ [==========] [100%] [completed in 0.162 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -679,42 +663,10 @@ INFO| Number of integrated pixels: 29
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
- [==========] [100%] [completed in 0.468 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1673: RuntimeWarning: invalid value encountered in sqrt
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1742: RuntimeWarning: invalid value encountered in sqrt
   noise_counts = np.sqrt(total_counts)
 </span>
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2074: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2079: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
   warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
 </span>
 </pre></div></div>
@@ -724,15 +676,15 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Velocity (km/s):  [77.74(32) 68.20(13) 77.74(32) 77.74(32) 77.74(32)]
-Broadening (km/s) [21.43(88) 20.13(36) 21.43(88) 21.43(88) 21.43(88)]
+Velocity (km/s):  [77.24(30) 69.50(12) 77.24(30) 77.24(30) 77.24(30)]
+Broadening (km/s) [19.84(87) 18.24(37) 19.84(87) 19.84(87) 19.84(87)]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/examples_fit_region_12_8.png" src="../_images/examples_fit_region_12_8.png" />
+<img alt="../_images/examples_fit_region_12_4.png" src="../_images/examples_fit_region_12_4.png" />
 </div>
 </div>
 </div>
@@ -748,7 +700,7 @@ Broadening (km/s) [21.43(88) 20.13(36) 21.43(88) 21.43(88) 21.43(88)]
 <div class="section" id="3x3-binning">
 <h3>3x3 binning<a class="headerlink" href="#3x3-binning" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -770,8 +722,8 @@ cube.fit_lines_in_region(&#39;region.reg&#39;,
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/core.py:242: UserWarning: Exception occured during logging server init (maybe it is already initialized): [Errno 98] Address already in use
-  warnings.warn(&#39;Exception occured during logging server init (maybe it is already initialized): {}&#39;.format(e))
+<span class="ansi-yellow-fg">WARNING| /home/thomas/miniconda2/envs/orb/lib/python2.7/site-packages/astropy/wcs/wcs.py:2566: AstropyWarning: Some non-standard WCS keywords were excluded: BP_0_0, BP_0_1, BP_0_2, A_3_0, B_3_0, BP_3_0, B_1_2, B_1_0, B_1_1, B_2_1, B_2_0, A_ORDER, B_0_3, B_0_2, B_0_1, B_0_0, BP_0_3, B_ORDER, BP_ORDER, BP_1_2, AP_ORDER, AP_3_0, A_1_1, A_1_0, BP_2_0, A_1_2, AP_2_1, AP_2_0, A_0_0, A_0_1, A_0_2, A_0_3, BP_1_1, BP_1_0, A_2_0, A_2_1, AP_1_0, AP_1_1, AP_1_2, BP_2_1, AP_0_1, AP_0_0, AP_0_3, AP_0_2 Use the ``relax`` kwarg to control this.
+  AstropyWarning)
 </span>
 </pre></div></div>
 </div>
@@ -790,6 +742,9 @@ cube.fit_lines_in_region(&#39;region.reg&#39;,
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Number of spectra to fit: 501
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
 INFO| Init of the parallel processing server with 4 threads
 INFO| passed mapped kwargs : []
 INFO| 26 rows to fit
@@ -800,7 +755,7 @@ INFO| 26 rows to fit
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 4m11s]
+ [==========] [100%] [completed in 6m48s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -809,7 +764,6 @@ INFO| 26 rows to fit
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Writing height maps
-<span class="ansi-yellow-fg">WARNING| param height is the same for all lines</span>
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -825,7 +779,8 @@ INFO| Writing height maps
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.height.fits in 0.03 s
+<span class="ansi-yellow-fg">WARNING| param height is the same for all lines</span>
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.height.fits in 0.01 s
 INFO| Writing height-err maps
 <span class="ansi-yellow-fg">WARNING| param height-err is the same for all lines</span>
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.height-err.fits in 0.01 s
@@ -837,7 +792,7 @@ INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.am
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.amplitude.fits in 0.01 s
 INFO| Writing amplitude-err maps
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6548.3x3.amplitude-err.fits in 0.01 s
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.amplitude-err.fits in 0.02 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6563.3x3.amplitude-err.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.3x3.amplitude-err.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.amplitude-err.fits in 0.01 s
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.amplitude-err.fits in 0.01 s
@@ -855,7 +810,7 @@ INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6716.3x3.ve
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6731.3x3.velocity-err.fits in 0.01 s
 INFO| Writing fwhm maps
 <span class="ansi-yellow-fg">WARNING| param fwhm is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.fwhm.fits in 0.04 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.fwhm.fits in 0.01 s
 INFO| Writing fwhm-err maps
 <span class="ansi-yellow-fg">WARNING| param fwhm-err is the same for all lines</span>
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.fwhm-err.fits in 0.01 s
@@ -888,10 +843,10 @@ INFO| Writing logGBF maps
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.logGBF.fits in 0.01 s
 INFO| Writing chi2 maps
 <span class="ansi-yellow-fg">WARNING| param chi2 is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.chi2.fits in 0.02 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.chi2.fits in 0.01 s
 INFO| Writing rchi2 maps
 <span class="ansi-yellow-fg">WARNING| param rchi2 is the same for all lines</span>
-INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.rchi2.fits in 0.02 s
+INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.rchi2.fits in 0.01 s
 INFO| Writing ks_pvalue maps
 <span class="ansi-yellow-fg">WARNING| param ks_pvalue is the same for all lines</span>
 INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.ks_pvalue.fits in 0.01 s
@@ -901,7 +856,7 @@ INFO| Data written as M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.all.3x3.ks_
 <div class="section" id="Check-the-results">
 <h3>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
@@ -1183,15 +1138,6 @@ show_map(&#39;M57_SN3.1.0.ORCS/MAPS/M57_SN3.1.0.LineMaps.map.6583.1x1.sigma.fits
 </div>
 <div class="output_area docutils container">
 <img alt="../_images/examples_fit_region_21_5.png" src="../_images/examples_fit_region_21_5.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
 </div>
 </div>
 </div>
