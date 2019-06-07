@@ -65,8 +65,10 @@ A data cube can be recalibrated using mode specific algorithm which depends on t
 These examples show advanced fitting procedures.
 
 * [Constraining line ratios](docs/examples/constaining_line_ratios.ipynb)
+* [Use mapped inputs (e.g. for the velocity)](docs/examples/fit_region_w_mapped_params.ipynb)
 
 ### Other Tools
+
 * [Automatic source detection](docs/examples/automatic_source_detection.ipynb)
 * [Radial Velocity Correction](docs/examples/heliocentric_velocity.ipynb)
 
