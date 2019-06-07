@@ -9,7 +9,7 @@ First basic examples
 These examples show the basic usage of ORCS
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    script_example_fit_a_single_spectrum.ipynb
    script_example_velocity_parameter_precision.ipynb

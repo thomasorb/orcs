@@ -297,26 +297,41 @@ velocities in the order of their appearance in the definition
 <h3><a class="toc-backref" href="#id6">List of the fitting parameters</a><a class="headerlink" href="#list-of-the-fitting-parameters" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="position">
 <h4><a class="toc-backref" href="#id7">position</a><a class="headerlink" href="#position" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">pos_def</span></code>: Definition of the position (i.e. wavenumber) parameter
-of each line e.g. may be ‘free’, ‘fixed’ or a group key (e.g. ‘1’,
-‘a’ etc.), set to ‘free’ by default</li>
-<li><code class="docutils literal notranslate"><span class="pre">pos_guess</span></code>: Cannot be passed, replaced by the parameter <code class="docutils literal notranslate"><span class="pre">lines</span></code>
-in the fitting function.</li>
-<li><code class="docutils literal notranslate"><span class="pre">pos_cov</span></code>: velocity guess of the grouped lines in km/s. the
-covariation operation is Doppler shifting.</li>
-</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">pos_def:</th><td class="field-body">Definition of the position (i.e. wavenumber) parameter of
+each line e.g. may be ‘free’, ‘fixed’ or a group key
+(e.g. ‘1’, ‘a’ etc.), set to ‘free’ by default</td>
+</tr>
+<tr class="field-even field"><th class="field-name">pos_cov:</th><td class="field-body">velocity guess of the grouped lines in km/s. the covariation
+operation is Doppler shifting.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">pos_guess:</th><td class="field-body"><strong>Cannot be passed</strong>, replaced by the parameter <code class="docutils literal notranslate"><span class="pre">lines</span></code>
+in the fitting function.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="amplitude">
 <h4><a class="toc-backref" href="#id8">amplitude</a><a class="headerlink" href="#amplitude" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">amp_def</span></code>: Definition of the amplitude parameter
-of each line e.g. may be ‘free’, ‘fixed’ or a group key (e.g. ‘1’,
-‘a’ etc.), set to ‘free’ by default</li>
-<li><code class="docutils literal notranslate"><span class="pre">amp_guess</span></code>: Initial guess on the amplitude value. May be used to set a fixed ratio to the lines.</li>
-<li><code class="docutils literal notranslate"><span class="pre">amp_cov</span></code>: does not have to be set (1 by default). the covariation
-operation is a multiplication.</li>
-</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">amp_def:</th><td class="field-body">Definition of the amplitude parameter of each line e.g. may
+be ‘free’, ‘fixed’ or a group key (e.g. ‘1’, ‘a’ etc.), set
+to ‘free’ by default</td>
+</tr>
+<tr class="field-even field"><th class="field-name">amp_guess:</th><td class="field-body">Initial guess on the amplitude value. Generally not
+set. Used to set a fixed ratio to the lines.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">amp_cov:</th><td class="field-body"><strong>does not have to be set</strong> (1 by default). the covariation
+operation is a multiplication.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="section" id="uncertainties">

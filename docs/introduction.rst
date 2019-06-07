@@ -129,22 +129,28 @@ List of the fitting parameters
 position
 ********
 
-* ``pos_def``: Definition of the position (i.e. wavenumber) parameter
-  of each line e.g. may be 'free', 'fixed' or a group key (e.g. '1',
-  'a' etc.), set to 'free' by default
-* ``pos_guess``: Cannot be passed, replaced by the parameter ``lines``
-  in the fitting function.
-* ``pos_cov``: velocity guess of the grouped lines in km/s. the
-  covariation operation is Doppler shifting.
+:pos_def: Definition of the position (i.e. wavenumber) parameter of
+          each line e.g. may be 'free', 'fixed' or a group key
+          (e.g. '1', 'a' etc.), set to 'free' by default
+  
+:pos_cov: velocity guess of the grouped lines in km/s. the covariation
+          operation is Doppler shifting.
+
+:pos_guess: **Cannot be passed**, replaced by the parameter ``lines``
+            in the fitting function.
+
 
 amplitude
 *********
   
-* ``amp_def``: Definition of the amplitude parameter
-  of each line e.g. may be 'free', 'fixed' or a group key (e.g. '1',
-  'a' etc.), set to 'free' by default
-* ``amp_guess``: Initial guess on the amplitude value. May be used to set a fixed ratio to the lines.
-* ``amp_cov``: does not have to be set (1 by default). the covariation
+:amp_def: Definition of the amplitude parameter of each line e.g. may
+          be 'free', 'fixed' or a group key (e.g. '1', 'a' etc.), set
+          to 'free' by default
+  
+:amp_guess: Initial guess on the amplitude value. Generally not
+            set. Used to set a fixed ratio to the lines.
+	    
+:amp_cov: **does not have to be set** (1 by default). the covariation
   operation is a multiplication.
 
 
