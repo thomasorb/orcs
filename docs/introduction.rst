@@ -111,11 +111,11 @@ velocities in the order of their appearance in the definition
 
 These examples are related to the definition of the fitting parameters:
 
-- :ref:`script_example_fit_a_single_spectrum.ipynb`
+- :ref:`fit_a_single_spectrum.ipynb`
 
-- :ref:`script_example_velocity_parameter_precision.ipynb`
+- :ref:`velocity_parameter_precision.ipynb`
 
-- :ref:`script_example_constaining_line_ratios.ipynb`
+- :ref:`constaining_line_ratios.ipynb`
 
 
 .. image:: images/sky-spectrum.png
@@ -126,6 +126,40 @@ These examples are related to the definition of the fitting parameters:
 List of the fitting parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+general
+*******
+
+:fmodel: emission line model (can be 'sinc', 'sincgauss',
+         'gaussian'). 'gaussian' model should not be used unless for
+         testing purposes. Even for very large gaussian, a sincgauss
+         model si preferred.
+	 
+:no_filter: Set it to False if the filter transmission is visible in
+            the spectrum (i.e. if there is enough continuum to see
+            it). False by default. *Must be set to True if the
+            spectrum has been corrected for the background and does
+            display only emission lines*. As the precise wavelength
+            shift of the filter in the FOV is still unknown it is a
+            free parameter which can prove unstable when its position
+            cannot be well constrained from the data.
+
+:subtract_spectrum: Spectrum to subtract. Must be a 1d numpy.ndarray
+                    of the same size as the spectrum to fit. It should
+                    be scaled to the flux contained in only one pixel.
+		    (e.g. if it has been extracted from a large region).
+
+.. note:: when extracting a background spectrum, its flux can be
+          scaled to one pixel with `mean_flux=True`. A median can also
+          be used to combine the integrated pixels with
+          `median=True`. If `mean_flux=False`, even if `median=True`,
+          the flux will be scaled to the number of integrated pixels.
+
+.. code-block:: python
+
+   axis, sky = cube.extract_spectrum(500, 500, 30, median=True, mean_flux=True)
+   axis, spectrum = cube.extract_spectrum(1542, 1436, 3, subtract_spectrum=sky)
+		    
 position
 ********
 
@@ -153,9 +187,43 @@ amplitude
 :amp_cov: **does not have to be set** (1 by default). the covariation
   operation is a multiplication.
 
-
-
+fwhm
+****
   
+:fwhm_def: Definition of the amplitude parameter of each line e.g. may
+           be 'free', 'fixed' or a group key (e.g. '1', 'a' etc.). Set
+           to 'fixed' if fmodel is a `sinc` or a `sincgauss` (i.e. all
+           lines share the same fwhm, and its value is known). Else,
+           it is set to 'free'.
+  
+:fwhm_guess: Initial guess on the fwhm value. Set to a computed
+             default value in the case of a `sinc` or a `sincgauss`.
+	    
+:fwhm_cov: Generally let unset. Covariation operation is an addition.
+
+sigma (only for sincgauss)
+**************************
+
+This parameters refers to the expansion velocity (in km/s) or more
+generally the broadening of the gaussian-shaped line (itself
+convoluted with a `sinc` of known fwhm). The broadening is thus by
+definition 'corrected' for the `fwhm`.
+
+.. warning:: If the input value of the parameter (set with
+       `sigma_guess` or `sigma_cov`) is too small, the fit will not
+       converge.
+
+:sigma_def: **must be set** Definition of the sigma parameter of each
+            line e.g. may be 'free', 'fixed' or a group key (e.g. '1',
+            'a' etc.).
+
+:sigma_guess: Must be set only if its definition is set to free. If
+              set, should be not a too small value (e.g. > 30 km/s).
+	      
+:sigma_cov: **Must be set if lines are grouped**. If set, should be
+            not a too small value (e.g. > 30 km/s). Covariation
+            operation is a an addition.
+
 
   
 	   
@@ -179,31 +247,75 @@ percents).
 List of available lines
 -----------------------
 
-============ ================
-    NAME       Air Wavelength
-============ ================
-[OII]3726    372.603
-[OII]3729    372.882
-[NeIII]3869  386.875
-Hepsilon     397.007
-Hdelta       410.176
-Hgamma       434.047
-[OIII]4363   436.321
-Hbeta        486.133
-[OIII]4959   495.891
-[OIII]5007   500.684
-HeI5876      587.567
-[OI]6300     630.030
-[SIII]6312   631.21
-[NII]6548    654.803
-Halpha       656.280
-[NII]6583    658.341
-HeI6678      667.815
-[SII]6716    671.647
-[SII]6731    673.085
-HeI7065      706.528
-[ArIII]7136  713.578
-[OII]7120    731.965
-[OII]7130    733.016
-[ArIII]7751  775.112
-============ ================
+
+An up-to-date list of all the available lines may be found with the following
+
+.. code-block:: python
+
+   import orb.core
+   orb.core.Lines.air_lines_nm
+
+	     
+============    ================
+    NAME         Air Wavelength
+============    ================
+H15             371.19774
+H14             372.19449
+[OII]3726       372.7319
+[OII]3727       372.7319
+[OII]3729       372.9221
+H13             373.43746
+H12             375.01584
+H11             377.06368
+H10             379.79044
+H9              383.53909
+[NeIII]3869     386.876
+H8              388.90557
+H7              397.00788
+Hepsilon        397.00788
+Hdelta          410.17415
+H6              410.17415
+H5              434.0471
+Hgamma          434.0471
+[OIII]4363      436.3209
+Hbeta           486.1333
+H4              486.1333
+[OIII]4959      495.8911
+[OIII]5007      500.6843
+HeI5876         587.567
+[OI]6300        630.0304
+[SIII]6312      631.206
+[NII]6548       654.805
+H3              656.2819
+Halpha          656.2819
+[NII]6584       658.345
+[NII]6583       658.345
+HeI6678         667.81517
+[SII]6716       671.644
+[SII]6717       671.644
+[SII]6731       673.0816
+HeI7065         706.52153
+[ArIII]7136     713.579
+[OII]7320       731.992
+[OII]7330       733.019
+[ArIII]7751     775.111
+============    ================
+
+To get a clean text output of all the available lines:
+
+.. code-block:: python
+   
+   import orb.core
+   lines = orb.core.Lines.air_lines_nm
+
+   slines = list()
+   for iline in lines:
+       slines.append([iline, lines[iline]])
+
+   slines = sorted(slines, key=lambda a: a[1])
+    
+   out = ''
+   for iline in slines:
+       out += '{:15s} {}\n'.format(iline[0], iline[1])
+   print out
+   

@@ -1,0 +1,1105 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; orcs  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Image registration" href="image_registration.html" />
+    <link rel="prev" title="Modelling and fitting two unresolved emission lines with a bayesian approach" href="model+fit_2_lines_bayes.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> orcs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#first-basic-examples">First basic examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples.html#calibrating-your-data">Calibrating your data</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Wavelength recalibration with the sky lines (Mendel OH bands)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#First-step:-checking-the-calibration">First step: checking the calibration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Second-step:-Mapping-the-sky-velocity">Second step: Mapping the sky velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Resulting-data">Resulting data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calibrating-your-data-with-the-sky-velocity-map">Calibrating your data with the sky velocity map</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="image_registration.html">Image registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hst_flux_calibration.html">Flux Calibration Example Using HST image</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#advanced-fitting">Advanced fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#other-tools">Other Tools</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils_module.html">Utils module</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../known_issues.html">Known Issues</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">orcs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+        
+      <li>Wavelength recalibration with the sky lines (Mendel OH bands)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/wavelength_calibration.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Wavelength-recalibration-with-the-sky-lines-(Mendel-OH-bands)">
+<h1>Wavelength recalibration with the sky lines (Mendel OH bands)<a class="headerlink" href="#Wavelength-recalibration-with-the-sky-lines-(Mendel-OH-bands)" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Introduction">
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline">¶</a></h2>
+<p>Data can be recalibrated in wavelength easily when one OH sky lines are visible in most parts of the field of view. Cubes observed in the red part of the spectrum (e.g. SN3 filter) are especially interesting in this respect.</p>
+<p>The general idea is to extract integrated spectra at different positions in the field of view and measure the velocity of the sky lines (which should be 0 if the calibration was perfect) (see <a class="reference external" href="https://arxiv.org/abs/1707.01366">Martin et al. 2017a</a>).</p>
+<p><img alt="skymap-fig0.svg" src="../_images/skymap-fig0.svg" /></p>
+<p>Then the correction map can be infered at each pixel by fitting a model.</p>
+<p><img alt="skymap-fig1.svg" src="../_images/skymap-fig1.svg" /></p>
+<p>The calibration model is based on a simple modeling of the interferometer.</p>
+<p><img alt="coords0.svg" src="../_images/coords0.svg" /></p>
+</div>
+<div class="section" id="First-step:-checking-the-calibration">
+<h2>First step: checking the calibration<a class="headerlink" href="#First-step:-checking-the-calibration" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># inline plotting for jupyter notebook. Do not put this line in a real python script.
+%matplotlib inline
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># import base class for the manipulation of a SITELLE spectral cube: HDFCube
+from orcs.process import SpectralCube
+import pylab as pl
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># load spectral cube
+cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Data shape : (2048, 2064, 840)
+INFO| Cube is in WAVENUMBER (cm-1)
+INFO| Cube is CALIBRATED in wavenumber
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># extract and plot a spectrum of a large integrated region. The sky lines should appear.
+axis, spectrum = cube.extract_spectrum(50, 50, 20)
+pl.figure(figsize=(10,6))
+pl.plot(axis, spectrum)
+pl.xlim(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 1257
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 1.77 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ [==========] [100%] [completed in 0.550 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_5_5.png" src="../_images/examples_wavelength_calibration_5_5.png" />
+</div>
+</div>
+<div class="section" id="fitting-the-sky-spectrum">
+<h3>fitting the sky spectrum<a class="headerlink" href="#fitting-the-sky-spectrum" title="Permalink to this headline">¶</a></h3>
+<p>we can also fit the integrated spectrum because there si a large number of sky lines and because we are not interested in a perfect fit (only the velocity is required), we can use a simple ‘sinc’ model with a fixed fwhm. All the lines are set to share the same velocity parameter and we set an inital guess of the velocity around 80 km/s. This general bias of 80 km/s is known (<a class="reference external" href="https://arxiv.org/abs/1706.03230">Martin et al. 2017b</a>) and comes from the error made on the real wavelength of the
+calibration laser (which is falsely considered to be at 453.5 nm).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>sky_lines_cm1 = cube.get_sky_lines()
+axis, spectrum, fit_res = cube.fit_lines_in_spectrum(50, 50, 20, sky_lines_cm1,
+                                                     fmodel=&#39;sinc&#39;,
+                                                     pos_def=&#39;1&#39;,
+                                                     fwhm_def=&#39;fixed&#39;,
+                                                     nofilter=False,
+                                                     pos_cov=80)
+print &#39;\n===== Results ======&#39;
+print &#39;Velocity: &#39;, fit_res[&#39;velocity_gvar&#39;]
+pl.figure(figsize=(10,6))
+pl.plot(axis, spectrum, ls=&#39;:&#39;, c=&#39;black&#39;)
+pl.plot(axis, fit_res[&#39;fitted_vector&#39;], ls=&#39;-&#39;, c=&#39;orange&#39;)
+pl.xlim(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 1257
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.028 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ [==========] [100%] [completed in 0.655 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1673: RuntimeWarning: invalid value encountered in sqrt
+  noise_counts = np.sqrt(total_counts)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+===== Results ======
+Velocity:  [72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
+ 72.5(1.5) 72.5(1.5)]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_7_7.png" src="../_images/examples_wavelength_calibration_7_7.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Second-step:-Mapping-the-sky-velocity">
+<h2>Second step: Mapping the sky velocity<a class="headerlink" href="#Second-step:-Mapping-the-sky-velocity" title="Permalink to this headline">¶</a></h2>
+<p>Warning: this process can take a long time because a spectrum is extracted and fitted for each point of a 40x40 grid by default. For a basic example it is recommended to limit the number of grid division to 10x10.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>cube.map_sky_velocity(80, div_nb=10) # the mean velocity bias is set around 80 km/s
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| fitting process already done. Do you really want to redo it again ?
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+type [yes]: yes
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| X range: 0 2048, Y range: 0 2064
+INFO| Radius: 85.3333333333
+INFO| 100 regions to fit
+INFO| 93 sky lines to fit
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ loading region: Shape : circle ( Number(1861.81818),Number(1876.36364),Number(85.33333) )
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 30m1s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Velocity of the first line (km/s): 75.5(1.2)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Velocity of the first line (km/s): 75.8(1.2)
+INFO| Velocity of the first line (km/s): 73.8(1.5)
+INFO| Velocity of the first line (km/s): 71.6(1.4)
+INFO| Velocity of the first line (km/s): 72.5(1.7)
+INFO| Velocity of the first line (km/s): 69.9(1.6)
+INFO| Velocity of the first line (km/s): 67.5(1.6)
+INFO| Velocity of the first line (km/s): 66.6(1.5)
+INFO| Velocity of the first line (km/s): 72.7(1.5)
+INFO| Velocity of the first line (km/s): 70.7(2.0)
+INFO| Velocity of the first line (km/s): 77.0(1.3)
+INFO| Velocity of the first line (km/s): 76.6(1.3)
+INFO| Velocity of the first line (km/s): 77.0(1.3)
+INFO| Velocity of the first line (km/s): 72.7(1.5)
+INFO| Velocity of the first line (km/s): 70.2(1.6)
+INFO| Velocity of the first line (km/s): 65.8(1.5)
+INFO| Velocity of the first line (km/s): 67.8(1.5)
+INFO| Velocity of the first line (km/s): 68.4(1.6)
+INFO| Velocity of the first line (km/s): 67.5(1.5)
+INFO| Velocity of the first line (km/s): 71.9(1.7)
+INFO| Velocity of the first line (km/s): 77.5(1.4)
+INFO| Velocity of the first line (km/s): 78.0(1.3)
+INFO| Velocity of the first line (km/s): 76.9(1.3)
+INFO| Velocity of the first line (km/s): 74.6(1.5)
+INFO| Velocity of the first line (km/s): 76.3(1.6)
+INFO| Velocity of the first line (km/s): 78.7(1.7)
+INFO| Velocity of the first line (km/s): 95.6(1.8)
+INFO| Velocity of the first line (km/s): 61.9(1.6)
+INFO| Velocity of the first line (km/s): 59.6(1.4)
+INFO| Velocity of the first line (km/s): 73.7(1.5)
+INFO| Velocity of the first line (km/s): 78.5(1.2)
+INFO| Velocity of the first line (km/s): 77.0(1.3)
+INFO| Velocity of the first line (km/s): 77.4(1.7)
+INFO| Velocity of the first line (km/s): 62.9(1.8)
+INFO| Velocity of the first line (km/s): 71.5(2.0)
+INFO| Velocity of the first line (km/s): 83.8(2.1)
+INFO| Velocity of the first line (km/s): 54.1(1.6)
+INFO| Velocity of the first line (km/s): 50.8(1.5)
+INFO| Velocity of the first line (km/s): 75.2(1.3)
+INFO| Velocity of the first line (km/s): 78.6(1.3)
+INFO| Velocity of the first line (km/s): 73.2(1.9)
+INFO| Velocity of the first line (km/s): 80.2(1.9)
+INFO| Velocity of the first line (km/s): 96.9(2.4)
+INFO| Velocity of the first line (km/s): 68.6(2.7)
+INFO| Velocity of the first line (km/s): 77.2(2.0)
+INFO| Velocity of the first line (km/s): 70.0(1.7)
+INFO| Velocity of the first line (km/s): 109.7(2.0)
+INFO| Velocity of the first line (km/s): 79.8(1.6)
+INFO| Velocity of the first line (km/s): 74.7(1.2)
+INFO| Velocity of the first line (km/s): 79.2(1.3)
+INFO| Velocity of the first line (km/s): 76.9(1.5)
+INFO| Velocity of the first line (km/s): 80.0(2.2)
+INFO| Velocity of the first line (km/s): 91.5(2.6)
+INFO| Velocity of the first line (km/s): 91.9(2.9)
+INFO| Velocity of the first line (km/s): 85.7(2.9)
+INFO| Velocity of the first line (km/s): 106.5(2.1)
+INFO| Velocity of the first line (km/s): 78.5(1.9)
+INFO| Velocity of the first line (km/s): 75.3(1.5)
+INFO| Velocity of the first line (km/s): 77.5(1.1)
+INFO| Velocity of the first line (km/s): 79.5(1.4)
+INFO| Velocity of the first line (km/s): 78.3(1.7)
+INFO| Velocity of the first line (km/s): 80.7(2.6)
+INFO| Velocity of the first line (km/s): 78.4(2.6)
+INFO| Velocity of the first line (km/s): 83.0(2.6)
+INFO| Velocity of the first line (km/s): 61.3(2.4)
+INFO| Velocity of the first line (km/s): 76.4(2.2)
+INFO| Velocity of the first line (km/s): 77.7(1.7)
+INFO| Velocity of the first line (km/s): 73.6(1.4)
+INFO| Velocity of the first line (km/s): 80.7(1.7)
+INFO| Velocity of the first line (km/s): 80.2(1.4)
+INFO| Velocity of the first line (km/s): 80.5(1.5)
+INFO| Velocity of the first line (km/s): 82.6(2.5)
+INFO| Velocity of the first line (km/s): 79.7(2.5)
+INFO| Velocity of the first line (km/s): 80.8(2.7)
+INFO| Velocity of the first line (km/s): 83.9(2.3)
+INFO| Velocity of the first line (km/s): 78.4(1.9)
+INFO| Velocity of the first line (km/s): 72.5(1.3)
+INFO| Velocity of the first line (km/s): 77.2(1.2)
+INFO| Velocity of the first line (km/s): 80.00(98)
+INFO| Velocity of the first line (km/s): 84.2(1.5)
+INFO| Velocity of the first line (km/s): 81.0(1.4)
+INFO| Velocity of the first line (km/s): 86.3(1.7)
+INFO| Velocity of the first line (km/s): 82.1(2.0)
+INFO| Velocity of the first line (km/s): 87.0(2.0)
+INFO| Velocity of the first line (km/s): 81.8(1.9)
+INFO| Velocity of the first line (km/s): 80.5(1.6)
+INFO| Velocity of the first line (km/s): 82.4(1.1)
+INFO| Velocity of the first line (km/s): 80.33(93)
+INFO| Velocity of the first line (km/s): 86.09(89)
+INFO| Velocity of the first line (km/s): 84.4(1.7)
+INFO| Velocity of the first line (km/s): 82.8(1.4)
+INFO| Velocity of the first line (km/s): 82.3(1.6)
+INFO| Velocity of the first line (km/s): 83.9(1.7)
+INFO| Velocity of the first line (km/s): 83.9(1.5)
+INFO| Velocity of the first line (km/s): 85.7(1.4)
+INFO| Velocity of the first line (km/s): 83.8(1.1)
+INFO| Velocity of the first line (km/s): 83.41(78)
+INFO| Velocity of the first line (km/s): 83.27(81)
+INFO| Velocity of the first line (km/s): 83.79(69)
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/process.py:293: RuntimeWarning: invalid value encountered in greater
+  sky_vel_map_err[sky_vel_map_err &gt; threshold] = np.nan
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/utils.py:234: RuntimeWarning: invalid value encountered in greater
+  vel[vel &gt; np.nanpercentile(vel, 95)] = np.nan
+</span>
+INFO| First laser wavelentgh calibration estimation: 543.360393931 nm
+INFO| Angle at the center of the frame: 15.4961225377
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1054: RuntimeWarning: invalid value encountered in less
+  calib_laser_map[np.nonzero(calib_laser_map &lt; value_min)] = np.nan
+</span>
+INFO| &gt; Binning calibration map
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</span>
+INFO| &gt; Calibration laser map fit
+INFO|   &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
+INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 23.6929241755 cm
+    X angle from the optical axis to the center: 0.0 degrees (Fixed)
+    Y angle from the optical axis to the center: 15.5034808559 degrees
+    Tip-tilt angle of the detector along X: 0.0 degrees (Fixed)
+    Tip-tilt angle of the detector along Y: 0.0 degrees (Fixed)
+    Rotation angle of the detector: 0.0 degrees (Fixed)
+    Calibration laser wavelength: 543.360393931 nm (Fixed)
+    Error on fit: mean -1.14673527496e-06, std 0.0515053224534 (in nm)
+    Error on fit: mean -0.000633135183075, std 28.4371052962 (in km/s)
+INFO|   &gt; Second fit on the central portion of the calibration laser map (30.0% of the total size)
+INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 23.6769365598 cm
+    X angle from the optical axis to the center: -0.467348352077 degrees
+    Y angle from the optical axis to the center: 15.4964238437 degrees
+    Tip-tilt angle of the detector along X: 0.42697977166 degrees
+    Tip-tilt angle of the detector along Y: -1.21990584691 degrees
+    Rotation angle of the detector: 0.0 degrees (Fixed)
+    Calibration laser wavelength: 543.360393931 nm (Fixed)
+    Error on fit: mean -3.7990067481e-07, std 0.000789283567367 (in nm)
+    Error on fit: mean -0.000209750662205, std 0.435779038838 (in km/s)
+INFO|   &gt; Third fit on a larger portion of the map (50.0% of the total size)
+INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 23.7139453434 cm
+    X angle from the optical axis to the center: -0.467712143263 degrees
+    Y angle from the optical axis to the center: 15.4967978522 degrees
+    Tip-tilt angle of the detector along X: 0.302814070934 degrees
+    Tip-tilt angle of the detector along Y: -0.700373883437 degrees
+    Rotation angle of the detector: 0.0 degrees (Fixed)
+    Calibration laser wavelength: 543.360393931 nm (Fixed)
+    Error on fit: mean -2.79665822043e-06, std 0.00312193857261 (in nm)
+    Error on fit: mean -0.0015440902125, std 1.72368391632 (in km/s)
+INFO|   &gt; Zernike polynomials fit of the residual wavefront
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:54: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
+  r0v = np.linspace(-1-center[0], 1-center[0], r0).astype(dtype).reshape(-1,1)
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:55: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
+  r1v = np.linspace(-1-center[1], 1-center[1], r1).astype(dtype).reshape(1,-1)
+</span>
+<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:78: DeprecationWarning: `factorial` is deprecated!
+Importing `factorial` from scipy.misc is deprecated in scipy 1.0.0. Use `scipy.special.factorial` instead.
+  wf += rho**(n-2.0*k) * (-1.0)**k * fac(n-k) / ( fac(k) * fac( (n+m)/2.0 - k ) * fac( (n-m)/2.0 - k ) )
+</span>
+INFO| Standard deviation of the residual: 1.84988533513e-05
+INFO| Median relative error (err/val)): 0.05%
+INFO| &gt; final error (std on 50.0% of the total size): 1.764e-05 nm, 9.739e-03 km/s
+INFO|     &gt; New calibration laser map fit parameters:
+    distance to mirror: 23.6645056026 cm
+    X angle from the optical axis to the center: -0.0876246192104 degrees
+    Y angle from the optical axis to the center: 15.4806867301 degrees
+    Tip-tilt angle of the detector along X: 4.61907978407 degrees
+    Tip-tilt angle of the detector along Y: 0.330879299387 degrees
+    Rotation angle of the detector: 1.41678376849 degrees
+    Calibration laser wavelength: 543.423849077 nm
+
+INFO| fit residual std (in km/s):
+INFO| median error on the data (in km/s)
+INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.calibration_laser_map.fits in 0.24 s
+INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.wavefront_map.fits in 0.46 s
+INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits in 0.27 s
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_9_9.png" src="../_images/examples_wavelength_calibration_9_9.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_9_10.png" src="../_images/examples_wavelength_calibration_9_10.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_9_11.png" src="../_images/examples_wavelength_calibration_9_11.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_9_12.png" src="../_images/examples_wavelength_calibration_9_12.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_9_13.png" src="../_images/examples_wavelength_calibration_9_13.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_9_14.png" src="../_images/examples_wavelength_calibration_9_14.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Resulting-data">
+<h2>Resulting data<a class="headerlink" href="#Resulting-data" title="Permalink to this headline">¶</a></h2>
+<p>The most important result is the skymap which gives the modelized velocity of the sky in the field of view and permit to correct the measured velocities in the cube.This map is named <code class="docutils literal notranslate"><span class="pre">*skymap.fits</span></code>.</p>
+<p>In this particular case this is <code class="docutils literal notranslate"><span class="pre">M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits</span></code></p>
+<p>The histogram displays the difference between the measured velocity and the fitted velocity at each valid data point.</p>
+<p>You can see by looking at the other maps that in the cas of M31 there are some data points at the center of the field which could not give a valid velocity of the sky. This comes from the fact that M31 is very bright at the center and the sky lines are lost in the noise produced by the high continuum background. Modelling the interferometer makes possible to estimate the velocity of the lines at the center of the field where no real data has been obtained. And the result is stricking, it works
+particularly well even if the case of M31 (<a class="reference external" href="https://arxiv.org/abs/1707.01366">Martin et al. 2017a</a>)</p>
+</div>
+<div class="section" id="Calibrating-your-data-with-the-sky-velocity-map">
+<h2>Calibrating your data with the sky velocity map<a class="headerlink" href="#Calibrating-your-data-with-the-sky-velocity-map" title="Permalink to this headline">¶</a></h2>
+<p>Once the velocity map is passed to the SpectralCube class, the class will internaly make the appropriate corrections so that the measured velocity of any spectrum will be corrected. But it will also correct the spectral misalignment of the spectra before extracting the data which should have an effect on the broadening of the lines when a spectrum is integrated over a large field of view with a non-negligible gradient on the velocity calibration.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># the computed sky velocity map is passed to cube
+cube.correct_wavelength(&#39;M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span># The same sky spectrum is now extracted and fitted and the measured velocity is now similar to 0 km/s.
+# Note that the calibration map used here has not been calculated with a 40x40 grid. The calibration
+# quality would have been better in this case.
+
+sky_lines_cm1 = cube.get_sky_lines()
+axis, spectrum, fit_res = cube.fit_lines_in_spectrum(50, 50, 20, sky_lines_cm1,
+                                                     fmodel=&#39;sinc&#39;,
+                                                     pos_def=&#39;1&#39;,
+                                                     fwhm_def=&#39;fixed&#39;,
+                                                     nofilter=False,
+                                                     pos_cov=80)
+print &#39;\n===== Results ======&#39;
+print &#39;Velocity: &#39;, fit_res[&#39;velocity_gvar&#39;]
+pl.figure(figsize=(10,6))
+pl.plot(axis, spectrum, ls=&#39;:&#39;, c=&#39;black&#39;)
+pl.plot(axis, fit_res[&#39;fitted_vector&#39;], ls=&#39;-&#39;, c=&#39;orange&#39;)
+pl.xlim(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Number of integrated pixels: 1257
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 0.046 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO| Init of the parallel processing server with 4 threads
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 1.21 s]
+
+===== Results ======
+Velocity:  [-1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
+ -1.3(1.5) -1.3(1.5)]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>(14500, 15500)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wavelength_calibration_13_5.png" src="../_images/examples_wavelength_calibration_13_5.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="image_registration.html" class="btn btn-neutral float-right" title="Image registration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="model+fit_2_lines_bayes.html" class="btn btn-neutral float-left" title="Modelling and fitting two unresolved emission lines with a bayesian approach" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Thomas Martin
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

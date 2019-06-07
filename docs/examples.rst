@@ -11,11 +11,11 @@ These examples show the basic usage of ORCS
 .. toctree::
    :maxdepth: 1
 
-   script_example_fit_a_single_spectrum.ipynb
-   script_example_velocity_parameter_precision.ipynb
-   script_example_deep_wcs.ipynb
-   script_example_fit_region.ipynb
-   script_example_sincgauss_vs_2_sinc.ipynb
+   examples/fit_a_single_spectrum.ipynb
+   examples/velocity_parameter_precision.ipynb
+   examples/deep_wcs.ipynb
+   examples/fit_region.ipynb
+   examples/sincgauss_vs_2_sinc.ipynb
 
 
 Bayesian fitting vs. classical fitting
@@ -30,9 +30,9 @@ this is when the bayesian fitting algorithm becomes intersting ;)
 .. toctree::
    :maxdepth: 1
 
-   script_example_model+fit_1_line.ipynb
-   script_example_model+fit_2_lines.ipynb
-   script_example_model+fit_2_lines_bayes.ipynb
+   examples/model+fit_1_line.ipynb
+   examples/model+fit_2_lines.ipynb
+   examples/model+fit_2_lines_bayes.ipynb
 
 Calibrating your data
 ---------------------
@@ -45,9 +45,9 @@ your data.
 .. toctree::
    :maxdepth: 1
 
-   script_example_wavelength_calibration.ipynb
-   script_example_image_registration.ipynb
-   script_example_hst_flux_calibration.ipynb
+   examples/wavelength_calibration.ipynb
+   examples/image_registration.ipynb
+   examples/hst_flux_calibration.ipynb
 
 Advanced fitting
 ----------------
@@ -57,7 +57,7 @@ These examples show advanced fitting procedures.
 .. toctree::
    :maxdepth: 1
 
-   script_example_constaining_line_ratios.ipynb
+   examples/constaining_line_ratios.ipynb
 
 Other Tools
 -----------
@@ -65,5 +65,5 @@ Other Tools
 .. toctree::
    :maxdepth: 1
 
-   script_example_automatic_source_detection.ipynb
-   script_example_heliocentric_velocity.ipynb
+   examples/automatic_source_detection.ipynb
+   examples/heliocentric_velocity.ipynb
