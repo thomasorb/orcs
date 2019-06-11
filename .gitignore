@@ -9,3 +9,4 @@ build/
 orcs.egg-info/
 .eggs/
 orcs/data/*set.hdf5
+docs/examples/*merged*cm1*hdf5
