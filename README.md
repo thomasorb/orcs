@@ -59,6 +59,7 @@ A data cube can be recalibrated using mode specific algorithm which depends on t
 * [Wavelength recalibration with the sky lines (Mendel OH bands)](docs/examples/wavelength_calibration.ipynb)
 * [Image registration](docs/examples/image_registration.ipynb)
 * [Flux Calibration Example Using HST image](docs/examples/hst_flux_calibration.ipynb)
+* [Use calibration outputs](docs/examples/use_calibration_outputs.ipynb)
 
 ### Advanced fitting
 
