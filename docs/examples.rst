@@ -50,6 +50,7 @@ your data.
    examples/wavelength_calibration.ipynb
    examples/image_registration.ipynb
    examples/hst_flux_calibration.ipynb
+   examples/use_calibration_outputs.ipynb
 
 Advanced fitting
 ----------------
