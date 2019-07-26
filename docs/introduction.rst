@@ -133,7 +133,7 @@ general
 :fmodel: emission line model (can be 'sinc', 'sincgauss',
          'gaussian'). 'gaussian' model should not be used unless for
          testing purposes. Even for very large gaussian, a sincgauss
-         model si preferred.
+         model is preferred.
 	 
 :no_filter: Set it to False if the filter transmission is visible in
             the spectrum (i.e. if there is enough continuum to see
@@ -148,6 +148,13 @@ general
                     of the same size as the spectrum to fit. It should
                     be scaled to the flux contained in only one pixel.
 		    (e.g. if it has been extracted from a large region).
+		    
+:poly_order: Order of the polynomial used to fit the background (be careful 
+             with high order polynomials). Default to 0.
+	     
+:signal_range: Range of the signal over which the fit is done (helps removing
+               strong sky lines from the fit)
+	 
 
 .. note:: when extracting a background spectrum, its flux can be
           scaled to one pixel with `mean_flux=True`. A median can also
