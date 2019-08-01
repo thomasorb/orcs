@@ -92,7 +92,7 @@ class SpectralCube(orb.cube.SpectralCube):
     for its broader functionality.
 
     .. seealso:: :py:class:`orb.cube.SpectralCube`
-    """
+    """    
     def __init__(self, cube_path, debug=False, **kwargs):
         """
         :param cube_path: Path to the HDF5 cube.
@@ -101,51 +101,12 @@ class SpectralCube(orb.cube.SpectralCube):
         """
         self.debug = bool(debug)
         self.logger = orb.core.Logger(debug=self.debug)
-        FIT_TOL = 1e-10
-        self.cube_path = cube_path
-        instrument = None
-
+       
         orb.cube.SpectralCube.__init__(self, cube_path, **kwargs)
-
-        self.overwrite = True
-
-        self.set_param('init_fwhm', float(self._get_config_parameter('INIT_FWHM')))
-        self.set_param('fov', float(self._get_config_parameter('FIELD_OF_VIEW_1')))
-        self.set_param('init_wcs_rotation', float(self._get_config_parameter('INIT_ANGLE')))
-
-        self.fit_tol = FIT_TOL
 
     def _get_data_prefix(self):
         """Return data prefix"""
         return self._data_prefix
-
-    def _get_reprojected_cube_path(self):
-        """Return the path to the reprojected cube"""
-        return self._data_path_hdr + 'reprojected_cube.fits'
-        
-
-    def correct_wavelength(self, sky_map_path):
-        """Correct the wavelength of the cube based on the velocity of
-        the sky lines computed with
-        :py:meth:`~orcs.process.SpectralCube.map_sky_velocity`
-
-        :param sky_map_path: Path to the sky velocity map.
-
-        .. warning:: the sky velocity map returned by the function
-          SpectralCube.map_sky_velocity is inversed (a velocity of 80
-          km/s is indicated as -80 km/s). It is thus more a correction
-          map that must be directly added to the computed velocity to
-          obtain a corrected velocity. As this map can be passed as
-          is, it means that the given sky velocity map must be a
-          correction map.
-        """
-        raise NotImplementedError()
-        sky_map = orb.utils.io.read_fits(sky_map_path)
-        if sky_map.shape != (self.dimx, self.dimy):
-            raise StandardError('Given sky map does not have the right shape')
-
-        self.sky_velocity_map = sky_map
-        self.reset_calibration_laser_map()
 
     def reproject(self):
         """Reproject data cube in a distorsion-less WCS.
@@ -154,63 +115,42 @@ class SpectralCube(orb.cube.SpectralCube):
           the cube size on disk.
         """
         raise NotImplementedError()
-        wcs = self.get_wcs()
-        # removes automatically sip distortion
-        new_wcs = pywcs.WCS(self.get_wcs().to_header())
-        X, Y = np.mgrid[:2048,:2064]
-        XYp = wcs.all_world2pix(
-            new_wcs.all_pix2world(
-                np.array([X.flatten(),Y.flatten()]).T,0), 0)
-        Xp, Yp = XYp.T
+        # wcs = self.get_wcs()
+        # # removes automatically sip distortion
+        # new_wcs = pywcs.WCS(self.get_wcs().to_header())
+        # X, Y = np.mgrid[:2048,:2064]
+        # XYp = wcs.all_world2pix(
+        #     new_wcs.all_pix2world(
+        #         np.array([X.flatten(),Y.flatten()]).T,0), 0)
+        # Xp, Yp = XYp.T
 
-        reprojected_cube = np.empty((self.dimx, self.dimy, self.dimz),
-                                    dtype=np.float32)
-        progress = orb.core.ProgressBar(self.dimz)
-        for i in range(self.dimz):
-            progress.update(i)
-            idat = self.get_data_frame(i, silent=True)
-            idatf = scipy.interpolate.RectBivariateSpline(
-                np.arange(idat.shape[0]),
-                np.arange(idat.shape[1]),
-                idat, kx=1, ky=1, s=0)
-            reprojected_cube[:,:,i] = idatf.ev(
-                Xp.reshape(*idat.shape),
-                Yp.reshape(*idat.shape))
-        progress.end()
-        orb.utils.io.write_fits(self._get_reprojected_cube_path(), reprojected_cube,
-                        overwrite=True)
+        # reprojected_cube = np.empty((self.dimx, self.dimy, self.dimz),
+        #                             dtype=np.float32)
+        # progress = orb.core.ProgressBar(self.dimz)
+        # for i in range(self.dimz):
+        #     progress.update(i)
+        #     idat = self.get_data_frame(i, silent=True)
+        #     idatf = scipy.interpolate.RectBivariateSpline(
+        #         np.arange(idat.shape[0]),
+        #         np.arange(idat.shape[1]),
+        #         idat, kx=1, ky=1, s=0)
+        #     reprojected_cube[:,:,i] = idatf.ev(
+        #         Xp.reshape(*idat.shape),
+        #         Yp.reshape(*idat.shape))
+        # progress.end()
+        # orb.utils.io.write_fits(self._get_reprojected_cube_path(), reprojected_cube,
+        #                 overwrite=True)
 
     def get_flux_uncertainty(self):
-        """Return the uncertainty on the flux at a given wavenumber in
-        erg/cm2/s/channel. It corresponds to the uncertainty (1 sigma)
-        of the spectrum in a given channel.
-
-        :param wavenumber: Wavenumber (cm-1)
+        """Return the uncertainty on the flux (1 sigma) of the spectrum in a
+        given channel in counts/s.
         """
-        raise NotImplementedError()
         deep_frame = self.get_deep_frame()
         if deep_frame is None:
             warnings.warn("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
             return None
-
-        # compute counts/s
-        # total number of counts in a full cube
-        total_counts = deep_frame * self.dimz
-
-        # associated photon noise distributed over each channel in counts
-        noise_counts = np.sqrt(total_counts)
-
-        # in flux unit
-        noise_flux = noise_counts / self.params.exposure_time # counts/s
-        noise_flux *= self.params.flambda / self.dimz # erg/cm2/s/A
-        # compute mean channel size
-        channel_size_ang = 10 * orb.utils.spectrum.fwhm_cm12nm(
-            np.diff(self.params.base_axis)[0],
-            self.params.base_axis[0] + np.diff(self.params.base_axis)[0]/ 2)
-
-        noise_flux *= channel_size_ang * orb.constants.FWHM_SINC_COEFF # erg/cm2/s/channel
-
-        return noise_flux
+        else: deep_frame = deep_frame.data
+        return np.sqrt(deep_frame) * self.get_gain()
 
     def get_radial_velocity_correction(self, kind='heliocentric', date=None):
         """Return heliocentric or barycentric velocity correction to apply on
@@ -275,7 +215,119 @@ class SpectralCube(orb.cube.SpectralCube):
 
 
 
+    def _extract_wrapper(self, f, args, kwargs):
+        """General wrapper around get_spectrum* methods
+        """
+        subtract_spectrum = None
+        if 'subtract_spectrum' in kwargs:
+            subtract_spectrum = kwargs['subtract_spectrum']
+            del kwargs['subtract_spectrum']
+            
+        spec = f(*args, **kwargs)
 
+        if subtract_spectrum is not None:
+            if not isinstance(subtract_spectrum, np.ndarray):
+                raise TypeError('subtract_spectrum must be a numpy.ndarray instance')
+            if spec.data.shape != subtract_spectrum.shape:
+                raise TypeError('subtract_spectrum must have shape'.format(spec.data.shape))
+            spec.data -= subtract_spectrum
+            
+        return spec.axis.data, spec.data
+
+    def extract_spectrum(self, *args, **kwargs):
+        """Return a spectrum extracted at x, y and integrated
+        over a circular aperture or radius r.
+
+        :param x: x position 
+        
+        :param y: y position 
+
+        :param r: (Optional) If r > 0, vector is integrated over a
+          circular aperture of radius r. In this case the number of
+          pixels is returned as a parameter: pixels
+
+        :param median: If True, a median is used instead of a mean to
+          combine spectra. As the resulting spectrum is integrated,
+          the median value of the combined spectra is then scaled to
+          the number of integrated pixels.
+
+        :param mean_flux: If True, the mean spectrum (ie per pixel
+          flux) is returned.
+
+        :param subtract_spectrum: Subtract given spectrum. Must be a
+          vector of the same size as the extracted spectrum.
+
+        :return: axis, spectrum
+        """
+        return self._extract_wrapper(self.get_spectrum, args, kwargs)
+        
+    def extract_spectrum_bin(self, *args, **kwargs):
+        """Return a spectrum extracted at x, y and integrated
+        over a binned region.
+
+        :param x: X position of the bottom-left pixel
+
+        :param y: Y position of the bottom-left pixel
+
+        :param b: Binning. If 1, only the central pixel is extracted
+
+        :param median: If True, a median is used instead of a mean to
+          combine spectra. As the resulting spectrum is integrated,
+          the median value of the combined spectra is then scaled to
+          the number of integrated pixels.
+
+        :param mean_flux: If True, the mean spectrum (ie per pixel
+          flux) is returned.
+
+        :return: axis, spectrum
+        """
+        return self._extract_wrapper(self.get_spectrum_bin, args, kwargs)
+    
+    def extract_spectrum_in_annulus(self, *args, **kwargs):
+        """Return a. orb.fft.RealSpectrum extracted at x, y and integrated
+        over a circular annulus of min radius rmin and max radius rmax.
+
+        :param x: x position 
+        
+        :param y: y position 
+
+        :param rmin: rmin of the annulus
+
+        :param rmax: rmax of the annulus
+
+        :param median: If True, a median is used instead of a mean to
+          combine spectra. As the resulting spectrum is integrated,
+          the median value of the combined spectra is then scaled to
+          the number of integrated pixels.
+
+        :param mean_flux: If True, the mean spectrum (ie per pixel
+          flux) is returned.
+        """
+        return self._extract_wrapper(self.get_spectrum_in_annulus, args, kwargs)
+    
+    def extract_integrated_spectrum(self, *args, **kwargs):
+        """
+        :param region: A ds9-like region file or a list of pixels
+          having the same format as the list returned by np.nonzero(),
+          i.e. (x_positions_1d_array, y_positions_1d_array).
+
+        :param median: If True, a median is used instead of a mean to
+          combine spectra. As the resulting spectrum is integrated,
+          the median value of the combined spectra is then scaled to
+          the number of integrated pixels.
+
+        :param mean_flux: If True, the mean spectrum (ie per pixel
+          flux) is returned.
+
+        .. note:: the region must not have a size greater than 400x400
+          pixels. If you really need a larger region, you can split
+          you region into smaller ones and combines the resulting
+          spectra.
+        """
+        return self._extract_wrapper(self.get_spectrum_from_region, args, kwargs)
+
+        
+    
 ##################################################
 #### CLASS CubeJobServer #########################
 ##################################################
@@ -297,13 +349,13 @@ class CubeJobServer(object):
         logging.debug('debug set to {}'.format(self.debug))
         self.job_server, self.ncpus = orb.utils.parallel.init_pp_server()
 
-    def process_by_region(self, func, regions, subtract, axis, args=list(), modules=list(),
+    def process_by_region(self, func, regions, subtract, args=list(), modules=list(),
                           depfuncs=list()):
 
         """Parallelize a function applied to a list of integrated
         regions extracted from the spectral cube.
 
-        the function must be func(spectrum, theta_orig, *args)
+        the function must be defined as func(spectrum_bundle, *args)
 
         theta_orig is the mean original incident angle in the integrated region.
         """
@@ -325,21 +377,19 @@ class CubeJobServer(object):
                 timer['job_load_data_start'] = time.time()
                 # raw lines extraction (warning: velocity must be
                 # corrected by the function itself)
-                ispectrum, itheta_orig = self.cube._extract_spectrum_from_region(
-                    self.all_jobs[0][1],
-                    subtract_spectrum=subtract,
-                    silent=True, output_axis=axis, return_mean_theta=True)
+                ispectrum = self.cube.get_spectrum_from_region(
+                    self.all_jobs[0][1])
+                if subtract is not None:
+                    ispectrum.subtract_sky(subtract)
 
                 timer['job_load_data_end'] = time.time()
 
                 all_args = list()
-                all_args.append(ispectrum)
-                all_args.append(itheta_orig)
+                all_args.append(ispectrum.to_bundle())
                 for iarg in args:
                     all_args.append(iarg)
 
                 timer['job_submit_end'] = time.time()
-
                 # job submission
                 self.jobs.append([
                     self.job_server.submit(
@@ -765,7 +815,7 @@ class LineMaps(orb.core.Tools):
 
 
     def __init__(self, dimx, dimy, lines, wavenumber, binning, div_nb,
-                 project_header=None, wcs_header=None, **kwargs):
+                 wcs_header=None, **kwargs):
         """Init class
 
         :param dimx: X dimension of the unbinned data
@@ -781,19 +831,15 @@ class LineMaps(orb.core.Tools):
 
         :param div_nb: Number of divisions if the data is binned in quadrant mode.
 
-        :param project_header: (Optional) FITS header passed to the
-          written frames (default None).
-
         :param wcs_header: (Optional) WCS header passed to the written
           frames (default None).
 
         :param kwargs: Kwargs are :meth:`~core.Tools.__init__` kwargs.
         """
         orb.core.Tools.__init__(self, **kwargs)
-        self._project_header = project_header
-        self.wcs_header = wcs_header
         self.__version__ = version.__version__
 
+        self.wcs_header = wcs_header
         self.wavenumber = wavenumber
         self.div_nb = div_nb
         self.binning = binning
@@ -840,14 +886,11 @@ class LineMaps(orb.core.Tools):
         self.line_names = _line_names
 
         self.data = dict()
-        base_array =  np.empty((self.dimx, self.dimy, len(lines)),
+        base_array =  np.empty((self.dimx, self.dimy, np.size(lines)),
                                dtype=float)
         base_array.fill(np.nan)
         for iparam in self.lineparams:
             self.data[iparam] = np.copy(base_array)
-
-        # load computed maps
-        ## self._load_maps()
 
 
     def _get_map_path(self, line_name, param, binning=None):
@@ -876,106 +919,6 @@ class LineMaps(orb.core.Tools):
         return (dirname + os.sep + "MAPS" + os.sep
                 + basename + "map{}.{}x{}.{}.fits".format(
                     line_str, binning, binning, param))
-
-
-    def _get_map_header(self, file_type, comment=None):
-        """Return map header
-
-        :param file_type: Type of file
-
-        :param comment: (Optional) Comments on the file type (default
-          None).
-        """
-        hdr = (self._get_basic_header(file_type)
-               + self._project_header
-               + self._get_basic_frame_header(self.dimx, self.dimy))
-        hdr = self._add_wcs_header(hdr)
-        hdr = orb.core.Header(hdr)
-        hdr.bin_wcs(self.binning)
-        return hdr
-
-
-    def _add_wcs_header(self, hdr):
-        """Add WCS header keywords to a header.
-
-        :param hdr: Header to update
-        """
-        if self.wcs_header is not None:
-            new_hdr = pyfits.Header()
-            new_hdr.extend(hdr, strip=True,
-                           update=True, end=True)
-
-            new_hdr.extend(self.wcs_header, strip=True,
-                           update=True, end=True)
-
-            if 'RESTFRQ' in new_hdr: del new_hdr['RESTFRQ']
-            if 'RESTWAV' in new_hdr: del new_hdr['RESTWAV']
-            if 'LONPOLE' in new_hdr: del new_hdr['LONPOLE']
-            if 'LATPOLE' in new_hdr: del new_hdr['LATPOLE']
-
-            return new_hdr
-        else:
-            return hdr
-
-    ## def _load_maps(self):
-    ##     """Load already computed maps with the smallest binning but
-    ##     still higher than requested. Loaded maps can be used to get
-    ##     initial fitting parameters."""
-    ##     # check existing files
-    ##     binnings = np.arange(self.binning+1, 1000)
-    ##     available_binnings = list()
-    ##     for binning in binnings:
-    ##         all_ok = True
-    ##         for param in self.lineparams:
-    ##             if not os.path.exists(self._get_map_path(
-    ##                 None, param, binning)): # check *.all.* map
-    ##                 for line_name in self.line_names:
-    ##                     ## if binning == 30:
-    ##                     ##     print self._get_map_path(
-    ##                     ##         line_name, param, binning), os.path.exists(self._get_map_path(
-    ##                     ##         line_name, param, binning))
-    ##                     if not os.path.exists(self._get_map_path(
-    ##                         line_name, param, binning)):
-    ##                         all_ok = False
-    ##         if all_ok: available_binnings.append(binning)
-    ##     if len(available_binnings) < 1: return
-    ##     # load data from lowest (but still higher than requested)
-    ##     # binning
-    ##     binning = np.nanmin(available_binnings)
-    ##     logging.info('Loading {}x{} maps'.format(
-    ##         binning, binning))
-    ##     for param in self.lineparams:
-    ##         # only velocity param is loaded
-    ##         if param in ['velocity', 'velocity-err', 'sigma', 'sigma-err']:
-    ##             data = np.empty(
-    ##                 (self.dimx, self.dimy, len(self.lines)),
-    ##                 dtype=float)
-    ##             data.fill(np.nan)
-    ##             for iline in range(len(self.lines)):
-    ##                 if os.path.exists(self._get_map_path(
-    ##                     None, param, binning)):
-    ##                     map_path = self._get_map_path(
-    ##                         None, param, binning)
-    ##                 else:
-    ##                     map_path = self._get_map_path(
-    ##                         self.line_names[iline], param, binning)
-    ##                 old_map = orb.utils.io.read_fits(map_path)
-    ##                 # data is unbinned and rebinned : creates small
-    ##                 # errors, but loaded maps are only used for initial
-    ##                 # parameters
-    ##                 old_map = orb.cutils.unbin_image(
-    ##                     old_map,
-    ##                     self.unbinned_dimx,
-    ##                     self.unbinned_dimy)
-    ##                 old_map = orb.cutils.nanbin_image(
-    ##                     old_map, self.binning)
-    ##                 old_map = old_map[:self.dimx,:self.dimy]
-
-    ##                 data[:,:,iline] = np.copy(old_map)
-    ##             logging.info('{} loaded'.format(param))
-    ##             self.set_map(param, data)
-
-
 
     def set_map(self, param, data_map, x_range=None, y_range=None):
         """Set map values.
@@ -1089,66 +1032,7 @@ class LineMaps(orb.core.Tools):
                 orb.utils.io.write_fits(
                     map_path, new_map,
                     overwrite=True,
-                    fits_header=self._get_map_header(
-                        "Map {} {}{}".format(
-                            param, line_name, unit)))
+                    fits_header=self.wcs_header)
 
                 if same_param: break
-
-#################################################
-#### CLASS Filter ###############################
-#################################################
-
-
-class Filter(object):
-
-    def __init__(self, x, f):
-        """
-        Init Filter class
-
-        :param x: 1d array describing the x axis of the filter (must be in nm)
-
-        :param f: 1d array describing the transmission function  (note that the
-        filter function must be defined between 0 and 1).
-        """
-        raise NotImplementedError('should be reimplemented or replaced with orb.core.FilerFile. this class is used by orcs.process.integrate()')
-        if not isinstance(x, np.ndarray):
-            raise TypeError('x must be a numpy.ndarray')
-        if not isinstance(f, np.ndarray):
-            raise TypeError('f must be a numpy.ndarray')
-        x = np.copy(x).astype(float)
-        f = np.copy(f).astype(float)
-        x[np.isnan(x)] = 0
-        f[np.isnan(f)] = 0
-        x[np.isinf(x)] = 0
-        f[np.isinf(f)] = 0
-
-        x = orb.core.Vector1d(orb.utils.spectrum.nm2cm1(x)[::-1])
-        f = orb.core.Vector1d(f[::-1])
-
-        if np.nanmax(f.data) > 1 or np.nanmin(f.data) < 0:
-            raise ValueError('f must be defined between 0 and 1')
-        if x.step_nb != f.step_nb:
-            raise ValueError('x and f must have the same size')
-        if not np.any((x.data < orb.utils.spectrum.nm2cm1(200))
-                      * (x.data > orb.utils.spectrum.nm2cm1(1000))):
-            raise ValueError('At least some axis values must be in the optical range (in nm) : 200 - 1000 nm')
-
-        self.f = scipy.interpolate.UnivariateSpline(
-            x.data, f.data, s=0, k=3, ext=1)
-
-        # find beginning and end of filter (5% of max)
-        axisf = scipy.interpolate.UnivariateSpline(
-            np.arange(x.data.size), x.data, s=0, k=1, ext=2)
-        f01 = np.abs(np.diff(f.data > np.nanmax(f.data) * 0.05).astype(float))
-        if np.sum(f01) != 2: raise ValueError('malformed filter function')
-        self.start, self.end = axisf(np.arange(f.data.size - 1)[f01 == 1] + 0.5)
-
-    def __call__(self, x):
-        """Implement call"""
-        return self.f(x)
-
-    def get_filter_bandpass(self):
-        """Return filter bandpass as a tuple (cm1_min, cm1_max)"""
-        return (self.start, self.end)
 

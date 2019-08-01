@@ -38,115 +38,85 @@ import orb.utils.log
 import orb.utils.spectrum
 import orb.fit
 
-def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
-                          theta_orig, snr_guess=None, max_iter=None,
-                          debug=False, **kwargs):
-    """Basic wrapping function for spectrum fitting.
+# def fit_lines_in_spectrum(params, inputparams, fit_tol, spectrum,
+#                           theta_orig, snr_guess=None, max_iter=None,
+#                           debug=False, **kwargs):
+#     """Basic wrapping function for spectrum fitting.
 
-    :param params: HDFCube.params dictionary
+#     :param params: HDFCube.params dictionary
 
-    :param inputparams: orb.fit.InputParams instance.
+#     :param inputparams: orb.fit.InputParams instance.
 
-    :param fit_tol: fit tolerance.
+#     :param fit_tol: fit tolerance.
 
-    :param spectrum: The spectrum to fit (1d vector).
+#     :param spectrum: The spectrum to fit (1d vector).
 
-    :param theta_orig: Original value of the incident angle in degree.
-
-    :param snr_guess: Guess on the SNR of the spectrum. Necessary
-      to make a Bayesian fit (If unknown you can set it to 'auto'
-      to try an automatic mode, two fits are made - one with a
-      predefined SNR and the other with the SNR deduced from the
-      first fit). If None a classical fit is made. (default None).
-
-    :param max_iter: (Optional) Maximum number of iterations (default None)
-
-    :param kwargs: (Optional) Model parameters that must be
-      changed in the InputParams instance.
-    """
-    import orb.utils.spectrum
-
-    kwargs_orig = dict(kwargs)
-    if debug:
-        import orb.utils.log
-        orb.utils.log.setup_socket_logging()
-
-    # check snr guess param
-    auto_mode = False
-    bad_snr_param = False
-    if snr_guess is not None:
-        if isinstance(snr_guess, str):
-            if snr_guess.lower() == 'auto':
-                auto_mode = True
-                if np.any(gvar.sdev(spectrum) != 0.):
-                    spectrum_snr = gvar.mean(spectrum) / gvar.sdev(spectrum)
-                    spectrum_snr[np.isinf(spectrum_snr)] = np.nan
-                    snr_guess = np.nanmax(spectrum_snr)
-                    logging.debug('first SNR guess computed from spectrum uncertainty: {}'.format(snr_guess))
-                else:
-                    snr_guess= 30
-            elif snr_guess.lower() == 'none':
-                snr_guess = None
-                auto_mode = False
-            else: bad_snr_param = True
-        elif isinstance(snr_guess, bool):
-                bad_snr_param = True
-        elif not (isinstance(snr_guess, float)
-                  or isinstance(snr_guess, int)):
-            bad_snr_param = True
-
-    logging.debug('SNR guess: {}'.format(snr_guess))
-
-    # recompute the fwhm guess
-    if 'fwhm_guess' in kwargs:
-        raise ValueError('fwhm_guess must not be in kwargs. It must be set via theta_orig.')
+#     :param theta_orig: Original value of the incident angle in degree.
 
 
-    fwhm_guess_cm1 = orb.utils.spectrum.compute_line_fwhm(
-        params['step_nb'] - params['zpd_index'],
-        params['step'], params['order'],
-        orb.utils.spectrum.theta2corr(theta_orig),
-        wavenumber=params['wavenumber'])
+#     :param kwargs: (Optional) Model parameters that must be
+#       changed in the InputParams instance.
+#     """
+#     import orb.utils.spectrum
 
-    kwargs['fwhm_guess'] = [fwhm_guess_cm1] * inputparams.allparams['line_nb']
+#     kwargs_orig = dict(kwargs)
+#     if debug:
+#         import orb.utils.log
+#         orb.utils.log.setup_socket_logging()
+
+    
+#     auto_mode = False
+#                 if np.any(gvar.sdev(spectrum) != 0.):
+#                     spectrum_snr = gvar.mean(spectrum) / gvar.sdev(spectrum)
+#                     spectrum_snr[np.isinf(spectrum_snr)] = np.nan
+#                     snr_guess = np.nanmax(spectrum_snr)
+#                     logging.debug('first SNR guess computed from spectrum uncertainty: {}'.format(snr_guess))
+#                 else:
+#                     snr_guess= 30
+#             elif snr_guess.lower() == 'none':
+#                 snr_guess = None
+#                 auto_mode = False
+#             else: bad_snr_param = True
+#         elif isinstance(snr_guess, bool):
+#                 bad_snr_param = True
+#         elif not (isinstance(snr_guess, float)
+#                   or isinstance(snr_guess, int)):
+#             bad_snr_param = True
+
+    
 
 
-    logging.debug('recomputed fwhm guess: {}'.format(kwargs['fwhm_guess']))
+    
+#     if max_iter is None:
+#         max_iter = max(100 * inputparams.allparams['line_nb'], 1000)
 
+#     try:
+#         warnings.simplefilter('ignore')
+#         _fit = orb.fit._fit_lines_in_spectrum(
+#             spectrum, inputparams,
+#             fit_tol = fit_tol,
+#             compute_mcmc_error=False,
+#             snr_guess=snr_guess,
+#             max_iter=max_iter,
+#             **kwargs)
+#         warnings.simplefilter('default')
 
-    if bad_snr_param:
-        raise ValueError("snr_guess parameter not understood. It can be set to a float, 'auto' or None.")
+#     except Exception, e:
+#         warnings.warn('Exception occured during fit: {}'.format(e))
+#         import traceback
+#         print traceback.format_exc()
 
-    if max_iter is None:
-        max_iter = max(100 * inputparams.allparams['line_nb'], 1000)
+#         return []
 
-    try:
-        warnings.simplefilter('ignore')
-        _fit = orb.fit._fit_lines_in_spectrum(
-            spectrum, inputparams,
-            fit_tol = fit_tol,
-            compute_mcmc_error=False,
-            snr_guess=snr_guess,
-            max_iter=max_iter,
-            **kwargs)
-        warnings.simplefilter('default')
-
-    except Exception, e:
-        warnings.warn('Exception occured during fit: {}'.format(e))
-        import traceback
-        print traceback.format_exc()
-
-        return []
-
-    if auto_mode and _fit != []:
-        snr_guess = np.nanmax(gvar.mean(spectrum)) / np.nanstd(gvar.mean(spectrum) - _fit['fitted_vector'])
-        return fit_lines_in_spectrum(
-            params, inputparams, fit_tol, spectrum,
-            theta_orig, snr_guess=snr_guess,
-            max_iter=max_iter,
-            **kwargs_orig)
-    else:
-        return _fit
+#     if auto_mode and _fit != []:
+#         snr_guess = np.nanmax(gvar.mean(spectrum)) / np.nanstd(gvar.mean(spectrum) - _fit['fitted_vector'])
+#         return fit_lines_in_spectrum(
+#             params, inputparams, fit_tol, spectrum,
+#             theta_orig, snr_guess=snr_guess,
+#             max_iter=max_iter,
+#             **kwargs_orig)
+#     else:
+#         return _fit
 
 
 def fit_velocity_error_model(x, y, vel, vel_err, nm_laser,
@@ -341,48 +311,6 @@ def fit_velocity_error_model(x, y, vel, vel_err, nm_laser,
 
     return model_calib_map, wf, final_vel_map, new_nm_laser
 
-
-def image_streamer(dimx, dimy, bsize, start=None, stop=None,
-                   strides=[1,1]):
-
-    """
-    """
-
-    if start is None: start = [0,0]
-    if stop is None: stop = [dimx - bsize[0], dimy - bsize[1]]
-
-    orb.utils.validate.is_iterable(bsize, object_name='bsize')
-    orb.utils.validate.is_iterable(strides, object_name='strides')
-    orb.utils.validate.is_iterable(start, object_name='start')
-    orb.utils.validate.is_iterable(start, object_name='stop')
-    if len(bsize) != 2: raise ValueError('bsize must be a tuple of len 2')
-    if len(strides) != 2: raise ValueError('strides must be a tuple of len 2')
-    if len(start) != 2: raise ValueError('start must be a tuple of len 2')
-    if len(stop) != 2: raise ValueError('stop must be a tuple of len 2')
-
-    start = np.array(start)
-    stop = np.array(stop)
-    bsize = np.array(bsize)
-    strides = np.array(strides)
-
-    if ((np.any(start) < 0)
-        or stop[0] >= dimx
-        or stop[1] >= dimy
-        or np.any(stop - start < bsize)):
-        raise ValueError('invalid coordinates given in start, stop or bsize')
-
-    for ii in range(start[0], stop[0], strides[0]):
-        for ij in range(start[1], stop[1], strides[1]):
-            yield slice(ii, ii+bsize[0]), slice(ij, ij+bsize[1])
-
-
-def get_layer_size(layer):
-    """Return the size of a tensorflow layer considering only one element in the
-    batch.
-    Must be used during graph initialization.
-    """
-    return np.multiply.reduce(
-        np.array(layer.get_shape().as_list())[1:])
 
 def get_timestamp():
     """Return a formatted timestamp.

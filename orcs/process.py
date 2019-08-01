@@ -48,7 +48,7 @@ import marshal
 # import core
 import core
 import fit
-from core import LineMaps, Filter
+from core import LineMaps
 import utils
 
 # import ORB
@@ -167,7 +167,7 @@ class SpectralCube(fit.SpectralCube):
 
         if div_nb < 2:
             raise Exception('div_nb must be >= 2')
-        MAX_R = 100
+        MAX_R = 30 # hack should be 100
 
         if not no_fit:
             if os.path.exists(self._get_skymap_file_path()):
@@ -209,7 +209,7 @@ class SpectralCube(fit.SpectralCube):
                     [0, dimx], [0, dimy])] = True
 
 
-            with self.open_file(self._get_temp_reg_path(), 'w') as f:
+            with orb.utils.io.open_file(self._get_temp_reg_path(), 'w') as f:
                 f.write('image\n')
                 for ix in np.linspace(xmin, xmax, div_nb + 2)[1:-1]:
                     for iy in np.linspace(ymin, ymax, div_nb + 2)[1:-1]:
@@ -227,20 +227,16 @@ class SpectralCube(fit.SpectralCube):
 
             logging.info('{} sky lines to fit'.format(len(sky_lines)))
 
-            self._prepare_input_params(sky_lines, fmodel='sinc',
-                                       pos_def=['1'] * len(sky_lines),
-                                       pos_cov=[mean_sky_vel],
-                                       fwhm_def=['fixed'] * len(sky_lines))
-
-
-            lines_nb = self.inputparams.allparams['line_nb']
-
             # fit sky spectra
-            paramsfile = self._fit_integrated_spectra(
-                self._get_temp_reg_path(), plot=False, verbose=False)
+            paramsfile = self.fit_integrated_spectra(
+                self._get_temp_reg_path(), sky_lines, plot=False, verbose=False,
+                fmodel='sinc', pos_def=['1'] * len(sky_lines),
+                pos_cov=[mean_sky_vel], fwhm_def=['fixed'] * len(sky_lines))
+
+            lines_nb = len(sky_lines)
 
             # write results
-            with self.open_file(self._get_skymap_file_path(), 'w') as f:
+            with orb.utils.io.open_file(self._get_skymap_file_path(), 'w') as f:
                 for ireg in range(len(regions)):
                     if 'v' in paramsfile[ireg*lines_nb]:
                         iv = paramsfile[ireg*lines_nb]['v']
@@ -252,7 +248,7 @@ class SpectralCube(fit.SpectralCube):
                         regions[ireg][0], regions[ireg][1], iv, iv_err))
 
         # fit map
-        with self.open_file(self._get_skymap_file_path(), 'r') as f:
+        with orb.utils.io.open_file(self._get_skymap_file_path(), 'r') as f:
             sky_vel_map = list()
             sky_vel_map_err = list()
             x = list()
@@ -278,7 +274,7 @@ class SpectralCube(fit.SpectralCube):
 
 
         # remove excluded regions (if already fitted, e.g. when the
-        # process is done another time with a different exclude mask)
+        # process is done another time with a different exclusion mask)
         if exclude_reg_file_path is not None:
             exclude_mask = np.zeros((dimx, dimy), dtype=bool)
             exclude_mask[orb.utils.misc.get_mask_from_ds9_region_file(
@@ -638,88 +634,3 @@ class SpectralCube(fit.SpectralCube):
         sframe /= np.sum(filter_function(self.params.base_axis.astype(float)))
         return sframe
 
-#################################################
-#### CLASS SpectralCube #########################
-#################################################
-## class SpectralCubeTweaker(HDFCube):
-
-##     """ORCS spectral cube manipulation class.
-
-##     .. note:: parent class HDFCube is the ORCS implementation of
-##       HDFCube.
-##     """
-##     def _get_tweaked_cube_path(self):
-##         """Return path to a tweaked cube"""
-##         return self._data_path_hdr + "tweaked_cube.hdf5"
-
-
-##     def subtract_spectrum(self, spectrum, axis, wavenumber, step, order,
-##                           calibration_laser_map_path, wavelength_calibration,
-##                           nm_laser, axis_corr=1):
-##         """Subtract a spectrum to the spectral cube
-
-##         :param spectrum: Spectrum to subtract
-
-##         :param axis: Wavelength/wavenumber axis of the spectrum to
-##           subtract (in nm or cm-1). The axis unit must be the same as
-##           the spectra cube unit.
-
-##         :param wavenumber: True if the spectral cube is in wavenumber
-
-##         :param step: Step size (in nm)
-
-##         :param order: Folding order
-
-##         :param calibration_laser_map_path: Path to the calibration
-##           laser map
-
-##         :param nm_laser: Calibration laser wavelength in nm
-
-##         :param axis_corr: (Optional) If the spectrum is calibrated in
-##           wavelength but not projected on the interferometer axis
-##           (angle 0) the axis correction coefficient must be given.
-##         """
-
-##         def subtract_in_vector(_vector, spectrum_spline, step, order,
-##                                calibration_coeff,
-##                                wavenumber):
-
-##             if wavenumber:
-##                 axis = orb.utils.spectrum.create_cm1_axis(
-##                     _vector.shape[0], step, order,
-##                     corr=calibration_coeff).astype(float)
-##             else:
-##                 axis = orb.utils.spectrum.create_nm_axis(
-##                     _vector.shape[0], step, order,
-##                     corr=calibration_coeff).astype(float)
-
-
-##             _to_sub = spectrum_spline(axis)
-
-##             return _vector - _to_sub
-
-
-##         if axis is None:
-##             warnings.warn('Spectrum axis guessed to be the same as the cube axis')
-##             if wavenumber:
-##                 axis = orb.utils.spectrum.create_cm1_axis(
-##                     self.dimz, step, order, corr=axis_corr).astype(float)
-##             else:
-##                 axis = orb.utils.spectrum.create_nm_axis(
-##                     self.dimz, step, order, corr=axis_corr).astype(float)
-
-##         spectrum_spline = scipy.interpolate.UnivariateSpline(
-##             axis[~np.isnan(spectrum)], spectrum[~np.isnan(spectrum)],
-##             s=0, k=1, ext=1)
-
-##         calibration_coeff_map = self._get_calibration_coeff_map(
-##             calibration_laser_map_path, nm_laser,
-##             wavelength_calibration, axis_corr=axis_corr)
-
-##         self._parallel_process_in_quads(subtract_in_vector,
-##                                         (spectrum_spline, step, order,
-##                                          calibration_coeff_map,
-##                                          wavenumber),
-##                                         ('import numpy as np',
-##                                          'import orb.utils.spectrum'),
-##                                         self._get_tweaked_cube_path())

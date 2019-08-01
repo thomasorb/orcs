@@ -42,7 +42,7 @@ import utils
 from orcs.core import LineMaps, CubeJobServer
 
 #################################################
-#### CLASS SpectralCube ##############################
+#### CLASS SpectralCube #########################
 #################################################
 
 class SpectralCube(orcs.core.SpectralCube):
@@ -64,264 +64,89 @@ class SpectralCube(orcs.core.SpectralCube):
         dirname = os.path.dirname(self._data_path_hdr)
         basename = os.path.basename(self._data_path_hdr)
         return (dirname + os.sep + "INTEGRATED"
-                + os.sep + basename + "integrated_spectrum_fit_{}.fits".format(region_name))
+                + os.sep + basename + "integrated_spectrum_fit_{}.hdf5".format(region_name))
 
+    def _get_integrated_spectrum_path(self, region_name):
+        """Return the path to an integrated spectrum
 
-    def _fit_lines_in_region(self, region, subtract_spectrum=None,
-                             binning=1, snr_guess=None, mapped_kwargs=None,
-                             max_iter=None, timeout=None):
-        """Raw function that fit lines in a given region of the cube.
-
-        All the pixels in the defined region are fitted one by one
-        and a set of maps containing the fitted paramaters are
-        written. Note that the pixels can be binned.
-
-
-        .. note:: Need the InputParams class to be defined before call
-          (see :py:meth:`~orcs.core.SpectralCube._prepare_input_params`).
-
-        .. note:: The fit will always use the Bayesian algorithm.
-
-        :param region: Region to fit. Multiple regions can be used to
-          define the fitted region. They do not need to be contiguous.
-
-        :param subtract_spectrum: (Optional) Remove the given spectrum
-          from the extracted spectrum before fitting
-          parameters. Useful to remove sky spectrum. Both spectra must
-          have the same size.
-
-        :param binning: (Optional) Binning. The fitted pixels can be
-          binned.
-
-        :param snr_guess: Guess on the SNR of the spectrum. Can only
-          be None or 'auto'. Set it to 'auto' to make a Bayesian
-          fit. In this case two fits are made - one with a predefined
-          SNR and the other with the SNR deduced from the first
-          fit. If None a classical fit is made. (default None).
-
-        :param max_iter: (Optional) Maximum number of iterations
-          (default None)
-
-        :param mapped_kwargs: If a kwarg is mapped, its value will be
-          replaced by the value at the fitted pixel.
-
-        :timeout: (Optional) max processing time per pixel. If reached, the given
-          pixel is passed (default None).
-
-        .. note:: Maps of the parameters of the fit can be found in
-          the directory created by ORCS:
-          ``OBJECT_NAME_FILTER.ORCS/MAPS/``.
-
-          Each line has 5 parameters (which gives 5 maps): height,
-          amplitude, velocity, fwhm, sigma. Height and amplitude are
-          given in ergs/cm^2/s/A. Velocity and broadening are given in
-          km/s. FWHM is given in cm^-1.
-
-          The flux map is also computed (from fwhm, amplitude and
-          sigma parameters) and given in ergs/cm^2/s.
-
-          Each fitted parameter is associated an uncertainty (``*_err``
-          maps) given in the same unit.
-
+        :param region_name: Name of the region
         """
-        def fit_lines_in_pixel(spectrum, params, inputparams, fit_tol,
-                               theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
-                               flux_sdev_ij, debug, max_iter, subtract_spectrum,
-                               binning, mapped_kwargs):
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "INTEGRATED"
+                + os.sep + basename + "integrated_spectrum_{}.hdf5".format(region_name))
 
-            import orb.utils.spectrum
-            stime = time.time()
-            if debug:
-                import orb.utils.log
-                orb.utils.log.setup_socket_logging()
-            else:
-                warnings.simplefilter('ignore', RuntimeWarning)
+    # def fit_lines_in_region(self, region, subtract_spectrum=None,
+    #                         binning=1, snr_guess=None, mapped_kwargs=None,
+    #                         max_iter=None, timeout=None):
+    #     """Fit lines in a given region of the cube.
 
-            # correct spectrum for nans
-            spectrum[np.isnan(spectrum)] = 0.
-
-            # correct spectrum for sky velocity
-            if calib_coeff_ij != params['axis_corr']:
-                logging.debug('spectrum is interpolated to correct for wavelength calibration change: {} km/s'.format(sky_vel_ij))
-                base_axis = params['base_axis']
-                corr_axis = orb.utils.spectrum.create_cm1_axis(
-                    spectrum.shape[0], params['step'], params['order'], corr=calib_coeff_ij)
-                spectrum = orb.utils.vector.interpolate_axis(
-                    spectrum, base_axis.astype(float), 5, old_axis=corr_axis.astype(float))
-
-            # subtract spectrum
-            if subtract_spectrum is not None:
-                spectrum -= subtract_spectrum * binning ** 2.
-
-            # add flux uncertainty to the spectrum
-            spectrum = gvar.gvar(spectrum, np.ones_like(spectrum) * flux_sdev_ij)
-
-            logging.debug('passed mapped kwargs: {}'.format(mapped_kwargs))
-
-            fmapped_kwargs = dict()
-            while len(mapped_kwargs) > 0:
-                logging.debug('{}'.format(mapped_kwargs))
-                for key in mapped_kwargs.keys():
-                    rkey = key[:-len(key.split('_')[-1])-1]
-                    index = int(key.split('_')[-1])
-                    if rkey not in fmapped_kwargs:
-                        if index == 0:
-                            fmapped_kwargs[rkey] = list([mapped_kwargs.pop(key)])
-                    elif index == len(fmapped_kwargs[rkey]):
-                        newentry = fmapped_kwargs[rkey]
-                        newentry.append(mapped_kwargs.pop(key))
-                        fmapped_kwargs[rkey] = newentry
-            mapped_kwargs = fmapped_kwargs
+    #     All the pixels in the defined region are fitted one by one
+    #     and a set of maps containing the fitted paramaters are
+    #     written. Note that the pixels can be binned.
 
 
-            logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
+    #     .. note:: Need the InputParams class to be defined before call
+    #       (see :py:meth:`~orcs.core.SpectralCube._prepare_input_params`).
 
-            try:
-                ifit = orcs.utils.fit_lines_in_spectrum(
-                    params, inputparams, fit_tol, spectrum, theta_map_ij,
-                    snr_guess=snr_guess, max_iter=max_iter, debug=debug,
-                    **mapped_kwargs)
+    #     .. note:: The fit will always use the Bayesian algorithm.
 
-            except Exception, e:
-                logging.debug('Exception occured during fit: {}'.format(e))
-                ifit = []
+    #     :param region: Region to fit. Multiple regions can be used to
+    #       define the fitted region. They do not need to be contiguous.
 
-            if ifit != []:
-                logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
-                logging.debug('fit function time: {} s'.format(time.time() - stime))
-                logging.debug('velocity: {}'.format(ifit['velocity_gvar']))
-                logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
+    #     :param subtract_spectrum: (Optional) Remove the given spectrum
+    #       from the extracted spectrum before fitting
+    #       parameters. Useful to remove sky spectrum. Both spectra must
+    #       have the same size.
 
-                return {
-                    'height': ifit['lines_params'][:,0],
-                    'amplitude': ifit['lines_params'][:,1],
-                    'fwhm': ifit['lines_params'][:,3],
-                    'velocity': ifit['velocity'],
-                    'sigma': ifit['broadening'],
-                    'flux': ifit['flux'],
-                    'height-err': ifit['lines_params_err'][:,0],
-                    'amplitude-err': ifit['lines_params_err'][:,1],
-                    'fwhm-err': ifit['lines_params_err'][:,3],
-                    'velocity-err': ifit['velocity_err'],
-                    'sigma-err': ifit['broadening_err'],
-                    'flux-err': ifit['flux_err'],
-                    'chi2': ifit['chi2'],
-                    'rchi2': ifit['rchi2'],
-                    'logGBF': ifit['logGBF'],
-                    'ks_pvalue': ifit['ks_pvalue']}
+    #     :param binning: (Optional) Binning. The fitted pixels can be
+    #       binned.
 
-            else:
-                return {
-                    'height': None,
-                    'amplitude': None,
-                    'fwhm': None,
-                    'velocity': None,
-                    'sigma': None,
-                    'flux': None,
-                    'height-err': None,
-                    'amplitude-err': None,
-                    'fwhm-err': None,
-                    'velocity-err': None,
-                    'sigma-err': None,
-                    'flux-err': None,
-                    'chi2': None,
-                    'rchi2': None,
-                    'logGBF': None,
-                    'ks_pvalue': None}
+    #     :param snr_guess: Guess on the SNR of the spectrum. Can only
+    #       be None or 'auto'. Set it to 'auto' to make a Bayesian
+    #       fit. In this case two fits are made - one with a predefined
+    #       SNR and the other with the SNR deduced from the first
+    #       fit. If None a classical fit is made. (default None).
 
-        if snr_guess not in ('auto', None):
-            raise ValueError("snr_guess must be 'auto' or None")
+    #     :param max_iter: (Optional) Maximum number of iterations
+    #       (default None)
 
-        ## check if input params is instanciated
-        if not hasattr(self, 'inputparams'):
-            raise StandardError('Input params not defined')
+    #     :param mapped_kwargs: If a kwarg is mapped, its value will be
+    #       replaced by the value at the fitted pixel.
 
-        ## init LineMaps object
-        linemaps = LineMaps(
-            self.dimx, self.dimy, gvar.mean(
-                self.inputparams['allparams']['pos_guess']),
-            self.params.wavenumber,
-            binning, self.config.DIV_NB,
-            instrument=self.instrument,
-            project_header=self._project_header,
-            wcs_header=self.wcs_header,
-            data_prefix=self._data_prefix,
-            ncpus=self.ncpus)
+    #     :timeout: (Optional) max processing time per pixel. If reached, the given
+    #       pixel is passed (default None).
+
+    #     .. note:: Maps of the parameters of the fit can be found in
+    #       the directory created by ORCS:
+    #       ``OBJECT_NAME_FILTER.ORCS/MAPS/``.
+
+    #       Each line has 5 parameters (which gives 5 maps): height,
+    #       amplitude, velocity, fwhm, sigma. Height and amplitude are
+    #       given in ergs/cm^2/s/A. Velocity and broadening are given in
+    #       km/s. FWHM is given in cm^-1.
+
+    #       The flux map is also computed (from fwhm, amplitude and
+    #       sigma parameters) and given in ergs/cm^2/s.
+
+    #       Each fitted parameter is associated an uncertainty (``*_err``
+    #       maps) given in the same unit.
+
+    #     """
 
 
-        # check subtract spectrum
-        if subtract_spectrum is not None:
-            orb.utils.validate.is_1darray(subtract_spectrum, object_name='subtract_spectrum')
-            if np.all(subtract_spectrum == 0.): subtract_spectrum = None
 
-        mask = np.zeros((self.dimx, self.dimy), dtype=bool)
-        mask[region] = True
-
-        theta_map = orb.utils.image.nanbin_image(self.get_theta_map(), binning)
-
-        mask = np.zeros((self.dimx, self.dimy), dtype=float)
-        mask[region] = 1
-
-        mask_bin = orb.utils.image.nanbin_image(mask, binning)
-
-        total_fit_nb = np.nansum(mask_bin)
-        logging.info('Number of spectra to fit: {}'.format(int(total_fit_nb)))
-
-        if self.get_sky_velocity_map() is not None:
-            sky_velocity_map = orb.utils.image.nanbin_image(
-                self.get_sky_velocity_map(), binning)
-        else:
-            sky_velocity_map = orb.utils.image.nanbin_image(
-                np.zeros((self.dimx, self.dimy), dtype=float), binning)
-
-        calibration_coeff_map = orb.utils.image.nanbin_image(
-            self.get_calibration_coeff_map(), binning)
-
-        flux_uncertainty = self.get_flux_uncertainty()
-        if flux_uncertainty is not None:
-            flux_uncertainty = orb.utils.image.nanbin_image(flux_uncertainty, binning)
-        else:
-            flux_uncertainty = orb.utils.image.nanbin_image(
-                np.ones((self.dimx, self.dimy), dtype=float), binning) * binning**2.
-
-        cjs = orcs.core.CubeJobServer(self)
-        out = cjs.process_by_pixel(fit_lines_in_pixel,
-                                   args=[self.params.convert(), self.inputparams.convert(),
-                                         self.fit_tol,
-                                         theta_map, snr_guess, sky_velocity_map,
-                                         calibration_coeff_map,
-                                         flux_uncertainty, self.debug, max_iter,
-                                         subtract_spectrum, binning],
-                                   kwargs=mapped_kwargs,
-                                   modules=['numpy as np', 'gvar', 'orcs.utils',
-                                            'logging', 'warnings', 'time',
-                                            'import orb.utils.spectrum',
-                                            'import orb.utils.vector'],
-                                   mask=mask,
-                                   binning=binning,
-                                   timeout=timeout)
-
-        for key in out:
-            linemaps.set_map(key, out[key],
-                             x_range=[0, self.dimx],
-                             y_range=[0, self.dimy])
-
-
-        linemaps.write_maps()
-
-
-    def _fit_integrated_spectra(self, regions_file_path,
-                                subtract=None,
-                                plot=True,
-                                verbose=True,
-                                snr_guess=None,
-                                max_iter=None):
+    def fit_integrated_spectra(self, regions_file_path, lines,
+                               fmodel='sinc',
+                               nofilter=True,
+                               subtract_spectrum=None,
+                               plot=True,
+                               verbose=True,
+                               snr_guess=None,
+                               max_iter=None,
+                               **kwargs):
         """
         Fit integrated spectra and their emission lines parameters.
-
-        .. note:: Raw function which needs self.inputparams to be
-          defined before with
-          `:py:meth:~SpectralCube._prepare_input_params`.
 
         :param regions_file_path: Path to a ds9 reg file giving the
           positions of the regions. Each region is considered as a
@@ -344,14 +169,19 @@ class SpectralCube(orcs.core.SpectralCube):
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
         """
-        def _fit_lines(spectrum, theta_orig, params, inputparams, fit_tol,
+        def _fit_lines(spectrum_bundle, inputparams, kwargs,
                        snr_guess, max_iter, debug):
-            _fit = utils.fit_lines_in_spectrum(
-                params, inputparams, fit_tol,
-                spectrum, theta_orig,
-                snr_guess=snr_guess, max_iter=max_iter, debug=debug)
-            if _fit != []: return _fit.convert()
-            else: return _fit
+            import orb.fft
+            #_fit = utils.fit_lines_in_spectrum(
+            #    params, inputparams, fit_tol,
+            #    spectrum, theta_orig,
+            #    snr_guess=snr_guess, max_iter=max_iter, debug=debug)
+            #if _fit != []: return _fit.convert()
+            #else: return _fit
+            spectrum = orb.fft.RealSpectrum(spectrum_bundle)
+            fit = spectrum.prepared_fit(inputparams, snr_guess=snr_guess,
+                                        max_iter=max_iter, **kwargs)
+            return fit
 
 
         if verbose:
@@ -366,24 +196,18 @@ class SpectralCube(orcs.core.SpectralCube):
         regions = self.get_mask_from_ds9_region_file(
             regions_file_path, integrate=False)
 
-
-        if not (self.params.wavelength_calibration):
-            raise Exception('Not implemented')
-        else:
-            axis = self.params.base_axis.astype(float)
-
-        if not hasattr(self, 'inputparams'):
-            raise StandardError('Input params not defined')
-
+        preparation_spectrum = self.get_spectrum(self.dimx/2, self.dimy/2, 3)
+        inputparams, kwargs = preparation_spectrum.prepare_fit(
+            lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
+        
         cjs = CubeJobServer(self)
         all_fit = cjs.process_by_region(
-            _fit_lines, regions, subtract, axis,
-            args=(self.params.convert(), self.inputparams.convert(),
-                  self.fit_tol, snr_guess, max_iter, self.debug),
-            modules=('import logging',
-                     'import orcs.utils as utils'))
+            _fit_lines, regions, subtract_spectrum,
+            args=(inputparams, kwargs,
+                  snr_guess, max_iter, self.debug),
+            modules=())
 
-        lines = gvar.mean(self.inputparams.allparams.pos_guess)
+        lines = inputparams['allparams']['pos_guess_mean']
 
         # process results
         for iregion in range(len(regions)):
@@ -433,22 +257,9 @@ class SpectralCube(orcs.core.SpectralCube):
 
             linesmodel = 'Cm1LinesModel'
 
-            spectrum_header = (
-                self._get_integrated_spectrum_header(
-                    iregion))
-
-            orb.utils.io.write_fits(
-                self._get_integrated_spectrum_path(
-                    iregion),
-                ispectrum, fits_header=spectrum_header,
-                overwrite=True, silent=True)
-
-            orb.utils.io.write_fits(
-                self._get_integrated_spectrum_fit_path(
-                    iregion),
-                fitted_vector,
-                fits_header=spectrum_header,
-                overwrite=True, silent=True)
+            ispectrum.writeto(self._get_integrated_spectrum_path(iregion))
+            if isinstance(ifit, orb.fit.OutputParams):
+                ifit.save(self._get_integrated_spectrum_fit_path(iregion))
 
             for fit_results in all_fit_results:
                 paramsfile.append(fit_results)
@@ -491,17 +302,55 @@ class SpectralCube(orcs.core.SpectralCube):
 
         return paramsfile
 
-    def _fit_lines_in_spectrum(self, spectrum, theta_orig,
-                               snr_guess=None, max_iter=None,
-                               **kwargs):
-        """Raw function for spectrum fitting.
 
-        .. note:: Need the InputParams class to be defined before call
-        (see :py:meth:`~orcs.core.SpectralCube._prepare_input_params`).
+    def _fit_wrapper(self, f, args, kwargs):
+        lines = args[-1]
+        
+        subtract_spectrum = None
+        if 'subtract_spectrum' in kwargs:
+            subtract_spectrum = kwargs.pop('subtract_spectrum')
 
-        :param spectrum: The spectrum to fit (1d vector).
+        mean_flux = False
+        if 'mean_flux' in kwargs:
+            mean_flux = kwargs.pop('mean_flux')
 
-        :param theta_orig: Original value of the incident angle in degree.
+        spectrum = f(*args[:-1], mean_flux=mean_flux)
+
+        if subtract_spectrum is not None:
+            if isinstance(subtract_spectrum, np.ndarray):
+                if subtract_spectrum.shape == spectrum.shape:
+                    spectrum.data -= subtract_spectrum
+                else:
+                    raise TypeError('subtract_spectrum must have shape: {}'.format(spectrum.shape))
+            else:
+                raise TypeError('subtract_spectrum must be a np.ndarray or an orb.core.Cm1Vector1d instance')
+
+
+        fit_res = spectrum.fit(lines, **kwargs)
+        return spectrum.axis.data, spectrum.data, fit_res
+    
+    
+    def fit_lines_in_spectrum(self, *args, **kwargs):
+        """Fit lines of a spectrum extracted from a circular region of a
+        given radius.
+
+        :param x: X position of the center
+
+        :param y: Y position of the center
+
+        :param r: Radius. If 0, only the central pixel is extracted.
+
+        :param lines: Emission lines to fit (must be in cm-1 if the
+          cube is in wavenumber. must be in nm otherwise).
+
+        :param nofilter: (Optional) If True, Filter model is not added
+          and the fit is made with a single range set to the filter
+          bandpass.
+
+        :param subtract_spectrum: (Optional) Remove the given spectrum
+          from the extracted spectrum before fitting
+          parameters. Useful to remove sky spectrum. Both spectra must
+          have the same size.
 
         :param snr_guess: Guess on the SNR of the spectrum. Necessary
           to make a Bayesian fit (If unknown you can set it to 'auto'
@@ -512,73 +361,19 @@ class SpectralCube(orcs.core.SpectralCube):
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
 
-        :param kwargs: (Optional) Model parameters that must be
-          changed in the InputParams instance.
-        """
-
-        if not hasattr(self, 'inputparams'):
-            raise StandardError('Input params not defined')
-
-        return utils.fit_lines_in_spectrum(
-            self.params, self.inputparams, self.fit_tol,
-            spectrum, theta_orig,
-            snr_guess=snr_guess, max_iter=max_iter, debug=self.debug,
-            **kwargs)
-
-    def _prepare_input_params(self, lines, nofilter=False, **kwargs):
-        """prepare the InputParams instance for a fitting procedure.
-
-        :param lines: Emission lines to fit (must be in cm-1).
-
-        :param nofilter: (Optional) If True, Filter model is not added
-          and the fit is made with a single range set to the filter
-          bandpass.
+        :param mean_flux: (Optional) If True the flux of the spectrum
+          is the mean flux of the extracted region (default False).
 
         :param kwargs: Keyword arguments of the function
-          :py:meth:`orb.fit._prepare_input_params`.
+          :py:meth:`~SpectralCube._fit_lines_in_spectrum`.
+
+        :returns: a tuple (axis, spectrum, fit_dict). fit_dict is a
+          dictionary containing the fit results (same output as
+          :py:meth:`orb.fit.fit_lines_in_spectrum`)
         """
+        return self._fit_wrapper(self.get_spectrum, args, kwargs)
 
-        if nofilter:
-            filter_file_path = None
-            if 'signal_range' in kwargs:
-                signal_range = kwargs['signal_range']
-                del kwargs['signal_range']
-            else:
-                signal_range = self.get_filter_range()
-
-        else:
-            filter_file_path = self.params.filter_file_path
-            if 'signal_range' in kwargs:
-                signal_range = kwargs['signal_range']
-                del kwargs['signal_range']
-            else:
-                signal_range = None
-
-        self.inputparams = orb.fit._prepare_input_params(
-            self.params.step_nb,
-            lines,
-            self.params.step,
-            self.params.order,
-            self.params.nm_laser,
-            self.params.theta_proj,
-            self.params.zpd_index,
-            ## warning, theta_orig set to theta_proj by default.
-            ## Means that the real theta_orig must be defined in the
-            ## fitting function _fit_lines_in_spectrum
-            theta_orig=self.params.theta_proj,
-            wavenumber=self.params.wavenumber,
-            filter_file_path=filter_file_path,
-            apodization=self.params.apodization,
-            signal_range=signal_range,
-            **kwargs)
-
-
-    def fit_lines_in_spectrum_bin(self, x, y, b, lines, nofilter=False,
-                                  subtract_spectrum=None,
-                                  snr_guess=None,
-                                  max_iter=None,
-                                  mean_flux=False,
-                                  **kwargs):
+    def fit_lines_in_spectrum_bin(self, *args, **kwargs):
         """Fit lines of a spectrum extracted from a squared region of a
         given size.
 
@@ -619,77 +414,9 @@ class SpectralCube(orcs.core.SpectralCube):
           dictionary containing the fit results (same output as
           :py:meth:`orb.fit.fit_lines_in_spectrum`)
         """
+        return self._fit_wrapper(self.get_spectrum_bin, args, kwargs)
 
-        axis, spectrum, theta_orig = self.extract_spectrum_bin(
-            x, y, b, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True, return_gvar=True)
-
-        self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
-
-        fit_res = self._fit_lines_in_spectrum(
-            spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
-
-        return axis, gvar.mean(spectrum), fit_res
-
-    def fit_lines_in_spectrum(self, x, y, r, lines, nofilter=False,
-                              snr_guess=None, max_iter=None,
-                              subtract_spectrum=None,
-                              mean_flux=False, **kwargs):
-        """Fit lines of a spectrum extracted from a circular region of a
-        given radius.
-
-        :param x: X position of the center
-
-        :param y: Y position of the center
-
-        :param r: Radius. If 0, only the central pixel is extracted.
-
-        :param lines: Emission lines to fit (must be in cm-1 if the
-          cube is in wavenumber. must be in nm otherwise).
-
-        :param nofilter: (Optional) If True, Filter model is not added
-          and the fit is made with a single range set to the filter
-          bandpass.
-
-        :param subtract_spectrum: (Optional) Remove the given spectrum
-          from the extracted spectrum before fitting
-          parameters. Useful to remove sky spectrum. Both spectra must
-          have the same size.
-
-        :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit (If unknown you can set it to 'auto'
-          to try an automatic mode, two fits are made - one with a
-          predefined SNR and the other with the SNR deduced from the
-          first fit). If None a classical fit is made.
-
-        :param max_iter: (Optional) Maximum number of iterations
-          (default None)
-
-        :param mean_flux: (Optional) If True the flux of the spectrum
-          is the mean flux of the extracted region (default False).
-
-        :param kwargs: Keyword arguments of the function
-          :py:meth:`~SpectralCube._fit_lines_in_spectrum`.
-
-        :returns: a tuple (axis, spectrum, fit_dict). fit_dict is a
-          dictionary containing the fit results (same output as
-          :py:meth:`~SpectralCube._fit_lines_in_spectrum`)
-        """
-        axis, spectrum, theta_orig = self.extract_spectrum(
-            x, y, r, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True, return_gvar=True)
-
-        self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
-
-        fit_res = self._fit_lines_in_spectrum(
-            spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
-
-        return axis, gvar.mean(spectrum), fit_res
-
-    def fit_lines_in_integrated_region(self, region, lines, nofilter=False,
-                                       snr_guess=None, max_iter=None,
-                                       subtract_spectrum=None, mean_flux=False,
-                                       **kwargs):
+    def fit_lines_in_integrated_region(self, *args, **kwargs):
         """Fit lines of a spectrum integrated over a given region (can
         be a list of pixels as returned by the function
         :py:meth:`numpy.nonzero` or a ds9 region file).
@@ -730,20 +457,10 @@ class SpectralCube(orcs.core.SpectralCube):
         :returns: a tuple (axis, spectrum, fit_dict). fit_dict is a
           dictionary containing the fit results (same output as
           :py:meth:`~SpectralCube._fit_lines_in_spectrum`)
-
         """
-        axis, spectrum, theta_orig = self.extract_integrated_spectrum(
-            region, subtract_spectrum=subtract_spectrum, mean_flux=mean_flux,
-            return_mean_theta=True, return_gvar=True)
+        return self._fit_wrapper(self.get_spectrum_from_region, args, kwargs)
 
-        self._prepare_input_params(lines, nofilter=nofilter, **kwargs)
-
-        fit_res = self._fit_lines_in_spectrum(
-            spectrum, theta_orig, snr_guess=snr_guess, max_iter=max_iter)
-
-        return axis, gvar.mean(spectrum), fit_res
-
-    def fit_lines_in_region(self, region, lines, binning=1, nofilter=False,
+    def fit_lines_in_region(self, region, lines, fmodel='sinc', binning=1, nofilter=False,
                             subtract_spectrum=None, snr_guess=None, max_iter=None,
                             timeout=None, **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
@@ -789,6 +506,120 @@ class SpectralCube(orcs.core.SpectralCube):
           used to map parameters at a given binning from the result of
           the fit made at a higher binning.
         """
+        def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
+                               theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
+                               flux_sdev_ij, debug, max_iter, subtract_spectrum,
+                               binning, mapped_kwargs):
+
+            import orb.utils.spectrum
+            import orb.fft
+            
+            stime = time.time()
+            if debug:
+                import orb.utils.log
+                orb.utils.log.setup_socket_logging()
+            else:
+                warnings.simplefilter('ignore', RuntimeWarning)
+
+
+            # correct spectrum for nans
+            spectrum[np.isnan(spectrum)] = 0.
+
+            spectrum_bundle['data'] = spectrum
+            spectrum_bundle['err'] = np.ones(spectrum.size, dtype=float) * flux_sdev_ij
+            
+            spectrum = orb.fft.RealSpectrum(spectrum_bundle)
+            spectrum.params['calib_coeff_orig'] = orb.utils.spectrum.corr2theta(theta_map_ij)
+
+            # correct spectrum for sky velocity
+
+            if not np.isclose(calib_coeff_ij - spectrum.params['calib_coeff'], 0):
+                raise NotImplementedError()
+
+                # logging.debug('spectrum is interpolated to correct for wavelength calibration change: {} km/s'.format(sky_vel_ij))
+                ## here spectrum must be projected onto the base axis
+                
+            # subtract spectrum
+            if subtract_spectrum is not None:
+                spectrum.data -= subtract_spectrum * binning ** 2.
+
+            # add flux uncertainty to the spectrum
+            if debug:
+                logging.debug('passed mapped kwargs: {}'.format(mapped_kwargs))
+
+            fmapped_kwargs = dict()
+            while len(mapped_kwargs) > 0:
+                if debug:
+                    logging.debug('{}'.format(mapped_kwargs))
+                for key in mapped_kwargs.keys():
+                    rkey = key[:-len(key.split('_')[-1])-1]
+                    index = int(key.split('_')[-1])
+                    if rkey not in fmapped_kwargs:
+                        if index == 0:
+                            fmapped_kwargs[rkey] = list([mapped_kwargs.pop(key)])
+                    elif index == len(fmapped_kwargs[rkey]):
+                        newentry = fmapped_kwargs[rkey]
+                        newentry.append(mapped_kwargs.pop(key))
+                        fmapped_kwargs[rkey] = newentry
+            mapped_kwargs = fmapped_kwargs
+
+            if debug:
+                logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
+
+            try:
+                ifit = spectrum.prepared_fit(
+                    inputparams, snr_guess=snr_guess, max_iter=max_iter,
+                    **mapped_kwargs)
+
+            except Exception, e:
+                if debug:
+                    logging.debug('Exception occured during fit: {}'.format(e))
+                ifit = []
+
+            if ifit != []:
+                if debug:
+                    logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
+                    logging.debug('fit function time: {} s'.format(time.time() - stime))
+                    logging.debug('velocity: {}'.format(ifit['velocity_gvar']))
+                    logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
+
+                return {
+                    'height': ifit['lines_params'][:,0],
+                    'amplitude': ifit['lines_params'][:,1],
+                    'fwhm': ifit['lines_params'][:,3],
+                    'velocity': ifit['velocity'],
+                    'sigma': ifit['broadening'],
+                    'flux': ifit['flux'],
+                    'height-err': ifit['lines_params_err'][:,0],
+                    'amplitude-err': ifit['lines_params_err'][:,1],
+                    'fwhm-err': ifit['lines_params_err'][:,3],
+                    'velocity-err': ifit['velocity_err'],
+                    'sigma-err': ifit['broadening_err'],
+                    'flux-err': ifit['flux_err'],
+                    'chi2': ifit['chi2'],
+                    'rchi2': ifit['rchi2'],
+                    'logGBF': ifit['logGBF'],
+                    'ks_pvalue': ifit['ks_pvalue']}
+
+            else:
+                return {
+                    'height': None,
+                    'amplitude': None,
+                    'fwhm': None,
+                    'velocity': None,
+                    'sigma': None,
+                    'flux': None,
+                    'height-err': None,
+                    'amplitude-err': None,
+                    'fwhm-err': None,
+                    'velocity-err': None,
+                    'sigma-err': None,
+                    'flux-err': None,
+                    'chi2': None,
+                    'rchi2': None,
+                    'logGBF': None,
+                    'ks_pvalue': None}
+
         region = self.get_mask_from_ds9_region_file(region)
 
         # check maps in params
@@ -814,29 +645,106 @@ class SpectralCube(orcs.core.SpectralCube):
                         # try to detect binning
                         _bin = orb.utils.image.compute_binning(ivmap.shape, (self.dimx, self.dimy))
                         if _bin[0] == _bin[1]:
-                            logging.debug('parameter map binned {}x{}'.format(_bin[0], _bin[1]))
+                            if debug:
+                                logging.debug('parameter map binned {}x{}'.format(_bin[0], _bin[1]))
                             ivmap = orb.cutils.unbin_image(ivmap, self.dimx, self.dimy)
                         else:
-                            logging.debug('parameter map not binned. Interpolating {} map from {} to ({}, {})'.format(key, ivmap.shape, self.dimx, self.dimy))
+                            if debug:
+                                logging.debug('parameter map not binned. Interpolating {} map from {} to ({}, {})'.format(key, ivmap.shape, self.dimx, self.dimy))
                             ivmap = orb.utils.image.interpolate_map(ivmap, self.dimx, self.dimy)
-                        logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
+                        if debug:
+                            logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
 
                     kwargs[rkey] = np.nanmedian(ivmap)
-                    logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
+                    if debug:
+                        logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
                     if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
                         logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
                     ivmap[np.isnan(ivmap)] = kwargs[rkey]
                     ivmap[np.isinf(ivmap)] = kwargs[rkey]
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
 
-        self._prepare_input_params(
-            lines, nofilter=nofilter, **kwargs)
 
-        self._fit_lines_in_region(
-            region, subtract_spectrum=subtract_spectrum,
-            binning=binning, snr_guess=snr_guess,
-            max_iter=max_iter, timeout=timeout, mapped_kwargs=mapped_kwargs)
+        if snr_guess not in ('auto', None):
+            raise ValueError("snr_guess must be 'auto' or None")
 
+
+        ## init LineMaps object
+        linemaps = LineMaps(
+            self.dimx, self.dimy,
+            orb.core.Lines().get_line_cm1(lines),
+            self.params.wavenumber,
+            binning, self.config.DIV_NB,
+            wcs_header=self.get_wcs_header(),
+            instrument=self.instrument,
+            data_prefix=self._data_prefix,
+            config=self.config)
+
+        # check subtract spectrum
+        if subtract_spectrum is not None:
+            orb.utils.validate.is_1darray(subtract_spectrum, object_name='subtract_spectrum')
+            if np.all(subtract_spectrum == 0.): subtract_spectrum = None
+
+        mask = np.zeros((self.dimx, self.dimy), dtype=bool)
+        mask[region] = True
+
+        theta_map = orb.utils.image.nanbin_image(self.get_theta_map(), binning)
+
+        mask = np.zeros((self.dimx, self.dimy), dtype=float)
+        mask[region] = 1
+
+        mask_bin = orb.utils.image.nanbin_image(mask, binning)
+
+        total_fit_nb = np.nansum(mask_bin)
+        logging.info('Number of spectra to fit: {}'.format(int(total_fit_nb)))
+
+        if self.get_sky_velocity_map() is not None:
+            sky_velocity_map = orb.utils.image.nanbin_image(
+                self.get_sky_velocity_map(), binning)
+        else:
+            sky_velocity_map = orb.utils.image.nanbin_image(
+                np.zeros((self.dimx, self.dimy), dtype=float), binning)
+
+        calibration_coeff_map = orb.utils.image.nanbin_image(
+            self.get_calibration_coeff_map(), binning)
+
+        flux_uncertainty = self.get_flux_uncertainty()
+        if flux_uncertainty is not None:
+            flux_uncertainty = orb.utils.image.nanbin_image(flux_uncertainty, binning)
+        else:
+            flux_uncertainty = orb.utils.image.nanbin_image(
+                np.ones((self.dimx, self.dimy), dtype=float), binning) * binning**2.
+
+        preparation_spectrum = self.get_spectrum(self.dimx/2, self.dimy/2, 3)
+        inputparams, kwargs = preparation_spectrum.prepare_fit(
+            lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
+        spectrum_bundle = preparation_spectrum.to_bundle()
+
+        cjs = orcs.core.CubeJobServer(self)
+        out = cjs.process_by_pixel(fit_lines_in_pixel,
+                                   args=[spectrum_bundle, inputparams,
+                                         theta_map, snr_guess, sky_velocity_map,
+                                         calibration_coeff_map,
+                                         flux_uncertainty, self.debug, max_iter,
+                                         subtract_spectrum, binning],
+                                   kwargs=mapped_kwargs,
+                                   modules=['numpy as np', 'gvar', 'orcs.utils',
+                                            'logging', 'warnings', 'time',
+                                            'import orb.utils.spectrum',
+                                            'import orb.utils.vector'],
+                                   mask=mask,
+                                   binning=binning,
+                                   timeout=timeout)
+
+        for key in out:
+            linemaps.set_map(key, out[key],
+                             x_range=[0, self.dimx],
+                             y_range=[0, self.dimy])
+
+
+        linemaps.write_maps()
+
+                    
     def get_amp_ratio_from_flux_ratio(self, line0, line1, flux_ratio):
         """Return the amplitude ratio (amp(line0) / amp(line1)) to define from the flux ratio
         (at constant fwhm and broadening).
