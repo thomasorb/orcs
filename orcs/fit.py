@@ -76,66 +76,6 @@ class SpectralCube(orcs.core.SpectralCube):
         return (dirname + os.sep + "INTEGRATED"
                 + os.sep + basename + "integrated_spectrum_{}.hdf5".format(region_name))
 
-    # def fit_lines_in_region(self, region, subtract_spectrum=None,
-    #                         binning=1, snr_guess=None, mapped_kwargs=None,
-    #                         max_iter=None, timeout=None):
-    #     """Fit lines in a given region of the cube.
-
-    #     All the pixels in the defined region are fitted one by one
-    #     and a set of maps containing the fitted paramaters are
-    #     written. Note that the pixels can be binned.
-
-
-    #     .. note:: Need the InputParams class to be defined before call
-    #       (see :py:meth:`~orcs.core.SpectralCube._prepare_input_params`).
-
-    #     .. note:: The fit will always use the Bayesian algorithm.
-
-    #     :param region: Region to fit. Multiple regions can be used to
-    #       define the fitted region. They do not need to be contiguous.
-
-    #     :param subtract_spectrum: (Optional) Remove the given spectrum
-    #       from the extracted spectrum before fitting
-    #       parameters. Useful to remove sky spectrum. Both spectra must
-    #       have the same size.
-
-    #     :param binning: (Optional) Binning. The fitted pixels can be
-    #       binned.
-
-    #     :param snr_guess: Guess on the SNR of the spectrum. Can only
-    #       be None or 'auto'. Set it to 'auto' to make a Bayesian
-    #       fit. In this case two fits are made - one with a predefined
-    #       SNR and the other with the SNR deduced from the first
-    #       fit. If None a classical fit is made. (default None).
-
-    #     :param max_iter: (Optional) Maximum number of iterations
-    #       (default None)
-
-    #     :param mapped_kwargs: If a kwarg is mapped, its value will be
-    #       replaced by the value at the fitted pixel.
-
-    #     :timeout: (Optional) max processing time per pixel. If reached, the given
-    #       pixel is passed (default None).
-
-    #     .. note:: Maps of the parameters of the fit can be found in
-    #       the directory created by ORCS:
-    #       ``OBJECT_NAME_FILTER.ORCS/MAPS/``.
-
-    #       Each line has 5 parameters (which gives 5 maps): height,
-    #       amplitude, velocity, fwhm, sigma. Height and amplitude are
-    #       given in ergs/cm^2/s/A. Velocity and broadening are given in
-    #       km/s. FWHM is given in cm^-1.
-
-    #       The flux map is also computed (from fwhm, amplitude and
-    #       sigma parameters) and given in ergs/cm^2/s.
-
-    #       Each fitted parameter is associated an uncertainty (``*_err``
-    #       maps) given in the same unit.
-
-    #     """
-
-
-
     def fit_integrated_spectra(self, regions_file_path, lines,
                                fmodel='sinc',
                                nofilter=True,
@@ -541,6 +481,7 @@ class SpectralCube(orcs.core.SpectralCube):
                 
             # subtract spectrum
             if subtract_spectrum is not None:
+                subtract_spectrum[np.isnan(subtract_spectrum)] == 0.
                 spectrum.data -= subtract_spectrum * binning ** 2.
 
             # add flux uncertainty to the spectrum
@@ -682,8 +623,10 @@ class SpectralCube(orcs.core.SpectralCube):
 
         # check subtract spectrum
         if subtract_spectrum is not None:
-            orb.utils.validate.is_1darray(subtract_spectrum, object_name='subtract_spectrum')
-            if np.all(subtract_spectrum == 0.): subtract_spectrum = None
+            if not callable(subtract_spectrum):
+                orb.utils.validate.is_1darray(subtract_spectrum, object_name='subtract_spectrum')
+                if np.all(subtract_spectrum == 0.): subtract_spectrum = None
+            
 
         mask = np.zeros((self.dimx, self.dimy), dtype=bool)
         mask[region] = True

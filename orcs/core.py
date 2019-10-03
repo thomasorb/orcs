@@ -511,7 +511,6 @@ class CubeJobServer(object):
             out_line = list()
             for i in range(iline_data.shape[0]):
                 iargs_list = list()
-
                 # remap arguments
                 for iarg in args[2:]:
                     try:
@@ -521,7 +520,7 @@ class CubeJobServer(object):
                     if shape is not None:
                         iarg = np.squeeze(iarg)
                         shape = iarg.shape
-                        if shape == (iline_data.shape[0],):
+                        if shape == (iline_data.shape[0], ):
                             iarg = iarg[i]
 
                     iargs_list.append(iarg)
@@ -624,6 +623,13 @@ class CubeJobServer(object):
                         is_map = True
                     else:
                         raise TypeError('Data shape {} not handled'.format(new_arg.shape))
+            elif callable(new_arg):
+                # assume new_arg is a function of x, y
+                try:
+                    new_arg(self.cube.dimx/2, self.cube.dimy/2)
+                except Exception, e:
+                    raise StandardError('argument is callable but does not show the proper behaviour spectrum = f(x, y): {}'.format(e))
+                is_map = True            
 
             args[i] = (new_arg, is_map)
 
@@ -703,7 +709,10 @@ class CubeJobServer(object):
                 # extract values of mapped arguments
                 for iarg in args:
                     if iarg[1]:
-                        all_args.append(np.copy(iarg[0][ix, iy, ...]))
+                        if callable(iarg[0]):
+                            all_args.append(iarg[0](ix, iy))
+                        else:
+                            all_args.append(np.copy(iarg[0][ix, iy, ...]))
                     else:
                         all_args.append(iarg[0])
 
