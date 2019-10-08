@@ -539,7 +539,7 @@ class SpectralCube(fit.SpectralCube):
         sip = None
         compute_distortion = True
         if distortion_map_path is not None:
-            dist_map_hdu = orb.utils.io.read_fits(distortion_map_path, return_hdu_only=True)[0]
+            dist_map_hdu = orb.utils.io.read_fits(distortion_map_path, return_hdu_only=True)
             hdr = dist_map_hdu.header
             sip = pywcs.WCS(hdr, naxis=2, relax=True)
             # distortion are already defined and must not be recomputed
