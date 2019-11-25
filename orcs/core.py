@@ -1736,14 +1736,14 @@ class HDFCube(orb.core.HDFCube):
 
         # compute counts/s
         # total number of counts in a full cube
-        total_counts = deep_frame * self.dimz
+        total_counts = deep_frame
 
         # associated photon noise distributed over each channel in counts
-        noise_counts = np.sqrt(total_counts)
+        noise_counts = np.sqrt(total_counts * self.get_gain())
 
         # in flux unit
         noise_flux = noise_counts / self.params.exposure_time # counts/s
-        noise_flux *= self.params.flambda / self.dimz # erg/cm2/s/A
+        noise_flux *= self.params.flambda # erg/cm2/s/A
         # compute mean channel size
         channel_size_ang = 10 * orb.utils.spectrum.fwhm_cm12nm(
             np.diff(self.params.base_axis)[0],
