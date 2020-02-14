@@ -2652,6 +2652,7 @@ class Filter(object):
         :param f: 1d array describing the transmission function  (note that the
         filter function must be defined between 0 and 1).
         """
+        raise NotImplementedError('orb.core.Filter should be used ;)')
         if not isinstance(x, np.ndarray):
             raise TypeError('x must be a numpy.ndarray')
         if not isinstance(f, np.ndarray):
