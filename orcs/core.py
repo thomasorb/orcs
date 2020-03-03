@@ -1739,7 +1739,7 @@ class HDFCube(orb.core.HDFCube):
         total_counts = deep_frame
 
         # associated photon noise distributed over each channel in counts
-        noise_counts = np.sqrt(total_counts * self.get_gain())
+        noise_counts = np.sqrt(total_counts * self.config['CAM1_GAIN'])
 
         # in flux unit
         noise_flux = noise_counts / self.params.exposure_time # counts/s
