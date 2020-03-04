@@ -25,7 +25,7 @@ ORCS Core library.
 
 .. note:: ORCS is built over ORB so that ORB must be installed.
 """
-import version
+from . import version
 __version__ = version.__version__
 
 # import Python libraries
@@ -54,7 +54,7 @@ import orb.utils.astrometry
 import orb.utils.validate
 import orb.utils.io
 
-import utils
+from . import utils
 
 #################################################
 #### CLASS DataFiles ############################
@@ -436,7 +436,7 @@ class CubeJobServer(object):
                     ok = True
                     break
             if not ok:
-                raise StandardError('at least one of the processed region is not in the results list')
+                raise Exception('at least one of the processed region is not in the results list')
 
         return ordered_out
 
@@ -535,7 +535,7 @@ class CubeJobServer(object):
                 iargs_list.append(ikwargs)
                 try:
                     out_line.append(_func(iline_data[i,:], *iargs_list))
-                except Exception, e:
+                except Exception as e:
                     out_line.append(None)
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
@@ -548,7 +548,7 @@ class CubeJobServer(object):
         #         0, cube.dimz, silent=True)
 
         ## function must be serialized (or picked)
-        func = marshal.dumps(func.func_code)
+        func = marshal.dumps(func.__code__)
 
         binning = int(binning)
 
@@ -594,7 +594,7 @@ class CubeJobServer(object):
 
 
         # add kwargs to args
-        kwargs_keys = kwargs.keys()
+        kwargs_keys = list(kwargs.keys())
         for key in kwargs_keys:
             args.append(kwargs[key])
         args.append(kwargs_keys)
@@ -627,8 +627,8 @@ class CubeJobServer(object):
                 # assume new_arg is a function of x, y
                 try:
                     new_arg(self.cube.dimx/2, self.cube.dimy/2)
-                except Exception, e:
-                    raise StandardError('argument is callable but does not show the proper behaviour spectrum = f(x, y): {}'.format(e))
+                except Exception as e:
+                    raise Exception('argument is callable but does not show the proper behaviour spectrum = f(x, y): {}'.format(e))
                 is_map = True            
 
             args[i] = (new_arg, is_map)
@@ -642,7 +642,7 @@ class CubeJobServer(object):
         logging.info('{} rows to fit'.format(len(xy)))
 
         # jobs will be passed by line
-        self.all_jobs_indexes = range(len(xy))
+        self.all_jobs_indexes = list(range(len(xy)))
         all_jobs_nb = len(self.all_jobs_indexes)
 
         # jobs submit / retrieve loop
@@ -754,7 +754,7 @@ class CubeJobServer(object):
                         if self.out_is_dict:
                             if not isinstance(res, dict):
                                 raise TypeError('function result must be a dict if out is a dict')
-                            for ikey in res.keys():
+                            for ikey in list(res.keys()):
                                 # create the output array if not set
                                 if ikey not in out and res[ikey] is not None:
                                     if np.size(res[ikey]) > 1:
@@ -917,7 +917,7 @@ class LineMaps(orb.core.Tools):
             binning = self.binning
 
         if param not in self.lineparams:
-            raise StandardError('Bad parameter')
+            raise Exception('Bad parameter')
 
         dirname = os.path.dirname(self._data_path_hdr)
         basename = os.path.basename(self._data_path_hdr)
@@ -952,7 +952,7 @@ class LineMaps(orb.core.Tools):
             raise TypeError('data_map must have 2 or 3 dimensions')
 
         if param not in self.lineparams:
-            raise StandardError('Bad parameter')
+            raise Exception('Bad parameter')
 
         if x_range is None and y_range is None:
             self.data[param] = data_map

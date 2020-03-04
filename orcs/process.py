@@ -27,7 +27,7 @@ extract data from ORBS spectral cubes.
 This module contains the processing classes
 """
 
-import version
+from . import version
 __version__ = version.__version__
 
 # import Python libraries
@@ -46,10 +46,10 @@ import scipy.interpolate
 import marshal
 
 # import core
-import core
-import fit
-from core import LineMaps
-import utils
+from . import core
+from . import fit
+from .core import LineMaps
+from . import utils
 
 # import ORB
 import orb.core
@@ -173,7 +173,7 @@ class SpectralCube(fit.SpectralCube):
             if os.path.exists(self._get_skymap_file_path()):
                 logging.info('fitting process already done. Do you really want to redo it again ?')
                 try:
-                    if raw_input('type [yes]: ') != 'yes': no_fit = True
+                    if input('type [yes]: ') != 'yes': no_fit = True
                 except Exception:
                     no_fit = True
 
@@ -624,7 +624,7 @@ class SpectralCube(fit.SpectralCube):
         zsize = end_pix-start_pix+1
         # This splits the range in zsize//10 +1 chunks (not necessarily of same
         # size). The endpix is correctly handled in the extraction
-        izranges = np.array_split(range(start_pix, end_pix+1), zsize//10+1)
+        izranges = np.array_split(list(range(start_pix, end_pix+1)), zsize//10+1)
         for izrange in izranges:
             sframe[xmin:xmax, ymin:ymax] += np.sum(
                 self.get_data(xmin, xmax, ymin, ymax,

@@ -37,7 +37,7 @@ import orb.utils.spectrum
 import orb.utils.log
 import orb.utils.io
 import orcs.core
-import utils
+from . import utils
 
 from orcs.core import LineMaps, CubeJobServer
 
@@ -492,7 +492,7 @@ class SpectralCube(orcs.core.SpectralCube):
             while len(mapped_kwargs) > 0:
                 if debug:
                     logging.debug('{}'.format(mapped_kwargs))
-                for key in mapped_kwargs.keys():
+                for key in list(mapped_kwargs.keys()):
                     rkey = key[:-len(key.split('_')[-1])-1]
                     index = int(key.split('_')[-1])
                     if rkey not in fmapped_kwargs:
@@ -512,7 +512,7 @@ class SpectralCube(orcs.core.SpectralCube):
                     inputparams, snr_guess=snr_guess, max_iter=max_iter,
                     **mapped_kwargs)
 
-            except Exception, e:
+            except Exception as e:
                 if debug:
                     logging.debug('Exception occured during fit: {}'.format(e))
                 ifit = []
@@ -565,10 +565,10 @@ class SpectralCube(orcs.core.SpectralCube):
 
         # check maps in params
         mapped_kwargs = dict()
-        for key in kwargs.keys():
+        for key in list(kwargs.keys()):
             if '_map' in key:
                 rkey = key[:-len('_map')]
-                if rkey in kwargs.keys():
+                if rkey in list(kwargs.keys()):
                     raise KeyError('a mapped value has already been defined with {}. Please remove {}.'.format(key, rkey))
                 vmaps = kwargs.pop(key)
                 if not isinstance(vmaps, tuple) and not isinstance(vmaps, list):

@@ -1,2 +1,0 @@
-model_checkpoint_path: "/home/thomas/Astro/Python/ORB/Orcs/orcs/data/StarDetector2d.Star2dModel.8.8.model.ckpt"
-all_model_checkpoint_paths: "/home/thomas/Astro/Python/ORB/Orcs/orcs/data/StarDetector2d.Star2dModel.8.8.model.ckpt"
