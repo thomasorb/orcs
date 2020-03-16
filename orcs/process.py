@@ -484,7 +484,7 @@ class SpectralCube(fit.SpectralCube):
             res_cube = np.empty_like(dat_cube)
             res_cube.fill(np.nan)
 
-            job_server, ncpus = self._init_pp_server()
+            job_server, ncpus = self._init_pp_server(timeout=1000)
             
             for iframe in range(0, res_cube.shape[2], ncpus):
                 if iframe + ncpus >= res_cube.shape[2]:
