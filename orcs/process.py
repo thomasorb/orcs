@@ -414,18 +414,19 @@ class SpectralCube(fit.SpectralCube):
         def filter_frame(_frame, fast):
             BOX_SIZE = 3 # must be odd
             BACK_COEFF = 9 # must be odd
-
+            
             if not fast:
                 _res = orb.cutils.filter_background(_frame, BOX_SIZE, BACK_COEFF)
             else:
+                
                 kernel_box = np.ones((BOX_SIZE, BOX_SIZE), dtype=float)
                 kernel_box /= np.nansum(kernel_box)
                 kernel_back = np.ones((BOX_SIZE*BACK_COEFF,
                                        BOX_SIZE*BACK_COEFF), dtype=float)
-                kernel_back[kernel_back.shape[0]/2 - kernel_box.shape[0]/2:
-                            kernel_back.shape[0]/2 + kernel_box.shape[0]/2 + 1,
-                            kernel_back.shape[1]/2 - kernel_box.shape[1]/2:
-                            kernel_back.shape[1]/2 + kernel_box.shape[1]/2 + 1] = np.nan
+                kernel_back[kernel_back.shape[0]//2 - kernel_box.shape[0]//2:
+                            kernel_back.shape[0]//2 + kernel_box.shape[0]//2 + 1,
+                            kernel_back.shape[1]//2 - kernel_box.shape[1]//2:
+                            kernel_back.shape[1]//2 + kernel_box.shape[1]//2 + 1] = np.nan
                 kernel_back /= np.nansum(kernel_back)
 
                 kernel_back[np.nonzero(np.isnan(kernel_back))] = 0.
@@ -442,9 +443,7 @@ class SpectralCube(fit.SpectralCube):
         if fast: logging.info('Source detection using fast algorithm')
         else: logging.info('Source detection using slow (but better) algorithm')
 
-
         # get filter range
-
         filter_range_pix = self.get_filter_range_pix()
 
         fr = max(filter_range_pix) - min(filter_range_pix)
@@ -460,67 +459,65 @@ class SpectralCube(fit.SpectralCube):
         ## taken in a larger box
 
         # Init multiprocessing server
-        dat_cube = None
         det_frame = np.zeros((self.dimx, self.dimy), dtype=float)
         argdet_frame = np.copy(det_frame)
         argdet_frame.fill(np.nan)
 
-        job_server, ncpus = self._init_pp_server()
-        for iframe in range(int(min(filter_range_pix)),
-                            int(max(filter_range_pix)), ncpus):
-            if iframe + ncpus >= self.dimz:
-                ncpus = self.dimz - iframe
+        dat_cube_slices = np.linspace(int(min(filter_range_pix)),
+                                      int(max(filter_range_pix)),
+                                      10).astype(int)
+        
+        for islice in range(len(dat_cube_slices) - 1):
+            zmin = dat_cube_slices[islice]
+            zmax = dat_cube_slices[islice+1]
 
-            if dat_cube is not None:
-                if last_frame < iframe + ncpus:
-                    dat_cube = None
+            logging.info('Extracting frames: {} to {} ({}/{} frames)'.format(
+                zmin, zmax,
+                zmax - dat_cube_slices[0],
+                max(filter_range_pix) - min(filter_range_pix)))
+            
+            dat_cube = self.get_data(0, self.dimx,
+                                     0, self.dimy,
+                                     zmin, zmax,
+                                     silent=False)
 
-            if dat_cube is None:
-                res_z_size = ncpus*Z_SIZE
-                if iframe + res_z_size > self.dimz:
-                    res_z_size = self.dimz - iframe
-                first_frame = int(iframe)
-                last_frame = iframe + res_z_size
+            res_cube = np.empty_like(dat_cube)
+            res_cube.fill(np.nan)
 
-                logging.info('Extracting frames: {} to {} ({}/{} frames)'.format(
-                    iframe, last_frame-1,
-                    last_frame - 1 -min(filter_range_pix),
-                    max(filter_range_pix) - min(filter_range_pix)))
-                dat_cube = self.get_data(0, self.dimx,
-                                         0, self.dimy,
-                                         iframe, last_frame,
-                                         silent=False)
+            job_server, ncpus = self._init_pp_server()
+            
+            for iframe in range(0, res_cube.shape[2], ncpus):
+                if iframe + ncpus >= res_cube.shape[2]:
+                    ncpus = res_cube.shape[2] - iframe
 
-                res_cube = np.empty_like(dat_cube)
-                res_cube.fill(np.nan)
+                jobs = [(ijob, job_server.submit(
+                    filter_frame,
+                    args=(dat_cube[:,:,iframe + ijob], fast),
+                    modules=("import logging",
+                             "import orb.cutils",
+                             "import numpy as np",
+                             "import scipy.signal")))
+                        for ijob in range(ncpus)]
 
+                for ijob, job in jobs:
+                    # filtered data is written in place of non filtered data
+                    ifiltered_frame = job()
+                    res_cube[:,:,iframe + ijob] = ifiltered_frame
+                    
+            self._close_pp_server(job_server)
 
-            jobs = [(ijob, job_server.submit(
-                filter_frame,
-                args=(dat_cube[:,:,iframe - first_frame + ijob], fast),
-                modules=("import logging",
-                         "import orb.cutils",
-                         "import numpy as np",
-                         "import scipy.signal")))
-                    for ijob in range(ncpus)]
-
-            for ijob, job in jobs:
-                # filtered data is written in place of non filtered data
-                res_cube[:,:,iframe - first_frame + ijob] = job()
-
-            max_frame = np.nanmax(res_cube, axis=2)
-            argmax_frame = np.nanargmax(res_cube, axis=2) + first_frame
-            new_det = np.nonzero(max_frame > det_frame)
-            det_frame[new_det] = max_frame[new_det]
-            argdet_frame[new_det] = argmax_frame[new_det]
+            imax_frame = np.nanmax(res_cube, axis=2)
+            iargmax_frame = np.nanargmax(res_cube, axis=2) + zmin
+            new_det = np.nonzero(imax_frame > det_frame)
+            det_frame[new_det] = imax_frame[new_det]
+            argdet_frame[new_det] = iargmax_frame[new_det]
 
 
-        self._close_pp_server(job_server)
-
+            
         orb.utils.io.write_fits(self._get_detection_frame_path(),
-                        det_frame, overwrite=True)
+                                det_frame, overwrite=True)
         orb.utils.io.write_fits(self._get_detection_pos_frame_path(),
-                        argdet_frame, overwrite=True)
+                                argdet_frame, overwrite=True)
 
 
     def register(self, distortion_map_path=None):
@@ -572,65 +569,4 @@ class SpectralCube(fit.SpectralCube):
         orb.utils.io.write_fits(self._get_dymap_path(), dymap,
                         fits_header=newhdr, overwrite=True)
 
-
-    def integrate(self, filter_function, xmin=None, xmax=None, ymin=None, ymax=None):
-        """
-        Integrate a cube under a filter function and generate an image
-
-        :math:`I = \int F(\sigma)S(\sigma)\text{d}\sigma`
-
-        with :math:`I`, the image, :math:`S` the spectral cube, :math:`F` the
-        filter function.
-
-        :param filter_function: Must be an orcs.core.Filter instance
-
-        :param xmin: (Optional) lower boundary of the ROI along x axis (default
-          None, i.e. min)
-
-        :param xmax: (Optional) lower boundary of the ROI along y axis (default
-          None, i.e. min)
-
-        :param ymin: (Optional) upper boundary of the ROI along x axis (default
-          None, i.e. max)
-
-        :param ymax: (Optional) upper boundary of the ROI along y axis (default
-          None, i.e. max)
-        """
-        if not isinstance(filter_function, Filter):
-            raise TypeError('filter_function must be an orcs.core.Filter instance')
-
-        if (filter_function.start <= self.params.base_axis[0]
-            or filter_function.end >= self.params.base_axis[-1]):
-            raise ValueError('filter passband (>5%) between {} - {} out of cube band {} - {}'.format(
-                filter_function.start,
-                filter_function.end,
-                self.params.base_axis[0],
-                self.params.base_axis[-1]))
-
-        if xmin is None: xmin = 0
-        if ymin is None: ymin = 0
-        if xmax is None: xmax = self.dimx
-        if ymax is None: ymax = self.dimy
-
-        xmin = int(np.clip(xmin, 0, self.dimx))
-        xmax = int(np.clip(xmax, 0, self.dimx))
-        ymin = int(np.clip(ymin, 0, self.dimy))
-        ymax = int(np.clip(ymax, 0, self.dimy))
-
-        start_pix, end_pix = orb.utils.spectrum.cm12pix(
-            self.params.base_axis, [filter_function.start, filter_function.end])
-
-        sframe = np.zeros((self.dimx, self.dimy), dtype=float)
-        zsize = end_pix-start_pix+1
-        # This splits the range in zsize//10 +1 chunks (not necessarily of same
-        # size). The endpix is correctly handled in the extraction
-        izranges = np.array_split(list(range(start_pix, end_pix+1)), zsize//10+1)
-        for izrange in izranges:
-            sframe[xmin:xmax, ymin:ymax] += np.sum(
-                self.get_data(xmin, xmax, ymin, ymax,
-                              izrange.min(), izrange.max()+1, silent=True)
-                * filter_function(
-                    self.params.base_axis[izrange].astype(float)), axis=2)
-        sframe /= np.sum(filter_function(self.params.base_axis.astype(float)))
-        return sframe
 
