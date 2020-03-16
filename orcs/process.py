@@ -465,7 +465,7 @@ class SpectralCube(fit.SpectralCube):
         argdet_frame = np.copy(det_frame)
         argdet_frame.fill(np.nan)
 
-        job_server, ncpus = self._init_pp_server()
+        job_server, ncpus = self._init_pp_server(timeout=1000)
         for iframe in range(int(min(filter_range_pix)),
                             int(max(filter_range_pix)), ncpus):
             if iframe + ncpus >= self.dimz:
