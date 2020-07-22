@@ -536,7 +536,8 @@ class CubeJobServer(object):
                 try:
                     out_line.append(_func(iline_data[i,:], *iargs_list))
                 except Exception as e:
-                    out_line.append(None)
+                    #out_line.append(None)
+                    out_line.append(repr(e))
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
             return out_line
@@ -728,8 +729,7 @@ class CubeJobServer(object):
                     self.job_server.submit(
                         process_in_row,
                         args=tuple(all_args),
-                        modules=tuple(modules),
-                        depfuncs=tuple(depfuncs)),
+                        modules=tuple(modules)),
                     (ix, iy), time.time(), timer, self.all_jobs_indexes[0]])
                 self.all_jobs_indexes.pop(0)
                 progress.update(all_jobs_nb - len(self.all_jobs_indexes))
@@ -739,7 +739,7 @@ class CubeJobServer(object):
             unfinished_jobs = list()
             for i in range(len(self.jobs)):
                 ijob, (ix, iy), stime, timer, ijob_index = self.jobs[i]
-                if ijob.finished:
+                if ijob.job.ready():
                     logging.debug('job {} ({}, {}) finished'.format(ijob_index, ix, iy))
                     logging.debug('job {} time since submission: {} s'.format(
                         ijob_index, time.time() - stime))
@@ -753,7 +753,7 @@ class CubeJobServer(object):
                         res = res_row[irow]
                         if self.out_is_dict:
                             if not isinstance(res, dict):
-                                raise TypeError('function result must be a dict if out is a dict')
+                                raise TypeError('function result must be a dict if out is a dict but it is {}'.format(type(res)))
                             for ikey in list(res.keys()):
                                 # create the output array if not set
                                 if ikey not in out and res[ikey] is not None:
@@ -768,8 +768,8 @@ class CubeJobServer(object):
                                         except TypeError:
                                             raise TypeError('If out dict maps are not set (i.e. out is set to a default dict()) returned values must be a dict of float or a 1d array of floats')
                                     _iout = np.empty(
-                                        (self.cube.dimx/binning,
-                                         self.cube.dimy/binning,
+                                        (self.cube.dimx//binning,
+                                         self.cube.dimy//binning,
                                          np.size(res[ikey])),
                                         dtype=float)
 
@@ -820,7 +820,8 @@ class LineMaps(orb.core.Tools):
     lineparams = ('height', 'height-err', 'amplitude', 'amplitude-err',
                   'velocity', 'velocity-err', 'fwhm', 'fwhm-err',
                   'sigma', 'sigma-err', 'flux', 'flux-err',
-                  'logGBF', 'chi2', 'rchi2', 'ks_pvalue')
+                  'logGBF', 'chi2', 'rchi2', 'ks_pvalue',
+                  'cont_p0', 'cont_p1', 'cont_p2', 'cont_p3')
 
 
     def __init__(self, dimx, dimy, lines, wavenumber, binning, div_nb,
@@ -901,6 +902,28 @@ class LineMaps(orb.core.Tools):
         for iparam in self.lineparams:
             self.data[iparam] = np.copy(base_array)
 
+    @classmethod
+    def load(cls, path):
+        data = dict()
+        with orb.utils.io.open_hdf5(path, 'r') as f:
+            
+            for ikey in f:
+                data[ikey] = f[ikey][:]
+            
+            shape = data[list(data.keys())[0]].shape
+            new = cls(shape[0], shape[1], f.attrs['lines'], f.attrs['wavenumber'],
+                      f.attrs['binning'], f.attrs['div_nb'])
+        new.data = data
+        return new
+
+    def _get_hdf5_path(self):
+        """Return the path to the hdf5 bundle
+        """
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + "MAPS" + os.sep
+                + basename + "maps.{}x{}.hdf5".format(self.binning, self.binning))
+        
 
     def _get_map_path(self, line_name, param, binning=None):
         """Return the path to a map of one gaussian fit parameter for
@@ -988,8 +1011,29 @@ class LineMaps(orb.core.Tools):
             x_range[0]:x_range[1],
             y_range[0]:y_range[1]]
 
+    def save(self):
+        """
+        save class as an HDF5 file
+        """
+        outpath = self._get_hdf5_path()
+        
+        if os.path.exists(outpath):
+            os.remove(outpath)
+            
+        with orb.utils.io.open_hdf5(outpath, 'w') as f:
+            f.attrs['lines'] = self.lines
+            f.attrs['wavenumber'] = self.wavenumber
+            f.attrs['binning'] = self.binning
+            f.attrs['div_nb'] = self.div_nb
+            
+            for ikey in self.data:
+                f.create_dataset(ikey, data=self.data[ikey])
+
+        logging.info('all maps saved as {}'.format(outpath))
+        
+                
     def write_maps(self):
-        """Write all maps to disk."""
+        """Write all maps to disk in fits format."""
 
         for param in self.lineparams:
 
@@ -1045,3 +1089,40 @@ class LineMaps(orb.core.Tools):
 
                 if same_param: break
 
+    def get_spectrum(self, cube, x, y, fmodel='sinc'):
+        """
+        Reconstruct the fitted vector from the mapped parameters.
+        :param cube: a SpectralCube instance
+
+        :param x: x position in pixels (unbinned)
+
+        :param y: y position in pixels (unbinned)
+
+        :param fmodel: line model
+        """
+        x = int(x)
+        y = int(y)
+        x_bin = x//self.binning
+        y_bin = y//self.binning
+        amp = self.data['amplitude'][x_bin, y_bin]
+        vel = self.data['velocity'][x_bin, y_bin]
+        try:
+            sigma = self.data['sigma'][x_bin, y_bin]
+        except KeyError:
+            sigma = 0
+        corr = cube.get_calibration_coeff_map_orig()[x, y]
+        spec = orb.fit.create_cm1_lines_model_raw(
+            self.lines, amp, cube.params.step, cube.params.order, cube.dimz,
+            corr, cube.params.zpd_index, vel=vel, sigma=sigma, fmodel=fmodel)
+        contparams = [self.data['cont_p{}'.format(icont)][x_bin, y_bin][0] for icont in range(4)]
+        poly_order = np.sum(~np.isnan(contparams)) - 1
+        cont = orb.fit.ContinuumModel({'poly_order':0, 'poly_guess':contparams[:poly_order+1]}).get_model(np.arange(cube.dimz))
+        cont = gvar.mean(cont)
+        
+        axis = cube.get_axis(x, y)
+        params = dict(cube.params)
+        params['calibration_coeff'] = cube.get_calibration_coeff_map()[x, y]
+        params['calibration_coeff_orig'] = corr
+        return orb.fft.Spectrum(spec + cont, axis=axis, params=params)
+        
+        

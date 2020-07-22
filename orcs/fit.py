@@ -439,7 +439,7 @@ class SpectralCube(orcs.core.SpectralCube):
           :py:meth:`~SpectralCube._fit_lines_in_spectrum`.
 
         .. note:: You can pass the fitting parameters (e.g. pos_cov,
-          sigma_cov etc.) as maps (a 2d numy.ndarray instance or a
+          sigma_cov etc.) as maps (a 2d numpy.ndarray instance or a
           path to a map). But you have to append the suffix '_map' to
           the parameter you want to map. Any nan or inf in the map
           will be replaced by the median of the map. This mode can be
@@ -447,7 +447,7 @@ class SpectralCube(orcs.core.SpectralCube):
           the fit made at a higher binning.
         """
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
-                               theta_map_ij, snr_guess, sky_vel_ij, calib_coeff_ij,
+                               snr_guess, sky_vel_ij, calib_coeff_ij, calib_coeff_orig_ij,
                                flux_sdev_ij, debug, max_iter, subtract_spectrum,
                                binning, mapped_kwargs):
 
@@ -469,15 +469,8 @@ class SpectralCube(orcs.core.SpectralCube):
             spectrum_bundle['err'] = np.ones(spectrum.size, dtype=float) * flux_sdev_ij
             
             spectrum = orb.fft.RealSpectrum(spectrum_bundle)
-            spectrum.params['calib_coeff_orig'] = orb.utils.spectrum.corr2theta(theta_map_ij)
-
-            # correct spectrum for sky velocity
-
-            if not np.isclose(calib_coeff_ij - spectrum.params['calib_coeff'], 0):
-                raise NotImplementedError()
-
-                # logging.debug('spectrum is interpolated to correct for wavelength calibration change: {} km/s'.format(sky_vel_ij))
-                ## here spectrum must be projected onto the base axis
+            spectrum.params['calib_coeff'] = calib_coeff_ij
+            spectrum.params['calib_coeff_orig'] = calib_coeff_orig_ij
                 
             # subtract spectrum
             if subtract_spectrum is not None:
@@ -517,6 +510,7 @@ class SpectralCube(orcs.core.SpectralCube):
                     logging.debug('Exception occured during fit: {}'.format(e))
                 ifit = []
 
+            
             if ifit != []:
                 if debug:
                     logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
@@ -524,7 +518,7 @@ class SpectralCube(orcs.core.SpectralCube):
                     logging.debug('velocity: {}'.format(ifit['velocity_gvar']))
                     logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
 
-                return {
+                outdict = {
                     'height': ifit['lines_params'][:,0],
                     'amplitude': ifit['lines_params'][:,1],
                     'fwhm': ifit['lines_params'][:,3],
@@ -542,8 +536,10 @@ class SpectralCube(orcs.core.SpectralCube):
                     'logGBF': ifit['logGBF'],
                     'ks_pvalue': ifit['ks_pvalue']}
 
+                outdict.update(ifit['fit_params'][1])                
+
             else:
-                return {
+                outdict = {
                     'height': None,
                     'amplitude': None,
                     'fwhm': None,
@@ -560,6 +556,11 @@ class SpectralCube(orcs.core.SpectralCube):
                     'rchi2': None,
                     'logGBF': None,
                     'ks_pvalue': None}
+
+                for icont in range(inputparams['params'][1]['poly_order'] + 1):
+                    outdict['cont_p{}'.format(icont)] = None
+                    
+            return outdict
 
         region = self.get_mask_from_ds9_region_file(region)
 
@@ -628,11 +629,6 @@ class SpectralCube(orcs.core.SpectralCube):
                 if np.all(subtract_spectrum == 0.): subtract_spectrum = None
             
 
-        mask = np.zeros((self.dimx, self.dimy), dtype=bool)
-        mask[region] = True
-
-        theta_map = orb.utils.image.nanbin_image(self.get_theta_map(), binning)
-
         mask = np.zeros((self.dimx, self.dimy), dtype=float)
         mask[region] = 1
 
@@ -650,6 +646,9 @@ class SpectralCube(orcs.core.SpectralCube):
 
         calibration_coeff_map = orb.utils.image.nanbin_image(
             self.get_calibration_coeff_map(), binning)
+        
+        calibration_coeff_map_orig = orb.utils.image.nanbin_image(
+            self.get_calibration_coeff_map_orig(), binning)
 
         flux_uncertainty = self.get_flux_uncertainty()
         if flux_uncertainty is not None:
@@ -666,8 +665,8 @@ class SpectralCube(orcs.core.SpectralCube):
         cjs = orcs.core.CubeJobServer(self)
         out = cjs.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
-                                         theta_map, snr_guess, sky_velocity_map,
-                                         calibration_coeff_map,
+                                         snr_guess, sky_velocity_map,
+                                         calibration_coeff_map, calibration_coeff_map_orig,
                                          flux_uncertainty, self.debug, max_iter,
                                          subtract_spectrum, binning],
                                    kwargs=mapped_kwargs,
@@ -685,7 +684,9 @@ class SpectralCube(orcs.core.SpectralCube):
                              y_range=[0, self.dimy])
 
 
+        linemaps.save()
         linemaps.write_maps()
+        return linemaps
 
                     
     def get_amp_ratio_from_flux_ratio(self, line0, line1, flux_ratio):
