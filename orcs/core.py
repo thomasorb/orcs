@@ -214,9 +214,20 @@ class SpectralCube(orb.cube.SpectralCube):
         return radcorr.to_value(astropy.units.km/astropy.units.s)
 
 
-
+    def get_spectrum_from_region(self, *args, **kwargs):
+        """Wrapper around the extract_spectrum_from_region method to apply
+        flux calibration by default when extracting spectra (the real
+        data is in counts) when cube is flux calibrated.
+        """
+        spec = orb.cube.SpectralCube.get_spectrum_from_region(
+            self, *args, **kwargs)
+        if self.has_flux_calibration():
+            spec.data *= self.params.flambda / self.dimz / self.params.exposure_time
+        return spec
+    
     def _extract_wrapper(self, f, args, kwargs):
-        """General wrapper around get_spectrum* methods
+        """General wrapper around get_spectrum* methods for backward
+        compatibility
         """
         subtract_spectrum = None
         if 'subtract_spectrum' in kwargs:
@@ -231,6 +242,7 @@ class SpectralCube(orb.cube.SpectralCube):
             if spec.data.shape != subtract_spectrum.shape:
                 raise TypeError('subtract_spectrum must have shape'.format(spec.data.shape))
             spec.data -= subtract_spectrum
+
             
         return spec.axis.data, spec.data
 
