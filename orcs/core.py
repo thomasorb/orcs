@@ -222,7 +222,10 @@ class SpectralCube(orb.cube.SpectralCube):
         spec = orb.cube.SpectralCube.get_spectrum_from_region(
             self, *args, **kwargs)
         if self.has_flux_calibration():
-            spec.data *= self.params.flambda / self.dimz / self.params.exposure_time
+            spec = spec.multiply(orb.core.Cm1Vector1d(
+                self.params.flambda / self.dimz / self.params.exposure_time,
+                self.get_base_axis(),
+                params=self.params))
         return spec
     
     def _extract_wrapper(self, f, args, kwargs):
