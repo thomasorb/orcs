@@ -1,0 +1,1052 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting started &mdash; Orcs 2to3.ef13 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How precise must be the input velocity parameter ?" href="script_example_velocity_parameter_precision.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2to3.ef13
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#First-step:-loading-the-data-cube">First step: loading the data cube</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Second-step:-fitting-the-spectrum">Second step: fitting the spectrum</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_velocity_parameter_precision.html">How precise must be the input velocity parameter ?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_deep_wcs.html">Extract the deep frame and use the WCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_fit_region.html">Make a fit over an entire region of the field</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_sincgauss_vs_2_sinc.html">Differences between fitting a sincgauss model and two sinc lines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#calibrating-your-data">Calibrating your data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#other-tools">Other Tools</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Orcs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="examples.html">Examples</a> &raquo;</li>
+        
+      <li>Getting started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/getting_started.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Getting-started">
+<h1>Getting started<a class="headerlink" href="#Getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="First-step:-loading-the-data-cube">
+<h2>First step: loading the data cube<a class="headerlink" href="#First-step:-loading-the-data-cube" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: SpectralCube</span>
+<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2to3.ac74|INFO| Closing parallel processing server
+2to3.ac74|INFO| shape: (2048, 2064, 840)
+2to3.ac74|INFO| wavenumber calibration: True
+2to3.ac74|INFO| flux calibration: True
+2to3.ac74|INFO| wcs calibration: True
+2to3.ac74|INFO| parallel processing closed
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">## Resetting flux calibration</span>
+<span class="c1"># You should not do this if your cube has been freshly reduced. The cube used here as an example has an outdated flambda parameter</span>
+<span class="c1"># which can be reset to the latest one this way.</span>
+<span class="c1"># Note that this calibration is computed from known instrumental parameters for ideal atmosheric conditions and modulation efficiency.</span>
+<span class="c1"># The measured flux may thus be underestimated by more than 10%. But, in case something&#39;s really wrong in the calibration, this is a good starting point</span>
+<span class="c1"># which sould not be more than 15% off (and is generally around 5% off).</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">set_flambda</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">compute_flambda</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2to3.ac74|INFO| mean flambda config: 1.4984303888958248e-16
+2to3.ac74|INFO| standard_spectrum not set: no relative vector correction computed
+2to3.ac74|INFO| standard_path not set: no relative vector correction computed
+2to3.ac74|INFO| standard_image not set: no absolute vector correction computed
+</pre></div></div>
+</div>
+<div class="section" id="Exploring-the-deep-frame">
+<h3>Exploring the deep frame<a class="headerlink" href="#Exploring-the-deep-frame" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># explore the deep frame (in counts)</span>
+<span class="n">deep</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
+<span class="n">deep</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">perc</span><span class="o">=</span><span class="mi">95</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1e</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;counts&#39;</span><span class="p">)</span>
+<span class="n">deep</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;M31_SN3.deep_frame.fits&#39;</span><span class="p">)</span> <span class="c1"># if you want to exampine it your way (e.g. with ds9 :P)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2to3.ac74|INFO| Data written as M31_SN3.deep_frame.fits in 0.20 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_5_1.png" src="_images/getting_started_5_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Spectrum-extraction-and-visualization">
+<h3>Spectrum extraction and visualization<a class="headerlink" href="#Spectrum-extraction-and-visualization" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># extract and plot a spectrum at x=919 y=893 integrated over a radius of 2 pixels</span>
+<span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># option mean_flux</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;spectrum of a planetary nebula&#39;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;zoom in&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">2to3.ac74|WARNING| No handles with labels found to put in legend.</span>
+<span class="ansi-yellow-fg">2to3.ac74|WARNING| No handles with labels found to put in legend.</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_7_1.png" src="_images/getting_started_7_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_7_2.png" src="_images/getting_started_7_2.png" />
+</div>
+</div>
+<p>The returned spectrum is a <code class="docutils literal notranslate"><span class="pre">RealSpectrum</span></code> object which provides many internal methods, one of which is the ability to fit directly.</p>
+<ul class="simple">
+<li><p>plot: <code class="docutils literal notranslate"><span class="pre">spectrum.plot</span></code> (by default the real and the imaginary part of the spectrum are displayed, but you can dispaly only the real part with the option: <code class="docutils literal notranslate"><span class="pre">plot_imag=False</span></code>)</p></li>
+<li><p>fit: <code class="docutils literal notranslate"><span class="pre">spectrum.fit</span></code></p></li>
+</ul>
+<p>If you want to get the data and the corresponding axis as numpy.ndarray you can do it this way :</p>
+<ul class="simple">
+<li><p>data: <code class="docutils literal notranslate"><span class="pre">spectrum.data</span></code></p></li>
+<li><p>axis: <code class="docutils literal notranslate"><span class="pre">spectrum.axis.data</span></code></p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;object type:&#39;</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data as numpy.ndarray vector&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis (in cm-1) as numpy.ndarray vector&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+object type: &lt;orb.fft.RealSpectrum object at 0x7f4868102190&gt;
+data as numpy.ndarray vector &lt;class &#39;numpy.ndarray&#39;&gt;
+axis (in cm-1) as numpy.ndarray vector &lt;class &#39;numpy.ndarray&#39;&gt;
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Background-removal">
+<h3>Background removal<a class="headerlink" href="#Background-removal" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">background</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum_in_annulus</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mean_flux</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># mean_flux=True: The mean flux is returned (i.e. integrated flux / number of integrated pixels).</span>
+<span class="c1">#  This is important when computing a sky spectrum.</span>
+<span class="c1">#</span>
+<span class="c1"># median=True: When combining spectra, the median is used instead of the mean (if mean_flux is True,</span>
+<span class="c1">#  the computed median vector is then multiplied by the number of integrated pixels to keep with a</span>
+<span class="c1">#  measure of the total flux.). On large integrated regions, this operation removes outliers like</span>
+<span class="c1">#  isolated bright stars.</span>
+<span class="n">background</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Background around the planetary nebula&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">2to3.ac74|WARNING| /home/thomas/miniconda2/envs/orb3/lib/python3.7/site-packages/numpy/lib/nanfunctions.py:994: RuntimeWarning: All-NaN slice encountered
+  result = np.apply_along_axis(_nanmedian1d, axis, a, overwrite_input)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Background around the planetary nebula&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_11_2.png" src="_images/getting_started_11_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Background is high below the source. It can be removed by subtracting the spectrum of a region in a an annulus around the source.</span>
+
+<span class="n">spectrum_corr</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">subtract_sky</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
+<span class="c1"># note that you didn&#39;t have to bother with the number of integrated pixels in each spectrum</span>
+<span class="c1"># (even if both have been integrated over different surfaces)</span>
+<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spectrum with background removed&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;Spectrum with background removed&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_12_1.png" src="_images/getting_started_12_1.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Second-step:-fitting-the-spectrum">
+<h2>Second step: fitting the spectrum<a class="headerlink" href="#Second-step:-fitting-the-spectrum" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The emission lines to fit are passed by name (their wavenumber, in cm-1, could also be given directly). Remember that:</p>
+<p><span class="math notranslate nohighlight">\(\sigma [\text{cm}^{-1}] = \frac{1e7}{\lambda [\text{nm}]}\)</span></p>
+</li>
+<li><p>The line model is <code class="docutils literal notranslate"><span class="pre">sinc</span></code> by default because the instrumental line shape is a <code class="docutils literal notranslate"><span class="pre">sinc</span></code>. Note that the observed emission line shape is the convolution of its real shape (e.g. a gaussian at a moderate resolution) and the instrumental line shape. i.e., fitting a <code class="docutils literal notranslate"><span class="pre">sinc</span></code> means that the observed emission line shape is considered a dirac (infinitely narrow line) with respect to the resolution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fmodel</span> <span class="o">=</span> <span class="s1">&#39;sinc&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p>The velocity of the lines is -513 km/s. It is passed with the argument:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>pos_cov = -513`,
+pos_def = [&#39;1&#39;,&#39;1&#39;]
+</pre></div>
+</div>
+<p>The velocity is considered as a covarying parameter. By default all the lines are considered to have a free velocity parameter. If we want to set the same velocity to all the lines we must set the definition of the position of eachline to the same covaying group with <code class="docutils literal notranslate"><span class="pre">pos_def</span> <span class="pre">=</span> <span class="pre">['1','1']</span></code>.</p>
+</li>
+<li><p>By default the calculated spectrum is multiplied by the filter function. But this can sometimes lead to strange results if no backgound is present. In this case the following option must be set:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nofilter</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum_corr</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                        <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                        <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,),</span>
+                        <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                        <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># fitting results are combined into an orb.fit.OutputParams object which behaves exacly like a dict but offers some valuable methods</span>
+<span class="c1"># for quick results plotting</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span> <span class="c1"># print the most important results</span>
+<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># note that more can be retrived by looking into all the data provided:</span>
+<span class="c1"># print(dict(fit))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sinc
+iterations: 41, fit time: 6.93e-02 s
+Velocity (km/s): [-508.1(1.1) -508.1(1.1)]
+Flux: [3.03(12)e-15 7.6(1.3)e-16]
+Broadening (km/s): [nan +- nan nan +- nan]
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x7f48605b9590&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_14_2.png" src="_images/getting_started_14_2.png" />
+</div>
+</div>
+<div class="section" id="Ungroup-the-velocity-parameter">
+<h3>Ungroup the velocity parameter<a class="headerlink" href="#Ungroup-the-velocity-parameter" title="Permalink to this headline">¶</a></h3>
+<p>We can ungroup the velocity of the emission lines by giving each line a unique group label. We can set:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pos_def=['1',</span> <span class="pre">'2']</span></code></p>
+<p>I this case the measured velocity must be different for both lines. But the precision will also be worsen.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum_corr</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,</span> <span class="o">-</span><span class="mi">513</span><span class="p">),</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
+                   <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sinc
+iterations: 49, fit time: 8.09e-02 s
+Velocity (km/s): [-507.6(1.2) -516.3(4.5)]
+Flux: [3.04(12)e-15 7.8(1.2)e-16]
+Broadening (km/s): [nan +- nan nan +- nan]
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x7f48604c41d0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_16_2.png" src="_images/getting_started_16_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="using-a-sincgauss-model-with-a-single-broadening-parameter">
+<h3>using a sincgauss model with a single broadening parameter<a class="headerlink" href="#using-a-sincgauss-model-with-a-single-broadening-parameter" title="Permalink to this headline">¶</a></h3>
+<p>We can try the broadened sincgauss model (sinc instrumental function convoluted with a gaussian). We can group the broadening parameter of the emission lines by giving the same group label to the lines. We can set:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+<span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+<span class="n">sigma_cov</span><span class="o">=</span><span class="mi">20</span>
+</pre></div>
+</div>
+<p>I this case the measured broadening will be the same for both lines and the precision of the estimations are better. Note that the broadening must be initialized to a nonzero value for the fit to work <code class="docutils literal notranslate"><span class="pre">sigma_cov=20</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum_corr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+    <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+    <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,),</span>
+    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_cov</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,),</span>
+    <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">2to3.ac74|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2209: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+  warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sincgauss
+iterations: 37, fit time: 1.25e-01 s
+Velocity (km/s): [-506.9(1.4) -506.9(1.4)]
+Flux: [4.43(24)e-15 1.14(16)e-15]
+Broadening (km/s): [27.1(1.7) 27.1(1.7)]
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x7f4860421590&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_18_3.png" src="_images/getting_started_18_3.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Model-with-a-high-background">
+<h3>Model with a high background<a class="headerlink" href="#Model-with-a-high-background" title="Permalink to this headline">¶</a></h3>
+<p>When the background is high (e.g. it cannot be subtracted or we are fitting emission lines of a high redshift galaxy), we can fit the backgound as a polynomial multiplied by the filter function. The order of the polynomial can be set with <code class="docutils literal notranslate"><span class="pre">poly_order</span></code> keyword.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+    <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+    <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,),</span>
+    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+    <span class="n">sigma_cov</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,),</span>
+    <span class="n">nofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">2to3.ac74|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2209: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+  warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sincgauss
+iterations: 55, fit time: 1.76e-01 s
+Velocity (km/s): [-507.3(1.4) -507.3(1.4)]
+Flux: [4.34(23)e-15 1.13(16)e-15]
+Broadening (km/s): [26.6(1.7) 26.6(1.7)]
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.legend.Legend at 0x7f4860605390&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/getting_started_20_3.png" src="_images/getting_started_20_3.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="script_example_velocity_parameter_precision.html" class="btn btn-neutral float-right" title="How precise must be the input velocity parameter ?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

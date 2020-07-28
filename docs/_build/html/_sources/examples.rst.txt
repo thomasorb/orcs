@@ -11,7 +11,7 @@ These examples show the basic usage of ORCS
 .. toctree::
    :maxdepth: 1
 
-   script_example_fit_a_single_spectrum.ipynb
+   getting_started.ipynb
    script_example_velocity_parameter_precision.ipynb
    script_example_deep_wcs.ipynb
    script_example_fit_region.ipynb

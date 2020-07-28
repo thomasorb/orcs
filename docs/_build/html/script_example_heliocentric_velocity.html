@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Radial Velocity Correction &mdash; Orcs 2.4 documentation</title>
+  <title>Radial Velocity Correction &mdash; Orcs 2to3.ef13 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,52 +22,46 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="up" title="Examples" href="examples.html"/>
-        <link rel="next" title="Core module" href="core_module.html"/>
-        <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Core module" href="core_module.html" />
+    <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
           
 
           
             
-            <img src="_static/logo_sidebar.png" class="logo" />
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -72,7 +69,7 @@
             
             
               <div class="version">
-                2.4
+                2to3.ef13
               </div>
             
           
@@ -89,6 +86,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -130,13 +128,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Orcs</a>
@@ -144,9 +143,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -167,7 +167,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="examples.html">Examples</a> &raquo;</li>
         
@@ -195,16 +195,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -213,13 +213,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -227,92 +227,104 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
-    color: #303F9F;
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
-    color: #D84315;
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 8ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
-    text-align: right;
-    flex: 0;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
 }
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
-    border: 1px solid #cfcfcf;
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f7f7f7;
+    background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
-/* override sphinx.ext.pngmath center alignment in output cells */
-div.nboutput div.math p {
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -356,63 +368,101 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="Radial-Velocity-Correction">
 <h1>Radial Velocity Correction<a class="headerlink" href="#Radial-Velocity-Correction" title="Permalink to this headline">¶</a></h1>
-<p>Be careful with the fact that the date/hours recorded in the HDF file
-can be different than the real hours when the cube has been taken at
-least because there is only one date recorded in the HDF5 file but your
-data may have been taken over multiple nights at different hours. Is is
-possible to get a more precise radial velocity correction from the exact
-moment when each individual image of the data cube has been recorded.</p>
+<p>Be careful with the fact that the date/hours recorded in the HDF file can be different than the real hours when the cube has been taken at least because there is only one date recorded in the HDF5 file but your data may have been taken over multiple nights at different hours. Is is possible to get a more precise radial velocity correction from the exact moment when each individual image of the data cube has been recorded.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;A0426_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -420,7 +470,7 @@ moment when each individual image of the data cube has been recorded.</p>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Data shape : (2048, 2064, 289)
 INFO| Cube is in WAVENUMBER (cm-1)
@@ -430,20 +480,19 @@ INFO| Cube is CALIBRATED in wavenumber
 <div class="section" id="Print-default-barycentric-radial-velocity-correction">
 <h2>Print default barycentric radial velocity correction<a class="headerlink" href="#Print-default-barycentric-radial-velocity-correction" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="s1">&#39;Barycentric velocity correction: {} km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;Barycentric velocity correction: </span><span class="si">{}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T00:00:00.000 = 2457397.5 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -461,10 +510,8 @@ Barycentric velocity correction: -21.1861652948 km/s
 </div>
 <div class="section" id="Use-more-precise-dates">
 <h2>Use more precise dates<a class="headerlink" href="#Use-more-precise-dates" title="Permalink to this headline">¶</a></h2>
-<p>Here we have created a file (<code class="docutils literal"><span class="pre">abell426.dates.list</span></code>) which records all
-the dates at which the individual files have been taken (as supplied by
-the keyword DATE of each individual FITS file).</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867004</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">02</span>
+<p>Here we have created a file (<code class="docutils literal notranslate"><span class="pre">abell426.dates.list</span></code>) which records all the dates at which the individual files have been taken (as supplied by the keyword DATE of each individual FITS file).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867004</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">02</span>
 <span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867005</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">32</span>
 <span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867006</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">03</span>
 <span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867007</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">33</span>
@@ -482,11 +529,10 @@ the keyword DATE of each individual FITS file).</p>
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># The results of the radial velocity correction for</span>
 <span class="c1"># each individual file of the initial inteferometric</span>
 <span class="c1"># cube are recorded here</span>
@@ -500,15 +546,15 @@ the keyword DATE of each individual FITS file).</p>
         <span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span>
             <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span>
 
-        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;{} {}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
-        <span class="k">print</span> <span class="n">date</span><span class="p">,</span> <span class="n">corr</span>
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
+        <span class="nb">print</span> <span class="n">date</span><span class="p">,</span> <span class="n">corr</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:06:02.000 = 2457397.71252 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -531,7 +577,7 @@ INFO| Observation date: 2016-01-10T05:07:03.000 = 2457397.71323 Julian days
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
 INFO| Observed Target: 03h19m53.19s +41d33m51s
@@ -559,7 +605,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:09:06.000 = 2457397.71465 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -585,7 +631,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:10:39.000 = 2457397.71573 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -611,7 +657,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:12:11.000 = 2457397.71679 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -637,7 +683,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:13:43.000 = 2457397.71786 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -663,7 +709,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:15:15.000 = 2457397.71892 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -689,7 +735,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:16:48.000 = 2457397.72 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -715,7 +761,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:18:20.000 = 2457397.72106 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -741,7 +787,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:19:51.000 = 2457397.72212 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -767,7 +813,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:21:24.000 = 2457397.72319 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -793,7 +839,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:22:57.000 = 2457397.72427 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -819,7 +865,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:24:30.000 = 2457397.72535 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -845,7 +891,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:26:01.000 = 2457397.7264 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -871,7 +917,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:27:34.000 = 2457397.72748 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -897,7 +943,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:29:07.000 = 2457397.72855 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -923,7 +969,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:30:40.000 = 2457397.72963 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -949,7 +995,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:32:13.000 = 2457397.73071 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -975,7 +1021,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:33:45.000 = 2457397.73177 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1001,7 +1047,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:35:17.000 = 2457397.73284 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1027,7 +1073,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:36:48.000 = 2457397.73389 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1053,7 +1099,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:38:21.000 = 2457397.73497 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1079,7 +1125,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:39:53.000 = 2457397.73603 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1105,7 +1151,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:41:26.000 = 2457397.73711 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1131,7 +1177,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:42:56.000 = 2457397.73815 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1157,7 +1203,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:44:29.000 = 2457397.73922 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1183,7 +1229,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:46:02.000 = 2457397.7403 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1209,7 +1255,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:47:35.000 = 2457397.74138 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1235,7 +1281,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:49:06.000 = 2457397.74243 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1261,7 +1307,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:50:38.000 = 2457397.7435 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1287,7 +1333,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:52:10.000 = 2457397.74456 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1313,7 +1359,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:53:43.000 = 2457397.74564 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1339,7 +1385,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:55:13.000 = 2457397.74668 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1365,7 +1411,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:56:45.000 = 2457397.74774 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1391,7 +1437,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:58:17.000 = 2457397.74881 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1417,7 +1463,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T05:59:49.000 = 2457397.74987 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1443,7 +1489,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:01:19.000 = 2457397.75091 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1469,7 +1515,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:02:51.000 = 2457397.75198 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1495,7 +1541,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:04:23.000 = 2457397.75304 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1521,7 +1567,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:05:56.000 = 2457397.75412 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1547,7 +1593,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:07:25.000 = 2457397.75515 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1573,7 +1619,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:08:58.000 = 2457397.75623 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1599,7 +1645,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:10:30.000 = 2457397.75729 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1625,7 +1671,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:12:02.000 = 2457397.75836 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1651,7 +1697,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:13:31.000 = 2457397.75939 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1677,7 +1723,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:15:04.000 = 2457397.76046 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1703,7 +1749,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:16:36.000 = 2457397.76153 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1729,7 +1775,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:18:08.000 = 2457397.76259 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1755,7 +1801,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:19:38.000 = 2457397.76363 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1781,7 +1827,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:21:10.000 = 2457397.7647 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1807,7 +1853,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:22:42.000 = 2457397.76576 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1833,7 +1879,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:24:14.000 = 2457397.76683 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1859,7 +1905,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:25:44.000 = 2457397.76787 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1885,7 +1931,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:27:16.000 = 2457397.76894 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1911,7 +1957,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:28:48.000 = 2457397.77 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1937,7 +1983,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:30:21.000 = 2457397.77108 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1963,7 +2009,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:31:50.000 = 2457397.77211 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -1989,7 +2035,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:33:23.000 = 2457397.77318 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2015,7 +2061,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:34:55.000 = 2457397.77425 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2041,7 +2087,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:36:27.000 = 2457397.77531 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2067,7 +2113,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:37:56.000 = 2457397.77634 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2093,7 +2139,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:39:29.000 = 2457397.77742 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2119,7 +2165,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:41:01.000 = 2457397.77848 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2145,7 +2191,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-10T06:42:33.000 = 2457397.77955 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2171,7 +2217,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:37:56.000 = 2457400.81801 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2197,7 +2243,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:39:27.000 = 2457400.81906 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2223,7 +2269,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:40:55.000 = 2457400.82008 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2249,7 +2295,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:42:26.000 = 2457400.82113 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2275,7 +2321,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:43:57.000 = 2457400.82219 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2301,7 +2347,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:45:27.000 = 2457400.82323 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2327,7 +2373,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:46:56.000 = 2457400.82426 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2353,7 +2399,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:48:26.000 = 2457400.8253 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2379,7 +2425,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:49:57.000 = 2457400.82635 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2405,7 +2451,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:51:28.000 = 2457400.82741 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2431,7 +2477,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:52:56.000 = 2457400.82843 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2457,7 +2503,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:54:26.000 = 2457400.82947 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2483,7 +2529,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:55:57.000 = 2457400.83052 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2509,7 +2555,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:57:28.000 = 2457400.83157 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2535,7 +2581,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T07:58:56.000 = 2457400.83259 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2561,7 +2607,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:00:27.000 = 2457400.83365 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2587,7 +2633,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:01:57.000 = 2457400.83469 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2613,7 +2659,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:03:28.000 = 2457400.83574 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2639,7 +2685,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:04:56.000 = 2457400.83676 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2665,7 +2711,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:06:27.000 = 2457400.83781 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2691,7 +2737,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:07:58.000 = 2457400.83887 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2717,7 +2763,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:09:28.000 = 2457400.83991 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2743,7 +2789,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:10:57.000 = 2457400.84094 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2769,7 +2815,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:12:27.000 = 2457400.84198 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2795,7 +2841,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:13:58.000 = 2457400.84303 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2821,7 +2867,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:15:29.000 = 2457400.84409 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2847,7 +2893,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:16:57.000 = 2457400.8451 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2873,7 +2919,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:18:28.000 = 2457400.84616 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2899,7 +2945,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:19:58.000 = 2457400.8472 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2925,7 +2971,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:21:29.000 = 2457400.84825 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2951,7 +2997,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:22:57.000 = 2457400.84927 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -2977,7 +3023,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:24:28.000 = 2457400.85032 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -3003,7 +3049,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 INFO| Observation date: 2016-01-13T08:25:58.000 = 2457400.85137 Julian days
 INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
@@ -3022,8 +3068,8 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </div>
 <div class="section" id="output">
 <h2>output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<p>File <code class="docutils literal"><span class="pre">abell426.barycorr.list</span></code> has been created with the previous code.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">02</span> <span class="o">-</span><span class="mf">21.4663846704</span>
+<p>File <code class="docutils literal notranslate"><span class="pre">abell426.barycorr.list</span></code> has been created with the previous code.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">02</span> <span class="o">-</span><span class="mf">21.4663846704</span>
 <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mf">21.4671673847</span>
 <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span><span class="mf">21.4679767479</span>
 <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">33</span> <span class="o">-</span><span class="mf">21.4687605397</span>
@@ -3048,11 +3094,10 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Now, we can then display the output file,</span>
 <span class="c1"># i.e. the barycentric velocity correction</span>
 
@@ -3065,9 +3110,9 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
         <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">corrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;isot&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;isot&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">dates</span><span class="o">.</span><span class="n">plot_date</span><span class="p">,</span> <span class="n">corrs</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Date (UTC)&#39;</span><span class="p">)</span>
@@ -3076,14 +3121,13 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.text.Text at 0x7fc52519e850&gt;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.text.Text at 0x7fc52519e850&gt;
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -3096,16 +3140,21 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </div>
 <div class="section" id="How-to-use-the-computed-correction">
 <h1>How to use the computed correction<a class="headerlink" href="#How-to-use-the-computed-correction" title="Permalink to this headline">¶</a></h1>
-<p>In general, for km/s precision, just add the barycentric velocity to the
-measured velocity. For higher precision you can refer to
-<a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a></p>
+<p>In general, for km/s precision, just add the barycentric velocity to the measured velocity. For higher precision you can refer to <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -3114,7 +3163,7 @@ measured velocity. For higher precision you can refer to
         <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral float-left" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -3123,11 +3172,19 @@ measured velocity. For higher precision you can refer to
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -3139,38 +3196,15 @@ measured velocity. For higher precision you can refer to
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Image registration &mdash; Orcs 2.4 documentation</title>
+  <title>Image registration &mdash; Orcs 2to3.ef13 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,52 +22,46 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="up" title="Examples" href="examples.html"/>
-        <link rel="next" title="Flux Calibration Example Using HST image" href="script_example_hst_flux_calibration.html"/>
-        <link rel="prev" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Flux Calibration Example Using HST image" href="script_example_hst_flux_calibration.html" />
+    <link rel="prev" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
           
 
           
             
-            <img src="_static/logo_sidebar.png" class="logo" />
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -72,7 +69,7 @@
             
             
               <div class="version">
-                2.4
+                2to3.ef13
               </div>
             
           
@@ -89,6 +86,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -130,13 +128,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Orcs</a>
@@ -144,9 +143,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -167,7 +167,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="examples.html">Examples</a> &raquo;</li>
         
@@ -195,16 +195,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -213,13 +213,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -227,92 +227,104 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
-    color: #303F9F;
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
-    color: #D84315;
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 8ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
-    text-align: right;
-    flex: 0;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
 }
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
-    border: 1px solid #cfcfcf;
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f7f7f7;
+    background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
-/* override sphinx.ext.pngmath center alignment in output cells */
-div.nboutput div.math p {
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -356,83 +368,111 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="Image-registration">
 <h1>Image registration<a class="headerlink" href="#Image-registration" title="Permalink to this headline">¶</a></h1>
-<p>In some cases a calibration image of a field containing a lot of stars
-obtained with SITELLE in the same filter and during the same run as the
-science data can be used to compute a distortion model that can be then
-used directly to enhance the astrometrical calibration of the science
-cube which may have much less stars. The distortion model is then kept
-as is and only the basic registration parameters are recomputed (see
-Martin el al. 2017, <a class="reference external" href="http://adsabs.harvard.edu/abs/2017arXiv170701366M">http://adsabs.harvard.edu/abs/2017arXiv170701366M</a>)</p>
+<p>In some cases a calibration image of a field containing a lot of stars obtained with SITELLE in the same filter and during the same run as the science data can be used to compute a distortion model that can be then used directly to enhance the astrometrical calibration of the science cube which may have much less stars. The distortion model is then kept as is and only the basic registration parameters are recomputed (see Martin el al. 2017, <a class="reference external" href="http://adsabs.harvard.edu/abs/2017arXiv170701366M">http://adsabs.harvard.edu/abs/2017arXiv170701366M</a>)</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">orb.astrometry</span> <span class="kn">import</span> <span class="n">Astrometry</span>
-<span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="kn">as</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="k">as</span> <span class="nn">io</span>
 <span class="kn">from</span> <span class="nn">orb.core</span> <span class="kn">import</span> <span class="n">Logger</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="Initial-calibration">
 <h2>Initial calibration<a class="headerlink" href="#Initial-calibration" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal"><span class="pre">target_radec</span></code> and <code class="docutils literal"><span class="pre">target_xy</span></code> are the initial coordinates of the
-registration procedure. They must be taken near the center of the image
-to register and can be obtained using, e.g. the Digital Sky Survey
-(<a class="reference external" href="http://archive.stsci.edu/cgi-bin/dss_form">http://archive.stsci.edu/cgi-bin/dss_form</a>).</p>
-<p><strong>warning</strong> don’t forget that ds9 is indexed (1,1) and python is indexed
-(0,0). i.e. you must subtract 1 to x and y image coordinates if you read
-your image with ds9.</p>
-<p><strong>note: This process is best done two times. The first time only the
-center of the field of view is considered and a rough primary distortion
-field is obtained that can be used the second time to compute a
-distortion model over the whole field of view</strong>. Here it is done only
-once for the sake of clarity.</p>
+<p><code class="docutils literal notranslate"><span class="pre">target_radec</span></code> and <code class="docutils literal notranslate"><span class="pre">target_xy</span></code> are the initial coordinates of the registration procedure. They must be taken near the center of the image to register and can be obtained using, e.g. the Digital Sky Survey (<a class="reference external" href="http://archive.stsci.edu/cgi-bin/dss_form">http://archive.stsci.edu/cgi-bin/dss_form</a>).</p>
+<p><strong>warning</strong> don’t forget that ds9 is indexed (1,1) and python is indexed (0,0). i.e. you must subtract 1 to x and y image coordinates if you read your image with ds9.</p>
+<p><strong>note: This process is best done two times. The first time only the center of the field of view is considered and a rough primary distortion field is obtained that can be used the second time to compute a distortion model over the whole field of view</strong>. Here it is done only once for the sake of clarity.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">Logger</span><span class="p">()</span> <span class="c1"># used to get clean log info</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">)</span>
 <span class="n">wcs</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">),</span>
-                               <span class="n">target_xy</span><span class="o">=</span><span class="p">(</span><span class="mi">1036</span><span class="p">,</span> <span class="mi">1032</span><span class="p">))</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">compute_distortion</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                               <span class="n">target_xy</span><span class="o">=</span><span class="p">(</span><span class="mi">1036</span><span class="p">,</span> <span class="mi">1032</span><span class="p">))</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -447,7 +487,7 @@ once for the sake of clarity.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:2034: UserWarning: CD_ij based WCS is not recommended. Please prefer a PC_ij representation.
   warnings.warn(&#39;CD_ij based WCS is not recommended. Please prefer a PC_ij representation.&#39;)
@@ -466,7 +506,7 @@ once for the sake of clarity.</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 /home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:580: UserWarning: fit_star leastsq exception: Improper input: N=3 must not exceed M=0
   warnings.warn(&#39;fit_star leastsq exception: {}&#39;.format(e))
@@ -504,7 +544,7 @@ After 11 iterations, the solution is diverging at least for one input point.
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 /home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2163: RuntimeWarning: invalid value encountered in greater
   _x[np.nonzero(_r &gt; rmax)] = np.nan
@@ -519,42 +559,38 @@ After 11 iterations, the solution is diverging at least for one input point.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&#39;M1-71.deep_frame.wcs.init.fits&#39;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;M1-71.deep_frame.wcs.init.fits&#39;
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Final-calibration">
 <h2>Final calibration<a class="headerlink" href="#Final-calibration" title="Permalink to this headline">¶</a></h2>
-<p>The obtained wcs is used as an input for the final calibration. Now the
-whole field of view can be considered.</p>
+<p>The obtained wcs is used as an input for the final calibration. Now the whole field of view can be considered.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="k">print</span> <span class="n">wcs</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span> <span class="n">wcs</span>
 <span class="n">target_radec</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crval</span>
 <span class="n">target_xy</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crpix</span>
 <span class="kn">import</span> <span class="nn">orb.utils.astrometry</span>
 <span class="n">wcs_rotation</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">get_wcs_parameters</span><span class="p">(</span><span class="n">wcs</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="k">print</span> <span class="n">wcs_rotation</span>
+<span class="nb">print</span> <span class="n">wcs_rotation</span>
 </pre></div>
 </div>
 </div>
@@ -579,21 +615,20 @@ NAXIS : 0  0
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 /home/thomas/.virtualenvs/orb/local/lib/python2.7/site-packages/astropy/wcs/wcs.py:2729: RuntimeWarning: cdelt will be ignored since cd is present
   description.append(s.format(*self.wcs.cdelt))
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">wcs</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="n">target_radec</span><span class="p">,</span>
                                <span class="n">target_xy</span><span class="o">=</span><span class="n">target_xy</span><span class="p">,</span>  <span class="n">wcs_rotation</span><span class="o">=</span><span class="n">wcs_rotation</span><span class="p">,</span> <span class="n">sip</span><span class="o">=</span><span class="n">wcs</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-                                    <span class="n">compute_distortion</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                                    <span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 </pre></div>
 </div>
@@ -610,43 +645,38 @@ NAXIS : 0  0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">,</span> <span class="n">dymap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">,</span> <span class="n">dymap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&#39;M1-71.wcs.dymap.fits&#39;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;M1-71.wcs.dymap.fits&#39;
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Check-the-results">
 <h2>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h2>
-<p>You might want to check the quality of the calibration by choosing a
-catalog and plot the positions of the stars with the wcs only and with
-the micro-shifting maps (dxmap, dymap).</p>
+<p>You might want to check the quality of the calibration by choosing a catalog and plot the positions of the stars with the wcs only and with the micro-shifting maps (dxmap, dymap).</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># load files and query the catalog</span>
 <span class="kn">import</span> <span class="nn">orb.utils.web</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="n">im</span><span class="p">,</span> <span class="n">hdr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">return_header</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">im</span><span class="p">,</span> <span class="n">hdr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">return_header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">dxmap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">)</span>
 <span class="n">dymap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">)</span>
 
@@ -658,11 +688,10 @@ the micro-shifting maps (dxmap, dymap).</p>
 <div class="section" id="Only-the-WCS-(SIP-but-no-dx/dy-maps)">
 <h3>Only the WCS (SIP but no dx/dy maps)<a class="headerlink" href="#Only-the-WCS-(SIP-but-no-dx/dy-maps)" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># this is a very basic filter to remove stars position which are out of the image</span>
 <span class="k">def</span> <span class="nf">filter_star_list</span><span class="p">(</span><span class="n">_star_list</span><span class="p">):</span>
     <span class="n">_star_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">_star_list</span><span class="p">)</span>
@@ -677,11 +706,10 @@ the micro-shifting maps (dxmap, dymap).</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">dxmap_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dxmap</span><span class="p">)</span>
 <span class="n">dxmap_null</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
 <span class="n">dymap_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dymap</span><span class="p">)</span>
@@ -695,14 +723,13 @@ the micro-shifting maps (dxmap, dymap).</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 
@@ -722,21 +749,20 @@ the micro-shifting maps (dxmap, dymap).</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 /home/thomas/.virtualenvs/orb/local/lib/python2.7/site-packages/matplotlib/cbook/deprecation.py:106: MatplotlibDeprecationWarning: Adding an axes using the same arguments as a previous axes currently reuses the earlier instance.  In a future version, a new instance will always be created and returned.  Meanwhile, this warning can be suppressed, and the future behavior ensured, by passing a unique label to each axes instance.
   warnings.warn(message, mplDeprecation, stacklevel=1)
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.collections.PathCollection at 0x7fe8d0c67090&gt;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.collections.PathCollection at 0x7fe8d0c67090&gt;
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -748,16 +774,12 @@ the micro-shifting maps (dxmap, dymap).</p>
 </div>
 <div class="section" id="WCS-+-dx/dy-maps">
 <h3>WCS + dx/dy maps<a class="headerlink" href="#WCS-+-dx/dy-maps" title="Permalink to this headline">¶</a></h3>
-<p>Only a SIP model is not enough to get a precision of the order of the
-pixel because the field is strongly distorted on the borders.
-Micro-shifting maps (<code class="docutils literal"><span class="pre">dxmap</span></code> and <code class="docutils literal"><span class="pre">dymap</span></code>) can thus help in attaining
-a really good precision on the astrometry.</p>
+<p>Only a SIP model is not enough to get a precision of the order of the pixel because the field is strongly distorted on the borders. Micro-shifting maps (<code class="docutils literal notranslate"><span class="pre">dxmap</span></code> and <code class="docutils literal notranslate"><span class="pre">dymap</span></code>) can thus help in attaining a really good precision on the astrometry.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">star_list_pix2</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">world2pix</span><span class="p">(</span>
     <span class="n">hdr</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">star_list_deg</span><span class="p">),</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span><span class="p">)</span>
 
@@ -766,14 +788,13 @@ a really good precision on the astrometry.</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
 
@@ -792,14 +813,13 @@ a really good precision on the astrometry.</p>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>&lt;matplotlib.collections.PathCollection at 0x7fe8d06deb10&gt;
-</pre></div>
-</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.collections.PathCollection at 0x7fe8d06deb10&gt;
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -808,15 +828,22 @@ a really good precision on the astrometry.</p>
 <img alt="_images/script_example_image_registration_17_1.png" src="_images/script_example_image_registration_17_1.png" />
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -825,7 +852,7 @@ a really good precision on the astrometry.</p>
         <a href="script_example_hst_flux_calibration.html" class="btn btn-neutral float-right" title="Flux Calibration Example Using HST image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral float-left" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -834,11 +861,19 @@ a really good precision on the astrometry.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -850,38 +885,15 @@ a really good precision on the astrometry.</p>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>
