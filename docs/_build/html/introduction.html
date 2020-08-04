@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Orcs 2.4 documentation</title>
+  <title>Introduction &mdash; Orcs 2to3.ef13 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,51 +22,46 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="next" title="Examples" href="examples.html"/>
-        <link rel="prev" title="Installation" href="installation.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
           
 
           
             
-            <img src="_static/logo_sidebar.png" class="logo" />
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -71,7 +69,7 @@
             
             
               <div class="version">
-                2.4
+                2to3.ef13
               </div>
             
           
@@ -88,6 +86,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -122,13 +121,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Orcs</a>
@@ -136,9 +136,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -159,7 +160,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Introduction</li>
     
@@ -185,49 +186,41 @@
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="introduction">
 <h1><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<p class="topic-title">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#introduction" id="id1">Introduction</a><ul>
-<li><a class="reference internal" href="#a-few-words-on-orcs" id="id2">A few words on ORCS</a></li>
-<li><a class="reference internal" href="#the-fitting-engine" id="id3">The fitting engine</a><ul>
-<li><a class="reference internal" href="#models" id="id4">Models</a></li>
-<li><a class="reference internal" href="#models-parameters" id="id5">Models parameters</a></li>
-<li><a class="reference internal" href="#uncertainties" id="id6">Uncertainties</a></li>
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p>
+<ul>
+<li><p><a class="reference internal" href="#a-few-words-on-orcs" id="id2">A few words on ORCS</a></p></li>
+<li><p><a class="reference internal" href="#the-fitting-engine" id="id3">The fitting engine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#models" id="id4">Models</a></p></li>
+<li><p><a class="reference internal" href="#models-parameters" id="id5">Models parameters</a></p></li>
+<li><p><a class="reference internal" href="#uncertainties" id="id6">Uncertainties</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#list-of-available-lines" id="id7">List of available lines</a></li>
+<li><p><a class="reference internal" href="#list-of-available-lines" id="id7">List of available lines</a></p></li>
 </ul>
 </li>
 </ul>
@@ -250,15 +243,15 @@ grid models). Up to now only three models are available (and used by
 default). They all are implemented and documented in the orb.fit
 module:</p>
 <ul class="simple">
-<li><code class="xref py py-class docutils literal"><span class="pre">orb.fit.Cm1LinesModel</span></code>: Emission/absorption
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">orb.fit.Cm1LinesModel</span></code>: Emission/absorption
 lines (sinc convoluted with a Gaussian giving a certain broadening
-to the sinc)</li>
+to the sinc)</p></li>
 </ul>
 <a class="reference internal image-reference" href="_images/emission-line-params.png"><img alt="_images/emission-line-params.png" class="align-center" src="_images/emission-line-params.png" style="width: 70%;" /></a>
 <ul class="simple">
-<li><code class="xref py py-class docutils literal"><span class="pre">orb.fit.ContinuumModel</span></code>: Continuum emission (treated as a
-polynomial)</li>
-<li><code class="xref py py-class docutils literal"><span class="pre">orb.fit.FilterModel</span></code>: Filter</li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">orb.fit.ContinuumModel</span></code>: Continuum emission (treated as a
+polynomial)</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">orb.fit.FilterModel</span></code>: Filter</p></li>
 </ul>
 </div>
 <div class="section" id="models-parameters">
@@ -268,26 +261,26 @@ keywords which are passed to the fitting functions (see
 <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a>).</p>
 <p>Each model is based on a given number of core parameters. In the case
 of the lines model those parameters are, for each line, its amplitude
-(<code class="docutils literal"><span class="pre">amp</span></code>), FWHM (<code class="docutils literal"><span class="pre">fwhm</span></code>), position (i.e. its wavenumber of
-wavelength, <code class="docutils literal"><span class="pre">pos</span></code>) and its broadening (<code class="docutils literal"><span class="pre">sigma</span></code>, only in the case
-of a <code class="docutils literal"><span class="pre">sincgauss</span></code> line shape - this parameter does not apply for pure
-<code class="docutils literal"><span class="pre">gaussian</span></code> or <code class="docutils literal"><span class="pre">sinc</span></code> line shape).</p>
+(<code class="docutils literal notranslate"><span class="pre">amp</span></code>), FWHM (<code class="docutils literal notranslate"><span class="pre">fwhm</span></code>), position (i.e. its wavenumber of
+wavelength, <code class="docutils literal notranslate"><span class="pre">pos</span></code>) and its broadening (<code class="docutils literal notranslate"><span class="pre">sigma</span></code>, only in the case
+of a <code class="docutils literal notranslate"><span class="pre">sincgauss</span></code> line shape - this parameter does not apply for pure
+<code class="docutils literal notranslate"><span class="pre">gaussian</span></code> or <code class="docutils literal notranslate"><span class="pre">sinc</span></code> line shape).</p>
 <p>In the worst case all the core parameters are free. But you can also
 decide to fix some of them or make them covarying. By default all the
 parameters are free but you can change the definition of each
-parameter with the keywords: <code class="docutils literal"><span class="pre">amp_def</span></code>, <code class="docutils literal"><span class="pre">pos_def</span></code>, <code class="docutils literal"><span class="pre">fwhm_def</span></code>
-and <code class="docutils literal"><span class="pre">sigma_def</span></code>. If the FWHM is fixed then you will pass the option
-<code class="docutils literal"><span class="pre">fwhm_def='fixed'</span></code> to the fitting method.</p>
+parameter with the keywords: <code class="docutils literal notranslate"><span class="pre">amp_def</span></code>, <code class="docutils literal notranslate"><span class="pre">pos_def</span></code>, <code class="docutils literal notranslate"><span class="pre">fwhm_def</span></code>
+and <code class="docutils literal notranslate"><span class="pre">sigma_def</span></code>. If the FWHM is fixed then you will pass the option
+<code class="docutils literal notranslate"><span class="pre">fwhm_def='fixed'</span></code> to the fitting method.</p>
 <p>Let’s start with classical free parameters. Once the behaviour of the
 parameters is defined you may want to give it a good initial guess
 value (especially for the wavenumber) and start fitting. The initial
-guess value can be given with the keywords : <code class="docutils literal"><span class="pre">amp_guess</span></code>,
-<code class="docutils literal"><span class="pre">pos_guess</span></code>, <code class="docutils literal"><span class="pre">fwhm_guess</span></code> and <code class="docutils literal"><span class="pre">sigma_guess</span></code>. Only the guess on
+guess value can be given with the keywords : <code class="docutils literal notranslate"><span class="pre">amp_guess</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pos_guess</span></code>, <code class="docutils literal notranslate"><span class="pre">fwhm_guess</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma_guess</span></code>. Only the guess on
 the wavenumber is necessary as the others have no real impact on the
 result or, in the case of the fwhm, they are known a priori with a
 good enough precision. The guess on the wavenumber is so important
 that it is not an optional keyword and can be specified with the
-<code class="docutils literal"><span class="pre">lines</span></code> parameter of the fitting method.</p>
+<code class="docutils literal notranslate"><span class="pre">lines</span></code> parameter of the fitting method.</p>
 <p>The notion of covariation is a little more complex but is certainly
 the most useful. two lines can share the same broadening. In this case
 the broadening parameter of both lines must be replaced with one
@@ -295,7 +288,7 @@ single parameter. You can define the covarying parameter by tagging
 them with the same symbol (a string or a number). let’s say you have
 three lines (line0, line1, line2), you can group the broadening of
 line0 and line2 by passing to the fitting function the keyword
-<code class="docutils literal"><span class="pre">sigma_def=('1','2','1')</span></code>. The real broadening of the lines used to
+<code class="docutils literal notranslate"><span class="pre">sigma_def=('1','2','1')</span></code>. The real broadening of the lines used to
 model the spectrum will be a function of the initial guess value of
 the broadening of both lines (0 km/s by default) which will be fixed
 during the fit and the covarying value which is a free parameter.</p>
@@ -303,24 +296,24 @@ during the fit and the covarying value which is a free parameter.</p>
 base parameter is the wavenumber of the lines and the covarying
 parameter is a velocity. To group the lines having the same velocity
 (e.g. line0 and line1 in the example) you must pass the keyword
-<code class="docutils literal"><span class="pre">pos_def=('1','1','2')</span></code>. The real wavenumber of the lines used to
+<code class="docutils literal notranslate"><span class="pre">pos_def=('1','1','2')</span></code>. The real wavenumber of the lines used to
 model the spectrum will be a function of the lines rest-frame
 wavenumber (fixed and passed as an initial guess parameter) and their
 group velocity. The velocity may be substantially different from 0 and
 the value of the covarying parameter must thus be given to compute a
 good enough first initial wavenumber of the lines. The value of the
-covarying parameter can be passed with the keywords: <code class="docutils literal"><span class="pre">amp_cov</span></code>,
-<code class="docutils literal"><span class="pre">pos_cov</span></code>, <code class="docutils literal"><span class="pre">fwhm_cov</span></code> and <code class="docutils literal"><span class="pre">sigma_cov</span></code>. If we want to set an
+covarying parameter can be passed with the keywords: <code class="docutils literal notranslate"><span class="pre">amp_cov</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pos_cov</span></code>, <code class="docutils literal notranslate"><span class="pre">fwhm_cov</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma_cov</span></code>. If we want to set an
 initial velocity of 1500 km/s to the first group of lines and an
 initial velocity of 3000 km/s to the second group of lines (which
-contains only <code class="docutils literal"><span class="pre">line2</span></code>) we must give one velocity per group of
+contains only <code class="docutils literal notranslate"><span class="pre">line2</span></code>) we must give one velocity per group of
 velocities in the order of their appearance in the definition
-(here <code class="docutils literal"><span class="pre">pos_def=('1','1','2')</span></code>), i.e. <code class="docutils literal"><span class="pre">pos_cov=(1500,</span> <span class="pre">3000)</span></code></p>
+(here <code class="docutils literal notranslate"><span class="pre">pos_def=('1','1','2')</span></code>), i.e. <code class="docutils literal notranslate"><span class="pre">pos_cov=(1500,</span> <span class="pre">3000)</span></code></p>
 <p>These examples are related to the definition of the fitting parameters:</p>
 <ul class="simple">
-<li><a class="reference internal" href="script_example_fit_a_single_spectrum.html"><span class="std std-ref">Example of a single spectrum fit.</span></a></li>
-<li><a class="reference internal" href="script_example_velocity_parameter_precision.html"><span class="std std-ref">How precise must be the input velocity parameter ?</span></a></li>
-<li><a class="reference internal" href="script_example_constaining_line_ratios.html"><span class="std std-ref">Constraining line ratios</span></a></li>
+<li><p><span class="xref std std-ref">script_example_fit_a_single_spectrum.ipynb</span></p></li>
+<li><p><span class="xref std std-ref">script_example_velocity_parameter_precision.ipynb</span></p></li>
+<li><p><span class="xref std std-ref">script_example_constaining_line_ratios.ipynb</span></p></li>
 </ul>
 <a class="reference internal image-reference" href="_images/sky-spectrum.png"><img alt="_images/sky-spectrum.png" class="align-center" src="_images/sky-spectrum.png" style="width: 100%;" /></a>
 </div>
@@ -338,88 +331,88 @@ percents).</p>
 </div>
 <div class="section" id="list-of-available-lines">
 <span id="list-lines"></span><h2><a class="toc-backref" href="#id7">List of available lines</a><a class="headerlink" href="#list-of-available-lines" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="43%" />
-<col width="57%" />
+<col style="width: 43%" />
+<col style="width: 57%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">NAME</th>
-<th class="head">Air Wavelength</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>NAME</p></th>
+<th class="head"><p>Air Wavelength</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>[OII]3726</td>
-<td>372.603</td>
+<tbody>
+<tr class="row-even"><td><p>[OII]3726</p></td>
+<td><p>372.603</p></td>
 </tr>
-<tr class="row-odd"><td>[OII]3729</td>
-<td>372.882</td>
+<tr class="row-odd"><td><p>[OII]3729</p></td>
+<td><p>372.882</p></td>
 </tr>
-<tr class="row-even"><td>[NeIII]3869</td>
-<td>386.875</td>
+<tr class="row-even"><td><p>[NeIII]3869</p></td>
+<td><p>386.875</p></td>
 </tr>
-<tr class="row-odd"><td>Hepsilon</td>
-<td>397.007</td>
+<tr class="row-odd"><td><p>Hepsilon</p></td>
+<td><p>397.007</p></td>
 </tr>
-<tr class="row-even"><td>Hdelta</td>
-<td>410.176</td>
+<tr class="row-even"><td><p>Hdelta</p></td>
+<td><p>410.176</p></td>
 </tr>
-<tr class="row-odd"><td>Hgamma</td>
-<td>434.047</td>
+<tr class="row-odd"><td><p>Hgamma</p></td>
+<td><p>434.047</p></td>
 </tr>
-<tr class="row-even"><td>[OIII]4363</td>
-<td>436.321</td>
+<tr class="row-even"><td><p>[OIII]4363</p></td>
+<td><p>436.321</p></td>
 </tr>
-<tr class="row-odd"><td>Hbeta</td>
-<td>486.133</td>
+<tr class="row-odd"><td><p>Hbeta</p></td>
+<td><p>486.133</p></td>
 </tr>
-<tr class="row-even"><td>[OIII]4959</td>
-<td>495.891</td>
+<tr class="row-even"><td><p>[OIII]4959</p></td>
+<td><p>495.891</p></td>
 </tr>
-<tr class="row-odd"><td>[OIII]5007</td>
-<td>500.684</td>
+<tr class="row-odd"><td><p>[OIII]5007</p></td>
+<td><p>500.684</p></td>
 </tr>
-<tr class="row-even"><td>HeI5876</td>
-<td>587.567</td>
+<tr class="row-even"><td><p>HeI5876</p></td>
+<td><p>587.567</p></td>
 </tr>
-<tr class="row-odd"><td>[OI]6300</td>
-<td>630.030</td>
+<tr class="row-odd"><td><p>[OI]6300</p></td>
+<td><p>630.030</p></td>
 </tr>
-<tr class="row-even"><td>[SIII]6312</td>
-<td>631.21</td>
+<tr class="row-even"><td><p>[SIII]6312</p></td>
+<td><p>631.21</p></td>
 </tr>
-<tr class="row-odd"><td>[NII]6548</td>
-<td>654.803</td>
+<tr class="row-odd"><td><p>[NII]6548</p></td>
+<td><p>654.803</p></td>
 </tr>
-<tr class="row-even"><td>Halpha</td>
-<td>656.280</td>
+<tr class="row-even"><td><p>Halpha</p></td>
+<td><p>656.280</p></td>
 </tr>
-<tr class="row-odd"><td>[NII]6583</td>
-<td>658.341</td>
+<tr class="row-odd"><td><p>[NII]6583</p></td>
+<td><p>658.341</p></td>
 </tr>
-<tr class="row-even"><td>HeI6678</td>
-<td>667.815</td>
+<tr class="row-even"><td><p>HeI6678</p></td>
+<td><p>667.815</p></td>
 </tr>
-<tr class="row-odd"><td>[SII]6716</td>
-<td>671.647</td>
+<tr class="row-odd"><td><p>[SII]6716</p></td>
+<td><p>671.647</p></td>
 </tr>
-<tr class="row-even"><td>[SII]6731</td>
-<td>673.085</td>
+<tr class="row-even"><td><p>[SII]6731</p></td>
+<td><p>673.085</p></td>
 </tr>
-<tr class="row-odd"><td>HeI7065</td>
-<td>706.528</td>
+<tr class="row-odd"><td><p>HeI7065</p></td>
+<td><p>706.528</p></td>
 </tr>
-<tr class="row-even"><td>[ArIII]7136</td>
-<td>713.578</td>
+<tr class="row-even"><td><p>[ArIII]7136</p></td>
+<td><p>713.578</p></td>
 </tr>
-<tr class="row-odd"><td>[OII]7120</td>
-<td>731.965</td>
+<tr class="row-odd"><td><p>[OII]7120</p></td>
+<td><p>731.965</p></td>
 </tr>
-<tr class="row-even"><td>[OII]7130</td>
-<td>733.016</td>
+<tr class="row-even"><td><p>[OII]7130</p></td>
+<td><p>733.016</p></td>
 </tr>
-<tr class="row-odd"><td>[ArIII]7751</td>
-<td>775.112</td>
+<tr class="row-odd"><td><p>[ArIII]7751</p></td>
+<td><p>775.112</p></td>
 </tr>
 </tbody>
 </table>
@@ -428,9 +421,7 @@ percents).</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -439,7 +430,7 @@ percents).</p>
         <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -448,11 +439,19 @@ percents).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -464,38 +463,15 @@ percents).</p>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

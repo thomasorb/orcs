@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Differences between fitting a sincgauss model and two sinc lines &mdash; Orcs 2.4 documentation</title>
+  <title>Differences between fitting a sincgauss model and two sinc lines &mdash; Orcs 2to3.ef13 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,52 +22,46 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="up" title="Examples" href="examples.html"/>
-        <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model+fit_1_line.html"/>
-        <link rel="prev" title="Make a fit over an entire region of the field" href="script_example_fit_region.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model+fit_1_line.html" />
+    <link rel="prev" title="Make a fit over an entire region of the field" href="script_example_fit_region.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
           
 
           
             
-            <img src="_static/logo_sidebar.png" class="logo" />
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -72,7 +69,7 @@
             
             
               <div class="version">
-                2.4
+                2to3.ef13
               </div>
             
           
@@ -89,6 +86,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,7 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="script_example_fit_a_single_spectrum.html">Example of a single spectrum fit.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_velocity_parameter_precision.html">How precise must be the input velocity parameter ?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_deep_wcs.html">Extract the deep frame and use the WCS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_fit_region.html">Make a fit over an entire region of the field</a></li>
@@ -130,13 +128,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Orcs</a>
@@ -144,9 +143,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -167,7 +167,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="examples.html">Examples</a> &raquo;</li>
         
@@ -195,16 +195,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -213,13 +213,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -227,92 +227,104 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
-    color: #303F9F;
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
-    color: #D84315;
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 8ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
-    text-align: right;
-    flex: 0;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
 }
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
-    border: 1px solid #cfcfcf;
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f7f7f7;
+    background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
-/* override sphinx.ext.pngmath center alignment in output cells */
-div.nboutput div.math p {
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -356,85 +368,113 @@ div.nboutput div.output_area.stderr {
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
 
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="Differences-between-fitting-a-sincgauss-model-and-two-sinc-lines">
 <h1>Differences between fitting a sincgauss model and two sinc lines<a class="headerlink" href="#Differences-between-fitting-a-sincgauss-model-and-two-sinc-lines" title="Permalink to this headline">¶</a></h1>
-<p>When fitting an unresolved expanding shell both model can be used but we
-will show that it is generally better to fit the real model : i.e. a
-model with two sinc lines.</p>
+<p>When fitting an unresolved expanding shell both model can be used but we will show that it is generally better to fit the real model : i.e. a model with two sinc lines.</p>
 <ul class="simple">
-<li>The broadening measured with a sincgauss line is overestimated by
-more than 10% when the it is larger than 0.3 times the fwhm (i.e. the
-resolution)</li>
-<li>The sincgauss model is slow to compute (around 10 times slower than a
-sinc model, i.e. 5 times slower than a model based on two sinc lines)</li>
+<li><p>The broadening measured with a sincgauss line is overestimated by more than 10% when the it is larger than 0.3 times the fwhm (i.e. the resolution)</p></li>
+<li><p>The sincgauss model is slow to compute (around 10 times slower than a sinc model, i.e. 5 times slower than a model based on two sinc lines)</p></li>
 </ul>
-<div class="figure" id="id1">
-<img alt="M57 sketch" src="_images/m57_sketch.png" />
-<p class="caption"><span class="caption-text">M57 sketch</span></p>
-</div>
+<p><img alt="M57 sketch" src="_images/m57_sketch.png" /></p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">import</span> <span class="nn">orb.utils.spectrum</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 <span class="kn">import</span> <span class="nn">orb.fit</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="Difference-wrt-to-sigma/fwhm-ratio">
 <h2>Difference wrt to sigma/fwhm ratio<a class="headerlink" href="#Difference-wrt-to-sigma/fwhm-ratio" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal"><span class="pre">fwhm</span></code> is fixed by the resolution. <code class="docutils literal"><span class="pre">sigma</span></code> is the expansion
-velocity. The ratio <code class="docutils literal"><span class="pre">sigma/fwhm</span></code> is the ratio of the broadening wrt
-the resolution. We will show that, at small ratios
-(<code class="docutils literal"><span class="pre">sigma</span> <span class="pre">&lt;</span> <span class="pre">0.3</span> <span class="pre">*</span> <span class="pre">fwhm</span></code>), it is equal to the broadening of the
-<code class="docutils literal"><span class="pre">sincgauss</span></code> model = the width of the <code class="docutils literal"><span class="pre">gaussian</span></code> which is convolved
-to the <code class="docutils literal"><span class="pre">sinc</span></code>. But when the expansion velocity is too high it becomes
-different.</p>
-<p>The following toy model <code class="docutils literal"><span class="pre">sinc1d_2</span></code> is constructed with two <code class="docutils literal"><span class="pre">sinc</span></code>
-lines of equal amplitude.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fwhm</span></code> is fixed by the resolution. <code class="docutils literal notranslate"><span class="pre">sigma</span></code> is the expansion velocity. The ratio <code class="docutils literal notranslate"><span class="pre">sigma/fwhm</span></code> is the ratio of the broadening wrt the resolution. We will show that, at small ratios (<code class="docutils literal notranslate"><span class="pre">sigma</span> <span class="pre">&lt;</span> <span class="pre">0.3</span> <span class="pre">*</span> <span class="pre">fwhm</span></code>), it is equal to the broadening of the <code class="docutils literal notranslate"><span class="pre">sincgauss</span></code> model = the width of the <code class="docutils literal notranslate"><span class="pre">gaussian</span></code> which is convolved to the <code class="docutils literal notranslate"><span class="pre">sinc</span></code>. But when the expansion velocity is too high it becomes different.</p>
+<p>The following toy model <code class="docutils literal notranslate"><span class="pre">sinc1d_2</span></code> is constructed with two <code class="docutils literal notranslate"><span class="pre">sinc</span></code> lines of equal amplitude.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">def</span> <span class="nf">sinc1d_2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">sinc1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">)</span>
             <span class="o">+</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">sinc1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">))</span>
@@ -443,11 +483,10 @@ lines of equal amplitude.</p>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># model parameters</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">h</span> <span class="o">=</span> <span class="mi">0</span>
@@ -458,16 +497,12 @@ lines of equal amplitude.</p>
 </pre></div>
 </div>
 </div>
-<p>We will now model our unresolved emission lines with the toy model and
-fit a <code class="docutils literal"><span class="pre">sincgauss</span></code> model over it. The title of each graph gives the
-real <code class="docutils literal"><span class="pre">sigma/fwhm</span></code> ratio (in terms of channels size remember that the
-FWHM is around 1.5 channels with SITELLE).</p>
+<p>We will now model our unresolved emission lines with the toy model and fit a <code class="docutils literal notranslate"><span class="pre">sincgauss</span></code> model over it. The title of each graph gives the real <code class="docutils literal notranslate"><span class="pre">sigma/fwhm</span></code> ratio (in terms of channels size remember that the FWHM is around 1.5 channels with SITELLE).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">isig</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
     <span class="n">sd</span> <span class="o">=</span> <span class="n">sinc1d_2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">isig</span> <span class="o">*</span> <span class="n">fwhm</span><span class="p">)</span>
     <span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_vector</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">],</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
@@ -476,14 +511,14 @@ FWHM is around 1.5 channels with SITELLE).</p>
     <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;two sinc lines&#39;</span><span class="p">)</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fitted sincgauss model&#39;</span><span class="p">)</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;{} / {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">isig</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params_gvar&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span> <span class="n">fwhm</span><span class="p">))</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> / </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">isig</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params_gvar&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span> <span class="n">fwhm</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="stderr output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:142: UserWarning: No SNR guess given. Fit mode is classic.
   warnings.warn(&#39;No SNR guess given. Fit mode is classic.&#39;)
@@ -560,11 +595,10 @@ FWHM is around 1.5 channels with SITELLE).</p>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">real_ratios</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="n">fitted_ratios</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">isig</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
@@ -606,14 +640,21 @@ FWHM is around 1.5 channels with SITELLE).</p>
 <img alt="_images/script_example_sincgauss_vs_2_sinc_8_1.png" src="_images/script_example_sincgauss_vs_2_sinc_8_1.png" />
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -622,7 +663,7 @@ FWHM is around 1.5 channels with SITELLE).</p>
         <a href="script_example_model+fit_1_line.html" class="btn btn-neutral float-right" title="Modelling and fitting a single line spectrum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_fit_region.html" class="btn btn-neutral" title="Make a fit over an entire region of the field" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_fit_region.html" class="btn btn-neutral float-left" title="Make a fit over an entire region of the field" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -631,11 +672,19 @@ FWHM is around 1.5 channels with SITELLE).</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -647,38 +696,15 @@ FWHM is around 1.5 channels with SITELLE).</p>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

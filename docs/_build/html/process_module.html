@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Process module &mdash; Orcs 2.4 documentation</title>
+  <title>Process module &mdash; Orcs 2to3.ef13 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,51 +22,46 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="next" title="Utils module" href="utils_module.html"/>
-        <link rel="prev" title="Core module" href="core_module.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Utils module" href="utils_module.html" />
+    <link rel="prev" title="Core module" href="core_module.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
           
 
           
             
-            <img src="_static/logo_sidebar.png" class="logo" />
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -71,7 +69,7 @@
             
             
               <div class="version">
-                2.4
+                2to3.ef13
               </div>
             
           
@@ -88,6 +86,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -112,13 +111,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Orcs</a>
@@ -126,9 +126,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -149,7 +150,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Process module</li>
     
@@ -175,33 +176,23 @@
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="module-orcs.process">
@@ -209,178 +200,140 @@
 <p>ORCS (Outils de Réduction de Cubes Spectraux) provides tools to
 extract data from ORBS spectral cubes.</p>
 <p>This module contains the processing classes</p>
-<dl class="class">
+<dl class="py class">
 <dt id="orcs.process.SpectralCube">
-<em class="property">class </em><code class="descclassname">orcs.process.</code><code class="descname">SpectralCube</code><span class="sig-paren">(</span><em>cube_path</em>, <em>debug=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="core_module.html#orcs.core.HDFCube" title="orcs.core.HDFCube"><code class="xref py py-class docutils literal"><span class="pre">orcs.core.HDFCube</span></code></a></p>
-<p>ORCS spectral cube fitting class.</p>
+<em class="property">class </em><code class="sig-prename descclassname">orcs.process.</code><code class="sig-name descname">SpectralCube</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orcs.fit.SpectralCube</span></code></p>
+<p>ORCS spectral cube general processing class.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">parent class HDFCube is the ORCS implementation of
-HDFCube.</p>
+<p class="admonition-title">Note</p>
+<p>parent class SpectralCube is the ORCS implementation of
+SpectralCube.</p>
 </div>
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_calibration_laser_map_path">
-<code class="descname">_get_calibration_laser_map_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_calibration_laser_map_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_calibration_laser_map_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_calibration_laser_map_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the calibration map computed when fitting
 sky lines. Can be used instead of the original calibration
 map.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_deep_frame_wcs_path">
-<code class="descname">_get_deep_frame_wcs_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_deep_frame_wcs_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_deep_frame_wcs_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_deep_frame_wcs_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the generated deep frame with the reocmputed
 WCS.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_detection_frame_path">
-<code class="descname">_get_detection_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_frame_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_detection_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_frame_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the detection frame</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_detection_pos_frame_path">
-<code class="descname">_get_detection_pos_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_pos_frame_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_detection_pos_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_pos_frame_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the detection position frame</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_dxmap_path">
-<code class="descname">_get_dxmap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dxmap_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_dxmap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dxmap_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the generated X micro-shifting map.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_dymap_path">
-<code class="descname">_get_dymap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dymap_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_dymap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dymap_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the generated Y micro-shifting map.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_skymap_file_path">
-<code class="descname">_get_skymap_file_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_skymap_file_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_skymap_file_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_skymap_file_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the sky map file containing the results of
 the fit.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_skymap_fits_path">
-<code class="descname">_get_skymap_fits_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_skymap_fits_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_skymap_fits_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_skymap_fits_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the sky map file containing the interpolated
 sky velocity map.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_temp_reg_path">
-<code class="descname">_get_temp_reg_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_temp_reg_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_temp_reg_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_temp_reg_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to a temporary region file</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube._get_wavefront_map_path">
-<code class="descname">_get_wavefront_map_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_wavefront_map_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_get_wavefront_map_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_wavefront_map_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return path to the wavefront map computed when fitting the
 calibration laser map with a different calibration laser
 wavelength. Can be used instead of the original wavefront map
 during a reduction</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube.detect_sources">
-<code class="descname">detect_sources</code><span class="sig-paren">(</span><em>fast=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.detect_sources" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">detect_sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fast</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.detect_sources" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect emission line sources in the spectral cube</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fast</strong> – (Optional) Fast detection algorithm (with FFT
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fast</strong> – (Optional) Fast detection algorithm (with FFT
 convolution). Borders of the frame are wrong but process is
-much faster (default True).</td>
-</tr>
-</tbody>
-</table>
+much faster (default True).</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.process.SpectralCube.integrate">
-<code class="descname">integrate</code><span class="sig-paren">(</span><em>filter_function</em>, <em>xmin=None</em>, <em>xmax=None</em>, <em>ymin=None</em>, <em>ymax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.integrate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Integrate a cube under a filter function and generate an image</p>
-<p><span class="math">\(I = \int F(\sigma)S(\sigma)      ext{d}\sigma\)</span></p>
-<p>with <span class="math">\(I\)</span>, the image, <span class="math">\(S\)</span> the spectral cube, <span class="math">\(F\)</span> the
-filter function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filter_function</strong> – Must be an orcs.core.Filter instance</li>
-<li><strong>xmin</strong> – (Optional) lower boundary of the ROI along x axis (default
-None, i.e. min)</li>
-<li><strong>xmax</strong> – (Optional) lower boundary of the ROI along y axis (default
-None, i.e. min)</li>
-<li><strong>ymin</strong> – (Optional) upper boundary of the ROI along x axis (default
-None, i.e. max)</li>
-<li><strong>ymax</strong> – (Optional) upper boundary of the ROI along y axis (default
-None, i.e. max)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube.map_sky_velocity">
-<code class="descname">map_sky_velocity</code><span class="sig-paren">(</span><em>mean_sky_vel</em>, <em>div_nb=20</em>, <em>plot=True</em>, <em>x_range=None</em>, <em>y_range=None</em>, <em>exclude_reg_file_path=None</em>, <em>no_fit=False</em>, <em>threshold=None</em>, <em>sky_lines=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.map_sky_velocity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">map_sky_velocity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_sky_vel</span></em>, <em class="sig-param"><span class="n">div_nb</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">no_fit</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sky_lines</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.map_sky_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map the sky velocity on a rectangular grid and interpolate it
 to return a map of the velocity zero point that can be
 subtracted to the returned velocity map of the cube fit.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mean_sky_vel</strong> – (Optional) Mean sky velocity (in km/s).</li>
-<li><strong>div_nb</strong> – (Optional) Number of division on one axis of
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_sky_vel</strong> – (Optional) Mean sky velocity (in km/s).</p></li>
+<li><p><strong>div_nb</strong> – (Optional) Number of division on one axis of
 the rectangular grid. The total number of points is div_nb^2
-(default 15).</li>
-<li><strong>plot</strong> – (Optional) If True, output plots are shown
-(default True).</li>
-<li><strong>x_range</strong> – (Optional) Range of pixels along the X axis
-where the velocity is measured (default None).</li>
-<li><strong>y_range</strong> – (Optional) Range of pixels along the Y axis
-where the velocity is measured (default None).</li>
-<li><strong>exclude_reg_file_path</strong> – (Optional) Region to exclude
-from the computation (must be a ds9 reg file)</li>
-<li><strong>no_fit</strong> – (Optional) Do not repeat the fitting
-process. Only recompute the velocity map model.</li>
-<li><strong>threshold</strong> – (Optional) If not None, this threshold on
+(default 15).</p></li>
+<li><p><strong>plot</strong> – (Optional) If True, output plots are shown
+(default True).</p></li>
+<li><p><strong>x_range</strong> – (Optional) Range of pixels along the X axis
+where the velocity is measured (default None).</p></li>
+<li><p><strong>y_range</strong> – (Optional) Range of pixels along the Y axis
+where the velocity is measured (default None).</p></li>
+<li><p><strong>exclude_reg_file_path</strong> – (Optional) Region to exclude
+from the computation (must be a ds9 reg file)</p></li>
+<li><p><strong>no_fit</strong> – (Optional) Do not repeat the fitting
+process. Only recompute the velocity map model.</p></li>
+<li><p><strong>threshold</strong> – (Optional) If not None, this threshold on
 the velocity uncertainty is used in place of an automatic
-threshold.</li>
+threshold.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="orcs.process.SpectralCube.register">
-<code class="descname">register</code><span class="sig-paren">(</span><em>distortion_map_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.register" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distortion_map_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a new registration of the cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>distortion_map</strong> – A path to a FITS image containing an
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distortion_map</strong> – A path to a FITS image containing an
 SIP distortion model. It can be a registered image of a
 calibration field containing a lot of stars and taken during
-the same run as the science cube.</td>
-</tr>
-</tbody>
-</table>
+the same run as the science cube.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -389,9 +342,7 @@ the same run as the science cube.</td>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -400,7 +351,7 @@ the same run as the science cube.</td>
         <a href="utils_module.html" class="btn btn-neutral float-right" title="Utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="core_module.html" class="btn btn-neutral" title="Core module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="core_module.html" class="btn btn-neutral float-left" title="Core module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -409,11 +360,19 @@ the same run as the science cube.</td>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -425,38 +384,15 @@ the same run as the science cube.</td>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

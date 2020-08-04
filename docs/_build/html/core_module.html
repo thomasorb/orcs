@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Core module &mdash; Orcs 2.4 documentation</title>
+  <title>Core module &mdash; Orcs 2to3.ef13 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -19,51 +22,46 @@
   
 
   
-
-  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Orcs 2.4 documentation" href="index.html"/>
-        <link rel="next" title="Process module" href="process_module.html"/>
-        <link rel="prev" title="Radial Velocity Correction" href="script_example_heliocentric_velocity.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Process module" href="process_module.html" />
+    <link rel="prev" title="Radial Velocity Correction" href="script_example_heliocentric_velocity.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> Orcs
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
           
 
           
             
-            <img src="_static/logo_sidebar.png" class="logo" />
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -71,7 +69,7 @@
             
             
               <div class="version">
-                2.4
+                2to3.ef13
               </div>
             
           
@@ -88,6 +86,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -112,13 +111,14 @@
             
           
         </div>
+        
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Orcs</a>
@@ -126,9 +126,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -149,7 +150,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Core module</li>
     
@@ -175,1056 +176,394 @@
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
+.nbinput.nblast.container,
+.nboutput.nblast.container {
     margin-bottom: 19px;  /* padding has already 5px */
 }
 
 /* ... except between code cells! */
-.nblast + .nbinput {
+.nblast.container + .nbinput.container {
     margin-top: -19px;
 }
 
-/* nice headers on first paragraph of info/warning boxes */
-.admonition .first {
-    margin: -12px;
-    padding: 6px 12px;
-    margin-bottom: 12px;
-    color: #fff;
-    line-height: 1;
-    display: block;
-}
-.admonition.warning .first {
-    background: #f0b37e;
-}
-.admonition.note .first {
-    background: #6ab0de;
-}
 .admonition > p:before {
     margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
 }
 </style>
 <div class="section" id="module-orcs.core">
 <span id="core-module"></span><h1>Core module<a class="headerlink" href="#module-orcs.core" title="Permalink to this headline">¶</a></h1>
 <p>ORCS Core library.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">ORCS is built over ORB so that ORB must be installed.</p>
+<p class="admonition-title">Note</p>
+<p>ORCS is built over ORB so that ORB must be installed.</p>
 </div>
-<dl class="class">
-<dt id="orcs.core.HDFCube">
-<em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">HDFCube</code><span class="sig-paren">(</span><em>cube_path</em>, <em>debug=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.HDFCube</span></code></p>
-<p>Extension of <code class="xref py py-class docutils literal"><span class="pre">orb.core.HDFCube</span></code></p>
+<dl class="py class">
+<dt id="orcs.core.DataFiles">
+<em class="property">class </em><code class="sig-prename descclassname">orcs.core.</code><code class="sig-name descname">DataFiles</code><a class="headerlink" href="#orcs.core.DataFiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manage data files (files in orcs/data)</p>
+<dl class="py method">
+<dt id="orcs.core.DataFiles.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init class</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="orcs.core.DataFiles.__weakref__">
+<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#orcs.core.DataFiles.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.DataFiles.get_dirname">
+<code class="sig-name descname">get_dirname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.get_dirname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return absolute data directory path</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.DataFiles.get_path">
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.get_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to a file in ORCS data folder: orb/data/file_name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> – Name of the file in ORCS data folder.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="orcs.core.LineMaps">
+<em class="property">class </em><code class="sig-prename descclassname">orcs.core.</code><code class="sig-name descname">LineMaps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimx</span></em>, <em class="sig-param"><span class="n">dimy</span></em>, <em class="sig-param"><span class="n">lines</span></em>, <em class="sig-param"><span class="n">wavenumber</span></em>, <em class="sig-param"><span class="n">binning</span></em>, <em class="sig-param"><span class="n">div_nb</span></em>, <em class="sig-param"><span class="n">wcs_header</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.Tools</span></code></p>
+<p>Manage line parameters maps</p>
+<dl class="py method">
+<dt id="orcs.core.LineMaps.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimx</span></em>, <em class="sig-param"><span class="n">dimy</span></em>, <em class="sig-param"><span class="n">lines</span></em>, <em class="sig-param"><span class="n">wavenumber</span></em>, <em class="sig-param"><span class="n">binning</span></em>, <em class="sig-param"><span class="n">div_nb</span></em>, <em class="sig-param"><span class="n">wcs_header</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimx</strong> – X dimension of the unbinned data</p></li>
+<li><p><strong>dimy</strong> – Y dimension of the unbinned data</p></li>
+<li><p><strong>lines</strong> – tuple of the line names</p></li>
+<li><p><strong>wavenumber</strong> – True if the data is in wavenumber, False if
+it is in wavelength.</p></li>
+<li><p><strong>binning</strong> – Binning of the data.</p></li>
+<li><p><strong>div_nb</strong> – Number of divisions if the data is binned in quadrant mode.</p></li>
+<li><p><strong>wcs_header</strong> – (Optional) WCS header passed to the written
+frames (default None).</p></li>
+<li><p><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> kwargs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps._get_hdf5_path">
+<code class="sig-name descname">_get_hdf5_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_hdf5_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to the hdf5 bundle</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps._get_map_path">
+<code class="sig-name descname">_get_map_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">line_name</span></em>, <em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">binning</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_map_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to a map of one gaussian fit parameter for
+one given emission line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line_name</strong> – Name of the emission line</p></li>
+<li><p><strong>param</strong> – Parameter name</p></li>
+<li><p><strong>binning</strong> – (Optional) Binning of the map. If not given
+instance binning is used (default None).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps.get_map">
+<code class="sig-name descname">get_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get map values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> – Parameter</p></li>
+<li><p><strong>x_range</strong> – (Optional) Data range along X axis (default
+None)</p></li>
+<li><p><strong>y_range</strong> – (Optional) Data range along Y axis (default
+None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps.get_spectrum">
+<code class="sig-name descname">get_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">fmodel</span><span class="o">=</span><span class="default_value">'sinc'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstruct the fitted vector from the mapped parameters.
+:param cube: a SpectralCube instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x position in pixels (unbinned)</p></li>
+<li><p><strong>y</strong> – y position in pixels (unbinned)</p></li>
+<li><p><strong>fmodel</strong> – line model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save class as an HDF5 file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps.set_map">
+<code class="sig-name descname">set_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">data_map</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.set_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set map values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> – Parameter</p></li>
+<li><p><strong>data_map</strong> – Data</p></li>
+<li><p><strong>x_range</strong> – (Optional) Data range along X axis (default
+None)</p></li>
+<li><p><strong>y_range</strong> – (Optional) Data range along Y axis (default
+None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.LineMaps.write_maps">
+<code class="sig-name descname">write_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.write_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write all maps to disk in fits format.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="orcs.core.SpectralCube">
+<em class="property">class </em><code class="sig-prename descclassname">orcs.core.</code><code class="sig-name descname">SpectralCube</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.cube.SpectralCube</span></code></p>
+<p>Extension of <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.cube.SpectralCube</span></code></p>
 <p>Core class which gives access to an HDF5 cube. The child class
-<a class="reference internal" href="process_module.html#orcs.process.SpectralCube" title="orcs.process.SpectralCube"><code class="xref py py-class docutils literal"><span class="pre">SpectralCube</span></code></a> may be prefered in general
+<a class="reference internal" href="process_module.html#orcs.process.SpectralCube" title="orcs.process.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectralCube</span></code></a> may be prefered in general
 for its broader functionality.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal"><span class="pre">orb.core.HDFCube</span></code></p>
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">orb.cube.SpectralCube</span></code></p>
 </div>
-<dl class="method">
-<dt id="orcs.core.HDFCube.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>cube_path</em>, <em>debug=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>cube_path</strong> – Path to the HDF5 cube.</li>
-<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">orb.core.HDFCube()</span></code> properties.</li>
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cube_path</strong> – Path to the HDF5 cube.</p></li>
+<li><p><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.cube.SpectralCube()</span></code> properties.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.core.HDFCube._extract_spectrum_from_region">
-<code class="descname">_extract_spectrum_from_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>median=False</em>, <em>mean_flux=False</em>, <em>silent=False</em>, <em>return_spec_nb=False</em>, <em>return_mean_theta=False</em>, <em>return_gvar=False</em>, <em>output_axis=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the integrated spectrum from a region of the cube.</p>
-<p>All extraction of spectral data must use this core function
-because it makes sure that all the updated calibrations are
-taken into account.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>region</strong> – A list of the indices of the pixels integrated
-in the returned spectrum.</li>
-<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
-from the extracted spectrum before fitting
-parameters. Useful to remove sky spectrum. Both spectra must
-have the same size.</li>
-<li><strong>median</strong> – (Optional) If True the integrated spectrum is computed
-from the median of the spectra multiplied by the number of
-pixels integrated. Else the integrated spectrum is the pure
-sum of the spectra. In both cases the flux of the spectrum
-is the total integrated flux (Default False).</li>
-<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
-is the mean flux of the extracted region (default False).</li>
-<li><strong>return_spec_nb</strong> – (Optional) If True the number of
-spectra integrated is returned (default False).</li>
-<li><strong>silent</strong> – (Optional) If True, nothing is printed (default
-False).</li>
-<li><strong>return_mean_theta</strong> – (Optional) If True, the mean of the
-theta values covered by the region is returned (default False).</li>
-<li><strong>return_gvar</strong> – (Optional) If True, returned spectrum will be a
-gvar. i.e. a data vector with it’s uncetainty (default False).</li>
-<li><strong>output_axis</strong> – (Optional) If not None, the spectrum is
-projected on the output axis. Else a scipy.UnivariateSpline
-object is returned (defautl None).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A scipy.UnivariateSpline object or a spectrum
-projected on the ouput_axis if it is not None.</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt id="orcs.core.SpectralCube._extract_wrapper">
+<code class="sig-name descname">_extract_wrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube._extract_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>General wrapper around get_spectrum* methods for backward
+compatibility</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.core.HDFCube._fit_integrated_spectra">
-<code class="descname">_fit_integrated_spectra</code><span class="sig-paren">(</span><em>regions_file_path</em>, <em>subtract=None</em>, <em>plot=True</em>, <em>verbose=True</em>, <em>snr_guess=None</em>, <em>max_iter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_integrated_spectra" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit integrated spectra and their emission lines parameters.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Raw function which needs self.inputparams to be
-defined before with
-<cite>:py:meth:~HDFCube._prepare_input_params</cite>.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>regions_file_path</strong> – Path to a ds9 reg file giving the
-positions of the regions. Each region is considered as a
-different region.</li>
-<li><strong>subtract</strong> – Spectrum to subtract (must be a spline)</li>
-<li><strong>plot</strong> – (Optional) If True, plot each intergrated spectrum along
-with the its fit (default True).</li>
-<li><strong>verbose</strong> – (Optional) If True print the fit results
-(default True).</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Can only
-be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
-fit. In this case two fits are made - one with a predefined
-SNR and the other with the SNR deduced from the first
-fit. If None a classical fit is made. (default None).</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._fit_lines_in_region">
-<code class="descname">_fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>subtract_spectrum=None</em>, <em>binning=1</em>, <em>snr_guess=None</em>, <em>mapped_kwargs=None</em>, <em>max_iter=None</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raw function that fit lines in a given region of the cube.</p>
-<p>All the pixels in the defined region are fitted one by one
-and a set of maps containing the fitted paramaters are
-written. Note that the pixels can be binned.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Need the InputParams class to be defined before call
-(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal"><span class="pre">_prepare_input_params()</span></code></a>).</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The fit will always use the Bayesian algorithm.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>region</strong> – Region to fit. Multiple regions can be used to
-define the fitted region. They do not need to be contiguous.</li>
-<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
-from the extracted spectrum before fitting
-parameters. Useful to remove sky spectrum. Both spectra must
-have the same size.</li>
-<li><strong>binning</strong> – (Optional) Binning. The fitted pixels can be
-binned.</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Can only
-be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
-fit. In this case two fits are made - one with a predefined
-SNR and the other with the SNR deduced from the first
-fit. If None a classical fit is made. (default None).</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-<li><strong>mapped_kwargs</strong> – If a kwarg is mapped, its value will be
-replaced by the value at the fitted pixel.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Timeout:</th><td class="field-body"><p class="first last">(Optional) max processing time per pixel. If reached, the given
-pixel is passed (default None).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>Maps of the parameters of the fit can be found in
-the directory created by ORCS:
-<code class="docutils literal"><span class="pre">OBJECT_NAME_FILTER.ORCS/MAPS/</span></code>.</p>
-<p>Each line has 5 parameters (which gives 5 maps): height,
-amplitude, velocity, fwhm, sigma. Height and amplitude are
-given in ergs/cm^2/s/A. Velocity and broadening are given in
-km/s. FWHM is given in cm^-1.</p>
-<p>The flux map is also computed (from fwhm, amplitude and
-sigma parameters) and given in ergs/cm^2/s.</p>
-<p class="last">Each fitted parameter is associated an uncertainty (<code class="docutils literal"><span class="pre">*_err</span></code>
-maps) given in the same unit.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._fit_lines_in_spectrum">
-<code class="descname">_fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>spectrum</em>, <em>theta_orig</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raw function for spectrum fitting.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Need the InputParams class to be defined before call</p>
-</div>
-<p>(see <a class="reference internal" href="#orcs.core.HDFCube._prepare_input_params" title="orcs.core.HDFCube._prepare_input_params"><code class="xref py py-meth docutils literal"><span class="pre">_prepare_input_params()</span></code></a>).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>spectrum</strong> – The spectrum to fit (1d vector).</li>
-<li><strong>theta_orig</strong> – Original value of the incident angle in degree.</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
-to make a Bayesian fit (If unknown you can set it to ‘auto’
-to try an automatic mode, two fits are made - one with a
-predefined SNR and the other with the SNR deduced from the
-first fit). If None a classical fit is made.</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-<li><strong>kwargs</strong> – (Optional) Model parameters that must be
-changed in the InputParams instance.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._get_data_prefix">
-<code class="descname">_get_data_prefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._get_data_prefix" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="orcs.core.SpectralCube._get_data_prefix">
+<code class="sig-name descname">_get_data_prefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube._get_data_prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return data prefix</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.core.HDFCube._get_integrated_spectrum_fit_path">
-<code class="descname">_get_integrated_spectrum_fit_path</code><span class="sig-paren">(</span><em>region_name</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._get_integrated_spectrum_fit_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to an integrated spectrum fit</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> – Name of the region</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._get_integrated_spectrum_header">
-<code class="descname">_get_integrated_spectrum_header</code><span class="sig-paren">(</span><em>region_name</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._get_integrated_spectrum_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return integrated spectrum header</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> – Region name</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._get_integrated_spectrum_path">
-<code class="descname">_get_integrated_spectrum_path</code><span class="sig-paren">(</span><em>region_name</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._get_integrated_spectrum_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to an integrated spectrum</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region_name</strong> – Name of the region</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._get_reprojected_cube_path">
-<code class="descname">_get_reprojected_cube_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._get_reprojected_cube_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to the reprojected cube</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube._prepare_input_params">
-<code class="descname">_prepare_input_params</code><span class="sig-paren">(</span><em>lines</em>, <em>nofilter=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube._prepare_input_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>prepare the InputParams instance for a fitting procedure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
-cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
-and the fit is made with a single range set to the filter
-bandpass.</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<code class="xref py py-meth docutils literal"><span class="pre">orb.fit._prepare_input_params()</span></code>.</li>
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.extract_integrated_spectrum">
+<code class="sig-name descname">extract_integrated_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_integrated_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>region</strong> – A ds9-like region file or a list of pixels
+having the same format as the list returned by np.nonzero(),
+i.e. (x_positions_1d_array, y_positions_1d_array).</p></li>
+<li><p><strong>median</strong> – If True, a median is used instead of a mean to
+combine spectra. As the resulting spectrum is integrated,
+the median value of the combined spectra is then scaled to
+the number of integrated pixels.</p></li>
+<li><p><strong>mean_flux</strong> – If True, the mean spectrum (ie per pixel
+flux) is returned.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.correct_wavelength">
-<code class="descname">correct_wavelength</code><span class="sig-paren">(</span><em>sky_map_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.correct_wavelength" title="Permalink to this definition">¶</a></dt>
-<dd><p>Correct the wavelength of the cube based on the velocity of
-the sky lines computed with
-<a class="reference internal" href="process_module.html#orcs.process.SpectralCube.map_sky_velocity" title="orcs.process.SpectralCube.map_sky_velocity"><code class="xref py py-meth docutils literal"><span class="pre">map_sky_velocity()</span></code></a></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sky_map_path</strong> – Path to the sky velocity map.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">the sky velocity map returned by the function
-SpectralCube.map_sky_velocity is inversed (a velocity of 80
-km/s is indicated as -80 km/s). It is thus more a correction
-map that must be directly added to the computed velocity to
-obtain a corrected velocity. As this map can be passed as
-is, it means that the given sky velocity map must be a
-correction map.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.extract_integrated_spectrum">
-<code class="descname">extract_integrated_spectrum</code><span class="sig-paren">(</span><em>region</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.extract_integrated_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract a spectrum integrated over a given region (can be a
-list of pixels as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region</strong> – Region to integrate (can be a list of pixel
-coordinates as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
-file). If it is a ds9 region file, multiple regions can be
-defined and all will be integrated into one spectrum.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.extract_spectrum">
-<code class="descname">extract_spectrum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>r</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.extract_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract a spectrum integrated over a circular region of a
-given radius.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – X position of the center</li>
-<li><strong>y</strong> – Y position of the center</li>
-<li><strong>r</strong> – Radius. If 0, only the central pixel is extracted.</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(axis, spectrum)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.extract_spectrum_bin">
-<code class="descname">extract_spectrum_bin</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>b</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.extract_spectrum_bin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract a spectrum integrated over a binned region.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – X position of the bottom-left pixel</li>
-<li><strong>y</strong> – Y position of the bottom-left pixel</li>
-<li><strong>b</strong> – Binning. If 1, only the central pixel is extracted</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._extract_spectrum_from_region" title="orcs.core.HDFCube._extract_spectrum_from_region"><code class="xref py py-meth docutils literal"><span class="pre">_extract_spectrum_from_region()</span></code></a>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(axis, spectrum)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.fit_lines_in_integrated_region">
-<code class="descname">fit_lines_in_integrated_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_integrated_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit lines of a spectrum integrated over a given region (can
-be a list of pixels as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>region</strong> – Region to integrate (can be a list of pixel
-coordinates as returned by the function
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
-file). If it is a ds9 region file, multiple regions can be
-defined and all will be integrated into one spectrum.</li>
-<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
-cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
-and the fit is made with a single range set to the filter
-bandpass.</li>
-<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
-from the extracted spectrum before fitting
-parameters. Useful to remove sky spectrum. Both spectra must
-have the same size.</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
-to make a Bayesian fit (If unknown you can set it to ‘auto’
-to try an automatic mode, two fits are made - one with a
-predefined SNR and the other with the SNR deduced from the
-first fit). If None a classical fit is made.</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
-is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple (axis, spectrum, fit_dict). fit_dict is a
-dictionary containing the fit results (same output as
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.fit_lines_in_region">
-<code class="descname">fit_lines_in_region</code><span class="sig-paren">(</span><em>region</em>, <em>lines</em>, <em>binning=1</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>timeout=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit lines in a given region of the cube. All the pixels in
-the defined region are fitted one by one and a set of maps
-containing the fitted paramaters are written. Note that the
-pixels can be binned.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
-cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>region</strong> – Region to fit. Multiple regions can be used to
-define the fitted region. They do not need to be contiguous.</li>
-<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
-and the fit is made with a single range set to the filter
-bandpass.</li>
-<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
-from the extracted spectrum before fitting
-parameters. Useful to remove sky spectrum. Both spectra must
-have the same size.</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Can only
-be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
-fit. In this case two fits are made - one with a predefined
-SNR and the other with the SNR deduced from the first
-fit. If None a classical fit is made.</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Timeout:</th><td class="field-body"><p class="first last">(Optional) max processing time per pixel. If reached, the given
-pixel is passed (default None).</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">You can pass the fitting parameters (e.g. pos_cov,
-sigma_cov etc.) as maps (a 2d numy.ndarray instance or a
-path to a map). But you have to append the suffix ‘_map’ to
-the parameter you want to map. Any nan or inf in the map
-will be replaced by the median of the map. This mode can be
-used to map parameters at a given binning from the result of
-the fit made at a higher binning.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.fit_lines_in_spectrum">
-<code class="descname">fit_lines_in_spectrum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>r</em>, <em>lines</em>, <em>nofilter=False</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>subtract_spectrum=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit lines of a spectrum extracted from a circular region of a
-given radius.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – X position of the center</li>
-<li><strong>y</strong> – Y position of the center</li>
-<li><strong>r</strong> – Radius. If 0, only the central pixel is extracted.</li>
-<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
-cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
-and the fit is made with a single range set to the filter
-bandpass.</li>
-<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
-from the extracted spectrum before fitting
-parameters. Useful to remove sky spectrum. Both spectra must
-have the same size.</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
-to make a Bayesian fit (If unknown you can set it to ‘auto’
-to try an automatic mode, two fits are made - one with a
-predefined SNR and the other with the SNR deduced from the
-first fit). If None a classical fit is made.</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
-is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple (axis, spectrum, fit_dict). fit_dict is a
-dictionary containing the fit results (same output as
-<a class="reference internal" href="#orcs.core.HDFCube._fit_lines_in_spectrum" title="orcs.core.HDFCube._fit_lines_in_spectrum"><code class="xref py py-meth docutils literal"><span class="pre">_fit_lines_in_spectrum()</span></code></a>)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.fit_lines_in_spectrum_bin">
-<code class="descname">fit_lines_in_spectrum_bin</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>b</em>, <em>lines</em>, <em>nofilter=False</em>, <em>subtract_spectrum=None</em>, <em>snr_guess=None</em>, <em>max_iter=None</em>, <em>mean_flux=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.fit_lines_in_spectrum_bin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit lines of a spectrum extracted from a squared region of a
-given size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – X position of the bottom-left pixel</li>
-<li><strong>y</strong> – Y position of the bottom-left pixel</li>
-<li><strong>b</strong> – Binning. If 0, only the central pixel is extracted.</li>
-<li><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
-cube is in wavenumber. must be in nm otherwise).</li>
-<li><strong>nofilter</strong> – (Optional) If True, Filter model is not added
-and the fit is made with a single range set to the filter
-bandpass.</li>
-<li><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
-from the extracted spectrum before fitting
-parameters. Useful to remove sky spectrum. Both spectra must
-have the same size.</li>
-<li><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
-to make a Bayesian fit (If unknown you can set it to ‘auto’
-to try an automatic mode, two fits are made - one with a
-predefined SNR and the other with the SNR deduced from the
-first fit). If None a classical fit is made.</li>
-<li><strong>max_iter</strong> – (Optional) Maximum number of iterations
-(default None)</li>
-<li><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
-is the mean flux of the extracted region (default False).</li>
-<li><strong>kwargs</strong> – Keyword arguments of the function
-<code class="xref py py-meth docutils literal"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple (axis, spectrum, fit_dict). fit_dict is a
-dictionary containing the fit results (same output as
-<code class="xref py py-meth docutils literal"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_amp_ratio_from_flux_ratio">
-<code class="descname">get_amp_ratio_from_flux_ratio</code><span class="sig-paren">(</span><em>line0</em>, <em>line1</em>, <em>flux_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_amp_ratio_from_flux_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the amplitude ratio (amp(line0) / amp(line1)) to define from the flux ratio
-(at constant fwhm and broadening).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>line0</strong> – Wavenumber of the line 0 (in cm-1).</li>
-<li><strong>line1</strong> – Wavenumber of the line 1 (in cm-1).</li>
-<li><strong>flux_ratio</strong> – Flux ratio: flux(line0) / flux(line1).</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_calibration_coeff_map">
-<code class="descname">get_calibration_coeff_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_coeff_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the calibration coeff map based on the calibration
-laser map and the laser wavelength.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_calibration_coeff_map_orig">
-<code class="descname">get_calibration_coeff_map_orig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_coeff_map_orig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the original calibration coeff map (not the version
-computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibration_coeff_map" title="orcs.core.HDFCube.get_calibration_coeff_map"><code class="xref py py-meth docutils literal"><span class="pre">get_calibration_coeff_map()</span></code></a>)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_calibration_laser_map">
-<code class="descname">get_calibration_laser_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_laser_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the calibration laser map of the cube</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_calibration_laser_map_orig">
-<code class="descname">get_calibration_laser_map_orig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_calibration_laser_map_orig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the original calibration laser map (not the version
-computed by <a class="reference internal" href="#orcs.core.HDFCube.get_calibration_laser_map" title="orcs.core.HDFCube.get_calibration_laser_map"><code class="xref py py-meth docutils literal"><span class="pre">get_calibration_laser_map()</span></code></a>)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_deep_frame">
-<code class="descname">get_deep_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_deep_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return deep frame if if exists. None if no deep frame is
-attached to the cube.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_filter_range">
-<code class="descname">get_filter_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_filter_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the range of the filter in the unit of the spectral
-cube as a tuple (min, max)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_flux_uncertainty">
-<code class="descname">get_flux_uncertainty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_flux_uncertainty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the uncertainty on the flux at a given wavenumber in
-erg/cm2/s/channel. It corresponds to the uncertainty (1 sigma)
-of the spectrum in a given channel.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wavenumber</strong> – Wavenumber (cm-1)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_fwhm_map">
-<code class="descname">get_fwhm_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_fwhm_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the theoretical FWHM map in cm-1 based only on the angle
-and the theoretical attained resolution.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_header">
-<code class="descname">get_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return cube header.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_mask_from_ds9_region_file">
-<code class="descname">get_mask_from_ds9_region_file</code><span class="sig-paren">(</span><em>region</em>, <em>integrate=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_mask_from_ds9_region_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a mask from a ds9 region file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>region</strong> – Path to a ds9 region file.</li>
-<li><strong>integrate</strong> – (Optional) If True, all pixels are integrated
-into one mask, else a list of region masks is returned (default
-True)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_radial_velocity_correction">
-<code class="descname">get_radial_velocity_correction</code><span class="sig-paren">(</span><em>kind='heliocentric'</em>, <em>date=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Return heliocentric or barycentric velocity correction to apply on</dt>
-<dd>the observed target in km/s</dd>
+</dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>kind</strong> – (Optional) ‘heliocentric’ or ‘barycentric’
-(default ‘heliocentric’).</li>
-<li><strong>date</strong> – (Optional) Corrected date for the
-observation. Must be a string with the following format
-YYYY-MM-DDTHH:MM:SS.S (default None).</li>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>the region must not have a size greater than 400x400
+pixels. If you really need a larger region, you can split
+you region into smaller ones and combines the resulting
+spectra.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.extract_spectrum">
+<code class="sig-name descname">extract_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a spectrum extracted at x, y and integrated
+over a circular aperture or radius r.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x position</p></li>
+<li><p><strong>y</strong> – y position</p></li>
+<li><p><strong>r</strong> – (Optional) If r &gt; 0, vector is integrated over a
+circular aperture of radius r. In this case the number of
+pixels is returned as a parameter: pixels</p></li>
+<li><p><strong>median</strong> – If True, a median is used instead of a mean to
+combine spectra. As the resulting spectrum is integrated,
+the median value of the combined spectra is then scaled to
+the number of integrated pixels.</p></li>
+<li><p><strong>mean_flux</strong> – If True, the mean spectrum (ie per pixel
+flux) is returned.</p></li>
+<li><p><strong>subtract_spectrum</strong> – Subtract given spectrum. Must be a
+vector of the same size as the extracted spectrum.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>axis, spectrum</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.extract_spectrum_bin">
+<code class="sig-name descname">extract_spectrum_bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum_bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a spectrum extracted at x, y and integrated
+over a binned region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – X position of the bottom-left pixel</p></li>
+<li><p><strong>y</strong> – Y position of the bottom-left pixel</p></li>
+<li><p><strong>b</strong> – Binning. If 1, only the central pixel is extracted</p></li>
+<li><p><strong>median</strong> – If True, a median is used instead of a mean to
+combine spectra. As the resulting spectrum is integrated,
+the median value of the combined spectra is then scaled to
+the number of integrated pixels.</p></li>
+<li><p><strong>mean_flux</strong> – If True, the mean spectrum (ie per pixel
+flux) is returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>axis, spectrum</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.extract_spectrum_in_annulus">
+<code class="sig-name descname">extract_spectrum_in_annulus</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum_in_annulus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a. orb.fft.RealSpectrum extracted at x, y and integrated
+over a circular annulus of min radius rmin and max radius rmax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x position</p></li>
+<li><p><strong>y</strong> – y position</p></li>
+<li><p><strong>rmin</strong> – rmin of the annulus</p></li>
+<li><p><strong>rmax</strong> – rmax of the annulus</p></li>
+<li><p><strong>median</strong> – If True, a median is used instead of a mean to
+combine spectra. As the resulting spectrum is integrated,
+the median value of the combined spectra is then scaled to
+the number of integrated pixels.</p></li>
+<li><p><strong>mean_flux</strong> – If True, the mean spectrum (ie per pixel
+flux) is returned.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.get_flux_uncertainty">
+<code class="sig-name descname">get_flux_uncertainty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_flux_uncertainty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the uncertainty on the flux (1 sigma) of the spectrum in a
+given channel in counts/s.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.get_radial_velocity_correction">
+<code class="sig-name descname">get_radial_velocity_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kind</span><span class="o">=</span><span class="default_value">'heliocentric'</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Return heliocentric or barycentric velocity correction to apply on</dt><dd><p>the observed target in km/s</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> – (Optional) ‘heliocentric’ or ‘barycentric’
+(default ‘heliocentric’).</p></li>
+<li><p><strong>date</strong> – (Optional) Corrected date for the
+observation. Must be a string with the following format
+YYYY-MM-DDTHH:MM:SS.S (default None).</p></li>
+</ul>
+</dd>
+</dl>
 <p>For m/s precision the returned float should simply be
 added. But more care must be taken if a better precision is
 needed. Please see
 <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a>
 for more informations.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(heliocentric or barycentric) velocities.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(heliocentric or barycentric) velocities.</p>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">This is based on the astropy methods. See</p>
+<p class="admonition-title">See also</p>
+<p>This is based on the astropy methods. See</p>
 </div>
 <p><a class="reference external" href="http://docs.astropy.org/en/stable/coordinates/velocities.html">http://docs.astropy.org/en/stable/coordinates/velocities.html</a>
 for more information on how to use the returned quantities.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_sky_lines">
-<code class="descname">get_sky_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_sky_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the wavenumber/wavelength of the sky lines in the
-filter range</p>
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.get_spectrum_from_region">
+<code class="sig-name descname">get_spectrum_from_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around the extract_spectrum_from_region method to apply
+flux calibration by default when extracting spectra (the real
+data is in counts) when cube is flux calibrated.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_theta_map">
-<code class="descname">get_theta_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_theta_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the incident angle map (in degree)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_wcs">
-<code class="descname">get_wcs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_wcs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the WCS of the cube as a astropy.wcs.WCS instance</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.get_wcs_header">
-<code class="descname">get_wcs_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.get_wcs_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the WCS of the cube as a astropy.wcs.WCS instance</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.pix2world">
-<code class="descname">pix2world</code><span class="sig-paren">(</span><em>xy</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.pix2world" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert pixel coordinates to celestial coordinates</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>xy</strong> – A tuple (x,y) of pixel coordinates or a list of
-tuples ((x0,y0), (x1,y1), …)</li>
-<li><strong>deg</strong> – (Optional) If true, celestial coordinates are
-returned in sexagesimal format (default False).</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">it is much more effficient to pass a list of
-coordinates than run the function for each couple of
-coordinates you want to transform.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.reproject">
-<code class="descname">reproject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.reproject" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="orcs.core.SpectralCube.reproject">
+<code class="sig-name descname">reproject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.reproject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reproject data cube in a distorsion-less WCS.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The amount of available RAM must be larger than
+<p class="admonition-title">Warning</p>
+<p>The amount of available RAM must be larger than
 the cube size on disk.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="orcs.core.HDFCube.reset_calibration_coeff_map">
-<code class="descname">reset_calibration_coeff_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.reset_calibration_coeff_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset the computed calibration coeff map alone</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.reset_calibration_laser_map">
-<code class="descname">reset_calibration_laser_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.reset_calibration_laser_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset the compute calibration laser map (and also the
-calibration coeff map). Must be called when the wavelength
-calibration has changed</p>
-<p>..seealso :: <a class="reference internal" href="#orcs.core.HDFCube.correct_wavelength" title="orcs.core.HDFCube.correct_wavelength"><code class="xref py py-meth docutils literal"><span class="pre">correct_wavelength()</span></code></a></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.reset_params">
-<code class="descname">reset_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.reset_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read header again and reset parameters</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.set_dxdymaps">
-<code class="descname">set_dxdymaps</code><span class="sig-paren">(</span><em>dxmap_path</em>, <em>dymap_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_dxdymaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set micro-shift maps returned by the astrometrical
-calibration method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dxmap_path</strong> – Path to the dxmap.</li>
-<li><strong>dymap_path</strong> – Path to the dymap.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.set_header">
-<code class="descname">set_header</code><span class="sig-paren">(</span><em>hdr</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set cube header</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.set_wcs">
-<code class="descname">set_wcs</code><span class="sig-paren">(</span><em>wcs_path</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.set_wcs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset WCS of the cube.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wcs_path</strong> – Path to a FITS image containing the new WCS.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.HDFCube.world2pix">
-<code class="descname">world2pix</code><span class="sig-paren">(</span><em>radec</em>, <em>deg=True</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.HDFCube.world2pix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert celestial coordinates to pixel coordinates</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xy</strong> – A tuple (x,y) of celestial coordinates or a list of
-tuples ((x0,y0), (x1,y1), …). Must be in degrees.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">it is much more effficient to pass a list of
-coordinates than run the function for each couple of
-coordinates you want to transform.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="orcs.core.LineMaps">
-<em class="property">class </em><code class="descclassname">orcs.core.</code><code class="descname">LineMaps</code><span class="sig-paren">(</span><em>dimx</em>, <em>dimy</em>, <em>lines</em>, <em>wavenumber</em>, <em>binning</em>, <em>div_nb</em>, <em>project_header=None</em>, <em>wcs_header=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">orb.core.Tools</span></code></p>
-<p>Manage line parameters maps</p>
-<dl class="method">
-<dt id="orcs.core.LineMaps.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>dimx</em>, <em>dimy</em>, <em>lines</em>, <em>wavenumber</em>, <em>binning</em>, <em>div_nb</em>, <em>project_header=None</em>, <em>wcs_header=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Init class</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dimx</strong> – X dimension of the unbinned data</li>
-<li><strong>dimy</strong> – Y dimension of the unbinned data</li>
-<li><strong>lines</strong> – tuple of the line names</li>
-<li><strong>wavenumber</strong> – True if the data is in wavenumber, False if
-it is in wavelength.</li>
-<li><strong>binning</strong> – Binning of the data.</li>
-<li><strong>div_nb</strong> – Number of divisions if the data is binned in quadrant mode.</li>
-<li><strong>project_header</strong> – (Optional) FITS header passed to the
-written frames (default None).</li>
-<li><strong>wcs_header</strong> – (Optional) WCS header passed to the written
-frames (default None).</li>
-<li><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal"><span class="pre">__init__()</span></code> kwargs.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.LineMaps._add_wcs_header">
-<code class="descname">_add_wcs_header</code><span class="sig-paren">(</span><em>hdr</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._add_wcs_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add WCS header keywords to a header.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hdr</strong> – Header to update</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.LineMaps._get_map_header">
-<code class="descname">_get_map_header</code><span class="sig-paren">(</span><em>file_type</em>, <em>comment=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_map_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return map header</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>file_type</strong> – Type of file</li>
-<li><strong>comment</strong> – (Optional) Comments on the file type (default
-None).</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.LineMaps._get_map_path">
-<code class="descname">_get_map_path</code><span class="sig-paren">(</span><em>line_name</em>, <em>param</em>, <em>binning=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_map_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the path to a map of one gaussian fit parameter for
-one given emission line.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>line_name</strong> – Name of the emission line</li>
-<li><strong>param</strong> – Parameter name</li>
-<li><strong>binning</strong> – (Optional) Binning of the map. If not given
-instance binning is used (default None).</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.LineMaps.get_map">
-<code class="descname">get_map</code><span class="sig-paren">(</span><em>param</em>, <em>x_range=None</em>, <em>y_range=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get map values</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>param</strong> – Parameter</li>
-<li><strong>x_range</strong> – (Optional) Data range along X axis (default
-None)</li>
-<li><strong>y_range</strong> – (Optional) Data range along Y axis (default
-None)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.LineMaps.set_map">
-<code class="descname">set_map</code><span class="sig-paren">(</span><em>param</em>, <em>data_map</em>, <em>x_range=None</em>, <em>y_range=None</em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.set_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set map values.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>param</strong> – Parameter</li>
-<li><strong>data_map</strong> – Data</li>
-<li><strong>x_range</strong> – (Optional) Data range along X axis (default
-None)</li>
-<li><strong>y_range</strong> – (Optional) Data range along Y axis (default
-None)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="orcs.core.LineMaps.write_maps">
-<code class="descname">write_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.write_maps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write all maps to disk.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1233,7 +572,7 @@ None)</li>
         <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral float-left" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1242,11 +581,19 @@ None)</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca).
+        
+        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1258,38 +605,15 @@ None)</li>
   </div>
   
 
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.4',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

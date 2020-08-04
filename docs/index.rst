@@ -34,7 +34,6 @@ Features
 * and much more ...
 
 **Examples** in Jupyter format can be found in :ref:`examples`.
-    
    
 .. warning:: ORCS is always in fast development. You might see bugs or
  strange behaviours ! You might also want desperatly to have new
@@ -42,6 +41,8 @@ Features
  thomas.martin.1@ulaval.ca
 
 
+
+ 
 Publications
 ------------
 
