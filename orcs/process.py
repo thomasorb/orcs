@@ -178,7 +178,7 @@ class SpectralCube(fit.SpectralCube):
                     no_fit = True
 
         if no_fit:
-            warnings.warn('Fitting process not done again, only the final sky map is computed')
+            logging.warn('Fitting process not done again, only the final sky map is computed')
 
         dimx = self.dimx
         dimy = self.dimy

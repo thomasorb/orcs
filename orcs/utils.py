@@ -102,7 +102,7 @@ import orb.fit
 #         warnings.simplefilter('default')
 
 #     except Exception, e:
-#         warnings.warn('Exception occured during fit: {}'.format(e))
+#         logging.warn('Exception occured during fit: {}'.format(e))
 #         import traceback
 #         print traceback.format_exc()
 

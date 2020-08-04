@@ -147,7 +147,7 @@ class SpectralCube(orb.cube.SpectralCube):
         """
         deep_frame = self.get_deep_frame()
         if deep_frame is None:
-            warnings.warn("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
+            logging.warn("No deep frame in the HDF5 cube. Please use a cube reduced with the last version of ORBS")
             return None
         else: deep_frame = deep_frame.data
         return np.sqrt(deep_frame) * self.get_gain()
@@ -670,7 +670,7 @@ class CubeJobServer(object):
         def check_timesup():
             if timeout is not None:
                 if time.time() - process_start_time > timeout * float(np.sum(mask)):
-                    warnings.warn('process time reached timeout * number of binned pixels = {}*{} s'.format(timeout, np.nansum(mask)))
+                    logging.warn('process time reached timeout * number of binned pixels = {}*{} s'.format(timeout, np.nansum(mask)))
                     logging.info(orb.utils.parallel.get_stats_str(self.job_server))
                     return True
             return False
@@ -702,7 +702,7 @@ class CubeJobServer(object):
                 # if 'iline' in outdict:
                 #     iline = outdict['iline']
                 # else:
-                #     warnings.warn('timeout reached on data extraction')
+                #     logging.warn('timeout reached on data extraction')
                 #     break
                 iline = self.cube.get_data(
                     min(ix) * binning, (max(ix) + 1) * binning,
@@ -804,7 +804,7 @@ class CubeJobServer(object):
                     if _job_elapsed_time_by_pixel < timeout:
                         unfinished_jobs.append(self.jobs[i]) # continue waiting
                     else:
-                        warnings.warn('job {} timeout for pixels {}, {}'.format(ijob_index, ix, iy[0]))
+                        logging.warn('job {} timeout for pixels {}, {}'.format(ijob_index, ix, iy[0]))
                         logging.info(orb.utils.parallel.get_stats_str(self.job_server))
                 else:
                     unfinished_jobs.append(self.jobs[i])
