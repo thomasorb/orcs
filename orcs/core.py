@@ -102,7 +102,13 @@ class SpectralCube(orb.cube.SpectralCube):
         self.debug = bool(debug)
         self.logger = orb.core.Logger(debug=self.debug)
        
-        orb.cube.SpectralCube.__init__(self, cube_path, **kwargs)
+        orb.cube.SpectralCube.__init__(
+            self, cube_path, **kwargs)
+        
+        data_prefix = './' + self.params.project_name + os.sep + self.params.project_name + '.'
+        self._data_prefix = data_prefix
+        self._data_path_hdr = self._get_data_path_hdr()
+        
 
     def _get_data_prefix(self):
         """Return data prefix"""
@@ -221,7 +227,7 @@ class SpectralCube(orb.cube.SpectralCube):
         """
         spec = orb.cube.SpectralCube.get_spectrum_from_region(
             self, *args, **kwargs)
-        if self.has_flux_calibration() and not self.is_old:
+        if self.has_flux_calibration() and self.is_level3():
             spec = spec.multiply(orb.core.Cm1Vector1d(
                 self.params.flambda / self.dimz / self.params.exposure_time,
                 self.get_base_axis(),
@@ -553,7 +559,7 @@ class CubeJobServer(object):
                 except Exception as e:
                     #out_line.append(None)
                     out_line.append(repr(e))
-                    logging.warninging('Exception occured in process_in_row at function call level: {}'.format(e))
+                    logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
             return out_line
 
@@ -926,8 +932,9 @@ class LineMaps(orb.core.Tools):
                 data[ikey] = f[ikey][:]
             
             shape = data[list(data.keys())[0]].shape
-            new = cls(shape[0], shape[1], f.attrs['lines'], f.attrs['wavenumber'],
-                      f.attrs['binning'], f.attrs['div_nb'])
+            binning = f.attrs['binning']
+            new = cls(shape[0]*binning, shape[1]*binning, f.attrs['lines'], f.attrs['wavenumber'],
+                      binning, f.attrs['div_nb'])
         new.data = data
         return new
 
@@ -985,7 +992,7 @@ class LineMaps(orb.core.Tools):
 
         if (data_map.shape[0] != self.data[param].shape[0]
             or data_map.shape[1] != self.data[param].shape[1]):
-            raise TypeError('data_map must has the wrong size')
+            raise TypeError('data_map has the wrong size')
         if data_map.ndim > 3:
             raise TypeError('data_map must have 2 or 3 dimensions')
 
@@ -1036,6 +1043,7 @@ class LineMaps(orb.core.Tools):
             os.remove(outpath)
             
         with orb.utils.io.open_hdf5(outpath, 'w') as f:
+
             f.attrs['lines'] = self.lines
             f.attrs['wavenumber'] = self.wavenumber
             f.attrs['binning'] = self.binning
@@ -1074,7 +1082,7 @@ class LineMaps(orb.core.Tools):
                             break
 
             if same_param:
-                logging.warninging('param {} is the same for all lines'.format(param))
+                logging.warning('param {} is the same for all lines'.format(param))
                 lines = list(['fake'])
             else:
                 lines = list(self.lines)
@@ -1131,9 +1139,8 @@ class LineMaps(orb.core.Tools):
             corr, cube.params.zpd_index, vel=vel, sigma=sigma, fmodel=fmodel)
         contparams = [self.data['cont_p{}'.format(icont)][x_bin, y_bin][0] for icont in range(4)]
         poly_order = np.sum(~np.isnan(contparams)) - 1
-        cont = orb.fit.ContinuumModel({'poly_order':0, 'poly_guess':contparams[:poly_order+1]}).get_model(np.arange(cube.dimz))
+        cont = orb.fit.ContinuumModel({'poly_order':poly_order, 'poly_guess':contparams[:poly_order+1]}).get_model(np.arange(cube.dimz))
         cont = gvar.mean(cont)
-        
         axis = cube.get_axis(x, y)
         params = dict(cube.params)
         params['calibration_coeff'] = cube.get_calibration_coeff_map()[x, y]

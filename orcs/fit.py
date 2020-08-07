@@ -504,7 +504,7 @@ class SpectralCube(orcs.core.SpectralCube):
                 ifit = spectrum.prepared_fit(
                     inputparams, snr_guess=snr_guess, max_iter=max_iter,
                     **mapped_kwargs)
-
+                
             except Exception as e:
                 if debug:
                     logging.debug('Exception occured during fit: {}'.format(e))
@@ -620,7 +620,7 @@ class SpectralCube(orcs.core.SpectralCube):
             wcs_header=self.get_wcs_header(),
             instrument=self.instrument,
             data_prefix=self._data_prefix,
-            config=self.config)
+            config=self.config)        
 
         # check subtract spectrum
         if subtract_spectrum is not None:

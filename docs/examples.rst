@@ -22,7 +22,6 @@ These examples show the basic usage of ORCS
 
    getting_started.ipynb
    script_example_velocity_parameter_precision.ipynb
-   script_example_deep_wcs.ipynb
    script_example_fit_region.ipynb
    script_example_sincgauss_vs_2_sinc.ipynb
 
