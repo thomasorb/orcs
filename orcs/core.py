@@ -221,7 +221,7 @@ class SpectralCube(orb.cube.SpectralCube):
         """
         spec = orb.cube.SpectralCube.get_spectrum_from_region(
             self, *args, **kwargs)
-        if self.has_flux_calibration():
+        if self.has_flux_calibration() and not self.is_old:
             spec = spec.multiply(orb.core.Cm1Vector1d(
                 self.params.flambda / self.dimz / self.params.exposure_time,
                 self.get_base_axis(),

@@ -3,6 +3,15 @@
 Examples
 ========
 
+You can try the examples with your own data cube, but you can also
+download the exact same cubes I used here.
+
+http://celeste.phy.ulaval.ca/files/new_orb3_cubes_examples/
+
+If you experience any problem with the download please send me a
+message (thomas.martin.1@ulaval.ca).
+
+
 First basic examples
 --------------------
 
