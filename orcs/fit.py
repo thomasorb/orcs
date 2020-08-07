@@ -601,7 +601,7 @@ class SpectralCube(orcs.core.SpectralCube):
                     if debug:
                         logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
                     if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
-                        logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
+                        logging.warninging('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
                     ivmap[np.isnan(ivmap)] = kwargs[rkey]
                     ivmap[np.isinf(ivmap)] = kwargs[rkey]
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
