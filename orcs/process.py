@@ -174,7 +174,7 @@ class SpectralCube(fit.SpectralCube):
 
         if not no_fit:
             if os.path.exists(self._get_skymap_file_path()):
-                logging.info('fitting process already done ! set no_fit=True if you do not want to redo it')
+                logging.warning('fitting process already done ! set no_fit=True if you do not want to redo it')
       
         if no_fit:
             logging.warning('Fitting process not done again, only the final sky map is computed')
