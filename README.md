@@ -15,7 +15,7 @@
 
 **Examples** in Jupyter format can be found in the documentation:
 
-http://celeste.phy.ulaval.ca/orcs-doc/examples.html
+https://orcs.readthedocs.io/en/latest/examples.html
     
    
 **Warning:** ORCS is always in fast development. You might see bugs or
@@ -30,8 +30,7 @@ http://celeste.phy.ulaval.ca/orcs-doc/examples.html
 
 You can find the up-to-date documentation here:
 
-http://celeste.phy.ulaval.ca/orcs-doc/index.html
-
+https://orcs.readthedocs.io/en/latest/index.html
 
 
 ## Installation
