@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Extract the deep frame and use the WCS &mdash; Orcs 2to3.ef13 documentation</title>
+  <title>Extract the deep frame and use the WCS &mdash; Orcs master.e36f documentation</title>
   
 
   
@@ -40,9 +40,7 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Make a fit over an entire region of the field" href="script_example_fit_region.html" />
-    <link rel="prev" title="How precise must be the input velocity parameter ?" href="script_example_velocity_parameter_precision.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -69,7 +67,7 @@
             
             
               <div class="version">
-                2to3.ef13
+                master.e36f
               </div>
             
           
@@ -94,28 +92,10 @@
               
             
             
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="getting_started.html">Getting started</a></li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_velocity_parameter_precision.html">How precise must be the input velocity parameter ?</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Extract the deep frame and use the WCS</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Displaying-the-deep-frame">Displaying the deep frame</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Exporting-the-deep-frame-with-the-WCS">Exporting the deep frame with the WCS</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_fit_region.html">Make a fit over an entire region of the field</a></li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_sincgauss_vs_2_sinc.html">Differences between fitting a sincgauss model and two sinc lines</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#calibrating-your-data">Calibrating your data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#other-tools">Other Tools</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
@@ -169,8 +149,6 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="examples.html">Examples</a> &raquo;</li>
         
       <li>Extract the deep frame and use the WCS</li>
     
@@ -455,7 +433,7 @@ combined noise equivalent to only one frame of the interferometric cube (<span c
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -465,10 +443,10 @@ combined noise equivalent to only one frame of the interferometric cube (<span c
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -476,11 +454,42 @@ combined noise equivalent to only one frame of the interferometric cube (<span c
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-INFO| Data shape : (2048, 2064, 593)
-INFO| Cube is in WAVENUMBER (cm-1)
-INFO| Cube is CALIBRATED in wavenumber
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">OSError</span>                                   Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-2-b80298bbb4d0&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>cube <span class="ansi-blue-fg">=</span> SpectralCube<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;/home/thomas/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/home/thomas/orb-test/orcs/orcs/core.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, cube_path, debug, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    103</span>         self<span class="ansi-blue-fg">.</span>logger <span class="ansi-blue-fg">=</span> orb<span class="ansi-blue-fg">.</span>core<span class="ansi-blue-fg">.</span>Logger<span class="ansi-blue-fg">(</span>debug<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>debug<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    104</span>
+<span class="ansi-green-fg">--&gt; 105</span><span class="ansi-red-fg">         </span>orb<span class="ansi-blue-fg">.</span>cube<span class="ansi-blue-fg">.</span>SpectralCube<span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> cube_path<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    106</span>
+<span class="ansi-green-intense-fg ansi-bold">    107</span>     <span class="ansi-green-fg">def</span> _get_data_prefix<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/home/thomas/orb-test/orb/orb/cube.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, *args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2092</span>     <span class="ansi-green-fg">def</span> __init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   2093</span>         <span class="ansi-blue-fg">&#34;&#34;&#34;Init class&#34;&#34;&#34;</span>
+<span class="ansi-green-fg">-&gt; 2094</span><span class="ansi-red-fg">         </span>Cube<span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">*</span>args<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2095</span>
+<span class="ansi-green-intense-fg ansi-bold">   2096</span>         self<span class="ansi-blue-fg">.</span>reset_params<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/home/thomas/orb-test/orb/orb/cube.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, path, params, instrument, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1489</span>           keyword arguments<span class="ansi-blue-fg">.</span>
+<span class="ansi-green-intense-fg ansi-bold">   1490</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">-&gt; 1491</span><span class="ansi-red-fg">         </span>HDFCube<span class="ansi-blue-fg">.</span>__init__<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> path<span class="ansi-blue-fg">,</span> instrument<span class="ansi-blue-fg">=</span>instrument<span class="ansi-blue-fg">,</span> params<span class="ansi-blue-fg">=</span>params<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1492</span>         <span class="ansi-red-fg"># compute additional parameters</span>
+<span class="ansi-green-intense-fg ansi-bold">   1493</span>         self<span class="ansi-blue-fg">.</span>filterfile <span class="ansi-blue-fg">=</span> orb<span class="ansi-blue-fg">.</span>core<span class="ansi-blue-fg">.</span>FilterFile<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>params<span class="ansi-blue-fg">.</span>filter_name<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/home/thomas/orb-test/orb/orb/cube.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, path, indexer, instrument, config, data_prefix, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    107</span>
+<span class="ansi-green-intense-fg ansi-bold">    108</span>         <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> os<span class="ansi-blue-fg">.</span>path<span class="ansi-blue-fg">.</span>exists<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>cube_path<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 109</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> IOError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;File does not exist&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    110</span>
+<span class="ansi-green-intense-fg ansi-bold">    111</span>         <span class="ansi-red-fg"># check if cube has an old format in which case it must be</span>
+
+<span class="ansi-red-fg">OSError</span>: File does not exist
 </pre></div></div>
 </div>
 <div class="section" id="Displaying-the-deep-frame">
@@ -489,7 +498,7 @@ INFO| Cube is CALIBRATED in wavenumber
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">deep_frame</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">get_wcs</span><span class="p">())</span>
@@ -519,7 +528,7 @@ INFO| Cube is CALIBRATED in wavenumber
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;deep_frame.fits&#39;</span><span class="p">,</span> <span class="n">deep_frame</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">get_wcs_header</span><span class="p">(),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -545,7 +554,7 @@ INFO| Data written as deep_frame.fits in 1.26 s
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span>
 </pre></div>
 </div>
@@ -558,15 +567,6 @@ INFO| Data written as deep_frame.fits in 1.26 s
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="script_example_fit_region.html" class="btn btn-neutral float-right" title="Make a fit over an entire region of the field" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="script_example_velocity_parameter_precision.html" class="btn btn-neutral float-left" title="How precise must be the input velocity parameter ?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

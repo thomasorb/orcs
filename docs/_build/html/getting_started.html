@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting started &mdash; Orcs 2to3.ef13 documentation</title>
+  <title>Getting started &mdash; Orcs unknown documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                2to3.ef13
+                unknown
               </div>
             
           
@@ -105,7 +105,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_velocity_parameter_precision.html">How precise must be the input velocity parameter ?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_deep_wcs.html">Extract the deep frame and use the WCS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_fit_region.html">Make a fit over an entire region of the field</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_sincgauss_vs_2_sinc.html">Differences between fitting a sincgauss model and two sinc lines</a></li>
 </ul>
@@ -466,7 +465,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/old_M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -475,15 +474,10 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-2to3.ac74|INFO| Closing parallel processing server
-2to3.ac74|INFO| shape: (2048, 2064, 840)
-2to3.ac74|INFO| wavenumber calibration: True
-2to3.ac74|INFO| flux calibration: True
-2to3.ac74|INFO| wcs calibration: True
-2to3.ac74|INFO| parallel processing closed
+WARNING:root:old cube architecture. IO performances could be reduced.
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
@@ -497,17 +491,6 @@ div.rendered_html tbody tr:hover {
 <span class="n">cube</span><span class="o">.</span><span class="n">set_flambda</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">compute_flambda</span><span class="p">())</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-2to3.ac74|INFO| mean flambda config: 1.4984303888958248e-16
-2to3.ac74|INFO| standard_spectrum not set: no relative vector correction computed
-2to3.ac74|INFO| standard_path not set: no relative vector correction computed
-2to3.ac74|INFO| standard_image not set: no absolute vector correction computed
-</pre></div></div>
 </div>
 <div class="section" id="Exploring-the-deep-frame">
 <h3>Exploring the deep frame<a class="headerlink" href="#Exploring-the-deep-frame" title="Permalink to this headline">¶</a></h3>
@@ -526,19 +509,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-2to3.ac74|INFO| Data written as M31_SN3.deep_frame.fits in 0.20 s
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_5_1.png" src="_images/getting_started_5_1.png" />
+<img alt="_images/getting_started_5_0.png" src="_images/getting_started_5_0.png" />
 </div>
 </div>
 </div>
@@ -552,14 +527,12 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="c1"># extract and plot a spectrum at x=919 y=893 integrated over a radius of 2 pixels</span>
 <span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># option mean_flux</span>
 <span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;spectrum of a planetary nebula&#39;</span><span class="p">)</span>
 
 <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;zoom in&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
@@ -568,10 +541,9 @@ div.rendered_html tbody tr:hover {
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">2to3.ac74|WARNING| No handles with labels found to put in legend.</span>
-<span class="ansi-yellow-fg">2to3.ac74|WARNING| No handles with labels found to put in legend.</span>
+ [==========] [100%] [completed in 0.010 s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -614,7 +586,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-object type: &lt;orb.fft.RealSpectrum object at 0x7f4868102190&gt;
+object type: &lt;orb.fft.RealSpectrum object at 0x7f6401fc9d90&gt;
 data as numpy.ndarray vector &lt;class &#39;numpy.ndarray&#39;&gt;
 axis (in cm-1) as numpy.ndarray vector &lt;class &#39;numpy.ndarray&#39;&gt;
 </pre></div></div>
@@ -646,9 +618,8 @@ axis (in cm-1) as numpy.ndarray vector &lt;class &#39;numpy.ndarray&#39;&gt;
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">2to3.ac74|WARNING| /home/thomas/miniconda2/envs/orb3/lib/python3.7/site-packages/numpy/lib/nanfunctions.py:994: RuntimeWarning: All-NaN slice encountered
+/home/thomas/miniconda2/envs/orb-test/lib/python3.7/site-packages/numpy/lib/nanfunctions.py:993: RuntimeWarning: All-NaN slice encountered
   result = np.apply_along_axis(_nanmedian1d, axis, a, overwrite_input)
-</span>
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -739,13 +710,17 @@ pos_def = [&#39;1&#39;,&#39;1&#39;]
 <span class="c1"># for quick results plotting</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span> <span class="c1"># print the most important results</span>
-<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
 
+<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+
+<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+
+
 
 <span class="c1"># note that more can be retrived by looking into all the data provided:</span>
 <span class="c1"># print(dict(fit))</span>
@@ -755,11 +730,19 @@ pos_def = [&#39;1&#39;,&#39;1&#39;]
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:No SNR guess given. Fit mode is classic.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 === Fit results ===
 lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sinc
-iterations: 41, fit time: 6.93e-02 s
+iterations: 41, fit time: 7.95e-02 s
 Velocity (km/s): [-508.1(1.1) -508.1(1.1)]
 Flux: [3.03(12)e-15 7.6(1.3)e-16]
 Broadening (km/s): [nan +- nan nan +- nan]
@@ -772,14 +755,14 @@ Broadening (km/s): [nan +- nan nan +- nan]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f48605b9590&gt;
+&lt;matplotlib.legend.Legend at 0x7f63dc1e7190&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_14_2.png" src="_images/getting_started_14_2.png" />
+<img alt="_images/getting_started_14_3.png" src="_images/getting_started_14_3.png" />
 </div>
 </div>
 <div class="section" id="Ungroup-the-velocity-parameter">
@@ -811,11 +794,19 @@ Broadening (km/s): [nan +- nan nan +- nan]
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:No SNR guess given. Fit mode is classic.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 === Fit results ===
 lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sinc
-iterations: 49, fit time: 8.09e-02 s
+iterations: 49, fit time: 7.73e-02 s
 Velocity (km/s): [-507.6(1.2) -516.3(4.5)]
 Flux: [3.04(12)e-15 7.8(1.2)e-16]
 Broadening (km/s): [nan +- nan nan +- nan]
@@ -828,14 +819,14 @@ Broadening (km/s): [nan +- nan nan +- nan]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f48604c41d0&gt;
+&lt;matplotlib.legend.Legend at 0x7f63c8f11050&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_16_2.png" src="_images/getting_started_16_2.png" />
+<img alt="_images/getting_started_16_3.png" src="_images/getting_started_16_3.png" />
 </div>
 </div>
 </div>
@@ -877,9 +868,8 @@ Broadening (km/s): [nan +- nan nan +- nan]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">2to3.ac74|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2209: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
-  warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
-</span>
+WARNING:root:please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+WARNING:root:No SNR guess given. Fit mode is classic.
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -889,7 +879,7 @@ Broadening (km/s): [nan +- nan nan +- nan]
 <div class="highlight"><pre>
 === Fit results ===
 lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sincgauss
-iterations: 37, fit time: 1.25e-01 s
+iterations: 37, fit time: 1.22e-01 s
 Velocity (km/s): [-506.9(1.4) -506.9(1.4)]
 Flux: [4.43(24)e-15 1.14(16)e-15]
 Broadening (km/s): [27.1(1.7) 27.1(1.7)]
@@ -902,7 +892,7 @@ Broadening (km/s): [27.1(1.7) 27.1(1.7)]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f4860421590&gt;
+&lt;matplotlib.legend.Legend at 0x7f63c8f11d10&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -945,9 +935,8 @@ Broadening (km/s): [27.1(1.7) 27.1(1.7)]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">2to3.ac74|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/fit.py:2209: UserWarning: please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
-  warnings.warn(&#39;please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans&#39;)
-</span>
+WARNING:root:please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans
+WARNING:root:No SNR guess given. Fit mode is classic.
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -957,7 +946,7 @@ Broadening (km/s): [27.1(1.7) 27.1(1.7)]
 <div class="highlight"><pre>
 === Fit results ===
 lines: [&#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: sincgauss
-iterations: 55, fit time: 1.76e-01 s
+iterations: 55, fit time: 1.92e-01 s
 Velocity (km/s): [-507.3(1.4) -507.3(1.4)]
 Flux: [4.34(23)e-15 1.13(16)e-15]
 Broadening (km/s): [26.6(1.7) 26.6(1.7)]
@@ -970,7 +959,7 @@ Broadening (km/s): [26.6(1.7) 26.6(1.7)]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.legend.Legend at 0x7f4860605390&gt;
+&lt;matplotlib.legend.Legend at 0x7f63c8ea5190&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
