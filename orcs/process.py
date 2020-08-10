@@ -163,6 +163,9 @@ class SpectralCube(fit.SpectralCube):
         """
         BINNING = 6
 
+        nm_laser = float(self.params.nm_laser)
+        calibration_laser_map_orig = np.copy(self.get_calibration_laser_map_orig())
+            
         pixel_size = self.config['PIX_SIZE_CAM1']
 
         if div_nb < 2:
@@ -171,14 +174,12 @@ class SpectralCube(fit.SpectralCube):
 
         if not no_fit:
             if os.path.exists(self._get_skymap_file_path()):
-                logging.info('fitting process already done. Do you really want to redo it again ?')
-                try:
-                    if input('type [yes]: ') != 'yes': no_fit = True
-                except Exception:
-                    no_fit = True
-
+                logging.info('fitting process already done ! set no_fit=True if you do not want to redo it')
+      
         if no_fit:
             logging.warning('Fitting process not done again, only the final sky map is computed')
+            if not os.path.exists(self._get_skymap_file_path()):
+                raise Exception('no fitted data. Please set no_fit=False')
 
         dimx = self.dimx
         dimy = self.dimy
@@ -204,6 +205,7 @@ class SpectralCube(fit.SpectralCube):
 
             exclude_mask = np.zeros((dimx, dimy), dtype=bool)
             if exclude_reg_file_path is not None:
+                logging.info('excluding region from file {}'.format(exclude_reg_file_path))
                 exclude_mask[orb.utils.misc.get_mask_from_ds9_region_file(
                     exclude_reg_file_path,
                     [0, dimx], [0, dimy])] = True
@@ -246,9 +248,11 @@ class SpectralCube(fit.SpectralCube):
                         iv_err = np.nan
                     f.write('{} {} {} {}\n'.format(
                         regions[ireg][0], regions[ireg][1], iv, iv_err))
+                f.flush()
+                    
 
         # fit map
-        with orb.utils.io.open_file(self._get_skymap_file_path(), 'r') as f:
+        with open(self._get_skymap_file_path(), 'r') as f:
             sky_vel_map = list()
             sky_vel_map_err = list()
             x = list()
@@ -263,9 +267,9 @@ class SpectralCube(fit.SpectralCube):
         x = np.array(x)
         y = np.array(y)
         sky_vel_map = np.array(sky_vel_map)
-        logging.debug('x: {}'.format(x))
-        logging.debug('y: {}'.format(y))
-        logging.debug('v: {}'.format(sky_vel_map))
+        logging.info('x: {}'.format(x))
+        logging.info('y: {}'.format(y))
+        logging.info('v: {}'.format(sky_vel_map))
 
         nans = np.isnan(sky_vel_map)
         sky_vel_map[nans] = 0.
@@ -299,8 +303,8 @@ class SpectralCube(fit.SpectralCube):
         (model_calib_map, wf,
          final_sky_vel_map, new_nm_laser) = utils.fit_velocity_error_model(
             x, y, sky_vel_map, sky_vel_map_err,
-            self.params.nm_laser,
-            self.get_calibration_laser_map_orig(),
+             nm_laser,
+            calibration_laser_map_orig,
             pixel_size,
             binning=BINNING)
 

@@ -102,8 +102,7 @@ class SpectralCube(orb.cube.SpectralCube):
         self.debug = bool(debug)
         self.logger = orb.core.Logger(debug=self.debug)
        
-        orb.cube.SpectralCube.__init__(
-            self, cube_path, **kwargs)
+        super().__init__(cube_path, **kwargs)
         
         data_prefix = './' + self.params.project_name + os.sep + self.params.project_name + '.'
         self._data_prefix = data_prefix
@@ -225,8 +224,8 @@ class SpectralCube(orb.cube.SpectralCube):
         flux calibration by default when extracting spectra (the real
         data is in counts) when cube is flux calibrated.
         """
-        spec = orb.cube.SpectralCube.get_spectrum_from_region(
-            self, *args, **kwargs)
+        spec = super().get_spectrum_from_region(
+            *args, **kwargs)
         if self.has_flux_calibration() and self.is_level3():
             spec = spec.multiply(orb.core.Cm1Vector1d(
                 self.params.flambda / self.dimz / self.params.exposure_time,
@@ -348,28 +347,6 @@ class SpectralCube(orb.cube.SpectralCube):
         return self._extract_wrapper(self.get_spectrum_from_region, args, kwargs)
 
         
-    
-##################################################
-#### CLASS CubeJobServer #########################
-##################################################
-
-class CubeJobServer(object):
-
-
-    GET_DATA_TIMEOUT = 10 # timeout to get a data vector in s
-
-    def __init__(self, cube):
-        """
-        Init class
-
-        :param cube: A SpectralCube or SpectralCube instance
-        """
-        if not isinstance(cube, SpectralCube): raise TypeError('Must be an orcs.cube.SpectralCube instance')
-        self.cube = cube
-        self.debug = bool(cube.debug)
-        logging.debug('debug set to {}'.format(self.debug))
-        self.job_server, self.ncpus = orb.utils.parallel.init_pp_server()
-
     def process_by_region(self, func, regions, subtract, args=list(), modules=list(),
                           depfuncs=list()):
 
@@ -380,26 +357,28 @@ class CubeJobServer(object):
 
         theta_orig is the mean original incident angle in the integrated region.
         """
-        self.all_jobs = [(i, regions[i]) for i in range(len(regions))] # jobs to submit
+        job_server, ncpus = orb.utils.parallel.init_pp_server()
+        
+        all_jobs = [(i, regions[i]) for i in range(len(regions))] # jobs to submit
 
         # jobs submit / retrieve loop
         out = list()
-        self.jobs = list() # submitted and unfinished jobs
-        all_jobs_nb = len(self.all_jobs)
+        jobs = list() # submitted and unfinished jobs
+        all_jobs_nb = len(all_jobs)
         progress = orb.core.ProgressBar(all_jobs_nb)
-        while len(self.all_jobs) > 0 or len(self.jobs) > 0:
+        while len(all_jobs) > 0 or len(jobs) > 0:
             while_loop_start = time.time()
 
             # submit jobs
-            while len(self.jobs) < self.ncpus and len(self.all_jobs) > 0:
+            while len(jobs) < ncpus and len(all_jobs) > 0:
                 timer = dict()
                 timer['job_submit_start'] = time.time()
 
                 timer['job_load_data_start'] = time.time()
                 # raw lines extraction (warning: velocity must be
                 # corrected by the function itself)
-                ispectrum = self.cube.get_spectrum_from_region(
-                    self.all_jobs[0][1])
+                ispectrum = self.get_spectrum_from_region(
+                    all_jobs[0][1])
                 if subtract is not None:
                     ispectrum.subtract_sky(subtract)
 
@@ -412,22 +391,21 @@ class CubeJobServer(object):
 
                 timer['job_submit_end'] = time.time()
                 # job submission
-                self.jobs.append([
-                    self.job_server.submit(
+                jobs.append([
+                    job_server.submit(
                         func,
                         args=tuple(all_args),
-                        modules=tuple(modules),
-                        depfuncs=tuple(depfuncs)),
-                    self.all_jobs[0], time.time(), timer])
-                self.all_jobs.pop(0)
-                progress.update(all_jobs_nb - len(self.all_jobs))
+                        modules=tuple(modules)),
+                    all_jobs[0], time.time(), timer])
+                all_jobs.pop(0)
+                progress.update(all_jobs_nb - len(all_jobs))
 
 
             # retrieve all finished jobs
             unfinished_jobs = list()
-            for i in range(len(self.jobs)):
-                ijob, (iregion_index, iregion), stime, timer = self.jobs[i]
-                if ijob.finished:
+            for i in range(len(jobs)):
+                ijob, (iregion_index, iregion), stime, timer = jobs[i]
+                if ijob.job.ready():
 
                     logging.debug('job time since submission: {} s'.format(
                         time.time() - stime))
@@ -439,13 +417,13 @@ class CubeJobServer(object):
                     out.append((iregion_index, ijob(), ispectrum))
                     logging.debug('job time (whole loop): {} s'.format(time.time() - stime))
                 else:
-                    unfinished_jobs.append(self.jobs[i])
-            self.jobs = unfinished_jobs
+                    unfinished_jobs.append(jobs[i])
+            jobs = unfinished_jobs
 
 
         progress.end()
 
-        orb.utils.parallel.close_pp_server(self.job_server)
+        orb.utils.parallel.close_pp_server(job_server)
 
         # reorder out
         ordered_out = list()
@@ -463,7 +441,7 @@ class CubeJobServer(object):
 
 
     def process_by_pixel(self, func, args=list(), modules=list(), out=dict(),
-                         depfuncs=list(), kwargs=dict(),
+                         kwargs=dict(),
                          mask=None, binning=1,
                          timeout=None):
         """Parallelize a function taking binned spectra of the cube as
@@ -488,8 +466,6 @@ class CubeJobServer(object):
 
         :param out: depends on the returned values of func. See param
           func.
-
-        :param depfuncs: Functions of which func depends.
 
         :param kwargs: kwargs of the function func. If supplied,
           kwargs are passed to the function as the last argument in a
@@ -570,42 +546,44 @@ class CubeJobServer(object):
         #         0, cube.dimz, silent=True)
 
         ## function must be serialized (or picked)
+        job_server, ncpus = orb.utils.parallel.init_pp_server()
+        
         func = marshal.dumps(func.__code__)
 
         binning = int(binning)
 
         binned_shape = orb.utils.image.nanbin_image(
-            np.ones((self.cube.dimx, self.cube.dimy)),
+            np.ones((self.dimx, self.dimy)),
             int(binning)).shape
 
         def isbinned(_data):
-            if (_data.shape[0] == self.cube.dimx
-                and _data.shape[1] == self.cube.dimy):
+            if (_data.shape[0] == self.dimx
+                and _data.shape[1] == self.dimy):
                 return False
             elif (_data.shape[0] == binned_shape[0]
                   and _data.shape[1] == binned_shape[1]):
                 return True
-            else: raise Exception('Strange data shape {}. Must be correctly binned ({}, {}) or unbinned ({}, {})'.format(_data.shape, binned_shape[0], binned_shape[1], self.cube.dimx, self.cube.dimy))
+            else: raise Exception('Strange data shape {}. Must be correctly binned ({}, {}) or unbinned ({}, {})'.format(_data.shape, binned_shape[0], binned_shape[1], self.dimx, self.dimy))
 
 
         # check outfile
-        self.out_is_dict = True
+        out_is_dict = True
         if not isinstance(out, dict):
-            self.out_is_dict = False
+            out_is_dict = False
             orb.utils.validate.is_ndarray(out, object_name='out')
             if out.ndim < 2:
                 raise TypeError('out must be at least a 2d numpy.ndarray')
-            elif (out.shape[0], out.shape[1]) != (int(self.cube.dimx), int(self.cube.dimy)):
-                raise TypeError('out.shape must be {}'.format((self.cube.dimx, self.cube.dimy)))
+            elif (out.shape[0], out.shape[1]) != (int(self.dimx), int(self.dimy)):
+                raise TypeError('out.shape must be {}'.format((self.dimx, self.dimy)))
 
         # check mask
         if not mask is None:
             orb.utils.validate.is_2darray(mask, object_name='mask')
-            if mask.shape != (self.cube.dimx, self.cube.dimy):
-                raise TypeError('mask.shape must be {}'.format((self.cube.dimx, self.cube.dimy)))
+            if mask.shape != (self.dimx, self.dimy):
+                raise TypeError('mask.shape must be {}'.format((self.dimx, self.dimy)))
 
         else:
-            mask = np.ones((self.cube.dimx, self.cube.dimy), dtype=bool)
+            mask = np.ones((self.dimx, self.dimy), dtype=bool)
 
         if binning > 1:
             if not isbinned(mask):
@@ -648,7 +626,7 @@ class CubeJobServer(object):
             elif callable(new_arg):
                 # assume new_arg is a function of x, y
                 try:
-                    new_arg(self.cube.dimx/2, self.cube.dimy/2)
+                    new_arg(self.dimx/2, self.dimy/2)
                 except Exception as e:
                     raise Exception('argument is callable but does not show the proper behaviour spectrum = f(x, y): {}'.format(e))
                 is_map = True            
@@ -664,11 +642,11 @@ class CubeJobServer(object):
         logging.info('{} rows to fit'.format(len(xy)))
 
         # jobs will be passed by line
-        self.all_jobs_indexes = list(range(len(xy)))
-        all_jobs_nb = len(self.all_jobs_indexes)
+        all_jobs_indexes = list(range(len(xy)))
+        all_jobs_nb = len(all_jobs_indexes)
 
         # jobs submit / retrieve loop
-        self.jobs = list()
+        jobs = list()
 
         # timeout setup
         process_start_time = time.time()
@@ -677,17 +655,17 @@ class CubeJobServer(object):
             if timeout is not None:
                 if time.time() - process_start_time > timeout * float(np.sum(mask)):
                     logging.warning('process time reached timeout * number of binned pixels = {}*{} s'.format(timeout, np.nansum(mask)))
-                    logging.info(orb.utils.parallel.get_stats_str(self.job_server))
+                    logging.info(orb.utils.parallel.get_stats_str(job_server))
                     return True
             return False
 
         progress = orb.core.ProgressBar(all_jobs_nb)
-        while len(self.all_jobs_indexes) > 0 or len(self.jobs) > 0:
+        while len(all_jobs_indexes) > 0 or len(jobs) > 0:
             if check_timesup(): break
 
 
             # submit jobs
-            while len(self.jobs) < self.ncpus and len(self.all_jobs_indexes) > 0:
+            while len(jobs) < ncpus and len(all_jobs_indexes) > 0:
                 if check_timesup(): break
 
                 timesup = check_timesup()
@@ -695,7 +673,7 @@ class CubeJobServer(object):
                 timer = dict()
                 timer['job_submit_start'] = time.time()
 
-                ix, iy = xy[self.all_jobs_indexes[0]]
+                ix, iy = xy[all_jobs_indexes[0]]
 
                 timer['job_load_data_start'] = time.time()
 
@@ -703,17 +681,19 @@ class CubeJobServer(object):
                 # corrected by the function itself)
 
                 # commented but useful if we want to timeout data access
+                # GET_DATA_TIMEOUT = 10 # timeout to get a data vector in s
+
                 # outdict = orb.utils.parallel.timed_process(
-                #     get_data, self.GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
+                #     get_data, GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
                 # if 'iline' in outdict:
                 #     iline = outdict['iline']
                 # else:
                 #     logging.warning('timeout reached on data extraction')
                 #     break
-                iline = self.cube.get_data(
+                iline = self.get_data(
                     min(ix) * binning, (max(ix) + 1) * binning,
                     iy[0] * binning, (iy[0] + 1) * binning,
-                    0, self.cube.dimz, silent=True)
+                    0, self.dimz, silent=True)
 
 
                 if binning > 1:
@@ -746,20 +726,20 @@ class CubeJobServer(object):
                 timer['job_submit_end'] = time.time()
 
                 # job submission
-                self.jobs.append([
-                    self.job_server.submit(
+                jobs.append([
+                    job_server.submit(
                         process_in_row,
                         args=tuple(all_args),
                         modules=tuple(modules)),
-                    (ix, iy), time.time(), timer, self.all_jobs_indexes[0]])
-                self.all_jobs_indexes.pop(0)
-                progress.update(all_jobs_nb - len(self.all_jobs_indexes))
+                    (ix, iy), time.time(), timer, all_jobs_indexes[0]])
+                all_jobs_indexes.pop(0)
+                progress.update(all_jobs_nb - len(all_jobs_indexes))
 
 
             # retrieve all finished jobs
             unfinished_jobs = list()
-            for i in range(len(self.jobs)):
-                ijob, (ix, iy), stime, timer, ijob_index = self.jobs[i]
+            for i in range(len(jobs)):
+                ijob, (ix, iy), stime, timer, ijob_index = jobs[i]
                 if ijob.job.ready():
                     logging.debug('job {} ({}, {}) finished'.format(ijob_index, ix, iy))
                     logging.debug('job {} time since submission: {} s'.format(
@@ -772,7 +752,7 @@ class CubeJobServer(object):
                     res_row = ijob()
                     for irow in range(len(res_row)):
                         res = res_row[irow]
-                        if self.out_is_dict:
+                        if out_is_dict:
                             if not isinstance(res, dict):
                                 raise TypeError('function result must be a dict if out is a dict but it is {}'.format(type(res)))
                             for ikey in list(res.keys()):
@@ -789,8 +769,8 @@ class CubeJobServer(object):
                                         except TypeError:
                                             raise TypeError('If out dict maps are not set (i.e. out is set to a default dict()) returned values must be a dict of float or a 1d array of floats')
                                     _iout = np.empty(
-                                        (self.cube.dimx//binning,
-                                         self.cube.dimy//binning,
+                                        (self.dimx//binning,
+                                         self.dimy//binning,
                                          np.size(res[ikey])),
                                         dtype=float)
 
@@ -808,26 +788,19 @@ class CubeJobServer(object):
                 elif timeout is not None:
                     _job_elapsed_time_by_pixel = (time.time() - stime) / np.size(ix)
                     if _job_elapsed_time_by_pixel < timeout:
-                        unfinished_jobs.append(self.jobs[i]) # continue waiting
+                        unfinished_jobs.append(jobs[i]) # continue waiting
                     else:
                         logging.warning('job {} timeout for pixels {}, {}'.format(ijob_index, ix, iy[0]))
-                        logging.info(orb.utils.parallel.get_stats_str(self.job_server))
+                        logging.info(orb.utils.parallel.get_stats_str(job_server))
                 else:
-                    unfinished_jobs.append(self.jobs[i])
-            self.jobs = unfinished_jobs
+                    unfinished_jobs.append(jobs[i])
+            jobs = unfinished_jobs
 
         progress.end()
 
-        orb.utils.parallel.close_pp_server(self.job_server)
+        orb.utils.parallel.close_pp_server(job_server)
 
         return out
-
-    def __del__(self):
-        try:
-            orb.utils.parallel.close_pp_server(self.job_server)
-        except IOError: pass
-
-
 
 
 ##################################################
@@ -867,7 +840,7 @@ class LineMaps(orb.core.Tools):
 
         :param kwargs: Kwargs are :meth:`~core.Tools.__init__` kwargs.
         """
-        orb.core.Tools.__init__(self, **kwargs)
+        super().__init__(**kwargs)
         self.__version__ = version.__version__
 
         self.wcs_header = wcs_header

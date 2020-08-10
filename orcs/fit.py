@@ -39,7 +39,7 @@ import orb.utils.io
 import orcs.core
 from . import utils
 
-from orcs.core import LineMaps, CubeJobServer
+from orcs.core import LineMaps
 
 #################################################
 #### CLASS SpectralCube #########################
@@ -140,13 +140,11 @@ class SpectralCube(orcs.core.SpectralCube):
         inputparams, kwargs = preparation_spectrum.prepare_fit(
             lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
         
-        cjs = CubeJobServer(self)
-        all_fit = cjs.process_by_region(
+        all_fit = self.process_by_region(
             _fit_lines, regions, subtract_spectrum,
             args=(inputparams, kwargs,
                   snr_guess, max_iter, self.debug),
             modules=())
-
         lines = inputparams['allparams']['pos_guess_mean']
 
         # process results
@@ -662,8 +660,7 @@ class SpectralCube(orcs.core.SpectralCube):
             lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
         spectrum_bundle = preparation_spectrum.to_bundle()
 
-        cjs = orcs.core.CubeJobServer(self)
-        out = cjs.process_by_pixel(fit_lines_in_pixel,
+        out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
                                          snr_guess, sky_velocity_map,
                                          calibration_coeff_map, calibration_coeff_map_orig,
@@ -677,7 +674,6 @@ class SpectralCube(orcs.core.SpectralCube):
                                    mask=mask,
                                    binning=binning,
                                    timeout=timeout)
-
         for key in out:
             linemaps.set_map(key, out[key],
                              x_range=[0, self.dimx],

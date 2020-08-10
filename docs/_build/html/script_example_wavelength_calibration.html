@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs unknown documentation</title>
+  <title>Wavelength recalibration with the sky lines (Mendel OH bands) &mdash; Orcs latest documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                unknown
+                lastest
               </div>
             
           
@@ -105,8 +105,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#Introduction">Introduction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#First-step:-checking-the-calibration">First step: checking the calibration</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Second-step:-Mapping-the-sky-velocity">Second step: Mapping the sky velocity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Resulting-data">Resulting data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Calibrating-your-data-with-the-sky-velocity-map">Calibrating your data with the sky velocity map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Ouputs">Ouputs</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_image_registration.html">Image registration</a></li>
@@ -465,17 +464,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
 <span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -483,10 +472,10 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># load spectral cube</span>
 <span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
@@ -497,59 +486,28 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Data shape : (2048, 2064, 840)
-INFO| Cube is in WAVENUMBER (cm-1)
-INFO| Cube is CALIBRATED in wavenumber
+master.fa09a|INFO| Cube is level 3
+master.fa09a|INFO| shape: (2048, 2064, 840)
+master.fa09a|INFO| wavenumber calibration: True
+master.fa09a|INFO| flux calibration: True
+master.fa09a|INFO| wcs calibration: True
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># extract and plot a spectrum of a large integrated region. The sky lines should appear.</span>
-<span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">extract_spectrum</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># extract and plot a spectrum of a large integrated region. Sky lines should be visible.</span>
+<span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Number of integrated pixels: 1257
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
- [==========] [100%] [completed in 1.77 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
- [==========] [100%] [completed in 0.550 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -561,7 +519,7 @@ INFO| Init of the parallel processing server with 4 threads
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_5_5.png" src="_images/script_example_wavelength_calibration_5_5.png" />
+<img alt="_images/script_example_wavelength_calibration_4_1.png" src="_images/script_example_wavelength_calibration_4_1.png" />
 </div>
 </div>
 <div class="section" id="fitting-the-sky-spectrum">
@@ -569,22 +527,22 @@ INFO| Init of the parallel processing server with 4 threads
 <p>we can also fit the integrated spectrum because there si a large number of sky lines and because we are not interested in a perfect fit (only the velocity is required), we can use a simple ‘sinc’ model with a fixed fwhm. All the lines are set to share the same velocity parameter and we set an inital guess of the velocity around 80 km/s. This general bias of 80 km/s is known (<a class="reference external" href="https://arxiv.org/abs/1706.03230">Martin et al. 2017b</a>) and comes from the error made on the real wavelength of the
 calibration laser (which is falsely considered to be at 453.5 nm).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">sky_lines_cm1</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_sky_lines</span><span class="p">()</span>
-<span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">sky_lines_cm1</span><span class="p">,</span>
-                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
-                                                     <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
-                                                     <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
-                                                     <span class="n">nofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                                     <span class="n">pos_cov</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
-<span class="nb">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
-<span class="nb">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
+<span class="n">fit_res</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sky_lines_cm1</span><span class="p">,</span>
+                       <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                       <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                       <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                       <span class="n">nofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">pos_cov</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">fit_res</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -592,72 +550,13 @@ calibration laser (which is falsely considered to be at 453.5 nm).</p>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Number of integrated pixels: 1257
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 0.028 s]
+Velocity:  77.5(1.5)
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
- [==========] [100%] [completed in 0.655 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/core.py:1673: RuntimeWarning: invalid value encountered in sqrt
-  noise_counts = np.sqrt(total_counts)
-</span>
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-
-===== Results ======
-Velocity:  [72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5)
- 72.5(1.5) 72.5(1.5)]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -669,7 +568,7 @@ Velocity:  [72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_7_7.png" src="_images/script_example_wavelength_calibration_7_7.png" />
+<img alt="_images/script_example_wavelength_calibration_6_2.png" src="_images/script_example_wavelength_calibration_6_2.png" />
 </div>
 </div>
 </div>
@@ -678,11 +577,11 @@ Velocity:  [72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5
 <h2>Second step: Mapping the sky velocity<a class="headerlink" href="#Second-step:-Mapping-the-sky-velocity" title="Permalink to this headline">¶</a></h2>
 <p>Warning: this process can take a long time because a spectrum is extracted and fitted for each point of a 40x40 grid by default. For a basic example it is recommended to limit the number of grid division to 10x10.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span><span class="o">.</span><span class="n">map_sky_velocity</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">div_nb</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># the mean velocity bias is set around 80 km/s</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cube</span><span class="o">.</span><span class="n">map_sky_velocity</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">div_nb</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="s1">&#39;m31_exclude.reg&#39;</span><span class="p">)</span> <span class="c1"># the mean velocity bias is set around 80 km/s</span>
 </pre></div>
 </div>
 </div>
@@ -691,7 +590,12 @@ Velocity:  [72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5) 72.5(1.5
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| fitting process already done. Do you really want to redo it again ?
+master.fa09a|INFO| fitting process already done ! set no_fit=True if you do not want to redo it
+master.fa09a|INFO| X range: 0 2048, Y range: 0 2064
+master.fa09a|INFO| Radius: 30
+master.fa09a|INFO| excluding region from file m31_exclude.reg
+master.fa09a|INFO| 58 regions to fit
+master.fa09a|INFO| 88 sky lines to fit
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -699,26 +603,7 @@ INFO| fitting process already done. Do you really want to redo it again ?
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-type [yes]: yes
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| X range: 0 2048, Y range: 0 2064
-INFO| Radius: 85.3333333333
-INFO| 100 regions to fit
-INFO| 93 sky lines to fit
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
- loading region: Shape : circle ( Number(1861.81818),Number(1876.36364),Number(85.33333) )
+ loading region: Shape : circle ( Number(1861.81818),Number(1876.36364),Number(30.00000) )
 
 </pre></div></div>
 </div>
@@ -727,7 +612,7 @@ INFO| 93 sky lines to fit
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Init of the parallel processing server with 4 threads
+master.fa09a|INFO| Init of the parallel processing server with 32 threads
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -735,7 +620,7 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 30m1s]
+ [==========] [100%] [completed in 2m51s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -743,7 +628,7 @@ INFO| Init of the parallel processing server with 4 threads
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Velocity of the first line (km/s): 75.5(1.2)
+master.fa09a|INFO| Closing parallel processing server
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -759,345 +644,220 @@ INFO| Velocity of the first line (km/s): 75.5(1.2)
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Velocity of the first line (km/s): 75.8(1.2)
-INFO| Velocity of the first line (km/s): 73.8(1.5)
-INFO| Velocity of the first line (km/s): 71.6(1.4)
-INFO| Velocity of the first line (km/s): 72.5(1.7)
-INFO| Velocity of the first line (km/s): 69.9(1.6)
-INFO| Velocity of the first line (km/s): 67.5(1.6)
-INFO| Velocity of the first line (km/s): 66.6(1.5)
-INFO| Velocity of the first line (km/s): 72.7(1.5)
-INFO| Velocity of the first line (km/s): 70.7(2.0)
-INFO| Velocity of the first line (km/s): 77.0(1.3)
-INFO| Velocity of the first line (km/s): 76.6(1.3)
-INFO| Velocity of the first line (km/s): 77.0(1.3)
-INFO| Velocity of the first line (km/s): 72.7(1.5)
-INFO| Velocity of the first line (km/s): 70.2(1.6)
-INFO| Velocity of the first line (km/s): 65.8(1.5)
-INFO| Velocity of the first line (km/s): 67.8(1.5)
-INFO| Velocity of the first line (km/s): 68.4(1.6)
-INFO| Velocity of the first line (km/s): 67.5(1.5)
-INFO| Velocity of the first line (km/s): 71.9(1.7)
-INFO| Velocity of the first line (km/s): 77.5(1.4)
-INFO| Velocity of the first line (km/s): 78.0(1.3)
-INFO| Velocity of the first line (km/s): 76.9(1.3)
-INFO| Velocity of the first line (km/s): 74.6(1.5)
-INFO| Velocity of the first line (km/s): 76.3(1.6)
-INFO| Velocity of the first line (km/s): 78.7(1.7)
-INFO| Velocity of the first line (km/s): 95.6(1.8)
-INFO| Velocity of the first line (km/s): 61.9(1.6)
-INFO| Velocity of the first line (km/s): 59.6(1.4)
-INFO| Velocity of the first line (km/s): 73.7(1.5)
-INFO| Velocity of the first line (km/s): 78.5(1.2)
-INFO| Velocity of the first line (km/s): 77.0(1.3)
-INFO| Velocity of the first line (km/s): 77.4(1.7)
-INFO| Velocity of the first line (km/s): 62.9(1.8)
-INFO| Velocity of the first line (km/s): 71.5(2.0)
-INFO| Velocity of the first line (km/s): 83.8(2.1)
-INFO| Velocity of the first line (km/s): 54.1(1.6)
-INFO| Velocity of the first line (km/s): 50.8(1.5)
-INFO| Velocity of the first line (km/s): 75.2(1.3)
-INFO| Velocity of the first line (km/s): 78.6(1.3)
-INFO| Velocity of the first line (km/s): 73.2(1.9)
-INFO| Velocity of the first line (km/s): 80.2(1.9)
-INFO| Velocity of the first line (km/s): 96.9(2.4)
-INFO| Velocity of the first line (km/s): 68.6(2.7)
-INFO| Velocity of the first line (km/s): 77.2(2.0)
-INFO| Velocity of the first line (km/s): 70.0(1.7)
-INFO| Velocity of the first line (km/s): 109.7(2.0)
-INFO| Velocity of the first line (km/s): 79.8(1.6)
-INFO| Velocity of the first line (km/s): 74.7(1.2)
-INFO| Velocity of the first line (km/s): 79.2(1.3)
-INFO| Velocity of the first line (km/s): 76.9(1.5)
-INFO| Velocity of the first line (km/s): 80.0(2.2)
-INFO| Velocity of the first line (km/s): 91.5(2.6)
-INFO| Velocity of the first line (km/s): 91.9(2.9)
-INFO| Velocity of the first line (km/s): 85.7(2.9)
-INFO| Velocity of the first line (km/s): 106.5(2.1)
-INFO| Velocity of the first line (km/s): 78.5(1.9)
-INFO| Velocity of the first line (km/s): 75.3(1.5)
-INFO| Velocity of the first line (km/s): 77.5(1.1)
-INFO| Velocity of the first line (km/s): 79.5(1.4)
-INFO| Velocity of the first line (km/s): 78.3(1.7)
-INFO| Velocity of the first line (km/s): 80.7(2.6)
-INFO| Velocity of the first line (km/s): 78.4(2.6)
-INFO| Velocity of the first line (km/s): 83.0(2.6)
-INFO| Velocity of the first line (km/s): 61.3(2.4)
-INFO| Velocity of the first line (km/s): 76.4(2.2)
-INFO| Velocity of the first line (km/s): 77.7(1.7)
-INFO| Velocity of the first line (km/s): 73.6(1.4)
-INFO| Velocity of the first line (km/s): 80.7(1.7)
-INFO| Velocity of the first line (km/s): 80.2(1.4)
-INFO| Velocity of the first line (km/s): 80.5(1.5)
-INFO| Velocity of the first line (km/s): 82.6(2.5)
-INFO| Velocity of the first line (km/s): 79.7(2.5)
-INFO| Velocity of the first line (km/s): 80.8(2.7)
-INFO| Velocity of the first line (km/s): 83.9(2.3)
-INFO| Velocity of the first line (km/s): 78.4(1.9)
-INFO| Velocity of the first line (km/s): 72.5(1.3)
-INFO| Velocity of the first line (km/s): 77.2(1.2)
-INFO| Velocity of the first line (km/s): 80.00(98)
-INFO| Velocity of the first line (km/s): 84.2(1.5)
-INFO| Velocity of the first line (km/s): 81.0(1.4)
-INFO| Velocity of the first line (km/s): 86.3(1.7)
-INFO| Velocity of the first line (km/s): 82.1(2.0)
-INFO| Velocity of the first line (km/s): 87.0(2.0)
-INFO| Velocity of the first line (km/s): 81.8(1.9)
-INFO| Velocity of the first line (km/s): 80.5(1.6)
-INFO| Velocity of the first line (km/s): 82.4(1.1)
-INFO| Velocity of the first line (km/s): 80.33(93)
-INFO| Velocity of the first line (km/s): 86.09(89)
-INFO| Velocity of the first line (km/s): 84.4(1.7)
-INFO| Velocity of the first line (km/s): 82.8(1.4)
-INFO| Velocity of the first line (km/s): 82.3(1.6)
-INFO| Velocity of the first line (km/s): 83.9(1.7)
-INFO| Velocity of the first line (km/s): 83.9(1.5)
-INFO| Velocity of the first line (km/s): 85.7(1.4)
-INFO| Velocity of the first line (km/s): 83.8(1.1)
-INFO| Velocity of the first line (km/s): 83.41(78)
-INFO| Velocity of the first line (km/s): 83.27(81)
-INFO| Velocity of the first line (km/s): 83.79(69)
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/process.py:293: RuntimeWarning: invalid value encountered in greater
-  sky_vel_map_err[sky_vel_map_err &gt; threshold] = np.nan
-</span>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/utils.py:234: RuntimeWarning: invalid value encountered in greater
+master.fa09a|INFO| parallel processing closed
+master.fa09a|INFO| Velocity of the first line (km/s): 78.9(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 76.3(2.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 71.8(1.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.3(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 71.7(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 67.1(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 65.2(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 59.3(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 61.5(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 61.1(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.1(2.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 76.0(2.1)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.7(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 72.4(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 69.7(3.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 56.5(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 68.3(3.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 62.0(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 62.5(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 60.2(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.9(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.9(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 73.6(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 48.6(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 62.4(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.3(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.6(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 103.1(3.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 68.7(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 76.1(2.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.8(3.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 67.5(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 79.9(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.7(3.1)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.6(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 79.5(3.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 66.5(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 68.1(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 73.3(3.1)
+master.fa09a|INFO| Velocity of the first line (km/s): 59.8(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 66.9(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.8(1.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 81.4(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 80.2(3.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.7(3.1)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.3(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.1(1.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.8(1.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 79.9(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.4(3.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.9(3.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.4(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 76.2(3.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.8(2.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.3(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.7(1.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 71.6(1.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.3(1.3)
+master.fa09a|INFO| x: [ 186.18181818  186.18181818  186.18181818  186.18181818  186.18181818
+  186.18181818  186.18181818  186.18181818  186.18181818  186.18181818
+  372.36363636  372.36363636  372.36363636  372.36363636  372.36363636
+  372.36363636  372.36363636  372.36363636  372.36363636  372.36363636
+  558.54545455  558.54545455  558.54545455  558.54545455  558.54545455
+  744.72727273  744.72727273  744.72727273  744.72727273  930.90909091
+  930.90909091  930.90909091 1117.09090909 1117.09090909 1117.09090909
+ 1303.27272727 1303.27272727 1303.27272727 1489.45454545 1489.45454545
+ 1489.45454545 1489.45454545 1675.63636364 1675.63636364 1675.63636364
+ 1675.63636364 1675.63636364 1675.63636364 1861.81818182 1861.81818182
+ 1861.81818182 1861.81818182 1861.81818182 1861.81818182 1861.81818182
+ 1861.81818182 1861.81818182 1861.81818182]
+master.fa09a|INFO| y: [ 187.63636364  375.27272727  562.90909091  750.54545455  938.18181818
+ 1125.81818182 1313.45454545 1501.09090909 1688.72727273 1876.36363636
+  187.63636364  375.27272727  562.90909091  750.54545455  938.18181818
+ 1125.81818182 1313.45454545 1501.09090909 1688.72727273 1876.36363636
+  187.63636364  375.27272727  562.90909091 1688.72727273 1876.36363636
+  187.63636364  375.27272727 1688.72727273 1876.36363636  187.63636364
+  375.27272727 1876.36363636  187.63636364 1688.72727273 1876.36363636
+  187.63636364 1688.72727273 1876.36363636  187.63636364 1501.09090909
+ 1688.72727273 1876.36363636  187.63636364  375.27272727 1313.45454545
+ 1501.09090909 1688.72727273 1876.36363636  187.63636364  375.27272727
+  562.90909091  750.54545455  938.18181818 1125.81818182 1313.45454545
+ 1501.09090909 1688.72727273 1876.36363636]
+master.fa09a|INFO| v: [ 78.86042362  76.2582753   71.82992727  70.32555007  71.72235552
+  67.14847511  65.20581426  59.34883958  61.47513547  61.12081898
+  75.14513547  76.0081303   77.70637615  72.44596251  69.74664224
+  56.45854195  68.31005925  62.01759568  62.49686679  60.21924715
+  77.91238292  77.94153777  73.6394465   48.57688216  62.35858405
+  78.27470008  74.63956925 103.07600508  68.67205024  76.14311239
+  78.83157028  67.46578524  79.91450518  74.74830252  70.61836475
+  79.51063809  66.50691762  68.11838885  73.28617653  59.77590267
+  66.89597323  70.75022847  81.37248121  80.17863546  70.68674844
+  77.32174855  70.06751036  74.78571896  79.90117383  78.43339076
+  77.92255972  77.35418943  76.19160053  74.84503818  75.31922486
+  75.6812475   71.59869116  74.28001552]
+<span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/utils.py:212: RuntimeWarning: invalid value encountered in greater
   vel[vel &gt; np.nanpercentile(vel, 95)] = np.nan
 </span>
-INFO| First laser wavelentgh calibration estimation: 543.360393931 nm
-INFO| Angle at the center of the frame: 15.4961225377
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1054: RuntimeWarning: invalid value encountered in less
-  calib_laser_map[np.nonzero(calib_laser_map &lt; value_min)] = np.nan
-</span>
-INFO| &gt; Binning calibration map
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:938: RuntimeWarning: Mean of empty slice
+master.fa09a|INFO| First laser wavelentgh calibration estimation: 543.3701006659054 nm
+master.fa09a|INFO| Angle at the center of the frame: 15.495422711743403
+master.fa09a|INFO| &gt; Binning calibration map
+<span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1074: RuntimeWarning: Mean of empty slice
   return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
 </span>
-INFO| &gt; Calibration laser map fit
-INFO|   &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
-INFO|     &gt; Calibration laser map fit parameters:
-    distance to mirror: 23.6929241755 cm
+master.fa09a|INFO| &gt; Calibration laser map fit
+master.fa09a|INFO|   &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
+master.fa09a|INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 263936699.3150021 cm
     X angle from the optical axis to the center: 0.0 degrees (Fixed)
-    Y angle from the optical axis to the center: 15.5034808559 degrees
+    Y angle from the optical axis to the center: 15.495422711743405 degrees
     Tip-tilt angle of the detector along X: 0.0 degrees (Fixed)
     Tip-tilt angle of the detector along Y: 0.0 degrees (Fixed)
     Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.360393931 nm (Fixed)
-    Error on fit: mean -1.14673527496e-06, std 0.0515053224534 (in nm)
-    Error on fit: mean -0.000633135183075, std 28.4371052962 (in km/s)
-INFO|   &gt; Second fit on the central portion of the calibration laser map (30.0% of the total size)
-INFO|     &gt; Calibration laser map fit parameters:
-    distance to mirror: 23.6769365598 cm
-    X angle from the optical axis to the center: -0.467348352077 degrees
-    Y angle from the optical axis to the center: 15.4964238437 degrees
-    Tip-tilt angle of the detector along X: 0.42697977166 degrees
-    Tip-tilt angle of the detector along Y: -1.21990584691 degrees
+    Calibration laser wavelength: 543.3701006659054 nm (Fixed)
+    Error on fit: mean -1.4861024538773338e-15, std 1.5695392288219445e-07 (in nm)
+    Error on fit: mean -8.204918445399005e-13, std 8.665581121772023e-05 (in km/s)
+master.fa09a|INFO|   &gt; Second fit on the central portion of the calibration laser map (30.0% of the total size)
+master.fa09a|INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 270667216.2431192 cm
+    X angle from the optical axis to the center: 0.0 degrees
+    Y angle from the optical axis to the center: 15.495422710465332 degrees
+    Tip-tilt angle of the detector along X: 0.0 degrees
+    Tip-tilt angle of the detector along Y: 0.003496501989666831 degrees
     Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.360393931 nm (Fixed)
-    Error on fit: mean -3.7990067481e-07, std 0.000789283567367 (in nm)
-    Error on fit: mean -0.000209750662205, std 0.435779038838 (in km/s)
-INFO|   &gt; Third fit on a larger portion of the map (50.0% of the total size)
-INFO|     &gt; Calibration laser map fit parameters:
-    distance to mirror: 23.7139453434 cm
-    X angle from the optical axis to the center: -0.467712143263 degrees
-    Y angle from the optical axis to the center: 15.4967978522 degrees
-    Tip-tilt angle of the detector along X: 0.302814070934 degrees
-    Tip-tilt angle of the detector along Y: -0.700373883437 degrees
+    Calibration laser wavelength: 543.3701006659054 nm (Fixed)
+    Error on fit: mean -3.4870814500274624e-09, std 1.5305104139895723e-07 (in nm)
+    Error on fit: mean -1.9252521140309393e-06, std 8.450099179807189e-05 (in km/s)
+master.fa09a|INFO|   &gt; Third fit on a larger portion of the map (50.0% of the total size)
+master.fa09a|INFO|     &gt; Calibration laser map fit parameters:
+    distance to mirror: 270667216.2431192 cm
+    X angle from the optical axis to the center: 0.0 degrees
+    Y angle from the optical axis to the center: 15.495422710465332 degrees
+    Tip-tilt angle of the detector along X: 0.0 degrees
+    Tip-tilt angle of the detector along Y: 0.0 degrees
     Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.360393931 nm (Fixed)
-    Error on fit: mean -2.79665822043e-06, std 0.00312193857261 (in nm)
-    Error on fit: mean -0.0015440902125, std 1.72368391632 (in km/s)
-INFO|   &gt; Zernike polynomials fit of the residual wavefront
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:54: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
-  r0v = np.linspace(-1-center[0], 1-center[0], r0).astype(dtype).reshape(-1,1)
+    Calibration laser wavelength: 543.3701006659054 nm (Fixed)
+    Error on fit: mean -3.487084368513622e-09, std 2.5708928457980605e-07 (in nm)
+    Error on fit: mean -1.925253725355977e-06, std 0.00014194153355037787 (in km/s)
+master.fa09a|INFO|   &gt; Zernike polynomials fit of the residual wavefront
+<span class="ansi-yellow-fg">master.fa09a|WARNING| &lt;string&gt;:6: DeprecationWarning: object of type &lt;class &#39;float&#39;&gt; cannot be safely interpreted as an integer.
 </span>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:55: DeprecationWarning: object of type &lt;type &#39;float&#39;&gt; cannot be safely interpreted as an integer.
-  r1v = np.linspace(-1-center[1], 1-center[1], r1).astype(dtype).reshape(1,-1)
+<span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:300: FutureWarning: `rcond` parameter will change to the default of machine precision times ``max(M, N)`` where M and N are the input matrix dimensions.
+To use the future default and silence this warning we advise to pass `rcond=None`, to keep using the old, explicitly pass `rcond=-1`.
+  wf_zern_vec = np.linalg.lstsq((zern_basismat[:, grid_vec] * weight).T, wf_w.ravel())[0]
 </span>
-<span class="ansi-yellow-fg">WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:78: DeprecationWarning: `factorial` is deprecated!
-Importing `factorial` from scipy.misc is deprecated in scipy 1.0.0. Use `scipy.special.factorial` instead.
-  wf += rho**(n-2.0*k) * (-1.0)**k * fac(n-k) / ( fac(k) * fac( (n+m)/2.0 - k ) * fac( (n-m)/2.0 - k ) )
-</span>
-INFO| Standard deviation of the residual: 1.84988533513e-05
-INFO| Median relative error (err/val)): 0.05%
-INFO| &gt; final error (std on 50.0% of the total size): 1.764e-05 nm, 9.739e-03 km/s
-INFO|     &gt; New calibration laser map fit parameters:
-    distance to mirror: 23.6645056026 cm
-    X angle from the optical axis to the center: -0.0876246192104 degrees
-    Y angle from the optical axis to the center: 15.4806867301 degrees
-    Tip-tilt angle of the detector along X: 4.61907978407 degrees
-    Tip-tilt angle of the detector along Y: 0.330879299387 degrees
-    Rotation angle of the detector: 1.41678376849 degrees
-    Calibration laser wavelength: 543.423849077 nm
+master.fa09a|INFO| Standard deviation of the residual: 7.789107164675645e-11
+master.fa09a|INFO| Median relative error (err/val)): 0.01%
+master.fa09a|INFO| &gt; final error (std on 50.0% of the total size): 1.606e-11 nm, 8.865e-09 km/s
+master.fa09a|INFO|     &gt; New calibration laser map fit parameters:
+    distance to mirror: -282031697934.2675 cm
+    X angle from the optical axis to the center: 0.0 degrees
+    Y angle from the optical axis to the center: 15.569878356725365 degrees
+    Tip-tilt angle of the detector along X: 0.0 degrees
+    Tip-tilt angle of the detector along Y: 7.218995916765718 degrees
+    Rotation angle of the detector: 0.0 degrees
+    Calibration laser wavelength: 543.1740675641056 nm
 
-INFO| fit residual std (in km/s):
-INFO| median error on the data (in km/s)
-INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.calibration_laser_map.fits in 0.24 s
-INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.wavefront_map.fits in 0.46 s
-INFO| Data written as M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits in 0.27 s
+master.fa09a|INFO| fit residual std (in km/s):
+master.fa09a|INFO| median error on the data (in km/s)
+master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.calibration_laser_map.fits in 0.16 s
+master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.wavefront_map.fits in 0.14 s
+master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.skymap.fits in 0.14 s
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_9.png" src="_images/script_example_wavelength_calibration_9_9.png" />
+<img alt="_images/script_example_wavelength_calibration_8_7.png" src="_images/script_example_wavelength_calibration_8_7.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_10.png" src="_images/script_example_wavelength_calibration_9_10.png" />
+<img alt="_images/script_example_wavelength_calibration_8_8.png" src="_images/script_example_wavelength_calibration_8_8.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_11.png" src="_images/script_example_wavelength_calibration_9_11.png" />
+<img alt="_images/script_example_wavelength_calibration_8_9.png" src="_images/script_example_wavelength_calibration_8_9.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_12.png" src="_images/script_example_wavelength_calibration_9_12.png" />
+<img alt="_images/script_example_wavelength_calibration_8_10.png" src="_images/script_example_wavelength_calibration_8_10.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_13.png" src="_images/script_example_wavelength_calibration_9_13.png" />
+<img alt="_images/script_example_wavelength_calibration_8_11.png" src="_images/script_example_wavelength_calibration_8_11.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_9_14.png" src="_images/script_example_wavelength_calibration_9_14.png" />
+<img alt="_images/script_example_wavelength_calibration_8_12.png" src="_images/script_example_wavelength_calibration_8_12.png" />
 </div>
 </div>
 </div>
-<div class="section" id="Resulting-data">
-<h2>Resulting data<a class="headerlink" href="#Resulting-data" title="Permalink to this headline">¶</a></h2>
-<p>The most important result is the skymap which gives the modelized velocity of the sky in the field of view and permit to correct the measured velocities in the cube.This map is named <code class="docutils literal notranslate"><span class="pre">*skymap.fits</span></code>.</p>
+<div class="section" id="Ouputs">
+<h2>Ouputs<a class="headerlink" href="#Ouputs" title="Permalink to this headline">¶</a></h2>
+<p>The most important output is the skymap which gives the modelized velocity of the sky in the field of view and permit to correct the measured velocities in the cube.This map is named <code class="docutils literal notranslate"><span class="pre">*skymap.fits</span></code>. You can add it to the obtained velocity maps to correct the velocity.</p>
 <p>In this particular case this is <code class="docutils literal notranslate"><span class="pre">M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits</span></code></p>
-<p>The histogram displays the difference between the measured velocity and the fitted velocity at each valid data point.</p>
-<p>You can see by looking at the other maps that in the cas of M31 there are some data points at the center of the field which could not give a valid velocity of the sky. This comes from the fact that M31 is very bright at the center and the sky lines are lost in the noise produced by the high continuum background. Modelling the interferometer makes possible to estimate the velocity of the lines at the center of the field where no real data has been obtained. And the result is stricking, it works
-particularly well even if the case of M31 (<a class="reference external" href="https://arxiv.org/abs/1707.01366">Martin et al. 2017a</a>)</p>
-</div>
-<div class="section" id="Calibrating-your-data-with-the-sky-velocity-map">
-<h2>Calibrating your data with the sky velocity map<a class="headerlink" href="#Calibrating-your-data-with-the-sky-velocity-map" title="Permalink to this headline">¶</a></h2>
-<p>Once the velocity map is passed to the SpectralCube class, the class will internaly make the appropriate corrections so that the measured velocity of any spectrum will be corrected. But it will also correct the spectral misalignment of the spectra before extracting the data which should have an effect on the broadening of the lines when a spectrum is integrated over a large field of view with a non-negligible gradient on the velocity calibration.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># the computed sky velocity map is passed to cube</span>
-<span class="n">cube</span><span class="o">.</span><span class="n">correct_wavelength</span><span class="p">(</span><span class="s1">&#39;M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The same sky spectrum is now extracted and fitted and the measured velocity is now similar to 0 km/s.</span>
-<span class="c1"># Note that the calibration map used here has not been calculated with a 40x40 grid. The calibration</span>
-<span class="c1"># quality would have been better in this case.</span>
-
-<span class="n">sky_lines_cm1</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_sky_lines</span><span class="p">()</span>
-<span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">fit_res</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">sky_lines_cm1</span><span class="p">,</span>
-                                                     <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
-                                                     <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
-                                                     <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
-                                                     <span class="n">nofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                                     <span class="n">pos_cov</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
-<span class="nb">print</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">===== Results ======&#39;</span>
-<span class="nb">print</span> <span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Number of integrated pixels: 1257
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
- [==========] [100%] [completed in 0.046 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Init of the parallel processing server with 4 threads
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
- [==========] [100%] [completed in 1.21 s]
-
-===== Results ======
-Velocity:  [-1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5)
- -1.3(1.5) -1.3(1.5)]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(14500, 15500)
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/script_example_wavelength_calibration_13_5.png" src="_images/script_example_wavelength_calibration_13_5.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
+<p>The histogram above shows the difference between the measured velocity and the fitted velocity at each valid data point.</p>
+<p>You can see that there are some data points at the center of the field which were excluded from the fit. This comes from the fact that M31 is very bright at the center and the sky lines are lost in the noise produced by the high continuum background. Modelling the interferometer makes possible to estimate the velocity of the lines at the center of the field where no velocity measurement could be done. And the result is stricking, it works particularly well even if the case of M31 (<a class="reference external" href="https://arxiv.org/abs/1707.01366">Martin et
+al. 2017a</a>)</p>
 </div>
 </div>
 
@@ -1122,7 +882,7 @@ Velocity:  [-1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5) -1.3(1.5
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2017, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
 
     </p>
   </div>
