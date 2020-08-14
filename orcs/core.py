@@ -103,7 +103,12 @@ class SpectralCube(orb.cube.SpectralCube):
         self.logger = orb.core.Logger(debug=self.debug)
        
         super().__init__(cube_path, **kwargs)
-        
+
+        if self.is_level1():
+            filter_name = self.params['filter_name']
+            if 'filter_' in filter_name:
+                filter_name = os.path.splitext(os.path.split(filter_name)[1])[0].split('_')[1]
+            self.params['project_name'] = self.params['object_name'] + '_' + filter_name
         data_prefix = './' + self.params.project_name + os.sep + self.params.project_name + '.'
         self._data_prefix = data_prefix
         self._data_path_hdr = self._get_data_path_hdr()
@@ -799,7 +804,7 @@ class SpectralCube(orb.cube.SpectralCube):
         progress.end()
 
         orb.utils.parallel.close_pp_server(job_server)
-
+        
         return out
 
 

@@ -95,7 +95,6 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a></li>
@@ -120,9 +119,6 @@
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 </ul>
 
             
@@ -449,300 +445,325 @@ div.rendered_html tbody tr:hover {
 <h1>Image registration<a class="headerlink" href="#Image-registration" title="Permalink to this headline">¶</a></h1>
 <p>In some cases a calibration image of a field containing a lot of stars obtained with SITELLE in the same filter and during the same run as the science data can be used to compute a distortion model that can be then used directly to enhance the astrometrical calibration of the science cube which may have much less stars. The distortion model is then kept as is and only the basic registration parameters are recomputed (see Martin el al. 2017, <a class="reference external" href="http://adsabs.harvard.edu/abs/2017arXiv170701366M">http://adsabs.harvard.edu/abs/2017arXiv170701366M</a>)</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">orb.astrometry</span> <span class="kn">import</span> <span class="n">Astrometry</span>
-<span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="k">as</span> <span class="nn">io</span>
-<span class="kn">from</span> <span class="nn">orb.core</span> <span class="kn">import</span> <span class="n">Logger</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">orb.image</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="c1"># useful to get logging output. orb and orcs use the logging package which is automatically set to INFO level when a cube is loaded.</span>
+<span class="c1"># But, as we are not loading a cube this time and only working on images, you must do it manually.</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="Initial-calibration">
 <h2>Initial calibration<a class="headerlink" href="#Initial-calibration" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">target_radec</span></code> and <code class="docutils literal notranslate"><span class="pre">target_xy</span></code> are the initial coordinates of the registration procedure. They must be taken near the center of the image to register and can be obtained using, e.g. the Digital Sky Survey (<a class="reference external" href="http://archive.stsci.edu/cgi-bin/dss_form">http://archive.stsci.edu/cgi-bin/dss_form</a>).</p>
-<p><strong>warning</strong> don’t forget that ds9 is indexed (1,1) and python is indexed (0,0). i.e. you must subtract 1 to x and y image coordinates if you read your image with ds9.</p>
-<p><strong>note: This process is best done two times. The first time only the center of the field of view is considered and a rough primary distortion field is obtained that can be used the second time to compute a distortion model over the whole field of view</strong>. Here it is done only once for the sake of clarity.</p>
+<p><code class="docutils literal notranslate"><span class="pre">target_ra</span></code> and <code class="docutils literal notranslate"><span class="pre">target_dec</span></code> are the celestial coordinates at the center of the image.</p>
+<p><strong>note: this process can be done in two steps. For the first step we are only concerned with the calibration of the center of the image. During the second step a distortion model is computed over the whole field of view</strong>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">)</span>
+<span class="c1"># in case any wrong wcs parameters were stored in the header, it is safe to reset the wcs to get a fresh start before the registration.</span>
+<span class="n">im</span><span class="o">.</span><span class="n">reset_wcs</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># the HDF5 format is the native format for orb and orcs and you are sure to keep all the data with it.</span>
+<span class="c1"># But for an image you can, in principle, safely use the fits format.</span>
+<span class="n">im</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Data written as M1-71.deep_frame.wcs.init.fits in 0.05 s
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># now we will check the results of the calibration by loading the positions of the stars in the field from the gaia catalog</span>
+<span class="c1"># before plotting them on the image</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
+<span class="n">sl</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_stars_from_catalog</span><span class="p">(</span><span class="n">max_stars</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Sending query to VizieR server (catalog: gaia2)
+INFO:root:Looking for stars at RA: 294.113293 DEC: 19.706693
+INFO:root:1000 stars recorded in the given field
+INFO:root:Magnitude min: 9.5522, max:17.1995
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">sl</span> <span class="c1"># the catalog position ra, dec as well as their positions in pixels are stroed in a pandas.DataFrame object</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>x</th>
+      <th>y</th>
+      <th>ra</th>
+      <th>dec</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1264.454377</td>
+      <td>286.145713</td>
+      <td>294.091757</td>
+      <td>19.639255</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1724.392602</td>
+      <td>1250.186154</td>
+      <td>294.045982</td>
+      <td>19.725027</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>419.186355</td>
+      <td>1268.322106</td>
+      <td>294.170612</td>
+      <td>19.728998</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>902.256353</td>
+      <td>1206.209789</td>
+      <td>294.124590</td>
+      <td>19.722561</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1696.768721</td>
+      <td>562.242566</td>
+      <td>294.049953</td>
+      <td>19.663274</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>654</th>
+      <td>1471.934583</td>
+      <td>2031.989426</td>
+      <td>294.068588</td>
+      <td>19.795722</td>
+    </tr>
+    <tr>
+      <th>655</th>
+      <td>1948.153033</td>
+      <td>1610.327001</td>
+      <td>294.023907</td>
+      <td>19.756971</td>
+    </tr>
+    <tr>
+      <th>656</th>
+      <td>1561.509786</td>
+      <td>1794.601911</td>
+      <td>294.060488</td>
+      <td>19.774233</td>
+    </tr>
+    <tr>
+      <th>657</th>
+      <td>2003.091878</td>
+      <td>1433.274841</td>
+      <td>294.019005</td>
+      <td>19.740964</td>
+    </tr>
+    <tr>
+      <th>658</th>
+      <td>1237.617490</td>
+      <td>1228.616455</td>
+      <td>294.092516</td>
+      <td>19.723973</td>
+    </tr>
+  </tbody>
+</table>
+<p>659 rows × 4 columns</p>
+</div></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">Logger</span><span class="p">()</span> <span class="c1"># used to get clean log info</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">)</span>
-<span class="n">wcs</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">),</span>
-                               <span class="n">target_xy</span><span class="o">=</span><span class="p">(</span><span class="mi">1036</span><span class="p">,</span> <span class="mi">1032</span><span class="p">))</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># You can see that the registration is correct near the center of the field but without a proper distortion model, the position in the corners can be very bad.</span>
+<span class="n">im</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sl</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 3.00 s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:2034: UserWarning: CD_ij based WCS is not recommended. Please prefer a PC_ij representation.
-  warnings.warn(&#39;CD_ij based WCS is not recommended. Please prefer a PC_ij representation.&#39;)
-/home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2085: UserWarning: As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class
-  warnings.warn(&#39;As no prior SIP has been given, this initial SIP is computed over the field inner circle. To cover the whole field the result of this registration must be passed at the definition of the class&#39;)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:580: UserWarning: fit_star leastsq exception: Improper input: N=3 must not exceed M=0
-  warnings.warn(&#39;fit_star leastsq exception: {}&#39;.format(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 20 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 3 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 10 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 8 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 14 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 12 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-/home/thomas/Astro/Python/ORB/Orb/orb/utils/astrometry.py:1861: UserWarning: &#39;WCS.all_world2pix&#39; failed to converge to the requested accuracy.
-After 11 iterations, the solution is diverging at least for one input point.
-  warnings.warn(str(e))
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/thomas/Astro/Python/ORB/Orb/orb/astrometry.py:2163: RuntimeWarning: invalid value encountered in greater
-  _x[np.nonzero(_r &gt; rmax)] = np.nan
+&lt;matplotlib.collections.PathCollection at 0x7f7d4595f950&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
+<img alt="_images/script_example_image_registration_7_1.png" src="_images/script_example_image_registration_7_1.png" />
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&#39;M1-71.deep_frame.wcs.init.fits&#39;
-</pre></div></div>
 </div>
 </div>
 <div class="section" id="Final-calibration">
 <h2>Final calibration<a class="headerlink" href="#Final-calibration" title="Permalink to this headline">¶</a></h2>
 <p>The obtained wcs is used as an input for the final calibration. Now the whole field of view can be considered.</p>
+<p>A few passes may be necessary to get a good enough astrometrical precision in the corners. But don’t try to get something perfect here (above all with cubes obtained before the optical upgrade of 2020 - <a class="reference external" href="http://www.cfht.hawaii.edu/en/news/SITELLEUpgrade/">http://www.cfht.hawaii.edu/en/news/SITELLEUpgrade/</a>), the distortion is very important and capturing the stars in the corners may worsen the astrometrical precision in the center.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span> <span class="n">wcs</span>
-<span class="n">target_radec</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crval</span>
-<span class="n">target_xy</span> <span class="o">=</span> <span class="n">wcs</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">crpix</span>
-<span class="kn">import</span> <span class="nn">orb.utils.astrometry</span>
-<span class="n">wcs_rotation</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">get_wcs_parameters</span><span class="p">(</span><span class="n">wcs</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span> <span class="n">wcs_rotation</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
+<span class="n">wcs</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">skip_registration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_radius_coeff</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sip_order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">max_stars_detect</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-WCS Keywords
-
-Number of WCS axes: 2
-CTYPE : &#39;RA---TAN-SIP&#39;  &#39;DEC--TAN-SIP&#39;
-CRVAL : 294.11207289999999  19.706785969999999
-CRPIX : 1037.7277545623001  1035.9003861412
-PC1_1 PC1_2  : -8.9800592910422e-05  -1.8004417444403e-06
-PC2_1 PC2_2  : -1.8004417444403e-06  8.9800592910422e-05
-CDELT : 1.0  1.0
-NAXIS : 0  0
-1.14858812074
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/home/thomas/.virtualenvs/orb/local/lib/python2.7/site-packages/astropy/wcs/wcs.py:2729: RuntimeWarning: cdelt will be ignored since cd is present
-  description.append(s.format(*self.wcs.cdelt))
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">wcs</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span> <span class="o">=</span> <span class="n">Astrometry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">,</span> <span class="n">target_radec</span><span class="o">=</span><span class="n">target_radec</span><span class="p">,</span>
-                               <span class="n">target_xy</span><span class="o">=</span><span class="n">target_xy</span><span class="p">,</span>  <span class="n">wcs_rotation</span><span class="o">=</span><span class="n">wcs_rotation</span><span class="p">,</span> <span class="n">sip</span><span class="o">=</span><span class="n">wcs</span><span class="p">)</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-                                    <span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+INFO:root:Computing WCS
+INFO:root:initial wcs
+INFO:root:WCS Transformation
 
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
- [==========] [100%] [completed in 2.97 s]
+This transformation has 2 pixel and 2 world dimensions
 
+Array shape (Numpy order): (2064, 2048)
 
+Pixel Dim  Data size  Bounds
+        0       2048  None
+        1       2064  None
 
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">fits_header</span><span class="o">=</span><span class="n">wcs</span><span class="o">.</span><span class="n">to_header</span><span class="p">(</span><span class="n">relax</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">,</span> <span class="n">dymap</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&#39;M1-71.wcs.dymap.fits&#39;
+World Dim  Physical Type  Units
+        0  pos.eq.ra      deg
+        1  pos.eq.dec     deg
+
+Correlation between pixel and world axes:
+
+           Pixel Dim
+World Dim    0    1
+        0  yes  yes
+        1  yes  yes
+INFO:root:initial sip: None
+INFO:root:Sending query to VizieR server (catalog: gaia2)
+INFO:root:Looking for stars at RA: 294.113293 DEC: 19.706693
+INFO:root:14059 stars recorded in the given field
+INFO:root:Magnitude min: 9.5522, max:21.0
+INFO:root:5753 stars detected
+INFO:root:star list reduced to 200 stars
+INFO:root:Detected stars FWHM : 3.22(0.11) pixels, 1.04(0.04) arc-seconds
+INFO:root:Computing SIP coefficients
+INFO:root:sip before sip fit (A matrix)
+INFO:root:no sip
+INFO:root:sip computed with 4000 stars
+INFO:root:3745 stars fitted
+INFO:root:Optimized average radius for direct transformation (in pixel) 3.3457407284985066
+INFO:root:Optimized average radius for reverse transformation (in pixel) 6.971630626817465e-09
+INFO:root:sip after sip fit (A matrix)
+INFO:root:[[-2.33140073e-09  1.05467159e-04  3.69628840e-09 -6.76514129e-10
+   7.69110989e-13]
+ [ 1.58698975e-09  2.38309823e-09 -1.68439216e-09 -1.68141704e-12
+   0.00000000e+00]
+ [ 1.09299987e-06  1.41609573e-09 -3.67666881e-12  0.00000000e+00
+   0.00000000e+00]
+ [-4.70860701e-09  1.27235285e-12  0.00000000e+00  0.00000000e+00
+   0.00000000e+00]
+ [-6.70326658e-13  0.00000000e+00  0.00000000e+00  0.00000000e+00
+   0.00000000e+00]]
+INFO:root:Computing distortion maps
+INFO:root:distortion maps computed with 4000 stars
+INFO:root:distortion maps computed with 2409 good stars
+/home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:300: FutureWarning: `rcond` parameter will change to the default of machine precision times ``max(M, N)`` where M and N are the input matrix dimensions.
+To use the future default and silence this warning we advise to pass `rcond=None`, to keep using the old, explicitly pass `rcond=-1`.
+  wf_zern_vec = np.linalg.lstsq((zern_basismat[:, grid_vec] * weight).T, wf_w.ravel())[0]
+INFO:root:Standard deviation of the residual: 0.6869370369065136
+INFO:root:Median relative error (err/val)): 33.70%
+INFO:root:Standard deviation of the residual: 0.6838007029545435
+INFO:root:Median relative error (err/val)): 30.54%
+INFO:root:computing full sized dxdymaps (error maps)
+INFO:root:Computing astrometrical precision
+INFO:root:Astrometrical precision [in arcsec]: 0.140 [+/-0.075] computed over 3042 stars
+INFO:root:corrected WCS computed
+INFO:root:internal WCS updated (to update the file on disk use self.writeto function)
 </pre></div></div>
 </div>
 </div>
 <div class="section" id="Check-the-results">
 <h2>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h2>
-<p>You might want to check the quality of the calibration by choosing a catalog and plot the positions of the stars with the wcs only and with the micro-shifting maps (dxmap, dymap).</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># load files and query the catalog</span>
-<span class="kn">import</span> <span class="nn">orb.utils.web</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">im</span><span class="p">,</span> <span class="n">hdr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.best.fits&#39;</span><span class="p">,</span> <span class="n">return_header</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">dxmap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dxmap.fits&#39;</span><span class="p">)</span>
-<span class="n">dymap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.wcs.dymap.fits&#39;</span><span class="p">)</span>
-
-<span class="n">star_list_deg</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">query_vizier</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRVAL1&#39;</span><span class="p">],</span> <span class="n">hdr</span><span class="p">[</span><span class="s1">&#39;CRVAL2&#39;</span><span class="p">],</span>
-                                           <span class="n">catalog</span><span class="o">=</span><span class="s1">&#39;gaia&#39;</span><span class="p">,</span> <span class="n">max_stars</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="Only-the-WCS-(SIP-but-no-dx/dy-maps)">
-<h3>Only the WCS (SIP but no dx/dy maps)<a class="headerlink" href="#Only-the-WCS-(SIP-but-no-dx/dy-maps)" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># this is a very basic filter to remove stars position which are out of the image</span>
-<span class="k">def</span> <span class="nf">filter_star_list</span><span class="p">(</span><span class="n">_star_list</span><span class="p">):</span>
-    <span class="n">_star_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">_star_list</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">istar</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_star_list</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
-            <span class="ow">or</span> <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2048</span>
-            <span class="ow">or</span> <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span>
-            <span class="ow">or</span> <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2064</span><span class="p">):</span>
-            <span class="n">_star_list</span><span class="p">[</span><span class="n">istar</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">return</span> <span class="n">_star_list</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">dxmap_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dxmap</span><span class="p">)</span>
-<span class="n">dxmap_null</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
-<span class="n">dymap_null</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">dymap</span><span class="p">)</span>
-<span class="n">dymap_null</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
-
-<span class="n">star_list_pix1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">world2pix</span><span class="p">(</span>
-    <span class="n">hdr</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">star_list_deg</span><span class="p">),</span> <span class="n">dxmap_null</span><span class="p">,</span> <span class="n">dymap_null</span><span class="p">)</span>
-
-<span class="n">star_list_pix1</span> <span class="o">=</span> <span class="n">filter_star_list</span><span class="p">(</span><span class="n">star_list_pix1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-
-<span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-          <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-          <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
-          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray_r&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom-left&#39;</span><span class="p">)</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;</span><span class="p">)</span>
+<span class="n">sl</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_stars_from_catalog</span><span class="p">(</span><span class="n">max_stars</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sl</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -751,91 +772,26 @@ NAXIS : 0  0
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/home/thomas/.virtualenvs/orb/local/lib/python2.7/site-packages/matplotlib/cbook/deprecation.py:106: MatplotlibDeprecationWarning: Adding an axes using the same arguments as a previous axes currently reuses the earlier instance.  In a future version, a new instance will always be created and returned.  Meanwhile, this warning can be suppressed, and the future behavior ensured, by passing a unique label to each axes instance.
-  warnings.warn(message, mplDeprecation, stacklevel=1)
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.collections.PathCollection at 0x7fe8d0c67090&gt;
+INFO:root:Sending query to VizieR server (catalog: gaia2)
+INFO:root:Looking for stars at RA: 294.113336 DEC: 19.706637
+INFO:root:1000 stars recorded in the given field
+INFO:root:Magnitude min: 9.5522, max:17.1968
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_image_registration_14_2.png" src="_images/script_example_image_registration_14_2.png" />
-</div>
-</div>
-</div>
-<div class="section" id="WCS-+-dx/dy-maps">
-<h3>WCS + dx/dy maps<a class="headerlink" href="#WCS-+-dx/dy-maps" title="Permalink to this headline">¶</a></h3>
-<p>Only a SIP model is not enough to get a precision of the order of the pixel because the field is strongly distorted on the borders. Micro-shifting maps (<code class="docutils literal notranslate"><span class="pre">dxmap</span></code> and <code class="docutils literal notranslate"><span class="pre">dymap</span></code>) can thus help in attaining a really good precision on the astrometry.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">star_list_pix2</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">astrometry</span><span class="o">.</span><span class="n">world2pix</span><span class="p">(</span>
-    <span class="n">hdr</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">star_list_deg</span><span class="p">),</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span><span class="p">)</span>
-
-<span class="n">star_list_pix2</span> <span class="o">=</span> <span class="n">filter_star_list</span><span class="p">(</span><span class="n">star_list_pix2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-
-<span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-          <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-          <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span>
-          <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray_r&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom-left&#39;</span><span class="p">)</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">star_list_pix1</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">star_list_pix2</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">star_list_pix2</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;matplotlib.collections.PathCollection at 0x7fe8d06deb10&gt;
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/script_example_image_registration_17_1.png" src="_images/script_example_image_registration_17_1.png" />
+<img alt="_images/script_example_image_registration_11_1.png" src="_images/script_example_image_registration_11_1.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>

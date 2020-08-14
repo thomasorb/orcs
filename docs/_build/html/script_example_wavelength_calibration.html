@@ -95,7 +95,6 @@
             
             
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a></li>
@@ -121,9 +120,6 @@
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
 </ul>
 
             
@@ -575,13 +571,23 @@ Velocity:  77.5(1.5)
 </div>
 <div class="section" id="Second-step:-Mapping-the-sky-velocity">
 <h2>Second step: Mapping the sky velocity<a class="headerlink" href="#Second-step:-Mapping-the-sky-velocity" title="Permalink to this headline">¶</a></h2>
-<p>Warning: this process can take a long time because a spectrum is extracted and fitted for each point of a 40x40 grid by default. For a basic example it is recommended to limit the number of grid division to 10x10.</p>
+<p>This process, like other parallel processes may work better if run from a python script with the command. The following script can be used:</p>
+<p><a class="reference external" href="./run_map_sky_velocity.py">run_map_sky_velocity.py</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span> <span class="c1"># this is very important when running parallel processes</span>
+    <span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+    <span class="n">cube</span><span class="o">.</span><span class="n">map_sky_velocity</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">div_nb</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="s1">&#39;m31_exclude.reg&#39;</span><span class="p">,</span> <span class="n">no_fit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># the mean velocity bias is set around 80 km/s</span>
+</pre></div>
+</div>
+<p><strong>Warning</strong>: this process can take a long time because a spectrum is extracted and fitted for each point of a 40x40 grid by default. For a basic example it is recommended to limit the number of grid division to 10x10.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span><span class="o">.</span><span class="n">map_sky_velocity</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">div_nb</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="s1">&#39;m31_exclude.reg&#39;</span><span class="p">)</span> <span class="c1"># the mean velocity bias is set around 80 km/s</span>
+<span></span><span class="c1"># once the fit is done, you can see the results with the following</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span> <span class="c1"># it is always better to reload the data cube right before running a parallel process</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">map_sky_velocity</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">div_nb</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="s1">&#39;m31_exclude.reg&#39;</span><span class="p">,</span> <span class="n">no_fit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># the mean velocity bias is set around 80 km/s</span>
 </pre></div>
 </div>
 </div>
@@ -590,7 +596,12 @@ Velocity:  77.5(1.5)
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-master.fa09a|INFO| fitting process already done ! set no_fit=True if you do not want to redo it
+master.fa09a|INFO| Cube is level 3
+master.fa09a|INFO| shape: (2048, 2064, 840)
+master.fa09a|INFO| wavenumber calibration: True
+master.fa09a|INFO| flux calibration: True
+master.fa09a|INFO| wcs calibration: True
+<span class="ansi-yellow-fg">master.fa09a|WARNING| fitting process already done ! set no_fit=True if you do not want to redo it</span>
 master.fa09a|INFO| X range: 0 2048, Y range: 0 2064
 master.fa09a|INFO| Radius: 30
 master.fa09a|INFO| excluding region from file m31_exclude.reg
@@ -612,6 +623,12 @@ master.fa09a|INFO| 88 sky lines to fit
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
+master.fa09a|INFO| reloading cube
+master.fa09a|INFO| Cube is level 3
+master.fa09a|INFO| shape: (2048, 2064, 840)
+master.fa09a|INFO| wavenumber calibration: True
+master.fa09a|INFO| flux calibration: True
+master.fa09a|INFO| wcs calibration: True
 master.fa09a|INFO| Init of the parallel processing server with 32 threads
 </pre></div></div>
 </div>
@@ -620,7 +637,7 @@ master.fa09a|INFO| Init of the parallel processing server with 32 threads
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 2m51s]
+ [==========] [100%] [completed in 4m33s]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -629,6 +646,7 @@ master.fa09a|INFO| Init of the parallel processing server with 32 threads
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
 master.fa09a|INFO| Closing parallel processing server
+master.fa09a|INFO| reloading cube
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -644,65 +662,70 @@ master.fa09a|INFO| Closing parallel processing server
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
+master.fa09a|INFO| Cube is level 3
+master.fa09a|INFO| shape: (2048, 2064, 840)
+master.fa09a|INFO| wavenumber calibration: True
+master.fa09a|INFO| flux calibration: True
+master.fa09a|INFO| wcs calibration: True
 master.fa09a|INFO| parallel processing closed
-master.fa09a|INFO| Velocity of the first line (km/s): 78.9(2.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 76.3(2.0)
-master.fa09a|INFO| Velocity of the first line (km/s): 71.8(1.9)
-master.fa09a|INFO| Velocity of the first line (km/s): 70.3(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.3(2.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.4(2.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 71.3(1.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.7(2.3)
 master.fa09a|INFO| Velocity of the first line (km/s): 71.7(2.8)
-master.fa09a|INFO| Velocity of the first line (km/s): 67.1(2.6)
-master.fa09a|INFO| Velocity of the first line (km/s): 65.2(2.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 59.3(2.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 61.5(2.3)
-master.fa09a|INFO| Velocity of the first line (km/s): 61.1(2.3)
-master.fa09a|INFO| Velocity of the first line (km/s): 75.1(2.0)
-master.fa09a|INFO| Velocity of the first line (km/s): 76.0(2.1)
-master.fa09a|INFO| Velocity of the first line (km/s): 77.7(2.3)
-master.fa09a|INFO| Velocity of the first line (km/s): 72.4(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 66.7(2.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 64.1(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 58.1(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 62.6(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 61.0(2.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.0(1.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.5(1.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.2(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 72.5(3.1)
 master.fa09a|INFO| Velocity of the first line (km/s): 69.7(3.3)
-master.fa09a|INFO| Velocity of the first line (km/s): 56.5(2.8)
-master.fa09a|INFO| Velocity of the first line (km/s): 68.3(3.0)
-master.fa09a|INFO| Velocity of the first line (km/s): 62.0(3.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 62.5(2.6)
-master.fa09a|INFO| Velocity of the first line (km/s): 60.2(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 55.3(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 65.0(2.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 58.9(3.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 62.7(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 60.3(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 76.4(2.0)
 master.fa09a|INFO| Velocity of the first line (km/s): 77.9(2.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 77.9(2.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 73.6(2.7)
-master.fa09a|INFO| Velocity of the first line (km/s): 48.6(2.8)
-master.fa09a|INFO| Velocity of the first line (km/s): 62.4(2.8)
-master.fa09a|INFO| Velocity of the first line (km/s): 78.3(2.3)
-master.fa09a|INFO| Velocity of the first line (km/s): 74.6(2.8)
-master.fa09a|INFO| Velocity of the first line (km/s): 103.1(3.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 68.7(2.7)
-master.fa09a|INFO| Velocity of the first line (km/s): 76.1(2.9)
-master.fa09a|INFO| Velocity of the first line (km/s): 78.8(3.3)
-master.fa09a|INFO| Velocity of the first line (km/s): 67.5(2.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 79.9(3.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 74.7(3.1)
-master.fa09a|INFO| Velocity of the first line (km/s): 70.6(2.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 79.5(3.0)
-master.fa09a|INFO| Velocity of the first line (km/s): 66.5(2.6)
-master.fa09a|INFO| Velocity of the first line (km/s): 68.1(2.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 73.3(3.1)
-master.fa09a|INFO| Velocity of the first line (km/s): 59.8(2.7)
-master.fa09a|INFO| Velocity of the first line (km/s): 66.9(2.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 70.8(1.9)
-master.fa09a|INFO| Velocity of the first line (km/s): 81.4(3.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 80.2(3.7)
-master.fa09a|INFO| Velocity of the first line (km/s): 70.7(3.1)
-master.fa09a|INFO| Velocity of the first line (km/s): 77.3(2.6)
-master.fa09a|INFO| Velocity of the first line (km/s): 70.1(1.8)
-master.fa09a|INFO| Velocity of the first line (km/s): 74.8(1.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 79.9(3.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 78.4(3.0)
-master.fa09a|INFO| Velocity of the first line (km/s): 77.9(3.4)
-master.fa09a|INFO| Velocity of the first line (km/s): 77.4(3.2)
-master.fa09a|INFO| Velocity of the first line (km/s): 76.2(3.6)
-master.fa09a|INFO| Velocity of the first line (km/s): 74.8(2.9)
-master.fa09a|INFO| Velocity of the first line (km/s): 75.3(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 73.4(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 48.3(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 61.7(2.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.6(1.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.4(2.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 104.3(3.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 65.0(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.6(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.8(2.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 65.2(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 80.8(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.4(3.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 69.8(2.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.5(2.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 65.4(2.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 65.9(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.6(2.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 58.8(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 67.0(2.2)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.6(2.0)
+master.fa09a|INFO| Velocity of the first line (km/s): 80.9(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 80.1(3.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.8(3.1)
+master.fa09a|INFO| Velocity of the first line (km/s): 78.1(2.6)
+master.fa09a|INFO| Velocity of the first line (km/s): 70.2(1.8)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.5(1.4)
+master.fa09a|INFO| Velocity of the first line (km/s): 79.4(2.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 79.3(2.7)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.5(3.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 77.7(3.1)
+master.fa09a|INFO| Velocity of the first line (km/s): 76.1(3.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 74.7(2.9)
+master.fa09a|INFO| Velocity of the first line (km/s): 75.2(2.2)
 master.fa09a|INFO| Velocity of the first line (km/s): 75.7(1.7)
-master.fa09a|INFO| Velocity of the first line (km/s): 71.6(1.6)
-master.fa09a|INFO| Velocity of the first line (km/s): 74.3(1.3)
+master.fa09a|INFO| Velocity of the first line (km/s): 71.6(1.5)
+master.fa09a|INFO| Velocity of the first line (km/s): 73.8(1.3)
 master.fa09a|INFO| x: [ 186.18181818  186.18181818  186.18181818  186.18181818  186.18181818
   186.18181818  186.18181818  186.18181818  186.18181818  186.18181818
   372.36363636  372.36363636  372.36363636  372.36363636  372.36363636
@@ -727,23 +750,26 @@ master.fa09a|INFO| y: [ 187.63636364  375.27272727  562.90909091  750.54545455  
  1501.09090909 1688.72727273 1876.36363636  187.63636364  375.27272727
   562.90909091  750.54545455  938.18181818 1125.81818182 1313.45454545
  1501.09090909 1688.72727273 1876.36363636]
-master.fa09a|INFO| v: [ 78.86042362  76.2582753   71.82992727  70.32555007  71.72235552
-  67.14847511  65.20581426  59.34883958  61.47513547  61.12081898
-  75.14513547  76.0081303   77.70637615  72.44596251  69.74664224
-  56.45854195  68.31005925  62.01759568  62.49686679  60.21924715
-  77.91238292  77.94153777  73.6394465   48.57688216  62.35858405
-  78.27470008  74.63956925 103.07600508  68.67205024  76.14311239
-  78.83157028  67.46578524  79.91450518  74.74830252  70.61836475
-  79.51063809  66.50691762  68.11838885  73.28617653  59.77590267
-  66.89597323  70.75022847  81.37248121  80.17863546  70.68674844
-  77.32174855  70.06751036  74.78571896  79.90117383  78.43339076
-  77.92255972  77.35418943  76.19160053  74.84503818  75.31922486
-  75.6812475   71.59869116  74.28001552]
+master.fa09a|INFO| v: [ 77.30690122  75.42723292  71.29603104  70.74703947  71.71676527
+  66.74086248  64.11377386  58.053346    62.58297622  61.04474574
+  74.01054084  75.52157459  77.22636344  72.5418529   69.69014005
+  55.32754889  64.99891349  58.9375885   62.70848958  60.32799584
+  76.36498222  77.90017749  73.41305969  48.25166759  61.66747683
+  78.61262775  75.37893981 104.25308835  65.04902046  75.61380729
+  78.84037233  65.16314474  80.77022818  74.38134783  69.81025738
+  78.51941433  65.42526138  65.85118873  74.60799346  58.79111662
+  66.95923754  70.63770242  80.9106735   80.12792716  70.77220517
+  78.1282894   70.221003    74.52473849  79.4390245   79.2954783
+  77.52699254  77.7411457   76.13299069  74.74027681  75.16744211
+  75.65534916  71.59209525  73.79256937]
 <span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orcs/orcs/utils.py:212: RuntimeWarning: invalid value encountered in greater
   vel[vel &gt; np.nanpercentile(vel, 95)] = np.nan
 </span>
-master.fa09a|INFO| First laser wavelentgh calibration estimation: 543.3701006659054 nm
-master.fa09a|INFO| Angle at the center of the frame: 15.495422711743403
+master.fa09a|INFO| First laser wavelentgh calibration estimation: 543.3684614763755 nm
+master.fa09a|INFO| Angle at the center of the frame: 15.494273258242744
+<span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1191: RuntimeWarning: invalid value encountered in less
+  calib_laser_map[np.nonzero(calib_laser_map &lt; value_min)] = np.nan
+</span>
 master.fa09a|INFO| &gt; Binning calibration map
 <span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1074: RuntimeWarning: Mean of empty slice
   return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
@@ -751,61 +777,59 @@ master.fa09a|INFO| &gt; Binning calibration map
 master.fa09a|INFO| &gt; Calibration laser map fit
 master.fa09a|INFO|   &gt; First fit on the central portion of the calibration laser map (30.0% of the total size)
 master.fa09a|INFO|     &gt; Calibration laser map fit parameters:
-    distance to mirror: 263936699.3150021 cm
+    distance to mirror: 23.681739781375743 cm
     X angle from the optical axis to the center: 0.0 degrees (Fixed)
-    Y angle from the optical axis to the center: 15.495422711743405 degrees
+    Y angle from the optical axis to the center: 15.501669386747308 degrees
     Tip-tilt angle of the detector along X: 0.0 degrees (Fixed)
     Tip-tilt angle of the detector along Y: 0.0 degrees (Fixed)
     Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.3701006659054 nm (Fixed)
-    Error on fit: mean -1.4861024538773338e-15, std 1.5695392288219445e-07 (in nm)
-    Error on fit: mean -8.204918445399005e-13, std 8.665581121772023e-05 (in km/s)
+    Calibration laser wavelength: 543.3684614763755 nm (Fixed)
+    Error on fit: mean -1.2212972352744125e-06, std 0.049408481925003994 (in nm)
+    Error on fit: mean -0.0006742923017409128, std 27.27899322170293 (in km/s)
 master.fa09a|INFO|   &gt; Second fit on the central portion of the calibration laser map (30.0% of the total size)
 master.fa09a|INFO|     &gt; Calibration laser map fit parameters:
-    distance to mirror: 270667216.2431192 cm
-    X angle from the optical axis to the center: 0.0 degrees
-    Y angle from the optical axis to the center: 15.495422710465332 degrees
-    Tip-tilt angle of the detector along X: 0.0 degrees
-    Tip-tilt angle of the detector along Y: 0.003496501989666831 degrees
+    distance to mirror: 23.66483634860634 cm
+    X angle from the optical axis to the center: -0.44808541110452904 degrees
+    Y angle from the optical axis to the center: 15.495141935947101 degrees
+    Tip-tilt angle of the detector along X: 0.41142114590561524 degrees
+    Tip-tilt angle of the detector along Y: -1.41769820240921 degrees
     Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.3701006659054 nm (Fixed)
-    Error on fit: mean -3.4870814500274624e-09, std 1.5305104139895723e-07 (in nm)
-    Error on fit: mean -1.9252521140309393e-06, std 8.450099179807189e-05 (in km/s)
+    Calibration laser wavelength: 543.3684614763755 nm (Fixed)
+    Error on fit: mean -3.798378046820534e-07, std 0.0007481455641519504 (in nm)
+    Error on fit: mean -0.0002097128366541575, std 0.41305980224865047 (in km/s)
 master.fa09a|INFO|   &gt; Third fit on a larger portion of the map (50.0% of the total size)
 master.fa09a|INFO|     &gt; Calibration laser map fit parameters:
-    distance to mirror: 270667216.2431192 cm
-    X angle from the optical axis to the center: 0.0 degrees
-    Y angle from the optical axis to the center: 15.495422710465332 degrees
-    Tip-tilt angle of the detector along X: 0.0 degrees
-    Tip-tilt angle of the detector along Y: 0.0 degrees
+    distance to mirror: 23.702051086393453 cm
+    X angle from the optical axis to the center: -0.44853898242361845 degrees
+    Y angle from the optical axis to the center: 15.495504360876263 degrees
+    Tip-tilt angle of the detector along X: 0.25839602728725264 degrees
+    Tip-tilt angle of the detector along Y: -0.8882041482610137 degrees
     Rotation angle of the detector: 0.0 degrees (Fixed)
-    Calibration laser wavelength: 543.3701006659054 nm (Fixed)
-    Error on fit: mean -3.487084368513622e-09, std 2.5708928457980605e-07 (in nm)
-    Error on fit: mean -1.925253725355977e-06, std 0.00014194153355037787 (in km/s)
+    Calibration laser wavelength: 543.3684614763755 nm (Fixed)
+    Error on fit: mean -2.4518726781407214e-06, std 0.003041168391745898 (in nm)
+    Error on fit: mean -0.0013537072089970703, std 1.6790641750624251 (in km/s)
 master.fa09a|INFO|   &gt; Zernike polynomials fit of the residual wavefront
-<span class="ansi-yellow-fg">master.fa09a|WARNING| &lt;string&gt;:6: DeprecationWarning: object of type &lt;class &#39;float&#39;&gt; cannot be safely interpreted as an integer.
-</span>
 <span class="ansi-yellow-fg">master.fa09a|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/ext/zern.py:300: FutureWarning: `rcond` parameter will change to the default of machine precision times ``max(M, N)`` where M and N are the input matrix dimensions.
 To use the future default and silence this warning we advise to pass `rcond=None`, to keep using the old, explicitly pass `rcond=-1`.
   wf_zern_vec = np.linalg.lstsq((zern_basismat[:, grid_vec] * weight).T, wf_w.ravel())[0]
 </span>
-master.fa09a|INFO| Standard deviation of the residual: 7.789107164675645e-11
-master.fa09a|INFO| Median relative error (err/val)): 0.01%
-master.fa09a|INFO| &gt; final error (std on 50.0% of the total size): 1.606e-11 nm, 8.865e-09 km/s
+master.fa09a|INFO| Standard deviation of the residual: 1.8507972727041484e-05
+master.fa09a|INFO| Median relative error (err/val)): 0.05%
+master.fa09a|INFO| &gt; final error (std on 50.0% of the total size): 1.763e-05 nm, 9.733e-03 km/s
 master.fa09a|INFO|     &gt; New calibration laser map fit parameters:
-    distance to mirror: -282031697934.2675 cm
-    X angle from the optical axis to the center: 0.0 degrees
-    Y angle from the optical axis to the center: 15.569878356725365 degrees
-    Tip-tilt angle of the detector along X: 0.0 degrees
-    Tip-tilt angle of the detector along Y: 7.218995916765718 degrees
-    Rotation angle of the detector: 0.0 degrees
-    Calibration laser wavelength: 543.1740675641056 nm
+    distance to mirror: 23.67734145891187 cm
+    X angle from the optical axis to the center: 0.1594504146076437 degrees
+    Y angle from the optical axis to the center: 15.503103983197793 degrees
+    Tip-tilt angle of the detector along X: 4.033689007793616 degrees
+    Tip-tilt angle of the detector along Y: -0.3016934072811556 degrees
+    Rotation angle of the detector: 2.2124798963045356 degrees
+    Calibration laser wavelength: 543.3680110441915 nm
 
 master.fa09a|INFO| fit residual std (in km/s):
 master.fa09a|INFO| median error on the data (in km/s)
-master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.calibration_laser_map.fits in 0.16 s
-master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.wavefront_map.fits in 0.14 s
-master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.skymap.fits in 0.14 s
+master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.calibration_laser_map.fits in 0.33 s
+master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.wavefront_map.fits in 0.23 s
+master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.skymap.fits in 0.26 s
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -854,10 +878,40 @@ master.fa09a|INFO| Data written as ./M31_SN3/M31_SN3.skymap.fits in 0.14 s
 <div class="section" id="Ouputs">
 <h2>Ouputs<a class="headerlink" href="#Ouputs" title="Permalink to this headline">¶</a></h2>
 <p>The most important output is the skymap which gives the modelized velocity of the sky in the field of view and permit to correct the measured velocities in the cube.This map is named <code class="docutils literal notranslate"><span class="pre">*skymap.fits</span></code>. You can add it to the obtained velocity maps to correct the velocity.</p>
-<p>In this particular case this is <code class="docutils literal notranslate"><span class="pre">M31_SN3.1.0.ORCS/M31_SN3.1.0.skymap.fits</span></code></p>
+<p>In this particular case this is <code class="docutils literal notranslate"><span class="pre">M31_SN3/M31_SN3.skymap.fits</span></code></p>
 <p>The histogram above shows the difference between the measured velocity and the fitted velocity at each valid data point.</p>
 <p>You can see that there are some data points at the center of the field which were excluded from the fit. This comes from the fact that M31 is very bright at the center and the sky lines are lost in the noise produced by the high continuum background. Modelling the interferometer makes possible to estimate the velocity of the lines at the center of the field where no velocity measurement could be done. And the result is stricking, it works particularly well even if the case of M31 (<a class="reference external" href="https://arxiv.org/abs/1707.01366">Martin et
 al. 2017a</a>)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">orb.utils.io</span>
+<span class="n">skymap</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;./M31_SN3/M31_SN3.skymap.fits&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">skymap</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;velocity error (km/s)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_wavelength_calibration_10_0.png" src="_images/script_example_wavelength_calibration_10_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 

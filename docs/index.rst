@@ -59,7 +59,14 @@ Publications
 
 * Martin, Drissen, Joncas (2015). ORBS, ORCS, OACS, a Software Suite for Data Reduction and Analysis of the Hyperspectral Imagers SITELLE and SpIOMM. PASP
   http://adsabs.harvard.edu/abs/2015ASPC..495..327M
- 
+
+Installation
+------------
+
+Installation instructions can be found on Github:
+
+https://github.com/thomasorb/orcs
+  
 
 Quick Start
 -----------
@@ -67,7 +74,6 @@ Quick Start
 .. toctree::
    :maxdepth: 1
 
-   installation
    introduction
    examples
 
@@ -78,20 +84,8 @@ Documentation
    :maxdepth: 1
 
    core_module
-	   
    process_module
-
    utils_module
-
-
-
-Known issues
-------------
-
-.. toctree::
-   :maxdepth: 1
-
-   known_issues
 
    
 Indices and tables
