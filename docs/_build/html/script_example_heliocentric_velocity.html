@@ -448,9 +448,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">orcs.process</span>
 </pre></div>
 </div>
 </div>
@@ -458,8 +457,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;A0426_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -468,20 +467,22 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Data shape : (2048, 2064, 289)
-INFO| Cube is in WAVENUMBER (cm-1)
-INFO| Cube is CALIBRATED in wavenumber
+master.03e73|INFO| Cube is level 3
+master.03e73|INFO| shape: (2048, 2064, 840)
+master.03e73|INFO| wavenumber calibration: True
+master.03e73|INFO| flux calibration: True
+master.03e73|INFO| wcs calibration: True
 </pre></div></div>
 </div>
 <div class="section" id="Print-default-barycentric-radial-velocity-correction">
 <h2>Print default barycentric radial velocity correction<a class="headerlink" href="#Print-default-barycentric-radial-velocity-correction" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">)</span>
-<span class="nb">print</span> <span class="s1">&#39;Barycentric velocity correction: </span><span class="si">{}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barycentric velocity correction: </span><span class="si">{:.2f}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -490,9 +491,9 @@ INFO| Cube is CALIBRATED in wavenumber
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T00:00:00.000 = 2457397.5 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
+master.03e73|INFO| Observation date: 2016-08-25T00:00:00.000 = 2457625.5 Julian days
+master.03e73|INFO| Observatory location: LAT 19.825231999999996 deg |LON -155.46876099999997 deg |ALT 4214.999999999996 m
+master.03e73|INFO| Observed Target: 00h42m44.3572s +41d16m07.8713s
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -500,7 +501,7 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Barycentric velocity correction: -21.1861652948 km/s
+Barycentric velocity correction: 20.13 km/s
 </pre></div></div>
 </div>
 </div>
@@ -525,10 +526,10 @@ Barycentric velocity correction: -21.1861652948 km/s
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># The results of the radial velocity correction for</span>
 <span class="c1"># each individual file of the initial inteferometric</span>
 <span class="c1"># cube are recorded here</span>
@@ -540,2525 +541,307 @@ Barycentric velocity correction: -21.1861652948 km/s
         <span class="n">date</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span>
-            <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span>
+            <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
-        <span class="nb">print</span> <span class="n">date</span><span class="p">,</span> <span class="n">corr</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:06:02.000 = 2457397.71252 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:06:32.000 = 2457397.71287 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:07:03.000 = 2457397.71323 Julian days
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:06:02 -21.4663846704
-2016-01-10T05:06:32 -21.4671673847
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:07:33.000 = 2457397.71358 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:08:06.000 = 2457397.71396 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:08:36.000 = 2457397.71431 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:07:03 -21.4679767479
-2016-01-10T05:07:33 -21.4687605397
-2016-01-10T05:08:06 -21.4696233171
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:09:06.000 = 2457397.71465 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:09:36.000 = 2457397.715 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:10:08.000 = 2457397.71537 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:08:36 -21.4704082077
-2016-01-10T05:09:06 -21.4711936166
-2016-01-10T05:09:36 -21.4719795406
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:10:39.000 = 2457397.71573 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:11:09.000 = 2457397.71608 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:11:40.000 = 2457397.71644 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:10:08 -21.4728184234
-2016-01-10T05:10:39 -21.4736316427
-2016-01-10T05:11:09 -21.4744191425
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:12:11.000 = 2457397.71679 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:12:42.000 = 2457397.71715 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:13:12.000 = 2457397.7175 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:11:40 -21.4752334194
-2016-01-10T05:12:11 -21.4760482283
-2016-01-10T05:12:42 -21.4768635658
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:13:43.000 = 2457397.71786 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:14:14.000 = 2457397.71822 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:14:45.000 = 2457397.71858 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:13:12 -21.4776531019
-2016-01-10T05:13:43 -21.4784694689
-2016-01-10T05:14:14 -21.4792863537
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:15:15.000 = 2457397.71892 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:15:45.000 = 2457397.71927 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:16:18.000 = 2457397.71965 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:14:45 -21.4801037528
-2016-01-10T05:15:15 -21.4808952705
-2016-01-10T05:15:45 -21.4816872631
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:16:48.000 = 2457397.72 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:17:19.000 = 2457397.72036 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:17:49.000 = 2457397.72071 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:16:18 -21.4825589996
-2016-01-10T05:16:48 -21.483351979
-2016-01-10T05:17:19 -21.4841718794
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:18:20.000 = 2457397.72106 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:18:51.000 = 2457397.72142 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:19:21.000 = 2457397.72177 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:17:49 -21.4849658005
-2016-01-10T05:18:20 -21.4857866669
-2016-01-10T05:18:51 -21.4866080189
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:19:51.000 = 2457397.72212 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:20:24.000 = 2457397.7225 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:20:54.000 = 2457397.72285 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:19:21 -21.4874033346
-2016-01-10T05:19:51 -21.4881990985
-2016-01-10T05:20:24 -21.4890749523
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:21:24.000 = 2457397.72319 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:21:54.000 = 2457397.72354 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:22:27.000 = 2457397.72392 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:20:54 -21.4898716464
-2016-01-10T05:21:24 -21.4906687784
-2016-01-10T05:21:54 -21.491466345
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:22:57.000 = 2457397.72427 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:23:27.000 = 2457397.72462 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:23:57.000 = 2457397.72497 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:22:27 -21.4923441663
-2016-01-10T05:22:57 -21.4931426348
-2016-01-10T05:23:27 -21.4939415277
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:24:30.000 = 2457397.72535 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:25:00.000 = 2457397.72569 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:25:31.000 = 2457397.72605 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:23:57 -21.4947408416
-2016-01-10T05:24:30 -21.4956205693
-2016-01-10T05:25:00 -21.4964207567
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:26:01.000 = 2457397.7264 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:26:33.000 = 2457397.72677 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:27:03.000 = 2457397.72712 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:25:31 -21.4972480486
-2016-01-10T05:26:01 -21.4980490679
-2016-01-10T05:26:33 -21.4989039337
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:27:34.000 = 2457397.72748 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:28:06.000 = 2457397.72785 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:28:37.000 = 2457397.72821 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:27:03 -21.4997057845
-2016-01-10T05:27:34 -21.5005347808
-2016-01-10T05:28:06 -21.5013909599
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:29:07.000 = 2457397.72855 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:29:39.000 = 2457397.72892 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:30:09.000 = 2457397.72927 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:28:37 -21.502220807
-2016-01-10T05:29:07 -21.503024278
-2016-01-10T05:29:39 -21.5038817364
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:30:40.000 = 2457397.72963 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:31:10.000 = 2457397.72998 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:31:42.000 = 2457397.73035 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:30:09 -21.5046859964
-2016-01-10T05:30:40 -21.5055174606
-2016-01-10T05:31:10 -21.5063224828
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:32:13.000 = 2457397.73071 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:32:43.000 = 2457397.73105 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:33:14.000 = 2457397.73141 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:31:42 -21.5071815808
-2016-01-10T05:32:13 -21.5080142294
-2016-01-10T05:32:43 -21.5088203873
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:33:45.000 = 2457397.73177 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:34:15.000 = 2457397.73212 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:34:46.000 = 2457397.73248 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:33:14 -21.5096537947
-2016-01-10T05:33:45 -21.5104875823
-2016-01-10T05:34:15 -21.5112948321
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:35:17.000 = 2457397.73284 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:35:48.000 = 2457397.73319 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:36:18.000 = 2457397.73354 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:34:46 -21.512129357
-2016-01-10T05:35:17 -21.5129642512
-2016-01-10T05:35:48 -21.513799511
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:36:48.000 = 2457397.73389 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:37:20.000 = 2457397.73426 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:37:50.000 = 2457397.73461 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:36:18 -21.5146081714
-2016-01-10T05:36:48 -21.5154171673
-2016-01-10T05:37:20 -21.5162804624
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:38:21.000 = 2457397.73497 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:38:51.000 = 2457397.73531 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:39:23.000 = 2457397.73568 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:37:50 -21.5170901411
-2016-01-10T05:38:21 -21.5179271508
-2016-01-10T05:38:51 -21.5187374874
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:39:53.000 = 2457397.73603 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:40:23.000 = 2457397.73638 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:40:54.000 = 2457397.73674 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:39:23 -21.5196021972
-2016-01-10T05:39:53 -21.5204131882
-2016-01-10T05:40:23 -21.5212244905
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:41:26.000 = 2457397.73711 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:41:56.000 = 2457397.73745 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:42:26.000 = 2457397.7378 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:40:54 -21.52206316
-2016-01-10T05:41:26 -21.5229292244
-2016-01-10T05:41:56 -21.523741471
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:42:56.000 = 2457397.73815 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:43:29.000 = 2457397.73853 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:43:59.000 = 2457397.73888 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:42:26 -21.5245540152
-2016-01-10T05:42:56 -21.5253668538
-2016-01-10T05:43:29 -21.5262613121
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:44:29.000 = 2457397.73922 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:45:00.000 = 2457397.73958 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:45:32.000 = 2457397.73995 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:43:59 -21.5270747577
-2016-01-10T05:44:29 -21.5278884872
-2016-01-10T05:45:00 -21.5287296356
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:46:02.000 = 2457397.7403 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:46:33.000 = 2457397.74066 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:47:03.000 = 2457397.74101 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:45:32 -21.529598228
-2016-01-10T05:46:02 -21.530412816
-2016-01-10T05:46:33 -21.5312548405
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:47:35.000 = 2457397.74138 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:48:05.000 = 2457397.74172 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:48:35.000 = 2457397.74207 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:47:03 -21.5320699739
-2016-01-10T05:47:35 -21.5329397396
-2016-01-10T05:48:05 -21.5337554131
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:49:06.000 = 2457397.74243 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:49:38.000 = 2457397.7428 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:50:08.000 = 2457397.74315 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:48:35 -21.5345713428
-2016-01-10T05:49:06 -21.5354147356
-2016-01-10T05:49:38 -21.5362856138
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:50:38.000 = 2457397.7435 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:51:08.000 = 2457397.74384 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:51:40.000 = 2457397.74421 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:50:08 -21.537102316
-2016-01-10T05:50:38 -21.5379192605
-2016-01-10T05:51:08 -21.5387364439
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:52:10.000 = 2457397.74456 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:52:41.000 = 2457397.74492 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:53:11.000 = 2457397.74527 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:51:40 -21.5396083656
-2016-01-10T05:52:10 -21.5404260319
-2016-01-10T05:52:41 -21.5412711937
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:53:43.000 = 2457397.74564 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:54:13.000 = 2457397.74598 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:54:43.000 = 2457397.74633 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:53:11 -21.5420893209
-2016-01-10T05:53:43 -21.5429622341
-2016-01-10T05:54:13 -21.5437808155
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:55:13.000 = 2457397.74668 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:55:45.000 = 2457397.74705 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:56:15.000 = 2457397.7474 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:54:43 -21.5445996115
-2016-01-10T05:55:13 -21.5454186186
-2016-01-10T05:55:45 -21.5462924551
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:56:45.000 = 2457397.74774 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:57:15.000 = 2457397.74809 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:57:47.000 = 2457397.74846 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:56:15 -21.5471118878
-2016-01-10T05:56:45 -21.5479315212
-2016-01-10T05:57:15 -21.5487513519
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:58:17.000 = 2457397.74881 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:58:47.000 = 2457397.74916 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T05:59:17.000 = 2457397.7495 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:57:47 -21.5496260517
-2016-01-10T05:58:17 -21.5504462794
-2016-01-10T05:58:47 -21.551266694
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T05:59:49.000 = 2457397.74987 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:00:19.000 = 2457397.75022 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:00:49.000 = 2457397.75057 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T05:59:17 -21.5520872921
-2016-01-10T05:59:49 -21.5529627951
-2016-01-10T06:00:19 -21.5537837615
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:01:19.000 = 2457397.75091 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:01:51.000 = 2457397.75128 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:02:21.000 = 2457397.75163 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:00:49 -21.554604901
-2016-01-10T06:01:19 -21.55542621
-2016-01-10T06:01:51 -21.5563024561
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:02:51.000 = 2457397.75198 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:03:21.000 = 2457397.75233 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:03:53.000 = 2457397.7527 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:02:21 -21.5571241049
-2016-01-10T06:02:51 -21.5579459128
-2016-01-10T06:03:21 -21.5587678764
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:04:23.000 = 2457397.75304 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:04:53.000 = 2457397.75339 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:05:23.000 = 2457397.75374 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:03:53 -21.5596448054
-2016-01-10T06:04:23 -21.5604670801
-2016-01-10T06:04:53 -21.5612895
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:05:56.000 = 2457397.75412 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:06:25.000 = 2457397.75446 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:06:55.000 = 2457397.7548 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:05:23 -21.5621120618
-2016-01-10T06:05:56 -21.5630170394
-2016-01-10T06:06:25 -21.5638124575
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:07:25.000 = 2457397.75515 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:07:57.000 = 2457397.75552 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:08:28.000 = 2457397.75588 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:06:55 -21.564635433
-2016-01-10T06:07:25 -21.5654585363
-2016-01-10T06:07:57 -21.5663366504
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:08:58.000 = 2457397.75623 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:09:28.000 = 2457397.75657 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:10:00.000 = 2457397.75694 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:08:28 -21.5671874547
-2016-01-10T06:08:58 -21.5680109329
-2016-01-10T06:09:28 -21.5688345251
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:10:30.000 = 2457397.75729 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:11:00.000 = 2457397.75764 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:11:29.000 = 2457397.75797 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:10:00 -21.5697131452
-2016-01-10T06:10:30 -21.5705369619
-2016-01-10T06:11:00 -21.5713608821
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:12:02.000 = 2457397.75836 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:12:32.000 = 2457397.7587 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:13:01.000 = 2457397.75904 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:11:29 -21.5721574334
-2016-01-10T06:12:02 -21.5730639636
-2016-01-10T06:12:32 -21.5738881796
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:13:31.000 = 2457397.75939 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:14:04.000 = 2457397.75977 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:14:34.000 = 2457397.76012 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:13:01 -21.5746850069
-2016-01-10T06:13:31 -21.5755093956
-2016-01-10T06:14:04 -21.5764163188
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:15:04.000 = 2457397.76046 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:15:34.000 = 2457397.76081 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:16:06.000 = 2457397.76118 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:14:34 -21.5772408774
-2016-01-10T06:15:04 -21.5780655116
-2016-01-10T06:15:34 -21.5788902179
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:16:36.000 = 2457397.76153 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:17:06.000 = 2457397.76187 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:17:36.000 = 2457397.76222 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:16:06 -21.5797699803
-2016-01-10T06:16:36 -21.5805948249
-2016-01-10T06:17:06 -21.5814197311
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:18:08.000 = 2457397.76259 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:18:38.000 = 2457397.76294 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:19:08.000 = 2457397.76329 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:17:36 -21.5822446955
-2016-01-10T06:18:08 -21.5831247178
-2016-01-10T06:18:38 -21.5839497916
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:19:38.000 = 2457397.76363 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:20:10.000 = 2457397.764 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:20:40.000 = 2457397.76435 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:19:08 -21.5847749131
-2016-01-10T06:19:38 -21.5856000789
-2016-01-10T06:20:10 -21.5864803006
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:21:10.000 = 2457397.7647 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:21:40.000 = 2457397.76505 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:22:12.000 = 2457397.76542 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:20:40 -21.587305547
-2016-01-10T06:21:10 -21.5881308271
-2016-01-10T06:21:40 -21.5889561375
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:22:42.000 = 2457397.76576 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:23:12.000 = 2457397.76611 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:23:42.000 = 2457397.76646 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:22:12 -21.5898364982
-2016-01-10T06:22:42 -21.5906618604
-2016-01-10T06:23:12 -21.5914872424
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:24:14.000 = 2457397.76683 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:24:44.000 = 2457397.76718 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:25:14.000 = 2457397.76752 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:23:42 -21.5923126407
-2016-01-10T06:24:14 -21.5931930798
-2016-01-10T06:24:44 -21.5940185011
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:25:44.000 = 2457397.76787 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:26:16.000 = 2457397.76824 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:26:46.000 = 2457397.76859 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:25:14 -21.5948439282
-2016-01-10T06:25:44 -21.5956693578
-2016-01-10T06:26:16 -21.5965498147
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:27:16.000 = 2457397.76894 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:27:46.000 = 2457397.76928 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:28:18.000 = 2457397.76965 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:26:46 -21.5973752384
-2016-01-10T06:27:16 -21.5982006539
-2016-01-10T06:27:46 -21.5990260579
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:28:48.000 = 2457397.77 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:29:18.000 = 2457397.77035 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:29:48.000 = 2457397.77069 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:28:18 -21.5999064723
-2016-01-10T06:28:48 -21.6007318416
-2016-01-10T06:29:18 -21.6015571888
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:30:21.000 = 2457397.77108 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:30:50.000 = 2457397.77141 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:31:20.000 = 2457397.77176 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:29:48 -21.6023825105
-2016-01-10T06:30:21 -21.6032903309
-2016-01-10T06:30:50 -21.6040880799
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:31:50.000 = 2457397.77211 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:32:23.000 = 2457397.77249 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:32:53.000 = 2457397.77284 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:31:20 -21.604913302
-2016-01-10T06:31:50 -21.6057384848
-2016-01-10T06:32:23 -21.6066461361
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:33:23.000 = 2457397.77318 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:33:52.000 = 2457397.77352 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:34:25.000 = 2457397.7739 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:32:53 -21.6074712248
-2016-01-10T06:33:23 -21.6082962635
-2016-01-10T06:33:52 -21.6090937501
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:34:55.000 = 2457397.77425 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:35:24.000 = 2457397.77458 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:35:54.000 = 2457397.77493 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:34:25 -21.61000117
-2016-01-10T06:34:55 -21.6108260337
-2016-01-10T06:35:24 -21.6116233412
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:36:27.000 = 2457397.77531 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:36:57.000 = 2457397.77566 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:37:27.000 = 2457397.77601 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:35:54 -21.6124480758
-2016-01-10T06:36:27 -21.6133552019
-2016-01-10T06:36:57 -21.614179784
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:37:56.000 = 2457397.77634 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:38:29.000 = 2457397.77672 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:38:59.000 = 2457397.77707 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:37:27 -21.6150042881
-2016-01-10T06:37:56 -21.6158012314
-2016-01-10T06:38:29 -21.6167080014
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:39:29.000 = 2457397.77742 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:39:59.000 = 2457397.77777 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:40:31.000 = 2457397.77814 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:38:59 -21.6175322451
-2016-01-10T06:39:29 -21.6183563969
-2016-01-10T06:39:59 -21.6191804534
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:41:01.000 = 2457397.77848 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:41:31.000 = 2457397.77883 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:42:01.000 = 2457397.77918 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:40:31 -21.620059338
-2016-01-10T06:41:01 -21.6208831867
-2016-01-10T06:41:31 -21.6217069296
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-10T06:42:33.000 = 2457397.77955 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-10T06:43:03.000 = 2457397.7799 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:37:27.000 = 2457400.81767 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-10T06:42:01 -21.6225305632
-2016-01-10T06:42:33 -21.6234089815
-2016-01-10T06:43:03 -21.6242323785
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:37:56.000 = 2457400.81801 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:38:26.000 = 2457400.81836 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:38:55.000 = 2457400.81869 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:37:27 -22.6318662679
-2016-01-13T07:37:56 -22.6326104603
-2016-01-13T07:38:26 -22.6333797594
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:39:27.000 = 2457400.81906 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:39:57.000 = 2457400.81941 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:40:26.000 = 2457400.81975 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:38:55 -22.6341228756
-2016-01-13T07:39:27 -22.6349422467
-2016-01-13T07:39:57 -22.6357098138
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:40:55.000 = 2457400.82008 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:41:27.000 = 2457400.82045 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:41:57.000 = 2457400.8208 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:40:26 -22.6364512465
-2016-01-13T07:40:55 -22.6371921368
-2016-01-13T07:41:27 -22.6380090379
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:42:26.000 = 2457400.82113 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:42:55.000 = 2457400.82147 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:43:27.000 = 2457400.82184 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:41:57 -22.6387742763
-2016-01-13T07:42:26 -22.6395134458
-2016-01-13T07:42:55 -22.6402520609
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:43:57.000 = 2457400.82219 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:44:26.000 = 2457400.82252 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:44:56.000 = 2457400.82287 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:43:27 -22.6410664377
-2016-01-13T07:43:57 -22.6418292964
-2016-01-13T07:44:26 -22.6425661534
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:45:27.000 = 2457400.82323 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:45:57.000 = 2457400.82358 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:46:26.000 = 2457400.82391 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:44:56 -22.6433278235
-2016-01-13T07:45:27 -22.6441142427
-2016-01-13T07:45:57 -22.644874671
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:46:56.000 = 2457400.82426 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:47:27.000 = 2457400.82462 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:47:57.000 = 2457400.82497 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:46:26 -22.6456091666
-2016-01-13T07:46:56 -22.6463683814
-2016-01-13T07:47:27 -22.6471522503
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:48:26.000 = 2457400.8253 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:48:56.000 = 2457400.82565 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:49:27.000 = 2457400.82601 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:47:57 -22.6479101976
-2016-01-13T07:48:26 -22.6486422831
-2016-01-13T07:48:56 -22.6493989923
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:49:57.000 = 2457400.82635 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:50:26.000 = 2457400.82669 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:50:56.000 = 2457400.82704 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:49:27 -22.6501802587
-2016-01-13T07:49:57 -22.6509356748
-2016-01-13T07:50:26 -22.6516653015
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:51:28.000 = 2457400.82741 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:51:57.000 = 2457400.82774 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:52:27.000 = 2457400.82809 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:50:56 -22.6524194547
-2016-01-13T07:51:28 -22.6532231718
-2016-01-13T07:51:57 -22.6539509016
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:52:56.000 = 2457400.82843 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:53:28.000 = 2457400.8288 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:53:57.000 = 2457400.82913 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:52:27 -22.6547030833
-2016-01-13T07:52:56 -22.6554295684
-2016-01-13T07:53:28 -22.656230492
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:54:26.000 = 2457400.82947 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:54:56.000 = 2457400.82981 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:55:28.000 = 2457400.83019 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:53:57 -22.656955678
-2016-01-13T07:54:26 -22.657680242
-2016-01-13T07:54:56 -22.6584291335
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:55:57.000 = 2457400.83052 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:56:27.000 = 2457400.83087 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:56:56.000 = 2457400.8312 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:55:28 -22.6592272106
-2016-01-13T07:55:57 -22.6599498047
-2016-01-13T07:56:27 -22.6606966491
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:57:28.000 = 2457400.83157 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:57:57.000 = 2457400.83191 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:58:27.000 = 2457400.83226 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:56:56 -22.6614179512
-2016-01-13T07:57:28 -22.6622131289
-2016-01-13T07:57:57 -22.6629330832
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T07:58:56.000 = 2457400.83259 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:59:28.000 = 2457400.83296 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T07:59:57.000 = 2457400.8333 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:58:27 -22.6636771846
-2016-01-13T07:58:56 -22.6643958235
-2016-01-13T07:59:28 -22.6651880491
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:00:27.000 = 2457400.83365 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:00:56.000 = 2457400.83398 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:01:28.000 = 2457400.83435 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T07:59:57 -22.6659053159
-2016-01-13T08:00:27 -22.6666466251
-2016-01-13T08:00:56 -22.6673625532
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:01:57.000 = 2457400.83469 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:02:27.000 = 2457400.83503 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:02:56.000 = 2457400.83537 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:01:28 -22.6681517742
-2016-01-13T08:01:57 -22.6688663061
-2016-01-13T08:02:27 -22.669604774
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:03:28.000 = 2457400.83574 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:03:58.000 = 2457400.83609 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:04:27.000 = 2457400.83642 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:02:56 -22.6703179439
-2016-01-13T08:03:28 -22.671104108
-2016-01-13T08:03:58 -22.6718403887
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:04:56.000 = 2457400.83676 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:05:28.000 = 2457400.83713 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:05:58.000 = 2457400.83748 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:04:27 -22.6725514355
-2016-01-13T08:04:56 -22.6732618
-2016-01-13T08:05:28 -22.6740448554
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:06:27.000 = 2457400.83781 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:06:56.000 = 2457400.83815 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:07:28.000 = 2457400.83852 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:05:58 -22.6747782091
-2016-01-13T08:06:27 -22.6754864149
-2016-01-13T08:06:56 -22.676193927
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:07:58.000 = 2457400.83887 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:08:27.000 = 2457400.8392 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:08:57.000 = 2457400.83955 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:07:28 -22.6769738219
-2016-01-13T08:07:58 -22.6777042001
-2016-01-13T08:08:27 -22.6784095181
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:09:28.000 = 2457400.83991 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:09:58.000 = 2457400.84025 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:10:27.000 = 2457400.84059 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:08:57 -22.6791384156
-2016-01-13T08:09:28 -22.6798908141
-2016-01-13T08:09:58 -22.6806181686
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:10:57.000 = 2457400.84094 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:11:28.000 = 2457400.8413 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:11:58.000 = 2457400.84164 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:10:27 -22.6813205522
-2016-01-13T08:10:57 -22.6820464024
-2016-01-13T08:11:28 -22.6827956394
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:12:27.000 = 2457400.84198 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:12:57.000 = 2457400.84233 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:13:29.000 = 2457400.8427 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:11:58 -22.6835199221
-2016-01-13T08:12:27 -22.6842193251
-2016-01-13T08:12:57 -22.6849420801
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:13:58.000 = 2457400.84303 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:14:28.000 = 2457400.84338 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:14:57.000 = 2457400.84372 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:13:29 -22.6857121576
-2016-01-13T08:13:58 -22.6864092694
-2016-01-13T08:14:28 -22.6871296454
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:15:29.000 = 2457400.84409 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:15:58.000 = 2457400.84442 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:16:28.000 = 2457400.84477 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:14:57 -22.6878252577
-2016-01-13T08:15:29 -22.6885919697
-2016-01-13T08:15:58 -22.68928602
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:16:57.000 = 2457400.8451 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:17:29.000 = 2457400.84547 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:17:58.000 = 2457400.84581 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:16:28 -22.6900032172
-2016-01-13T08:16:57 -22.6906957454
-2016-01-13T08:17:29 -22.6914590414
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:18:28.000 = 2457400.84616 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:18:57.000 = 2457400.84649 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:19:29.000 = 2457400.84686 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:17:58 -22.6921499844
-2016-01-13T08:18:28 -22.6928639555
-2016-01-13T08:18:57 -22.693553354
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:19:58.000 = 2457400.8472 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:20:27.000 = 2457400.84753 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:20:57.000 = 2457400.84788 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:19:29 -22.6943131838
-2016-01-13T08:19:58 -22.695000974
-2016-01-13T08:20:27 -22.6956879955
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:21:29.000 = 2457400.84825 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:21:58.000 = 2457400.84859 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:22:28.000 = 2457400.84894 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:20:57 -22.6963978956
-2016-01-13T08:21:29 -22.6971542093
-2016-01-13T08:21:58 -22.6978388014
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:22:57.000 = 2457400.84927 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:23:29.000 = 2457400.84964 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:23:58.000 = 2457400.84998 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:22:28 -22.6985461798
-2016-01-13T08:22:57 -22.6992291831
-2016-01-13T08:23:29 -22.6999819309
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:24:28.000 = 2457400.85032 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:24:57.000 = 2457400.85066 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-INFO| Observation date: 2016-01-13T08:25:29.000 = 2457400.85103 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-2016-01-13T08:23:58 -22.7006632801
-2016-01-13T08:24:28 -22.7013672923
-2016-01-13T08:24:57 -22.7020470306
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO| Observation date: 2016-01-13T08:25:58.000 = 2457400.85137 Julian days
-INFO| Observatory location: LAT 19.825232 deg |LON -155.468761 deg |ALT 4215.0 m
-INFO| Observed Target: 03h19m53.19s +41d33m51s
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-2016-01-13T08:25:29 -22.7027961631
-2016-01-13T08:25:58 -22.7034742246
+2016-01-10T05:06:02 -25.108024947940848
+2016-01-10T05:06:32 -25.10872665532921
+2016-01-10T05:07:03 -25.10945122668723
+2016-01-10T05:07:33 -25.110151840441453
+2016-01-10T05:08:06 -25.110921992491928
+2016-01-10T05:08:36 -25.111621499831095
+2016-01-10T05:09:06 -25.1123204739662
+2016-01-10T05:09:36 -25.113018931539077
+2016-01-10T05:10:08 -25.11376331911631
+2016-01-10T05:10:39 -25.114483922797103
+2016-01-10T05:11:09 -25.115180639934692
+2016-01-10T05:11:40 -25.11590001158794
+2016-01-10T05:12:11 -25.116618782071917
+2016-01-10T05:12:42 -25.11733703466232
+2016-01-10T05:13:12 -25.118031506152114
+2016-01-10T05:13:43 -25.118748483745776
+2016-01-10T05:14:14 -25.119464883635143
+2016-01-10T05:14:45 -25.120180669374616
+2016-01-10T05:15:15 -25.120872792004022
+2016-01-10T05:15:45 -25.12156431299819
+2016-01-10T05:16:18 -25.122324275692225
+2016-01-10T05:16:48 -25.123014603733846
+2016-01-10T05:17:19 -25.12372731659372
+2016-01-10T05:17:49 -25.124416398329103
+2016-01-10T05:18:20 -25.125127811096363
+2016-01-10T05:18:51 -25.125838632280043
+2016-01-10T05:19:21 -25.126525934338723
+2016-01-10T05:19:51 -25.127212530351354
+2016-01-10T05:20:24 -25.12796718343801
+2016-01-10T05:20:54 -25.128652526953648
+2016-01-10T05:21:24 -25.1293372691336
+2016-01-10T05:21:54 -25.130021378657954
+2016-01-10T05:22:27 -25.130773207993116
+2016-01-10T05:22:57 -25.131456024946967
+2016-01-10T05:23:27 -25.13213822894913
+2016-01-10T05:23:57 -25.13281975925696
+2016-01-10T05:24:30 -25.133568758317033
+2016-01-10T05:25:00 -25.134248950355907
+2016-01-10T05:25:31 -25.134951188485335
+2016-01-10T05:26:01 -25.135630126596013
+2016-01-10T05:26:33 -25.13635355592547
+2016-01-10T05:27:03 -25.13703109149647
+2016-01-10T05:27:34 -25.13773056758229
+2016-01-10T05:28:06 -25.138451865526722
+2016-01-10T05:28:37 -25.13914985819359
+2016-01-10T05:29:07 -25.139824736597756
+2016-01-10T05:29:39 -25.140543780340494
+2016-01-10T05:30:09 -25.141217252909897
+2016-01-10T05:30:40 -25.141912416133767
+2016-01-10T05:31:10 -25.142584483933486
+2016-01-10T05:31:42 -25.143300623245167
+2016-01-10T05:32:13 -25.14399362692604
+2016-01-10T05:32:43 -25.144663605977087
+2016-01-10T05:33:14 -25.145355158557436
+2016-01-10T05:33:45 -25.14604598365707
+2016-01-10T05:34:15 -25.146713805461694
+2016-01-10T05:34:46 -25.14740314670969
+2016-01-10T05:35:17 -25.148091733683632
+2016-01-10T05:35:48 -25.148779587951328
+2016-01-10T05:36:18 -25.149444505358176
+2016-01-10T05:36:48 -25.150108769773112
+2016-01-10T05:37:20 -25.1508164504781
+2016-01-10T05:37:50 -25.151479234236632
+2016-01-10T05:38:21 -25.152163291705357
+2016-01-10T05:38:51 -25.15282454501514
+2016-01-10T05:39:23 -25.153529109538493
+2016-01-10T05:39:53 -25.154188896304138
+2016-01-10T05:40:23 -25.15484789840776
+2016-01-10T05:40:54 -25.155528113845037
+2016-01-10T05:41:26 -25.15622946669597
+2016-01-10T05:41:56 -25.156886175389758
+2016-01-10T05:42:26 -25.157542182098112
+2016-01-10T05:42:56 -25.158197414196096
+2016-01-10T05:43:29 -25.15891727272256
+2016-01-10T05:43:59 -25.159570972108515
+2016-01-10T05:44:29 -25.160223839037126
+2016-01-10T05:45:00 -25.160897689642216
+2016-01-10T05:45:32 -25.161592421742977
+2016-01-10T05:46:02 -25.162242931689992
+2016-01-10T05:46:33 -25.162914316043263
+2016-01-10T05:47:03 -25.16356323959171
+2016-01-10T05:47:35 -25.164254606216314
+2016-01-10T05:48:05 -25.164901959874893
+2016-01-10T05:48:35 -25.165548477814333
+2016-01-10T05:49:06 -25.166215794007044
+2016-01-10T05:49:38 -25.166903664750144
+2016-01-10T05:50:08 -25.167547823012008
+2016-01-10T05:50:38 -25.16819112884634
+2016-01-10T05:51:08 -25.168833615669914
+2016-01-10T05:51:40 -25.169518083958724
+2016-01-10T05:52:10 -25.170158921377794
+2016-01-10T05:52:41 -25.170820274338826
+2016-01-10T05:53:11 -25.17145947656551
+2016-01-10T05:53:43 -25.172140343829767
+2016-01-10T05:54:13 -25.172777861371276
+2016-01-10T05:54:43 -25.17341458782702
+2016-01-10T05:55:13 -25.17405044411504
+2016-01-10T05:55:45 -25.174727829876336
+2016-01-10T05:56:15 -25.175361965299853
+2016-01-10T05:56:45 -25.175995252223313
+2016-01-10T05:57:15 -25.176627780512558
+2016-01-10T05:57:47 -25.177301522845937
+2016-01-10T05:58:17 -25.17793227967954
+2016-01-10T05:58:47 -25.178562183652918
+2016-01-10T05:59:17 -25.17919122248441
+2016-01-10T05:59:49 -25.17986134728455
+2016-01-10T06:00:19 -25.18048866704886
+2016-01-10T06:00:49 -25.181115073110437
+2016-01-10T06:01:19 -25.181740645583023
+2016-01-10T06:01:51 -25.18240701518876
+2016-01-10T06:02:21 -25.183030835077528
+2016-01-10T06:02:51 -25.183653733275488
+2016-01-10T06:03:21 -25.184275839588874
+2016-01-10T06:03:53 -25.184938417121916
+2016-01-10T06:04:23 -25.185558680619515
+2016-01-10T06:04:53 -25.1861780712867
+2016-01-10T06:05:23 -25.186796550813995
+2016-01-10T06:05:56 -25.18747587434933
+2016-01-10T06:06:25 -25.188071984635126
+2016-01-10T06:06:55 -25.18868775780236
+2016-01-10T06:07:25 -25.18930262199314
+2016-01-10T06:07:57 -25.189957532005256
+2016-01-10T06:08:28 -25.190590985113975
+2016-01-10T06:08:58 -25.191203079972023
+2016-01-10T06:09:28 -25.19181427247707
+2016-01-10T06:10:00 -25.192465210351955
+2016-01-10T06:10:30 -25.19307453331444
+2016-01-10T06:11:00 -25.193682910189203
+2016-01-10T06:11:29 -25.19427017953903
+2016-01-10T06:12:02 -25.19493737923897
+2016-01-10T06:12:32 -25.19554293103089
+2016-01-10T06:13:01 -25.19612747794465
+2016-01-10T06:13:31 -25.196731201698725
+2016-01-10T06:14:04 -25.19739424074284
+2016-01-10T06:14:34 -25.197996073519683
+2016-01-10T06:15:04 -25.19859693707667
+2016-01-10T06:15:34 -25.199196853780407
+2016-01-10T06:16:06 -25.199835725866578
+2016-01-10T06:16:36 -25.200433681431154
+2016-01-10T06:17:06 -25.20103072925077
+2016-01-10T06:17:36 -25.201626800860968
+2016-01-10T06:18:08 -25.202261556491997
+2016-01-10T06:18:38 -25.20285569179263
+2016-01-10T06:19:08 -25.203448803554494
+2016-01-10T06:19:38 -25.204040978647903
+2016-01-10T06:20:10 -25.204671595723465
+2016-01-10T06:20:40 -25.20526178012183
+2016-01-10T06:21:10 -25.205850960652064
+2016-01-10T06:21:40 -25.20643926026396
+2016-01-10T06:22:12 -25.207065619428874
+2016-01-10T06:22:42 -25.20765185229259
+2016-01-10T06:23:12 -25.208237082186827
+2016-01-10T06:23:42 -25.20882134509121
+2016-01-10T06:24:14 -25.20944347606778
+2016-01-10T06:24:44 -25.21002571023391
+2016-01-10T06:25:14 -25.21060691277334
+2016-01-10T06:25:44 -25.211187180474923
+2016-01-10T06:26:16 -25.211804967003363
+2016-01-10T06:26:46 -25.21238313480625
+2016-01-10T06:27:16 -25.212960310523414
+2016-01-10T06:27:46 -25.21353645318268
+2016-01-10T06:28:18 -25.214149909441826
+2016-01-10T06:28:48 -25.21472398711694
+2016-01-10T06:29:18 -25.215297058128098
+2016-01-10T06:29:48 -25.215869123806637
+2016-01-10T06:30:21 -25.216497207197705
+2016-01-10T06:30:50 -25.217048092360262
+2016-01-10T06:31:20 -25.217617010603824
+2016-01-10T06:31:50 -25.21818489262754
+2016-01-10T06:32:23 -25.21880841040063
+2016-01-10T06:32:53 -25.219374120932525
+2016-01-10T06:33:23 -25.219938819375216
+2016-01-10T06:33:52 -25.220483674306113
+2016-01-10T06:34:25 -25.221102571043946
+2016-01-10T06:34:55 -25.221664012615026
+2016-01-10T06:35:24 -25.22220582844922
+2016-01-10T06:35:54 -25.222765259488202
+2016-01-10T06:36:27 -25.223379473982153
+2016-01-10T06:36:57 -25.22393669648461
+2016-01-10T06:37:27 -25.2244928687548
+2016-01-10T06:37:56 -25.22502948987677
+2016-01-10T06:38:29 -25.225638957323575
+2016-01-10T06:38:59 -25.226191872189617
+2016-01-10T06:39:29 -25.226743687996287
+2016-01-10T06:39:59 -25.2272944879527
+2016-01-10T06:40:31 -25.2278808527528
+2016-01-10T06:41:01 -25.22842937590793
+2016-01-10T06:41:31 -25.228976906977337
+2016-01-10T06:42:01 -25.22952330773402
+2016-01-10T06:42:33 -25.230105002871458
+2016-01-10T06:43:03 -25.2306491770186
+2016-01-13T07:37:27 -25.45248667171002
+2016-01-13T07:37:56 -25.452845074934586
+2016-01-13T07:38:26 -25.453214503401156
+2016-01-13T07:38:55 -25.453570289898526
+2016-01-13T07:39:27 -25.45396146466982
+2016-01-13T07:39:57 -25.454326696134824
+2016-01-13T07:40:26 -25.454678471453246
+2016-01-13T07:40:55 -25.45502894045501
+2016-01-13T07:41:27 -25.45541419726039
+2016-01-13T07:41:57 -25.455773953498568
+2016-01-13T07:42:26 -25.456120407793314
+2016-01-13T07:42:55 -25.45646552781314
+2016-01-13T07:43:27 -25.45684488399338
+2016-01-13T07:43:57 -25.457199093145345
+2016-01-13T07:44:26 -25.45754017971946
+2016-01-13T07:44:56 -25.457891664038936
+2016-01-13T07:45:27 -25.45825342218875
+2016-01-13T07:45:57 -25.458602053666826
+2016-01-13T07:46:26 -25.45893775048653
+2016-01-13T07:46:56 -25.459283680330817
+2016-01-13T07:47:27 -25.459639624559404
+2016-01-13T07:47:57 -25.459982702427663
+2016-01-13T07:48:26 -25.460312985096046
+2016-01-13T07:48:56 -25.460653269134816
+2016-01-13T07:49:27 -25.46100345282914
+2016-01-13T07:49:57 -25.461340922469123
+2016-01-13T07:50:26 -25.46166574801699
+2016-01-13T07:50:56 -25.462000463568156
+2016-01-13T07:51:28 -25.46235591097171
+2016-01-13T07:51:57 -25.462676597664547
+2016-01-13T07:52:27 -25.463007045419825
+2016-01-13T07:52:56 -25.463325046355177
+2016-01-13T07:53:28 -25.46367446196274
+2016-01-13T07:53:57 -25.46398971513317
+2016-01-13T07:54:26 -25.46430367629891
+2016-01-13T07:54:56 -25.464627004648396
+2016-01-13T07:55:28 -25.464970355575716
+2016-01-13T07:55:57 -25.46528012819394
+2016-01-13T07:56:27 -25.465599125475322
+2016-01-13T07:56:56 -25.46590618990288
+2016-01-13T07:57:28 -25.466243444929898
+2016-01-13T07:57:57 -25.46654768500686
+2016-01-13T07:58:27 -25.466861037148394
+2016-01-13T07:58:56 -25.467162557218998
+2016-01-13T07:59:28 -25.467493704796283
+2016-01-13T07:59:57 -25.46779236490278
+2016-01-13T08:00:27 -25.46809998150608
+2016-01-13T08:00:56 -25.468395959250024
+2016-01-13T08:01:28 -25.46872096253258
+2016-01-13T08:01:57 -25.469014075552863
+2016-01-13T08:02:27 -25.46931591434769
+2016-01-13T08:02:56 -25.469606334088382
+2016-01-13T08:03:28 -25.469925187351414
+2016-01-13T08:03:58 -25.470222617560523
+2016-01-13T08:04:27 -25.470508769405477
+2016-01-13T08:04:56 -25.47079356986772
+2016-01-13T08:05:28 -25.47110625776747
+2016-01-13T08:05:58 -25.471397900981817
+2016-01-13T08:06:27 -25.471678455482248
+2016-01-13T08:06:56 -25.471957612768378
+2016-01-13T08:07:28 -25.47226410757957
+2016-01-13T08:07:58 -25.47254994449464
+2016-01-13T08:08:27 -25.472824823300833
+2016-01-13T08:08:57 -25.473107785640277
+2016-01-13T08:09:28 -25.473398629547795
+2016-01-13T08:09:58 -25.473678621421424
+2016-01-13T08:10:27 -25.47394789855621
+2016-01-13T08:10:57 -25.474224968425016
+2016-01-13T08:11:28 -25.47450977644265
+2016-01-13T08:11:58 -25.474783897346867
+2016-01-13T08:12:27 -25.4750474646384
+2016-01-13T08:12:57 -25.47531870946923
+2016-01-13T08:13:29 -25.475606429706293
+2016-01-13T08:13:58 -25.47586569937979
+2016-01-13T08:14:28 -25.476132449287114
+2016-01-13T08:14:57 -25.47638894832982
+2016-01-13T08:15:29 -25.47667033026176
+2016-01-13T08:15:58 -25.476923907699046
+2016-01-13T08:16:28 -25.47718476869708
+2016-01-13T08:16:57 -25.477435544083807
+2016-01-13T08:17:29 -25.477710601589912
+2016-01-13T08:17:58 -25.47795846705378
+2016-01-13T08:18:28 -25.47821342213458
+2016-01-13T08:18:57 -25.478458461184267
+2016-01-13T08:19:29 -25.478727202685292
+2016-01-13T08:19:58 -25.478969299427128
+2016-01-13T08:20:27 -25.479210019657092
+2016-01-13T08:20:57 -25.479457577446908
+2016-01-13T08:21:29 -25.479720007169888
+2016-01-13T08:21:58 -25.47995634344403
+2016-01-13T08:22:28 -25.48019936260891
+2016-01-13T08:22:57 -25.480432880723214
+2016-01-13T08:23:29 -25.48068896814703
+2016-01-13T08:23:58 -25.480919504013105
+2016-01-13T08:24:28 -25.481156572660662
+2016-01-13T08:24:57 -25.48138431160186
+2016-01-13T08:25:29 -25.48163395607677
+2016-01-13T08:25:58 -25.48185875344236
 </pre></div></div>
 </div>
 </div>
@@ -3090,10 +873,10 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </pre></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Now, we can then display the output file,</span>
 <span class="c1"># i.e. the barycentric velocity correction</span>
 
@@ -3117,19 +900,33 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">master.03e73|WARNING| /home/thomas/miniconda2/envs/orb3/lib/python3.7/site-packages/pandas/plotting/_matplotlib/converter.py:103: FutureWarning: Using an implicitly registered datetime converter for a matplotlib plotting method. The converter was registered by pandas on import. Future versions of pandas will require you to explicitly register matplotlib converters.
+
+To register the converters:
+        &gt;&gt;&gt; from pandas.plotting import register_matplotlib_converters
+        &gt;&gt;&gt; register_matplotlib_converters()
+  warnings.warn(msg, FutureWarning)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;matplotlib.text.Text at 0x7fc52519e850&gt;
+Text(0, 0.5, &#39;Barycentric velocity correction (in km/s)&#39;)
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_heliocentric_velocity_8_1.png" src="_images/script_example_heliocentric_velocity_8_1.png" />
+<img alt="_images/script_example_heliocentric_velocity_8_2.png" src="_images/script_example_heliocentric_velocity_8_2.png" />
 </div>
 </div>
 </div>
@@ -3137,15 +934,6 @@ INFO| Observed Target: 03h19m53.19s +41d33m51s
 <div class="section" id="How-to-use-the-computed-correction">
 <h1>How to use the computed correction<a class="headerlink" href="#How-to-use-the-computed-correction" title="Permalink to this headline">¶</a></h1>
 <p>In general, for km/s precision, just add the barycentric velocity to the measured velocity. For higher precision you can refer to <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction">http://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.radial_velocity_correction</a></p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 </div>
 
 

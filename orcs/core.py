@@ -162,7 +162,7 @@ class SpectralCube(orb.cube.SpectralCube):
         else: deep_frame = deep_frame.data
         return np.sqrt(deep_frame) * self.get_gain()
 
-    def get_radial_velocity_correction(self, kind='heliocentric', date=None):
+    def get_radial_velocity_correction(self, kind='heliocentric', date=None, silent=False):
         """Return heliocentric or barycentric velocity correction to apply on
            the observed target in km/s
 
@@ -200,7 +200,7 @@ class SpectralCube(orb.cube.SpectralCube):
             dec=self.params.target_dec * astropy.units.deg)
 
         if date is None:
-            time_str = ('-'.join(self.params.obs_date.astype(str)) + 'T'
+            time_str = (self.params.obs_date + 'T'
                         + '{}:{}:{}'.format(
                             int(self.params.hour_ut[0]),
                             int(self.params.hour_ut[1]),
@@ -214,11 +214,12 @@ class SpectralCube(orb.cube.SpectralCube):
             time_str,
             format='isot', scale='utc')
 
-        logging.info('Observation date: {} = {} Julian days'.format(
-            obstime, obstime.jd))
-        logging.info('Observatory location: LAT {} |LON {} |ALT {}'.format(
-            location.lat, location.lon, location.height))
-        logging.info('Observed Target: {}'.format(sc.to_string(style='hmsdms')))
+        if not silent:
+            logging.info('Observation date: {} = {} Julian days'.format(
+                obstime, obstime.jd))
+            logging.info('Observatory location: LAT {} |LON {} |ALT {}'.format(
+                location.lat, location.lon, location.height))
+            logging.info('Observed Target: {}'.format(sc.to_string(style='hmsdms')))
         radcorr = sc.radial_velocity_correction(
             kind, obstime=obstime, location=location)
         return radcorr.to_value(astropy.units.km/astropy.units.s)

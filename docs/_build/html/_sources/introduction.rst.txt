@@ -103,12 +103,13 @@ velocities in the order of their appearance in the definition
 
 These examples are related to the definition of the fitting parameters:
 
-- :ref:`script_example_fit_a_single_spectrum.ipynb`
+.. toctree::
+   :maxdepth: 1
 
-- :ref:`script_example_velocity_parameter_precision.ipynb`
-
-- :ref:`script_example_constaining_line_ratios.ipynb`
-
+   getting_started.ipynb
+   script_example_velocity_parameter_precision.ipynb
+   script_example_fit_region.ipynb
+   
 
 .. image:: images/sky-spectrum.png
    :width: 100%
