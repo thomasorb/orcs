@@ -1,4 +1,4 @@
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension, find_namespace_packages
 import io
 import codecs
 import os
@@ -7,7 +7,7 @@ import sys
 import orcs
 import orcs.version
 
-packages = find_packages(where=".")
+packages = find_namespace_packages(where=".")
 
 here = os.path.abspath(os.path.dirname(__file__))
 
