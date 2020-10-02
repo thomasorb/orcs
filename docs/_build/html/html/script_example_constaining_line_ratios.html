@@ -1,0 +1,714 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Constraining line ratios &mdash; Orcs latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+          
+
+          
+            
+            <img src="../_static/logo_sidebar.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                lastest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils_module.html">Utils module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Orcs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Constraining line ratios</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/html/script_example_constaining_line_ratios.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Constraining-line-ratios">
+<h1>Constraining line ratios<a class="headerlink" href="#Constraining-line-ratios" title="Permalink to this headline">¶</a></h1>
+<p>Some line doublets (e.g. [NII]6548,6583, [OIII]4959,5007) have known line ratios which then should be constrained to inject more information and optimize the unceratinty on the best fit parameters by minimizing the number of free parameters (especially if the SNR is low and if small variations of the ratio could not be measured anyway).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
+<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="c1"># load spectral cube</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+master.03e73|INFO| Cube is level 3
+master.03e73|INFO| shape: (2048, 2064, 840)
+master.03e73|INFO| wavenumber calibration: True
+master.03e73|INFO| flux calibration: True
+master.03e73|INFO| wcs calibration: True
+</pre></div></div>
+</div>
+<div class="section" id="Fit-with-no-amplitude-constraint">
+<h2>Fit with no amplitude constraint<a class="headerlink" href="#Fit-with-no-amplitude-constraint" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">)</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] flux ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;[NII]6548&#39;, &#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: gaussian
+iterations: 67, fit time: 8.44e-02 s
+Velocity (km/s): [-295.6(1.1) -295.6(1.1) -295.6(1.1)]
+Flux: [4.62(57)e-15 1.410(57)e-14 1.561(57)e-14]
+Broadening (km/s): [nan +- nan nan +- nan nan +- nan]
+
+[NII] flux ratio 3.3796131687016837
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(14500, 15500)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="html/../_build/doctrees/nbsphinx/html_script_example_constaining_line_ratios_3_2.png" src="html/../_build/doctrees/nbsphinx/html_script_example_constaining_line_ratios_3_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Fit-with-naive-amplitude-ratio-constraint">
+<h2>Fit with naive amplitude ratio constraint<a class="headerlink" href="#Fit-with-naive-amplitude-ratio-constraint" title="Permalink to this headline">¶</a></h2>
+<p>Only the amplitude parameter can be constrained but not the flux (flux is a function of fwhm, broadening and amplitude). However, the natural axis of interferometric spectra is in wavenumber so that their fwhm (instrumental line shape) is constant in wavenumber. It means that, in wavelength (which is the axis on which the flux is evaluated when the flux unit are erg/cm2/s/A), for a given amplitude the flux will also depend on the wavelength. i.e. for a given amplitude ratio of 3 between two
+lines, the flux ratio will be slightly different from 3.</p>
+<p>This problem will be answered next. For the moment we will see how we can constraint the amplitude ratio between two lines. When two lines are covarying in amplitude, the covariance parameter will be multiplicative over the initial guess of the lines amplitude. We can thus set a line to a guessed amplitude of 1 and the other at 3 and their amplitude ratio will always be 3. The covarying parameter which is free will multiply both lines by e.g. 3.2e-17 and the first line will have a final
+amplitude of 3.2e-17 while the second one will have a final amplitude of 9.6e-17.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                   <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] amplitude ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] flux ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;[NII]6548&#39;, &#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: gaussian
+iterations: 61, fit time: 7.80e-02 s
+Velocity (km/s): [-295.6(1.1) -295.6(1.1) -295.6(1.1)]
+Flux: [5.10(18)e-15 1.410(57)e-14 1.546(54)e-14]
+Broadening (km/s): [nan +- nan nan +- nan nan +- nan]
+
+[NII] amplitude ratio 3.0
+[NII] flux ratio 3.0325248184327562
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(14500, 15500)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="html/../_build/doctrees/nbsphinx/html_script_example_constaining_line_ratios_5_2.png" src="html/../_build/doctrees/nbsphinx/html_script_example_constaining_line_ratios_5_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Fit-with-a-flux-ratio-constraint">
+<h2>Fit with a flux ratio constraint<a class="headerlink" href="#Fit-with-a-flux-ratio-constraint" title="Permalink to this headline">¶</a></h2>
+<p>In the preceding example you can see that the amplitude ratio is 3 but the flux ratio (which is generally the parameter we want to constraint) is not exactly 3. To compute the amplitude ratio you must set to obtain a flux ratio of 3 you can use the method <code class="docutils literal notranslate"><span class="pre">cube.get_amp_ratio_from_flux_ratio</span></code> and use its output to set the correct amplitude ratio.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">amp_ratio</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_amp_ratio_from_flux_ratio</span><span class="p">(</span><span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">amp_ratio</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2.967824020860382
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                   <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">amp_ratio</span><span class="p">])</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] amplitude ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] flux ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;[NII]6548&#39;, &#39;H3&#39;, &#39;[NII]6584&#39;], fmodel: gaussian
+iterations: 61, fit time: 7.91e-02 s
+Velocity (km/s): [-295.6(1.1) -295.6(1.1) -295.6(1.1)]
+Flux: [5.15(18)e-15 1.410(57)e-14 1.544(54)e-14]
+Broadening (km/s): [nan +- nan nan +- nan nan +- nan]
+
+[NII] amplitude ratio 2.967824020860382
+[NII] flux ratio 3.0
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(14500, 15500)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="html/../_build/doctrees/nbsphinx/html_script_example_constaining_line_ratios_8_2.png" src="html/../_build/doctrees/nbsphinx/html_script_example_constaining_line_ratios_8_2.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

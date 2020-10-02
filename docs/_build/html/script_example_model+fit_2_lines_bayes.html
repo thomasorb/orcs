@@ -450,17 +450,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># inline plotting for jupyter notebook. Do not put this line in a real python script.</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">orb.fit</span>
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -474,34 +464,35 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Model">
 <h3>Model<a class="headerlink" href="#Model" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">halpha_cm1</span> <span class="o">=</span> <span class="n">Lines</span><span class="p">()</span><span class="o">.</span><span class="n">get_line_cm1</span><span class="p">(</span><span class="s1">&#39;Halpha&#39;</span><span class="p">)</span>
 
-<span class="n">nm_laser</span> <span class="o">=</span> <span class="mf">543.5</span>
 <span class="n">step</span> <span class="o">=</span> <span class="mi">2943</span>
 <span class="n">order</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">resolution</span> <span class="o">=</span> <span class="mi">5000</span>
-<span class="n">theta</span> <span class="o">=</span> <span class="mf">15.5</span>
-<span class="n">axis_corr</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+<span class="n">step_nb</span> <span class="o">=</span> <span class="mi">840</span>
+<span class="n">axis_corr</span> <span class="o">=</span> <span class="mf">1.0374712062298759</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">corr2theta</span><span class="p">(</span><span class="n">axis_corr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incident angle theta (in degrees):&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+<span class="n">zpd_index</span> <span class="o">=</span> <span class="mi">168</span>
 
 <span class="c1"># model spectrum</span>
 <span class="n">velocity1</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">broadening1</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="n">spectrum1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                         <span class="n">sigma</span><span class="o">=</span><span class="n">broadening1</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity1</span><span class="p">)</span>
+<span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model_raw</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">step_nb</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="n">zpd_index</span><span class="o">=</span><span class="n">zpd_index</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                                                                  <span class="n">sigma</span><span class="o">=</span><span class="n">broadening1</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity1</span><span class="p">)</span>
 
 <span class="n">velocity2</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">broadening2</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">spectrum2</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                         <span class="n">sigma</span><span class="o">=</span><span class="n">broadening2</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity2</span><span class="p">)</span>
+<span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum2</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model_raw</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">step_nb</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="n">zpd_index</span><span class="o">=</span><span class="n">zpd_index</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                                                                  <span class="n">sigma</span><span class="o">=</span><span class="n">broadening2</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity2</span><span class="p">)</span>
 
 <span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum1</span> <span class="o">+</span> <span class="n">spectrum2</span>
 
 <span class="c1"># add noise</span>
-<span class="n">SNR</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">SNR</span> <span class="o">=</span> <span class="mi">22</span>
 <span class="n">spectrum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">SNR</span>
 
 <span class="n">spectrum_axis</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">create_cm1_axis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">spectrum</span><span class="p">),</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">corr</span><span class="o">=</span><span class="n">axis_corr</span><span class="p">)</span>
@@ -515,11 +506,19 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+incident angle theta (in degrees): 15.445939567249903
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_model+fit_2_lines_bayes_5_0.png" src="_images/script_example_model+fit_2_lines_bayes_5_0.png" />
+<img alt="_images/script_example_model+fit_2_lines_bayes_4_1.png" src="_images/script_example_model+fit_2_lines_bayes_4_1.png" />
 </div>
 </div>
 </div>
@@ -527,18 +526,20 @@ div.rendered_html tbody tr:hover {
 <h3>Classical fit<a class="headerlink" href="#Classical-fit" title="Permalink to this headline">¶</a></h3>
 <p>The classical fit will be be unable to make any difference between an infinity of different possibilities which all gives approximatly the same chi2. the best fit will be very badly constrained and can give random sets of parameters depending on the noise.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">nm_laser</span> <span class="o">=</span> <span class="mf">543.5</span> <span class="c1"># wavelength of the calibration laser, in fact it can be any real positive number (e.g. 1 is ok)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">zpd_index</span><span class="p">,</span>
                                     <span class="n">wavenumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
                                     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
                                     <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">velocity1</span><span class="p">,</span> <span class="n">velocity2</span><span class="p">],</span>
                                     <span class="n">sigma_guess</span><span class="o">=</span><span class="p">[</span><span class="n">broadening1</span><span class="p">,</span> <span class="n">broadening2</span><span class="p">])</span>
-<span class="nb">print</span> <span class="s1">&#39;velocity (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
-<span class="nb">print</span> <span class="s1">&#39;broadening (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
-<span class="nb">print</span> <span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;velocity (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;broadening (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">])</span>
+
 <span class="c1"># independant plot of the two lines models and the real lines</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line1 + line2 + noise&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
@@ -549,6 +550,9 @@ div.rendered_html tbody tr:hover {
 <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model 2&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span> <span class="mi">15270</span><span class="p">))</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="c1"># In fact this &quot;very bad fit&quot; may be not so bad, and will be, in general, not so bad...</span>
+<span class="c1"># but its outputs are not constrained as in the bayesian fit and can sometimes be very far from anything realistic</span>
+<span class="c1"># if you obtain a good fit, redo the model and the fit multiple times</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;A very bad fit&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;gvar_bad_fit.svg&#39;</span><span class="p">)</span>
 </pre></div>
@@ -557,18 +561,34 @@ div.rendered_html tbody tr:hover {
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:nan in passed parameters: {&#39;amp0&#39;: 1.18644 +- nan, &#39;amp1&#39;: 0.0516463 +- nan, &#39;pos_def1&#39;: 26.9033 +- nan, &#39;pos_def2&#39;: -57.1967 +- nan, &#39;sigma0&#39;: 34.6287 +- nan, &#39;sigma1&#39;: 0.5303 +- nan, &#39;cont_p0&#39;: 0.00261949 +- nan}
+WARNING:root:Nan in model
+WARNING:root:Nan in model
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-velocity (in km/s):  [92.3(2.6) 51(12)]
-broadening (in km/s):  [21.3(8.7) 47.3(3.4)]
-flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [-1.69(79) 4.28(92)]
+velocity (in km/s):  [26.9033 +- nan -57.1967 +- nan]
+broadening (in km/s):  [34.6287 +- nan 0.5303 +- nan]
+flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [2.33652 +- nan 0.0583332 +- nan]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_model+fit_2_lines_bayes_7_1.png" src="_images/script_example_model+fit_2_lines_bayes_7_1.png" />
+<img alt="_images/script_example_model+fit_2_lines_bayes_6_2.png" src="_images/script_example_model+fit_2_lines_bayes_6_2.png" />
 </div>
 </div>
 </div>
@@ -582,10 +602,10 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [-1.69(79
 <li><p>define the initial guesses as random variables (we will use the package gvar which is intimatly linked to lsqfit - same author)</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">gvar</span> <span class="c1">#  library used to define gaussian random variables</span>
 <span class="c1"># now we can define our random variables, we are purposely biasing the inital guess</span>
 <span class="c1"># and giving a large error of +/- 10 km/s on both the velocity and the broadening</span>
@@ -595,7 +615,7 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [-1.69(79
 <span class="n">broadening1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening1</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening1 is known at +/- 10 km/s</span>
 <span class="n">broadening2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening2 is known at +/- 10 km/s</span>
 
-<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">zpd_index</span><span class="p">,</span>
                                     <span class="n">wavenumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
                                     <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
                                     <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">velocity1_gvar</span><span class="p">,</span> <span class="n">velocity2_gvar</span><span class="p">],</span>
@@ -603,18 +623,17 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [-1.69(79
                                     <span class="n">sigma_guess</span><span class="o">=</span><span class="p">[</span><span class="n">broadening1_gvar</span><span class="p">,</span> <span class="n">broadening2_gvar</span><span class="p">],</span>
                                     <span class="n">snr_guess</span><span class="o">=</span><span class="n">SNR</span><span class="p">)</span>
 
-<span class="nb">print</span> <span class="s1">&#39;=== velocity ===&#39;</span>
-<span class="nb">print</span> <span class="s1">&#39;input velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">velocity1_gvar</span><span class="p">,</span> <span class="n">velocity2_gvar</span>
-<span class="nb">print</span> <span class="s1">&#39;fitted velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">]</span>
-<span class="nb">print</span> <span class="s1">&#39;real velocity (km/s)&#39;</span><span class="p">,</span> <span class="n">velocity1</span><span class="p">,</span> <span class="n">velocity2</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== velocity ===&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">velocity1_gvar</span><span class="p">,</span> <span class="n">velocity2_gvar</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fitted velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;real velocity (km/s)&#39;</span><span class="p">,</span> <span class="n">velocity1</span><span class="p">,</span> <span class="n">velocity2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== broadening ===&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input broadening (km/s): &#39;</span><span class="p">,</span> <span class="n">broadening1_gvar</span><span class="p">,</span> <span class="n">broadening2_gvar</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fitted broadening (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;real broadening (km/s)&#39;</span><span class="p">,</span> <span class="n">broadening1</span><span class="p">,</span> <span class="n">broadening2</span><span class="p">)</span>
 
-<span class="nb">print</span> <span class="s1">&#39;=== broadening ===&#39;</span>
-<span class="nb">print</span> <span class="s1">&#39;input broadening (km/s): &#39;</span><span class="p">,</span> <span class="n">broadening1_gvar</span><span class="p">,</span> <span class="n">broadening2_gvar</span>
-<span class="nb">print</span> <span class="s1">&#39;fitted broadening (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">]</span>
-<span class="nb">print</span> <span class="s1">&#39;real broadening (km/s)&#39;</span><span class="p">,</span> <span class="n">broadening1</span><span class="p">,</span> <span class="n">broadening2</span>
-
-<span class="nb">print</span> <span class="s1">&#39;=== flux ===&#39;</span>
-<span class="nb">print</span> <span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== flux ===&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">])</span>
 <span class="c1"># independant plot of the two lines models and the real lines</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line1 + line2 + noise&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
@@ -637,30 +656,21 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [-1.69(79
 <div class="highlight"><pre>
 === velocity ===
 input velocity (km/s):  53(10) 7(10)
-fitted velocity (km/s):  [40.6(3.6) 1.8(8.0)]
+fitted velocity (km/s):  [54.8(5.1) 8.5(4.8)]
 real velocity (km/s) 50 10
 === broadening ===
 input broadening (km/s):  18(10) 27(10)
-fitted broadening (km/s):  [18.000(29) 27.000(44)]
+fitted broadening (km/s):  [18.000(25) 27.000(37)]
 real broadening (km/s) 15 30
 === flux ===
-flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [1.46(27) 1.11(28)]
+flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [0.81(18) 1.50(18)]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_model+fit_2_lines_bayes_9_1.png" src="_images/script_example_model+fit_2_lines_bayes_9_1.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
+<img alt="_images/script_example_model+fit_2_lines_bayes_8_1.png" src="_images/script_example_model+fit_2_lines_bayes_8_1.png" />
 </div>
 </div>
 </div>

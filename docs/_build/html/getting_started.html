@@ -444,7 +444,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="First-step:-loading-the-data-cube">
 <h2>First step: loading the data cube<a class="headerlink" href="#First-step:-loading-the-data-cube" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -455,7 +455,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -468,15 +468,15 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-master.03e73|INFO| Cube is level 3
-master.03e73|INFO| shape: (2048, 2064, 840)
-master.03e73|INFO| wavenumber calibration: True
-master.03e73|INFO| flux calibration: True
-master.03e73|INFO| wcs calibration: True
+master.ff2bd|INFO| Cube is level 3
+master.ff2bd|INFO| shape: (2048, 2064, 840)
+master.ff2bd|INFO| wavenumber calibration: True
+master.ff2bd|INFO| flux calibration: True
+master.ff2bd|INFO| wcs calibration: True
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -495,22 +495,37 @@ master.03e73|INFO| wcs calibration: True
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-master.03e73|INFO| mean flambda config: 1.4984303888958248e-16
-master.03e73|INFO| standard_spectrum not set: no relative vector correction computed
-master.03e73|INFO| standard_path not set: no relative vector correction computed
-<span class="ansi-yellow-fg">master.03e73|WARNING| bad WCS in header</span>
-master.03e73|INFO| standard_image not set: no absolute vector correction computed
+master.ff2bd|INFO| mean flambda config: 1.4984303888958248e-16
+master.ff2bd|INFO| standard_spectrum not set: no relative vector correction computed
+master.ff2bd|INFO| standard_path not set: no relative vector correction computed
+<span class="ansi-yellow-fg">master.ff2bd|WARNING| bad WCS in header</span>
+master.ff2bd|INFO| standard_image not set: no absolute vector correction computed
 </pre></div></div>
 </div>
 <div class="section" id="Exploring-the-deep-frame">
 <h3>Exploring the deep frame<a class="headerlink" href="#Exploring-the-deep-frame" title="Permalink to this headline">¶</a></h3>
+<p>The deep frame is the sum of all the interferogram frames, i.e. an image of the field with an exposure time of</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">exposure_time</span> <span class="o">*</span> <span class="n">cube</span><span class="o">.</span><span class="n">dimz</span> <span class="c1"># s</span>
+</pre></div>
+</div>
+<div class="section" id="Deep-frames-for-old-cubes">
+<h4>Deep frames for old cubes<a class="headerlink" href="#Deep-frames-for-old-cubes" title="Permalink to this headline">¶</a></h4>
+<p>Note: if your cube is old (level 1), the deep frame may have been distributed as a separate FITS file. For more recent cubes, the deep frame must be stored in the hdf5 archive. The deep frame is in the cube if one of the following return True:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cube</span><span class="o">.</span><span class="n">has_dataset</span><span class="p">(</span><span class="s1">&#39;deep_frame&#39;</span><span class="p">)</span> <span class="c1"># should return True</span>
+<span class="nb">hasattr</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="s1">&#39;deep_frame&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your deep frame was distributed as a separate file, you can attach it to the cube with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cube</span><span class="o">.</span><span class="n">deep_frame</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;path_to_your_deep_frame.fits&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># explore the deep frame (in counts)</span>
-<span class="n">deep</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
+<span class="n">deep</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span> <span class="c1"># this step should take a second or less. If it takes a lot of time, see above.</span>
 <span class="n">deep</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">perc</span><span class="o">=</span><span class="mi">95</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">cb</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1e</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -531,7 +546,8 @@ master.03e73|INFO| Data written as M31_SN3.deep_frame.fits in 0.17 s
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_5_1.png" src="_images/getting_started_5_1.png" />
+<img alt="_images/getting_started_6_1.png" src="_images/getting_started_6_1.png" />
+</div>
 </div>
 </div>
 </div>
@@ -560,14 +576,14 @@ master.03e73|INFO| Data written as M31_SN3.deep_frame.fits in 0.17 s
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_7_0.png" src="_images/getting_started_7_0.png" />
+<img alt="_images/getting_started_8_0.png" src="_images/getting_started_8_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_7_1.png" src="_images/getting_started_7_1.png" />
+<img alt="_images/getting_started_8_1.png" src="_images/getting_started_8_1.png" />
 </div>
 </div>
 <p>The returned spectrum is a <code class="docutils literal notranslate"><span class="pre">RealSpectrum</span></code> object which provides many internal methods, one of which is the ability to fit directly.</p>
@@ -646,7 +662,7 @@ Text(0.5, 1.0, &#39;Background around the planetary nebula&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_11_2.png" src="_images/getting_started_11_2.png" />
+<img alt="_images/getting_started_12_2.png" src="_images/getting_started_12_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -678,7 +694,7 @@ Text(0.5, 1.0, &#39;Spectrum with background removed&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_12_1.png" src="_images/getting_started_12_1.png" />
+<img alt="_images/getting_started_13_1.png" src="_images/getting_started_13_1.png" />
 </div>
 </div>
 </div>
@@ -765,7 +781,7 @@ Broadening (km/s): [nan +- nan nan +- nan]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_14_2.png" src="_images/getting_started_14_2.png" />
+<img alt="_images/getting_started_15_2.png" src="_images/getting_started_15_2.png" />
 </div>
 </div>
 <div class="section" id="Ungroup-the-velocity-parameter">
@@ -823,7 +839,7 @@ Broadening (km/s): [nan +- nan nan +- nan]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_16_2.png" src="_images/getting_started_16_2.png" />
+<img alt="_images/getting_started_17_2.png" src="_images/getting_started_17_2.png" />
 </div>
 </div>
 </div>
@@ -895,7 +911,7 @@ Broadening (km/s): [27.1(1.7) 27.1(1.7)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_18_3.png" src="_images/getting_started_18_3.png" />
+<img alt="_images/getting_started_19_3.png" src="_images/getting_started_19_3.png" />
 </div>
 </div>
 </div>
@@ -961,7 +977,7 @@ Broadening (km/s): [26.6(1.7) 26.6(1.7)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/getting_started_20_3.png" src="_images/getting_started_20_3.png" />
+<img alt="_images/getting_started_21_3.png" src="_images/getting_started_21_3.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
