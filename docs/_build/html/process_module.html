@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Utils module" href="utils_module.html" />
-    <link rel="prev" title="Core module" href="core_module.html" /> 
+    <link rel="prev" title="Fit module" href="fit_module.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,6 +100,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit_module.html">Fit module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Process module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
 </ul>
@@ -196,6 +197,144 @@
 <p>ORCS (Outils de Réduction de Cubes Spectraux) provides tools to
 extract data from ORBS spectral cubes.</p>
 <p>This module contains the processing classes</p>
+<dl class="py class">
+<dt id="orcs.process.SpectralCube">
+<em class="property">class </em><code class="sig-prename descclassname">orcs.process.</code><code class="sig-name descname">SpectralCube</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fit_module.html#orcs.fit.SpectralCube" title="orcs.fit.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">orcs.fit.SpectralCube</span></code></a></p>
+<p>ORCS spectral cube general processing class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>parent class SpectralCube is the ORCS implementation of
+SpectralCube.</p>
+</div>
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_calibration_laser_map_path">
+<code class="sig-name descname">_get_calibration_laser_map_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_calibration_laser_map_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the calibration map computed when fitting
+sky lines. Can be used instead of the original calibration
+map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_deep_frame_wcs_path">
+<code class="sig-name descname">_get_deep_frame_wcs_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_deep_frame_wcs_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the generated deep frame with the reocmputed
+WCS.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_detection_frame_path">
+<code class="sig-name descname">_get_detection_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_frame_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the detection frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_detection_pos_frame_path">
+<code class="sig-name descname">_get_detection_pos_frame_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_detection_pos_frame_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the detection position frame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_dxmap_path">
+<code class="sig-name descname">_get_dxmap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dxmap_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the generated X micro-shifting map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_dymap_path">
+<code class="sig-name descname">_get_dymap_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_dymap_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the generated Y micro-shifting map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_skymap_file_path">
+<code class="sig-name descname">_get_skymap_file_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_skymap_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the sky map file containing the results of
+the fit.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_skymap_fits_path">
+<code class="sig-name descname">_get_skymap_fits_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_skymap_fits_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the sky map file containing the interpolated
+sky velocity map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_temp_reg_path">
+<code class="sig-name descname">_get_temp_reg_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_temp_reg_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to a temporary region file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube._get_wavefront_map_path">
+<code class="sig-name descname">_get_wavefront_map_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube._get_wavefront_map_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the wavefront map computed when fitting the
+calibration laser map with a different calibration laser
+wavelength. Can be used instead of the original wavefront map
+during a reduction</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube.detect_sources">
+<code class="sig-name descname">detect_sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fast</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.detect_sources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect emission line sources in the spectral cube</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fast</strong> – (Optional) Fast detection algorithm (with FFT
+convolution). Borders of the frame are wrong but process is
+much faster (default True).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube.map_sky_velocity">
+<code class="sig-name descname">map_sky_velocity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean_sky_vel</span></em>, <em class="sig-param"><span class="n">div_nb</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">no_fit</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sky_lines</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.map_sky_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the sky velocity on a rectangular grid and interpolate it
+to return a map of the velocity zero point that can be
+subtracted to the returned velocity map of the cube fit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean_sky_vel</strong> – (Optional) Mean sky velocity (in km/s).</p></li>
+<li><p><strong>div_nb</strong> – (Optional) Number of division on one axis of
+the rectangular grid. The total number of points is div_nb^2
+(default 15).</p></li>
+<li><p><strong>plot</strong> – (Optional) If True, output plots are shown
+(default True).</p></li>
+<li><p><strong>x_range</strong> – (Optional) Range of pixels along the X axis
+where the velocity is measured (default None).</p></li>
+<li><p><strong>y_range</strong> – (Optional) Range of pixels along the Y axis
+where the velocity is measured (default None).</p></li>
+<li><p><strong>exclude_reg_file_path</strong> – (Optional) Region to exclude
+from the computation (must be a ds9 reg file)</p></li>
+<li><p><strong>no_fit</strong> – (Optional) Do not repeat the fitting
+process. Only recompute the velocity map model.</p></li>
+<li><p><strong>threshold</strong> – (Optional) If not None, this threshold on
+the velocity uncertainty is used in place of an automatic
+threshold.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.process.SpectralCube.register">
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distortion_map_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.process.SpectralCube.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a new registration of the cube.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distortion_map</strong> – A path to a FITS image containing an
+SIP distortion model. It can be a registered image of a
+calibration field containing a lot of stars and taken during
+the same run as the science cube.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -209,7 +348,7 @@ extract data from ORBS spectral cubes.</p>
         <a href="utils_module.html" class="btn btn-neutral float-right" title="Utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="core_module.html" class="btn btn-neutral float-left" title="Core module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fit_module.html" class="btn btn-neutral float-left" title="Fit module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

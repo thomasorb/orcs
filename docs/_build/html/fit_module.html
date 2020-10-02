@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Fit module &mdash; Orcs latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Process module" href="process_module.html" />
+    <link rel="prev" title="Core module" href="core_module.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                lastest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fit module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Orcs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Fit module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/fit_module.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="module-orcs.fit">
+<span id="fit-module"></span><h1>Fit module<a class="headerlink" href="#module-orcs.fit" title="Permalink to this headline">¶</a></h1>
+<p>ORCS (Outils de Réduction de Cubes Spectraux) provides tools to
+extract data from ORBS spectral cubes.</p>
+<p>This module contains the fitting classes</p>
+<dl class="py class">
+<dt id="orcs.fit.SpectralCube">
+<em class="property">class </em><code class="sig-prename descclassname">orcs.fit.</code><code class="sig-name descname">SpectralCube</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core_module.html#orcs.core.SpectralCube" title="orcs.core.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">orcs.core.SpectralCube</span></code></a></p>
+<p>Extension of <a class="reference internal" href="core_module.html#orcs.core.SpectralCube" title="orcs.core.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">orcs.core.SpectralCube</span></code></a></p>
+<p>Gives access to an HDF5 cube with extended fit functionalities.</p>
+<p>The child class <a class="reference internal" href="process_module.html#orcs.process.SpectralCube" title="orcs.process.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectralCube</span></code></a> may be prefered in
+general for its broader functionality.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.SpectralCube</span></code></p>
+</div>
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube._get_integrated_spectrum_fit_path">
+<code class="sig-name descname">_get_integrated_spectrum_fit_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">region_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube._get_integrated_spectrum_fit_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to an integrated spectrum fit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region_name</strong> – Name of the region</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube._get_integrated_spectrum_path">
+<code class="sig-name descname">_get_integrated_spectrum_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">region_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube._get_integrated_spectrum_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to an integrated spectrum</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region_name</strong> – Name of the region</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube.fit_integrated_spectra">
+<code class="sig-name descname">fit_integrated_spectra</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">regions_file_path</span></em>, <em class="sig-param"><span class="n">lines</span></em>, <em class="sig-param"><span class="n">fmodel</span><span class="o">=</span><span class="default_value">'sinc'</span></em>, <em class="sig-param"><span class="n">nofilter</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">subtract_spectrum</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">snr_guess</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.fit_integrated_spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit integrated spectra and their emission lines parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regions_file_path</strong> – Path to a ds9 reg file giving the
+positions of the regions. Each region is considered as a
+different region.</p></li>
+<li><p><strong>subtract</strong> – Spectrum to subtract (must be a spline)</p></li>
+<li><p><strong>plot</strong> – (Optional) If True, plot each intergrated spectrum along
+with the its fit (default True).</p></li>
+<li><p><strong>verbose</strong> – (Optional) If True print the fit results
+(default True).</p></li>
+<li><p><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Can only
+be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
+fit. In this case two fits are made - one with a predefined
+SNR and the other with the SNR deduced from the first
+fit. If None a classical fit is made. (default None).</p></li>
+<li><p><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube.fit_lines_in_integrated_region">
+<code class="sig-name descname">fit_lines_in_integrated_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.fit_lines_in_integrated_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit lines of a spectrum integrated over a given region (can
+be a list of pixels as returned by the function
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.nonzero()</span></code> or a ds9 region file).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>region</strong> – Region to integrate (can be a list of pixel
+coordinates as returned by the function
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.nonzero()</span></code> or the path to a ds9 region
+file). If it is a ds9 region file, multiple regions can be
+defined and all will be integrated into one spectrum.</p></li>
+<li><p><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
+cube is in wavenumber. must be in nm otherwise).</p></li>
+<li><p><strong>nofilter</strong> – (Optional) If True, Filter model is not added
+and the fit is made with a single range set to the filter
+bandpass.</p></li>
+<li><p><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
+from the extracted spectrum before fitting
+parameters. Useful to remove sky spectrum. Both spectra must
+have the same size.</p></li>
+<li><p><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
+to make a Bayesian fit (If unknown you can set it to ‘auto’
+to try an automatic mode, two fits are made - one with a
+predefined SNR and the other with the SNR deduced from the
+first fit). If None a classical fit is made.</p></li>
+<li><p><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</p></li>
+<li><p><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
+is the mean flux of the extracted region (default False).</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments of the function
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple (axis, spectrum, fit_dict). fit_dict is a
+dictionary containing the fit results (same output as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube.fit_lines_in_region">
+<code class="sig-name descname">fit_lines_in_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">region</span></em>, <em class="sig-param"><span class="n">lines</span></em>, <em class="sig-param"><span class="n">fmodel</span><span class="o">=</span><span class="default_value">'sinc'</span></em>, <em class="sig-param"><span class="n">binning</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">nofilter</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">subtract_spectrum</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">snr_guess</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_iter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.fit_lines_in_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit lines in a given region of the cube. All the pixels in
+the defined region are fitted one by one and a set of maps
+containing the fitted paramaters are written. Note that the
+pixels can be binned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
+cube is in wavenumber. must be in nm otherwise).</p></li>
+<li><p><strong>region</strong> – Region to fit. Multiple regions can be used to
+define the fitted region. They do not need to be contiguous.</p></li>
+<li><p><strong>nofilter</strong> – (Optional) If True, Filter model is not added
+and the fit is made with a single range set to the filter
+bandpass.</p></li>
+<li><p><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
+from the extracted spectrum before fitting
+parameters. Useful to remove sky spectrum. Both spectra must
+have the same size.</p></li>
+<li><p><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Can only
+be None or ‘auto’. Set it to ‘auto’ to make a Bayesian
+fit. In this case two fits are made - one with a predefined
+SNR and the other with the SNR deduced from the first
+fit. If None a classical fit is made.</p></li>
+<li><p><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments of the function
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Timeout</dt>
+<dd class="field-even"><p>(Optional) max processing time per pixel. If reached, the given
+pixel is passed (default None).</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can pass the fitting parameters (e.g. pos_cov,
+sigma_cov etc.) as maps (a 2d numpy.ndarray instance or a
+path to a map). But you have to append the suffix ‘_map’ to
+the parameter you want to map. Any nan or inf in the map
+will be replaced by the median of the map. This mode can be
+used to map parameters at a given binning from the result of
+the fit made at a higher binning.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube.fit_lines_in_spectrum">
+<code class="sig-name descname">fit_lines_in_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.fit_lines_in_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit lines of a spectrum extracted from a circular region of a
+given radius.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – X position of the center</p></li>
+<li><p><strong>y</strong> – Y position of the center</p></li>
+<li><p><strong>r</strong> – Radius. If 0, only the central pixel is extracted.</p></li>
+<li><p><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
+cube is in wavenumber. must be in nm otherwise).</p></li>
+<li><p><strong>nofilter</strong> – (Optional) If True, Filter model is not added
+and the fit is made with a single range set to the filter
+bandpass.</p></li>
+<li><p><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
+from the extracted spectrum before fitting
+parameters. Useful to remove sky spectrum. Both spectra must
+have the same size.</p></li>
+<li><p><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
+to make a Bayesian fit (If unknown you can set it to ‘auto’
+to try an automatic mode, two fits are made - one with a
+predefined SNR and the other with the SNR deduced from the
+first fit). If None a classical fit is made.</p></li>
+<li><p><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</p></li>
+<li><p><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
+is the mean flux of the extracted region (default False).</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments of the function
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_fit_lines_in_spectrum()</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple (axis, spectrum, fit_dict). fit_dict is a
+dictionary containing the fit results (same output as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube.fit_lines_in_spectrum_bin">
+<code class="sig-name descname">fit_lines_in_spectrum_bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.fit_lines_in_spectrum_bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit lines of a spectrum extracted from a squared region of a
+given size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – X position of the bottom-left pixel</p></li>
+<li><p><strong>y</strong> – Y position of the bottom-left pixel</p></li>
+<li><p><strong>b</strong> – Binning. If 0, only the central pixel is extracted.</p></li>
+<li><p><strong>lines</strong> – Emission lines to fit (must be in cm-1 if the
+cube is in wavenumber. must be in nm otherwise).</p></li>
+<li><p><strong>nofilter</strong> – (Optional) If True, Filter model is not added
+and the fit is made with a single range set to the filter
+bandpass.</p></li>
+<li><p><strong>subtract_spectrum</strong> – (Optional) Remove the given spectrum
+from the extracted spectrum before fitting
+parameters. Useful to remove sky spectrum. Both spectra must
+have the same size.</p></li>
+<li><p><strong>snr_guess</strong> – Guess on the SNR of the spectrum. Necessary
+to make a Bayesian fit (If unknown you can set it to ‘auto’
+to try an automatic mode, two fits are made - one with a
+predefined SNR and the other with the SNR deduced from the
+first fit). If None a classical fit is made.</p></li>
+<li><p><strong>max_iter</strong> – (Optional) Maximum number of iterations
+(default None)</p></li>
+<li><p><strong>mean_flux</strong> – (Optional) If True the flux of the spectrum
+is the mean flux of the extracted region (default False).</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments of the function
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple (axis, spectrum, fit_dict). fit_dict is a
+dictionary containing the fit results (same output as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">orb.fit.fit_lines_in_spectrum()</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orcs.fit.SpectralCube.get_amp_ratio_from_flux_ratio">
+<code class="sig-name descname">get_amp_ratio_from_flux_ratio</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">line0</span></em>, <em class="sig-param"><span class="n">line1</span></em>, <em class="sig-param"><span class="n">flux_ratio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.get_amp_ratio_from_flux_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the amplitude ratio (amp(line0) / amp(line1)) to define from the flux ratio
+(at constant fwhm and broadening).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>line0</strong> – Wavenumber of the line 0 (in cm-1).</p></li>
+<li><p><strong>line1</strong> – Wavenumber of the line 1 (in cm-1).</p></li>
+<li><p><strong>flux_ratio</strong> – Flux ratio: flux(line0) / flux(line1).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="process_module.html" class="btn btn-neutral float-right" title="Process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="core_module.html" class="btn btn-neutral float-left" title="Core module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -84,6 +84,7 @@ Documentation
    :maxdepth: 1
 
    core_module
+   fit_module
    process_module
    utils_module
 
