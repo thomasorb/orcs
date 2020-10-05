@@ -20,10 +20,7 @@ sys.path.insert(0, os.path.abspath('./'))
 sys.path.insert(0, os.path.abspath('../'))
 #sys.path.insert(0, os.path.abspath('../orcs/'))
 
-autodoc_mock_imports = ["orb"]
-autodoc_mock_imports = ["orb.core"]
-autodoc_mock_imports = ["orb.cube"]
-autodoc_mock_imports = ["orb.fit"]
+autodoc_mock_imports = ["orb", "orb.core", "orb.cube", "orb.fit"]
 
 
 # -- General configuration -----------------------------------------------------
