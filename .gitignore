@@ -10,3 +10,5 @@ orcs.egg-info/
 .eggs/
 *.dataset*
 *.sources_set*
+docs/M57_SN3
+docs/M31_SN3
