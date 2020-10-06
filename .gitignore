@@ -12,3 +12,4 @@ orcs.egg-info/
 *.sources_set*
 docs/M57_SN3
 docs/M31_SN3
+docs/deep_frame.hdf5
