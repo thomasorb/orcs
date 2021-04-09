@@ -263,7 +263,6 @@ class SpectralCube(orcs.core.SpectralCube):
             else:
                 raise TypeError('subtract_spectrum must be a np.ndarray or an orb.core.Cm1Vector1d instance')
 
-
         fit_res = spectrum.fit(lines, **kwargs)
         return spectrum.axis.data, spectrum.data, fit_res
     

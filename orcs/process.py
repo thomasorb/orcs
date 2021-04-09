@@ -52,14 +52,12 @@ from .core import LineMaps
 from . import utils
 
 # import ORB
-import orb.core
 import orb.utils.spectrum
 import orb.utils.image
 import orb.utils.stats
 import orb.utils.filters
 import orb.utils.misc
 import orb.utils.io
-import orb.fit
 
 #################################################
 #### CLASS SpectralCube #########################

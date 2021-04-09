@@ -31,6 +31,7 @@ __version__ = version.__version__
 # import Python libraries
 import os
 import logging
+logging.getLogger().setLevel(logging.INFO)
 import numpy as np
 import astropy.io.fits as pyfits
 import astropy.wcs as pywcs
@@ -248,9 +249,9 @@ class SpectralCube(orb.cube.SpectralCube):
         if 'subtract_spectrum' in kwargs:
             subtract_spectrum = kwargs['subtract_spectrum']
             del kwargs['subtract_spectrum']
-            
-        spec = f(*args, **kwargs)
 
+        spec = f(*args, **kwargs)
+        
         if subtract_spectrum is not None:
             if not isinstance(subtract_spectrum, np.ndarray):
                 raise TypeError('subtract_spectrum must be a numpy.ndarray instance')
