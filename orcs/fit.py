@@ -82,7 +82,6 @@ class SpectralCube(orcs.core.SpectralCube):
                                subtract_spectrum=None,
                                plot=True,
                                verbose=True,
-                               snr_guess=None,
                                max_iter=None,
                                **kwargs):
         """
@@ -100,17 +99,11 @@ class SpectralCube(orcs.core.SpectralCube):
         :param verbose: (Optional) If True print the fit results
           (default True).
 
-        :param snr_guess: Guess on the SNR of the spectrum. Can only
-          be None or 'auto'. Set it to 'auto' to make a Bayesian
-          fit. In this case two fits are made - one with a predefined
-          SNR and the other with the SNR deduced from the first
-          fit. If None a classical fit is made. (default None).
-
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
         """
         def _fit_lines(spectrum_bundle, inputparams, kwargs,
-                       snr_guess, max_iter, debug):
+                       max_iter, debug):
             import orb.fft
             #_fit = utils.fit_lines_in_spectrum(
             #    params, inputparams, fit_tol,
@@ -119,8 +112,7 @@ class SpectralCube(orcs.core.SpectralCube):
             #if _fit != []: return _fit.convert()
             #else: return _fit
             spectrum = orb.fft.RealSpectrum(spectrum_bundle)
-            fit = spectrum.prepared_fit(inputparams, snr_guess=snr_guess,
-                                        max_iter=max_iter, **kwargs)
+            fit = spectrum.prepared_fit(inputparams, max_iter=max_iter, **kwargs)
             return fit
 
 
@@ -142,8 +134,7 @@ class SpectralCube(orcs.core.SpectralCube):
         
         all_fit = self.process_by_region(
             _fit_lines, regions, subtract_spectrum,
-            args=(inputparams, kwargs,
-                  snr_guess, max_iter, self.debug),
+            args=(inputparams, kwargs, max_iter, self.debug),
             modules=())
         lines = inputparams['allparams']['pos_guess_mean']
 
@@ -289,12 +280,6 @@ class SpectralCube(orcs.core.SpectralCube):
           parameters. Useful to remove sky spectrum. Both spectra must
           have the same size.
 
-        :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit (If unknown you can set it to 'auto'
-          to try an automatic mode, two fits are made - one with a
-          predefined SNR and the other with the SNR deduced from the
-          first fit). If None a classical fit is made.
-
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
 
@@ -331,12 +316,6 @@ class SpectralCube(orcs.core.SpectralCube):
           from the extracted spectrum before fitting
           parameters. Useful to remove sky spectrum. Both spectra must
           have the same size.
-
-        :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit (If unknown you can set it to 'auto'
-          to try an automatic mode, two fits are made - one with a
-          predefined SNR and the other with the SNR deduced from the
-          first fit). If None a classical fit is made.
 
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
@@ -376,12 +355,6 @@ class SpectralCube(orcs.core.SpectralCube):
           parameters. Useful to remove sky spectrum. Both spectra must
           have the same size.
 
-        :param snr_guess: Guess on the SNR of the spectrum. Necessary
-          to make a Bayesian fit (If unknown you can set it to 'auto'
-          to try an automatic mode, two fits are made - one with a
-          predefined SNR and the other with the SNR deduced from the
-          first fit). If None a classical fit is made.
-
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
 
@@ -398,7 +371,7 @@ class SpectralCube(orcs.core.SpectralCube):
         return self._fit_wrapper(self.get_spectrum_from_region, args, kwargs)
 
     def fit_lines_in_region(self, region, lines, fmodel='sinc', binning=1, nofilter=False,
-                            subtract_spectrum=None, snr_guess=None, max_iter=None,
+                            subtract_spectrum=None, max_iter=None,
                             timeout=None, **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
         the defined region are fitted one by one and a set of maps
@@ -420,12 +393,6 @@ class SpectralCube(orcs.core.SpectralCube):
           parameters. Useful to remove sky spectrum. Both spectra must
           have the same size.
 
-        :param snr_guess: Guess on the SNR of the spectrum. Can only
-          be None or 'auto'. Set it to 'auto' to make a Bayesian
-          fit. In this case two fits are made - one with a predefined
-          SNR and the other with the SNR deduced from the first
-          fit. If None a classical fit is made.
-
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
 
@@ -444,7 +411,7 @@ class SpectralCube(orcs.core.SpectralCube):
           the fit made at a higher binning.
         """
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
-                               snr_guess, sky_vel_ij, calib_coeff_ij, calib_coeff_orig_ij,
+                               sky_vel_ij, calib_coeff_ij, calib_coeff_orig_ij,
                                flux_sdev_ij, debug, max_iter, subtract_spectrum,
                                binning, mapped_kwargs):
 
@@ -499,7 +466,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
             try:
                 ifit = spectrum.prepared_fit(
-                    inputparams, snr_guess=snr_guess, max_iter=max_iter,
+                    inputparams, max_iter=max_iter,
                     **mapped_kwargs)
                 
             except Exception as e:
@@ -604,10 +571,6 @@ class SpectralCube(orcs.core.SpectralCube):
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
 
 
-        if snr_guess not in ('auto', None):
-            raise ValueError("snr_guess must be 'auto' or None")
-
-
         ## init LineMaps object
         linemaps = LineMaps(
             self.dimx, self.dimy,
@@ -661,7 +624,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
-                                         snr_guess, sky_velocity_map,
+                                         sky_velocity_map,
                                          calibration_coeff_map, calibration_coeff_map_orig,
                                          flux_uncertainty, self.debug, max_iter,
                                          subtract_spectrum, binning],
