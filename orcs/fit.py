@@ -76,6 +76,11 @@ class SpectralCube(orcs.core.SpectralCube):
         return (dirname + os.sep + "INTEGRATED"
                 + os.sep + basename + "integrated_spectrum_{}.hdf5".format(region_name))
 
+    def _get_estimated_frame_path(self, param):
+        """Return path to the estiamted parameter frame"""
+        return self._data_path_hdr + "estimated_" + str(param) + ".fits"
+
+
     def fit_integrated_spectra(self, regions_file_path, lines,
                                fmodel='sinc',
                                nofilter=True,
@@ -646,7 +651,80 @@ class SpectralCube(orcs.core.SpectralCube):
         linemaps.write_maps()
         return linemaps
 
-                    
+    def estimate_parameters_in_region(self, region, lines, vel_range,
+                                      subtract_spectrum=None, binning=3,
+                                      precision=8):
+        """
+        :param lines: Emission lines to fit (must be in cm-1 if the
+          cube is in wavenumber. must be in nm otherwise).
+
+        :param region: Region to fit. Multiple regions can be used to
+          define the fitted region. They do not need to be contiguous.
+        """
+        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, mapped_kwargs):
+
+            out = np.full(len(lines_cm1) + 1, np.nan, dtype=float)
+            spectrum = spectrum.real
+            if subtract_spectrum is not None:
+                spectrum -= subtract_spectrum.real
+            try:
+                out[0] = orb.utils.fit.estimate_velocity_prepared(
+                    spectrum, vels, combs, filter_range_pix)
+                out[1:] = orb.utils.fit.estimate_flux(
+                    spectrum, axis, lines_cm1, out[0],
+                    filter_range_pix, oversampling_ratio)
+                
+            except Exception as e:
+                pass
+            
+            return out
+
+        region = self.get_mask_from_ds9_region_file(region)
+
+        mask = np.zeros((self.dimx, self.dimy), dtype=float)
+        mask[region] = 1
+
+        mask_bin = orb.utils.image.nanbin_image(mask, binning)
+
+        preparation_spectrum = self.get_spectrum_bin(self.dimx/2, self.dimy/2, binning)
+        axis = preparation_spectrum.axis.data
+        combs, vels, filter_range_pix, lines_cm1, oversampling_ratio = preparation_spectrum.prepare_velocity_estimate(lines, vel_range, precision=precision)
+
+        if subtract_spectrum is not None:
+            if isinstance(subtract_spectrum, np.ndarray):
+                subtract_spectrum = np.copy(subtract_spectrum) * binning**2
+            
+            elif isinstance(subtract_spectrum, orb.fft.Spectrum):
+                subtract_spectrum = np.copy(subtract_spectrum.data) * binning**2
+            else: raise Exception('subtract_spectrum type should be an array or an orb.fft.Spectrum instance')
+            
+        pmap = self.process_by_pixel(estimate_parameters_in_pixel,
+                                    args=[axis, combs, vels, filter_range_pix, lines_cm1,
+                                          oversampling_ratio, subtract_spectrum],
+                                    modules=['numpy as np', 'gvar', 'orcs.utils',
+                                             'logging', 'warnings', 'time',
+                                             'import orb.utils.spectrum',
+                                             'import orb.utils.vector'],
+                                    mask=mask,
+                                    binning=binning,
+                                    out=np.full((mask_bin.shape[0], mask_bin.shape[1],
+                                                 len(lines_cm1) + 1),
+                                                np.nan, dtype=float))
+
+
+        orb.utils.io.write_fits(
+            self._get_estimated_frame_path('velocity'),
+            orb.cutils.unbin_image(pmap[:,:,0], self.dimx, self.dimy),
+            overwrite=True)
+
+        for i in range(1, pmap.shape[2]):
+            orb.utils.io.write_fits(
+                self._get_estimated_frame_path(lines[i-1]),
+                orb.cutils.unbin_image(pmap[:,:,i], self.dimx, self.dimy),
+                overwrite=True)
+
+        return pmap
+                
     def get_amp_ratio_from_flux_ratio(self, line0, line1, flux_ratio):
         """Return the amplitude ratio (amp(line0) / amp(line1)) to define from the flux ratio
         (at constant fwhm and broadening).
@@ -662,3 +740,5 @@ class SpectralCube(orcs.core.SpectralCube):
         if isinstance(line1, str):
             line1 = orb.core.Lines().get_line_cm1(line1)
         return orb.utils.spectrum.amp_ratio_from_flux_ratio(line0, line1, flux_ratio)
+
+    

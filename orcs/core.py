@@ -46,6 +46,7 @@ import time
 import gvar
 import warnings
 import copy
+import traceback
 
 # import ORB
 import orb.core
@@ -494,7 +495,7 @@ class SpectralCube(orb.cube.SpectralCube):
         """
 
         def process_in_row(*args):
-            """Basic line processing for a vector function"""
+            """Basic row processing for a vector function"""
             import marshal, types
             import numpy as np
             import logging
@@ -507,26 +508,25 @@ class SpectralCube(orb.cube.SpectralCube):
 
             if process_in_row_args['debug']:
                 orb.utils.log.setup_socket_logging()
-
+                
+            mapped = process_in_row_args['mapped']
+            
             ## function is unpicked
             _code = marshal.loads(args[0])
             _func = types.FunctionType(_code, globals(), '_func')
-            iline_data = np.squeeze(args[1])
-            iline_data = np.atleast_2d(iline_data)
-            out_line = list()
-            for i in range(iline_data.shape[0]):
+            irow_data = np.squeeze(args[1])
+            irow_data = np.atleast_2d(irow_data)
+            out_row = list()
+
+            for i in range(irow_data.shape[0]):
                 iargs_list = list()
                 # remap arguments
-                for iarg in args[2:]:
-                    try:
-                        shape = iarg.shape
-                    except AttributeError:
-                        shape = None
-                    if shape is not None:
+                for iarg, j in zip(args[2:], range(len(args[2:]))):
+                    if mapped[j]:
                         iarg = np.squeeze(iarg)
                         shape = iarg.shape
-                        if shape == (iline_data.shape[0], ):
-                            iarg = iarg[i]
+                        if shape == (irow_data.shape[0], ):
+                            iarg = iarg[i]                    
 
                     iargs_list.append(iarg)
 
@@ -535,23 +535,19 @@ class SpectralCube(orb.cube.SpectralCube):
                 ikwargs = dict()
                 for ikey in range(len(ikwargs_keys)):
                     ikwargs[ikwargs_keys[-(ikey + 1)]] = iargs_list.pop(-1)
-                for ikey in ikwargs:
-                    logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
+                #for ikey in ikwargs:
+                #    logging.debug('{} {}'.format(ikey, ikwargs[ikey]))
                 iargs_list.append(ikwargs)
                 try:
-                    out_line.append(_func(iline_data[i,:], *iargs_list))
+                    out_row.append(_func(irow_data[i,:], *iargs_list))
+                    #out_row.append(str([type(iarg) for iarg in iargs_list]))
+                    #out_row.append(str(len(mapped)))
                 except Exception as e:
-                    #out_line.append(None)
-                    out_line.append(repr(e))
+                    #out_row.append(None)
+                    out_row.append(str([type(iarg) for iarg in iargs_list]) + traceback.format_exc())
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
-            return out_line
-
-        # def get_data(cube, ix, iy, binning, outdict):
-        #     outdict['iline'] = cube.get_data(
-        #         min(ix) * binning, (max(ix) + 1) * binning,
-        #         iy[0] * binning, (iy[0] + 1) * binning,
-        #         0, cube.dimz, silent=True)
+            return out_row
 
         ## function must be serialized (or picked)
         job_server, ncpus = orb.utils.parallel.init_pp_server()
@@ -581,9 +577,12 @@ class SpectralCube(orb.cube.SpectralCube):
             orb.utils.validate.is_ndarray(out, object_name='out')
             if out.ndim < 2:
                 raise TypeError('out must be at least a 2d numpy.ndarray')
-            elif (out.shape[0], out.shape[1]) != (int(self.dimx), int(self.dimy)):
-                raise TypeError('out.shape must be {}'.format((self.dimx, self.dimy)))
-
+            if binning == 1:
+                if (out.shape[0], out.shape[1]) != (int(self.dimx), int(self.dimy)):
+                    raise TypeError('out.shape must be {}'.format((self.dimx, self.dimy)))
+            else:
+                if not isbinned(out):
+                    raise TypeError('out.shape must be {}'.format((binned_shape[0], binned_shape[1])))
         # check mask
         if not mask is None:
             orb.utils.validate.is_2darray(mask, object_name='mask')
@@ -611,17 +610,16 @@ class SpectralCube(orb.cube.SpectralCube):
 
         # check arguments
         # reshape passed arguments
+        mapped = np.zeros(len(args), dtype=bool)
         for i in range(len(args)):
             new_arg = args[i]
             is_map = False
+            shape = None
             try:
                 shape = new_arg.shape
-            except AttributeError:
-                shape = None
-            except KeyError:
-                shape = None
-
-            if shape is not None:
+            except AttributeError: pass
+            except KeyError: pass
+            else:
                 if new_arg.ndim < 2: pass
                 else:
                     if not isbinned(new_arg) and new_arg.ndim < 4:
@@ -631,7 +629,7 @@ class SpectralCube(orb.cube.SpectralCube):
                         is_map = True
                     else:
                         raise TypeError('Data shape {} not handled'.format(new_arg.shape))
-            elif callable(new_arg):
+            if shape is None and callable(new_arg):
                 # assume new_arg is a function of x, y
                 try:
                     new_arg(self.dimx/2, self.dimy/2)
@@ -639,9 +637,10 @@ class SpectralCube(orb.cube.SpectralCube):
                     raise Exception('argument is callable but does not show the proper behaviour spectrum = f(x, y): {}'.format(e))
                 is_map = True            
 
-            args[i] = (new_arg, is_map)
+            args[i] = new_arg
+            mapped[i] = is_map
 
-        # get pixel positions grouped by line
+        # get pixel positions grouped by row
         xy = list()
         for i in range(mask.shape[1]):
             _X = np.nonzero(mask[:,i])[0]
@@ -649,7 +648,7 @@ class SpectralCube(orb.cube.SpectralCube):
                 xy.append((_X, np.ones(len(_X), dtype=np.int64) * i))
         logging.info('{} rows to fit'.format(len(xy)))
 
-        # jobs will be passed by line
+        # jobs will be passed by row
         all_jobs_indexes = list(range(len(xy)))
         all_jobs_nb = len(all_jobs_indexes)
 
@@ -682,10 +681,10 @@ class SpectralCube(orb.cube.SpectralCube):
                 timer['job_submit_start'] = time.time()
 
                 ix, iy = xy[all_jobs_indexes[0]]
-
+                
                 timer['job_load_data_start'] = time.time()
 
-                # raw lines extraction (warning: velocity must be
+                # raw rows extraction (warning: velocity must be
                 # corrected by the function itself)
 
                 # commented but useful if we want to timeout data access
@@ -693,43 +692,44 @@ class SpectralCube(orb.cube.SpectralCube):
 
                 # outdict = orb.utils.parallel.timed_process(
                 #     get_data, GET_DATA_TIMEOUT, args=[self.cube, ix, iy, binning])
-                # if 'iline' in outdict:
-                #     iline = outdict['iline']
+                # if 'irow' in outdict:
+                #     irow = outdict['irow']
                 # else:
                 #     logging.warning('timeout reached on data extraction')
                 #     break
-                iline = self.get_data(
+                irow = self.get_data(
                     min(ix) * binning, (max(ix) + 1) * binning,
                     iy[0] * binning, (iy[0] + 1) * binning,
                     0, self.dimz, silent=True)
 
 
                 if binning > 1:
-                    iline = orb.utils.image.nanbin_image(iline, binning) * binning**2
+                    irow = orb.utils.image.nanbin_image(irow, binning) * binning**2
 
-                iline = np.atleast_2d(iline)
-                iline = iline[ix - min(ix), :]
+                irow = np.atleast_2d(irow)
+                irow = irow[ix - min(ix), :]
 
                 timer['job_load_data_end'] = time.time()
 
                 all_args = list()
                 all_args.append(func)
-                all_args.append(iline)
+                all_args.append(irow)
 
                 # extract values of mapped arguments
-                for iarg in args:
-                    if iarg[1]:
-                        if callable(iarg[0]):
-                            all_args.append(iarg[0](ix, iy))
+                for i in range(len(args)):
+                    if mapped[i]:
+                        if callable(args[i]):
+                            all_args.append(args[i](ix, iy))
                         else:
-                            all_args.append(np.copy(iarg[0][ix, iy, ...]))
+                            all_args.append(np.copy(args[i][ix, iy, ...]))
                     else:
-                        all_args.append(iarg[0])
+                        all_args.append(args[i])
 
                 # process in row args are passed as the last argument (WARNING do not add
                 # other arguments afterward)
                 all_args.append({'debug':self.debug,
-                                 'timeout':timeout})
+                                 'timeout':timeout,
+                                 'mapped':mapped})
 
                 timer['job_submit_end'] = time.time()
 
@@ -787,9 +787,15 @@ class SpectralCube(orb.cube.SpectralCube):
                                     out[ikey].fill(np.nan)
 
                                 if res[ikey] is not None:
-                                    out[ikey][ix[irow], iy[irow], ...] = res[ikey]
+                                    try:
+                                        out[ikey][ix[irow], iy[irow], ...] = res[ikey]
+                                    except:
+                                        print(res)
                         else:
-                            out[ix[irow], iy[irow], ...] = res
+                            try:
+                                out[ix[irow], iy[irow], ...] = res
+                            except:
+                                print(res)
                     logging.debug('job {} time (whole loop): {} s'.format(
                         ijob_index, time.time() - stime))
 
