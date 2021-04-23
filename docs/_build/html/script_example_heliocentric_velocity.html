@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Radial Velocity Correction &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,10 +34,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -160,6 +160,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -173,7 +175,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/script_example_heliocentric_velocity.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -192,21 +194,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -307,7 +323,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -373,6 +389,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -450,7 +467,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">orcs.process</span>
+<span></span>import orcs.process
 </pre></div>
 </div>
 </div>
@@ -459,7 +476,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+<span></span>cube = orcs.process.SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
 </pre></div>
 </div>
 </div>
@@ -482,8 +499,8 @@ master.03e73|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barycentric velocity correction: </span><span class="si">{:.2f}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
+<span></span>corr = cube.get_radial_velocity_correction(kind=&#39;barycentric&#39;)
+print(&#39;Barycentric velocity correction: {:.2f} km/s&#39;.format(corr))
 </pre></div>
 </div>
 </div>
@@ -509,21 +526,21 @@ Barycentric velocity correction: 20.13 km/s
 <div class="section" id="Use-more-precise-dates">
 <h2>Use more precise dates<a class="headerlink" href="#Use-more-precise-dates" title="Permalink to this headline">¶</a></h2>
 <p>Here we have created a file (<code class="docutils literal notranslate"><span class="pre">abell426.dates.list</span></code>) which records all the dates at which the individual files have been taken (as supplied by the keyword DATE of each individual FITS file).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867004</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">02</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867005</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">32</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867006</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">03</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867007</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">33</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867008</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">06</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867009</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">36</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867010</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">06</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867011</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">36</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867012</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">08</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867013</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">39</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867014</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">09</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867015</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">40</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867016</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">11</span>
-<span class="o">~/</span><span class="n">data</span><span class="o">/</span><span class="mi">1867017</span><span class="n">o</span><span class="o">.</span><span class="n">fits</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">42</span>
-<span class="o">...</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>~/data/1867004o.fits 2016-01-10T05:06:02
+~/data/1867005o.fits 2016-01-10T05:06:32
+~/data/1867006o.fits 2016-01-10T05:07:03
+~/data/1867007o.fits 2016-01-10T05:07:33
+~/data/1867008o.fits 2016-01-10T05:08:06
+~/data/1867009o.fits 2016-01-10T05:08:36
+~/data/1867010o.fits 2016-01-10T05:09:06
+~/data/1867011o.fits 2016-01-10T05:09:36
+~/data/1867012o.fits 2016-01-10T05:10:08
+~/data/1867013o.fits 2016-01-10T05:10:39
+~/data/1867014o.fits 2016-01-10T05:11:09
+~/data/1867015o.fits 2016-01-10T05:11:40
+~/data/1867016o.fits 2016-01-10T05:12:11
+~/data/1867017o.fits 2016-01-10T05:12:42
+...
 </pre></div>
 </div>
 <div class="nbinput docutils container">
@@ -531,21 +548,21 @@ Barycentric velocity correction: 20.13 km/s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># The results of the radial velocity correction for</span>
-<span class="c1"># each individual file of the initial inteferometric</span>
-<span class="c1"># cube are recorded here</span>
-<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;abell426.barycorr.list&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span></span># The results of the radial velocity correction for
+# each individual file of the initial inteferometric
+# cube are recorded here
+fout = open(&#39;abell426.barycorr.list&#39;, &#39;w&#39;)
 
-<span class="c1"># we loop in the dates file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;abell426.dates.list&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+# we loop in the dates file
+with open(&#39;abell426.dates.list&#39;, &#39;r&#39;) as f:
+    for line in f:
+        date = line.split()[1]
 
-        <span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span>
-            <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        corr = cube.get_radial_velocity_correction(
+            kind=&#39;barycentric&#39;, date=date, silent=True)
 
-        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">)</span>
+        fout.write(&#39;{} {}\n&#39;.format(date, corr))
+        print(date, corr)
 </pre></div>
 </div>
 </div>
@@ -849,28 +866,28 @@ Barycentric velocity correction: 20.13 km/s
 <div class="section" id="output">
 <h2>output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>File <code class="docutils literal notranslate"><span class="pre">abell426.barycorr.list</span></code> has been created with the previous code.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">02</span> <span class="o">-</span><span class="mf">21.4663846704</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">06</span><span class="p">:</span><span class="mi">32</span> <span class="o">-</span><span class="mf">21.4671673847</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">03</span> <span class="o">-</span><span class="mf">21.4679767479</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">33</span> <span class="o">-</span><span class="mf">21.4687605397</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">06</span> <span class="o">-</span><span class="mf">21.4696233171</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">08</span><span class="p">:</span><span class="mi">36</span> <span class="o">-</span><span class="mf">21.4704082077</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">06</span> <span class="o">-</span><span class="mf">21.4711936166</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">36</span> <span class="o">-</span><span class="mf">21.4719795406</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">08</span> <span class="o">-</span><span class="mf">21.4728184234</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">39</span> <span class="o">-</span><span class="mf">21.4736316427</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">09</span> <span class="o">-</span><span class="mf">21.4744191425</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">40</span> <span class="o">-</span><span class="mf">21.4752334194</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">11</span> <span class="o">-</span><span class="mf">21.4760482283</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">42</span> <span class="o">-</span><span class="mf">21.4768635658</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">12</span> <span class="o">-</span><span class="mf">21.4776531019</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">43</span> <span class="o">-</span><span class="mf">21.4784694689</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">14</span> <span class="o">-</span><span class="mf">21.4792863537</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">45</span> <span class="o">-</span><span class="mf">21.4801037528</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">15</span> <span class="o">-</span><span class="mf">21.4808952705</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">45</span> <span class="o">-</span><span class="mf">21.4816872631</span>
-<span class="mi">2016</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">10</span><span class="n">T05</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">18</span> <span class="o">-</span><span class="mf">21.4825589996</span>
-<span class="o">...</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>2016-01-10T05:06:02 -21.4663846704
+2016-01-10T05:06:32 -21.4671673847
+2016-01-10T05:07:03 -21.4679767479
+2016-01-10T05:07:33 -21.4687605397
+2016-01-10T05:08:06 -21.4696233171
+2016-01-10T05:08:36 -21.4704082077
+2016-01-10T05:09:06 -21.4711936166
+2016-01-10T05:09:36 -21.4719795406
+2016-01-10T05:10:08 -21.4728184234
+2016-01-10T05:10:39 -21.4736316427
+2016-01-10T05:11:09 -21.4744191425
+2016-01-10T05:11:40 -21.4752334194
+2016-01-10T05:12:11 -21.4760482283
+2016-01-10T05:12:42 -21.4768635658
+2016-01-10T05:13:12 -21.4776531019
+2016-01-10T05:13:43 -21.4784694689
+2016-01-10T05:14:14 -21.4792863537
+2016-01-10T05:14:45 -21.4801037528
+2016-01-10T05:15:15 -21.4808952705
+2016-01-10T05:15:45 -21.4816872631
+2016-01-10T05:16:18 -21.4825589996
+...
 </pre></div>
 </div>
 <div class="nbinput docutils container">
@@ -878,25 +895,25 @@ Barycentric velocity correction: 20.13 km/s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Now, we can then display the output file,</span>
-<span class="c1"># i.e. the barycentric velocity correction</span>
+<span></span># Now, we can then display the output file,
+# i.e. the barycentric velocity correction
 
-<span class="kn">import</span> <span class="nn">astropy.time</span>
+import astropy.time
 
-<span class="n">dates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="p">;</span> <span class="n">corrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;abell426.barycorr.list&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">corrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+dates = list() ; corrs = list()
+with open(&#39;abell426.barycorr.list&#39;, &#39;r&#39;) as f:
+    for line in f:
+        line = line.split()
+        dates.append(line[0])
+        corrs.append(float(line[1]))
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;isot&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
+dates = astropy.time.Time(dates, format=&#39;isot&#39;, scale=&#39;utc&#39;)
 
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">dates</span><span class="o">.</span><span class="n">plot_date</span><span class="p">,</span> <span class="n">corrs</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Date (UTC)&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Barycentric velocity correction (in km/s)&#39;</span><span class="p">)</span>
+import pylab as pl
+pl.plot_date(dates.plot_date, corrs, ls=&#39;None&#39;, marker=&#39;+&#39;, c=&#39;orange&#39;)
+pl.grid()
+pl.xlabel(&#39;Date (UTC)&#39;)
+pl.ylabel(&#39;Barycentric velocity correction (in km/s)&#39;)
 </pre></div>
 </div>
 </div>
@@ -942,37 +959,29 @@ Text(0, 0.5, &#39;Barycentric velocity correction (in km/s)&#39;)
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral float-left" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_automatic_source_detection.html" class="btn btn-neutral float-left" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

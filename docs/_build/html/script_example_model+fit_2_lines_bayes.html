@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Modelling and fitting two unresolved emission lines with a bayesian approach &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,10 +34,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Wavelength recalibration with the sky lines (Mendel OH bands)" href="script_example_wavelength_calibration.html" />
-    <link rel="prev" title="Modelling and fitting a spectrum with two resolved lines" href="script_example_model+fit_2_lines.html" /> 
+    <link rel="prev" title="Modelling and fitting a spectrum with two resolved lines" href="script_example_model%2Bfit_2_lines.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -99,8 +99,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="script_example_model+fit_1_line.html">Modelling and fitting a single line spectrum</a></li>
-<li class="toctree-l3"><a class="reference internal" href="script_example_model+fit_2_lines.html">Modelling and fitting a spectrum with two resolved lines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_model%2Bfit_1_line.html">Modelling and fitting a single line spectrum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_model%2Bfit_2_lines.html">Modelling and fitting a spectrum with two resolved lines</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Modelling and fitting two unresolved emission lines with a bayesian approach</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Third-step:-modelling-and-fitting-a-spectrum-with-two-unresolved-lines-(classic-fit-and-bayesian-fit)">Third step: modelling and fitting a spectrum with two unresolved lines (classic fit and bayesian fit)</a></li>
 </ul>
@@ -158,6 +158,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -171,7 +173,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/script_example_model+fit_2_lines_bayes.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -190,21 +192,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -305,7 +321,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -371,6 +387,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -444,18 +461,18 @@ div.rendered_html tbody tr:hover {
 <h1>Modelling and fitting two unresolved emission lines with a bayesian approach<a class="headerlink" href="#Modelling-and-fitting-two-unresolved-emission-lines-with-a-bayesian-approach" title="Permalink to this headline">¶</a></h1>
 <p>We will show how to model a spectrum with two superimposed lines and then try to retrieve the modelling parameters. this example is based on the preliminary examples :</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="script_example_model+fit_1_line.html"><span class="doc">Modelling and fitting one emission line</span></a></p></li>
-<li><p><a class="reference internal" href="script_example_model+fit_2_lines.html"><span class="doc">Modelling and fitting two resolved emission lines</span></a></p></li>
+<li><p><a class="reference internal" href="script_example_model%2Bfit_1_line.html"><span class="doc">Modelling and fitting one emission line</span></a></p></li>
+<li><p><a class="reference internal" href="script_example_model%2Bfit_2_lines.html"><span class="doc">Modelling and fitting two resolved emission lines</span></a></p></li>
 </ol>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">orb.fit</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">orb.core</span> <span class="kn">import</span> <span class="n">Lines</span>
+<span></span>import orb.fit
+import pylab as pl
+import numpy as np
+from orb.core import Lines
 </pre></div>
 </div>
 </div>
@@ -469,41 +486,41 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">halpha_cm1</span> <span class="o">=</span> <span class="n">Lines</span><span class="p">()</span><span class="o">.</span><span class="n">get_line_cm1</span><span class="p">(</span><span class="s1">&#39;Halpha&#39;</span><span class="p">)</span>
+<span></span>halpha_cm1 = Lines().get_line_cm1(&#39;Halpha&#39;)
 
-<span class="n">step</span> <span class="o">=</span> <span class="mi">2943</span>
-<span class="n">order</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">step_nb</span> <span class="o">=</span> <span class="mi">840</span>
-<span class="n">axis_corr</span> <span class="o">=</span> <span class="mf">1.0374712062298759</span>
-<span class="n">theta</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">corr2theta</span><span class="p">(</span><span class="n">axis_corr</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incident angle theta (in degrees):&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
-<span class="n">zpd_index</span> <span class="o">=</span> <span class="mi">168</span>
+step = 2943
+order = 8
+step_nb = 840
+axis_corr = 1.0374712062298759
+theta = orb.utils.spectrum.corr2theta(axis_corr)
+print(&#39;incident angle theta (in degrees):&#39;, theta)
+zpd_index = 168
 
-<span class="c1"># model spectrum</span>
-<span class="n">velocity1</span> <span class="o">=</span> <span class="mi">50</span>
-<span class="n">broadening1</span> <span class="o">=</span> <span class="mi">15</span>
-<span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model_raw</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">step_nb</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="n">zpd_index</span><span class="o">=</span><span class="n">zpd_index</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                                                  <span class="n">sigma</span><span class="o">=</span><span class="n">broadening1</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity1</span><span class="p">)</span>
+# model spectrum
+velocity1 = 50
+broadening1 = 15
+spectrum_axis, spectrum1 = orb.fit.create_cm1_lines_model_raw([halpha_cm1], [1], step, order, step_nb, axis_corr, zpd_index=zpd_index, fmodel=&#39;sincgauss&#39;,
+                                                                  sigma=broadening1, vel=velocity1)
 
-<span class="n">velocity2</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">broadening2</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum2</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model_raw</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">step_nb</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="n">zpd_index</span><span class="o">=</span><span class="n">zpd_index</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                                                  <span class="n">sigma</span><span class="o">=</span><span class="n">broadening2</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity2</span><span class="p">)</span>
+velocity2 = 10
+broadening2 = 30
+spectrum_axis, spectrum2 = orb.fit.create_cm1_lines_model_raw([halpha_cm1], [1], step, order, step_nb, axis_corr, zpd_index=zpd_index, fmodel=&#39;sincgauss&#39;,
+                                                                  sigma=broadening2, vel=velocity2)
 
-<span class="n">spectrum</span> <span class="o">=</span> <span class="n">spectrum1</span> <span class="o">+</span> <span class="n">spectrum2</span>
+spectrum = spectrum1 + spectrum2
 
-<span class="c1"># add noise</span>
-<span class="n">SNR</span> <span class="o">=</span> <span class="mi">22</span>
-<span class="n">spectrum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">SNR</span>
+# add noise
+SNR = 22
+spectrum += np.random.standard_normal(spectrum.shape) * 1. / SNR
 
-<span class="n">spectrum_axis</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">create_cm1_axis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">spectrum</span><span class="p">),</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">corr</span><span class="o">=</span><span class="n">axis_corr</span><span class="p">)</span>
+spectrum_axis = orb.utils.spectrum.create_cm1_axis(np.size(spectrum), step, order, corr=axis_corr)
 
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 1&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 2&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line1 + line2 + noise&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span> <span class="mi">15270</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;gvar_model.svg&#39;</span><span class="p">)</span>
+pl.plot(spectrum_axis, spectrum1, label=&#39;line 1&#39;)
+pl.plot(spectrum_axis, spectrum2, label=&#39;line 2&#39;)
+pl.plot(spectrum_axis, spectrum, label=&#39;line1 + line2 + noise&#39;)
+pl.xlim((15200, 15270))
+pl.legend()
+pl.savefig(&#39;gvar_model.svg&#39;)
 </pre></div>
 </div>
 </div>
@@ -531,31 +548,31 @@ incident angle theta (in degrees): 15.445939567249903
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">nm_laser</span> <span class="o">=</span> <span class="mf">543.5</span> <span class="c1"># wavelength of the calibration laser, in fact it can be any real positive number (e.g. 1 is ok)</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">zpd_index</span><span class="p">,</span>
-                                    <span class="n">wavenumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
-                                    <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">velocity1</span><span class="p">,</span> <span class="n">velocity2</span><span class="p">],</span>
-                                    <span class="n">sigma_guess</span><span class="o">=</span><span class="p">[</span><span class="n">broadening1</span><span class="p">,</span> <span class="n">broadening2</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;velocity (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;broadening (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">])</span>
+<span></span>nm_laser = 543.5 # wavelength of the calibration laser, in fact it can be any real positive number (e.g. 1 is ok)
+fit = orb.fit.fit_lines_in_spectrum(spectrum, [halpha_cm1, halpha_cm1], step, order, nm_laser, theta, zpd_index,
+                                    wavenumber=True, apodization=1, fmodel=&#39;sincgauss&#39;,
+                                    pos_def=[&#39;1&#39;, &#39;2&#39;],
+                                    pos_cov=[velocity1, velocity2],
+                                    sigma_guess=[broadening1, broadening2])
+print(&#39;velocity (in km/s): &#39;, fit[&#39;velocity_gvar&#39;])
+print(&#39;broadening (in km/s): &#39;, fit[&#39;broadening_gvar&#39;])
+print(&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;, fit[&#39;flux_gvar&#39;])
 
-<span class="c1"># independant plot of the two lines models and the real lines</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line1 + line2 + noise&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 2&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
-<span class="n">models</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_models&#39;</span><span class="p">][</span><span class="s1">&#39;Cm1LinesModel&#39;</span><span class="p">]</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model 1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model 2&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span> <span class="mi">15270</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="c1"># In fact this &quot;very bad fit&quot; may be not so bad, and will be, in general, not so bad...</span>
-<span class="c1"># but its outputs are not constrained as in the bayesian fit and can sometimes be very far from anything realistic</span>
-<span class="c1"># if you obtain a good fit, redo the model and the fit multiple times</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;A very bad fit&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;gvar_bad_fit.svg&#39;</span><span class="p">)</span>
+# independant plot of the two lines models and the real lines
+pl.plot(spectrum_axis, spectrum, label=&#39;line1 + line2 + noise&#39;, ls=&#39;:&#39;, c=&#39;0.5&#39;)
+pl.plot(spectrum_axis, spectrum1, label=&#39;line 1&#39;, ls=&#39;:&#39;, c=&#39;red&#39;)
+pl.plot(spectrum_axis, spectrum2, label=&#39;line 2&#39;, ls=&#39;:&#39;, c=&#39;blue&#39;)
+models = fit[&#39;fitted_models&#39;][&#39;Cm1LinesModel&#39;]
+pl.plot(spectrum_axis, fit[&#39;fitted_vector&#39;], label=&#39;fit&#39;, ls=&#39;-&#39;, c=&#39;0.5&#39;)
+pl.plot(spectrum_axis, models[0], label=&#39;model 1&#39;, ls=&#39;-&#39;, c=&#39;red&#39;)
+pl.plot(spectrum_axis, models[1], label=&#39;model 2&#39;, ls=&#39;-&#39;, c=&#39;blue&#39;)
+pl.xlim((15200, 15270))
+pl.legend()
+# In fact this &quot;very bad fit&quot; may be not so bad, and will be, in general, not so bad...
+# but its outputs are not constrained as in the bayesian fit and can sometimes be very far from anything realistic
+# if you obtain a good fit, redo the model and the fit multiple times
+pl.title(&#39;A very bad fit&#39;)
+pl.savefig(&#39;gvar_bad_fit.svg&#39;)
 </pre></div>
 </div>
 </div>
@@ -607,46 +624,46 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [2.33652 
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">gvar</span> <span class="c1">#  library used to define gaussian random variables</span>
-<span class="c1"># now we can define our random variables, we are purposely biasing the inital guess</span>
-<span class="c1"># and giving a large error of +/- 10 km/s on both the velocity and the broadening</span>
+<span></span>import gvar #  library used to define gaussian random variables
+# now we can define our random variables, we are purposely biasing the inital guess
+# and giving a large error of +/- 10 km/s on both the velocity and the broadening
 
-<span class="n">velocity1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">velocity1</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># velocity1 is known at +/- 10 km/s</span>
-<span class="n">velocity2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">velocity2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># velocity2 is known at +/- 10 km/s</span>
-<span class="n">broadening1_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening1</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening1 is known at +/- 10 km/s</span>
-<span class="n">broadening2_gvar</span> <span class="o">=</span> <span class="n">gvar</span><span class="o">.</span><span class="n">gvar</span><span class="p">(</span><span class="n">broadening2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># broadening2 is known at +/- 10 km/s</span>
+velocity1_gvar = gvar.gvar(velocity1+3, 10) # velocity1 is known at +/- 10 km/s
+velocity2_gvar = gvar.gvar(velocity2-3, 10) # velocity2 is known at +/- 10 km/s
+broadening1_gvar = gvar.gvar(broadening1+3, 10) # broadening1 is known at +/- 10 km/s
+broadening2_gvar = gvar.gvar(broadening2-3, 10) # broadening2 is known at +/- 10 km/s
 
-<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">,</span> <span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">zpd_index</span><span class="p">,</span>
-                                    <span class="n">wavenumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
-                                    <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">velocity1_gvar</span><span class="p">,</span> <span class="n">velocity2_gvar</span><span class="p">],</span>
-                                    <span class="n">sigma_def</span><span class="o">=</span><span class="s1">&#39;free&#39;</span><span class="p">,</span>
-                                    <span class="n">sigma_guess</span><span class="o">=</span><span class="p">[</span><span class="n">broadening1_gvar</span><span class="p">,</span> <span class="n">broadening2_gvar</span><span class="p">],</span>
-                                    <span class="n">snr_guess</span><span class="o">=</span><span class="n">SNR</span><span class="p">)</span>
+fit = orb.fit.fit_lines_in_spectrum(spectrum, [halpha_cm1, halpha_cm1], step, order, nm_laser, theta, zpd_index,
+                                    wavenumber=True, apodization=1, fmodel=&#39;sincgauss&#39;,
+                                    pos_def=[&#39;1&#39;, &#39;2&#39;],
+                                    pos_cov=[velocity1_gvar, velocity2_gvar],
+                                    sigma_def=&#39;free&#39;,
+                                    sigma_guess=[broadening1_gvar, broadening2_gvar],
+                                    snr_guess=SNR)
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== velocity ===&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">velocity1_gvar</span><span class="p">,</span> <span class="n">velocity2_gvar</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fitted velocity (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;real velocity (km/s)&#39;</span><span class="p">,</span> <span class="n">velocity1</span><span class="p">,</span> <span class="n">velocity2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== broadening ===&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;input broadening (km/s): &#39;</span><span class="p">,</span> <span class="n">broadening1_gvar</span><span class="p">,</span> <span class="n">broadening2_gvar</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fitted broadening (km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;real broadening (km/s)&#39;</span><span class="p">,</span> <span class="n">broadening1</span><span class="p">,</span> <span class="n">broadening2</span><span class="p">)</span>
+print(&#39;=== velocity ===&#39;)
+print(&#39;input velocity (km/s): &#39;, velocity1_gvar, velocity2_gvar)
+print(&#39;fitted velocity (km/s): &#39;, fit[&#39;velocity_gvar&#39;])
+print(&#39;real velocity (km/s)&#39;, velocity1, velocity2)
+print(&#39;=== broadening ===&#39;)
+print(&#39;input broadening (km/s): &#39;, broadening1_gvar, broadening2_gvar)
+print(&#39;fitted broadening (km/s): &#39;, fit[&#39;broadening_gvar&#39;])
+print(&#39;real broadening (km/s)&#39;, broadening1, broadening2)
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== flux ===&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">])</span>
-<span class="c1"># independant plot of the two lines models and the real lines</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line1 + line2 + noise&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;line 2&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
-<span class="n">models</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_models&#39;</span><span class="p">][</span><span class="s1">&#39;Cm1LinesModel&#39;</span><span class="p">]</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model 1&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">models</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model 2&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span> <span class="mi">15270</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;A much better fit&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;gvar_good_fit.svg&#39;</span><span class="p">)</span>
+print(&#39;=== flux ===&#39;)
+print(&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;, fit[&#39;flux_gvar&#39;])
+# independant plot of the two lines models and the real lines
+pl.plot(spectrum_axis, spectrum, label=&#39;line1 + line2 + noise&#39;, ls=&#39;:&#39;, c=&#39;0.5&#39;)
+pl.plot(spectrum_axis, spectrum1, label=&#39;line 1&#39;, ls=&#39;:&#39;, c=&#39;red&#39;)
+pl.plot(spectrum_axis, spectrum2, label=&#39;line 2&#39;, ls=&#39;:&#39;, c=&#39;blue&#39;)
+models = fit[&#39;fitted_models&#39;][&#39;Cm1LinesModel&#39;]
+pl.plot(spectrum_axis, fit[&#39;fitted_vector&#39;], label=&#39;fit&#39;, ls=&#39;-&#39;, c=&#39;0.5&#39;)
+pl.plot(spectrum_axis, models[0], label=&#39;model 1&#39;, ls=&#39;-&#39;, c=&#39;red&#39;)
+pl.plot(spectrum_axis, models[1], label=&#39;model 2&#39;, ls=&#39;-&#39;, c=&#39;blue&#39;)
+pl.xlim((15200, 15270))
+pl.legend()
+pl.title(&#39;A much better fit&#39;)
+pl.savefig(&#39;gvar_good_fit.svg&#39;)
 </pre></div>
 </div>
 </div>
@@ -683,37 +700,29 @@ flux (in the unit of the spectrum amplitude / unit of the axis fwhm):  [0.81(18)
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral float-right" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="script_example_model+fit_2_lines.html" class="btn btn-neutral float-left" title="Modelling and fitting a spectrum with two resolved lines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral float-right" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_model%2Bfit_2_lines.html" class="btn btn-neutral float-left" title="Modelling and fitting a spectrum with two resolved lines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

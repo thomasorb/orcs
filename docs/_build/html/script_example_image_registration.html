@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Image registration &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,10 +34,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -160,6 +160,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -173,7 +175,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/script_example_image_registration.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -192,21 +194,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -307,7 +323,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -373,6 +389,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -450,12 +467,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">orb.image</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="c1"># useful to get logging output. orb and orcs use the logging package which is automatically set to INFO level when a cube is loaded.</span>
-<span class="c1"># But, as we are not loading a cube this time and only working on images, you must do it manually.</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span></span>import pylab as pl
+import orb.image
+import logging
+# useful to get logging output. orb and orcs use the logging package which is automatically set to INFO level when a cube is loaded.
+# But, as we are not loading a cube this time and only working on images, you must do it manually.
+logging.getLogger().setLevel(logging.INFO)
 </pre></div>
 </div>
 </div>
@@ -468,10 +485,10 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">)</span>
-<span class="c1"># in case any wrong wcs parameters were stored in the header, it is safe to reset the wcs to get a fresh start before the registration.</span>
-<span class="n">im</span><span class="o">.</span><span class="n">reset_wcs</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">)</span>
-<span class="n">im</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span></span>im = orb.image.Image(&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;, instrument=&#39;sitelle&#39;)
+# in case any wrong wcs parameters were stored in the header, it is safe to reset the wcs to get a fresh start before the registration.
+im.reset_wcs(294.1120729, 19.70678597)
+im.register()
 </pre></div>
 </div>
 </div>
@@ -480,10 +497,10 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># the HDF5 format is the native format for orb and orcs and you are sure to keep all the data with it.</span>
-<span class="c1"># But for an image you can, in principle, safely use the fits format.</span>
-<span class="n">im</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
-<span class="n">im</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">)</span>
+<span></span># the HDF5 format is the native format for orb and orcs and you are sure to keep all the data with it.
+# But for an image you can, in principle, safely use the fits format.
+im.writeto(&#39;M1-71.deep_frame.wcs.init.hdf5&#39;)
+im.to_fits(&#39;M1-71.deep_frame.wcs.init.fits&#39;)
 </pre></div>
 </div>
 </div>
@@ -500,10 +517,10 @@ INFO:root:Data written as M1-71.deep_frame.wcs.init.fits in 0.05 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># now we will check the results of the calibration by loading the positions of the stars in the field from the gaia catalog</span>
-<span class="c1"># before plotting them on the image</span>
-<span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
-<span class="n">sl</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_stars_from_catalog</span><span class="p">(</span><span class="n">max_stars</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span></span># now we will check the results of the calibration by loading the positions of the stars in the field from the gaia catalog
+# before plotting them on the image
+im = orb.image.Image(&#39;M1-71.deep_frame.wcs.init.hdf5&#39;)
+sl = im.get_stars_from_catalog(max_stars=1000)
 </pre></div>
 </div>
 </div>
@@ -523,7 +540,7 @@ INFO:root:Magnitude min: 9.5522, max:17.1995
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">sl</span> <span class="c1"># the catalog position ra, dec as well as their positions in pixels are stroed in a pandas.DataFrame object</span>
+<span></span>sl # the catalog position ra, dec as well as their positions in pixels are stroed in a pandas.DataFrame object
 </pre></div>
 </div>
 </div>
@@ -644,9 +661,9 @@ INFO:root:Magnitude min: 9.5522, max:17.1995
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># You can see that the registration is correct near the center of the field but without a proper distortion model, the position in the corners can be very bad.</span>
-<span class="n">im</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sl</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span></span># You can see that the registration is correct near the center of the field but without a proper distortion model, the position in the corners can be very bad.
+im.imshow(cmap=&#39;gray&#39;, wcs=False)
+pl.scatter(sl.x, sl.y, marker=&#39;+&#39;, color=&#39;red&#39;)
 </pre></div>
 </div>
 </div>
@@ -676,9 +693,9 @@ INFO:root:Magnitude min: 9.5522, max:17.1995
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
-<span class="n">wcs</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">skip_registration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_radius_coeff</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sip_order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">max_stars_detect</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="n">im</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;</span><span class="p">)</span>
+<span></span>im = orb.image.Image(&#39;M1-71.deep_frame.wcs.init.hdf5&#39;)
+wcs, dxmap, dymap = im.register(skip_registration=True, compute_distortion=True, return_error_maps=True, max_radius_coeff=2, sip_order=4, max_stars_detect=200)
+im.writeto(&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;)
 </pre></div>
 </div>
 </div>
@@ -760,11 +777,11 @@ INFO:root:internal WCS updated (to update the file on disk use self.writeto func
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;</span><span class="p">)</span>
-<span class="n">sl</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_stars_from_catalog</span><span class="p">(</span><span class="n">max_stars</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">im</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sl</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span></span>im = orb.image.Image(&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;)
+sl = im.get_stars_from_catalog(max_stars=1000)
+im.imshow(cmap=&#39;gray&#39;, wcs=True)
+pl.scatter(sl.x, sl.y, marker=&#39;+&#39;, color=&#39;red&#39;)
+pl.grid()
 </pre></div>
 </div>
 </div>
@@ -803,37 +820,29 @@ INFO:root:Magnitude min: 9.5522, max:17.1968
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="script_example_hst_flux_calibration.html" class="btn btn-neutral float-right" title="Flux Calibration Example Using HST image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral float-left" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="script_example_hst_flux_calibration.html" class="btn btn-neutral float-right" title="Flux Calibration Example Using HST image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_wavelength_calibration.html" class="btn btn-neutral float-left" title="Wavelength recalibration with the sky lines (Mendel OH bands)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
