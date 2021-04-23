@@ -375,7 +375,7 @@ class SpectralCube(orcs.core.SpectralCube):
         """
         return self._fit_wrapper(self.get_spectrum_from_region, args, kwargs)
 
-    def fit_lines_in_region(self, region, lines, fmodel='sinc', binning=1, nofilter=False,
+    def fit_lines_in_region(self, region, lines, fmodel='sinc', binning=1, nofilter=True,
                             subtract_spectrum=None, max_iter=None,
                             timeout=None, **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
@@ -383,15 +383,23 @@ class SpectralCube(orcs.core.SpectralCube):
         containing the fitted paramaters are written. Note that the
         pixels can be binned.
 
+
+        :param region: Region to fit. Can be a path to a ds9 file, a
+          string defining the region in ds9 format or a boolean map
+          (i.e. a mask) of the same dimension as the cube field of
+          view where 1s stand for pixels that should be fitted. If a
+          ds9 file, multiple regions can be used to define the fitted
+          region. They do not need to be contiguous.
+
         :param lines: Emission lines to fit (must be in cm-1 if the
           cube is in wavenumber. must be in nm otherwise).
 
-        :param region: Region to fit. Multiple regions can be used to
-          define the fitted region. They do not need to be contiguous.
+
+        :param binning: Binning of the extracted spectra.
 
         :param nofilter: (Optional) If True, Filter model is not added
           and the fit is made with a single range set to the filter
-          bandpass.
+          bandpass (default True).
 
         :param subtract_spectrum: (Optional) Remove the given spectrum
           from the extracted spectrum before fitting
@@ -411,9 +419,10 @@ class SpectralCube(orcs.core.SpectralCube):
           sigma_cov etc.) as maps (a 2d numpy.ndarray instance or a
           path to a map). But you have to append the suffix '_map' to
           the parameter you want to map. Any nan or inf in the map
-          will be replaced by the median of the map. This mode can be
-          used to map parameters at a given binning from the result of
-          the fit made at a higher binning.
+          will be replaced by the median of the map. This mode is best
+          used once the velocity parameter has been estimated with
+          estimate_parameters_in_region().
+
         """
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
                                sky_vel_ij, calib_coeff_ij, calib_coeff_orig_ij,
@@ -531,7 +540,15 @@ class SpectralCube(orcs.core.SpectralCube):
                     
             return outdict
 
-        region = self.get_mask_from_ds9_region_file(region)
+        
+        if isinstance(region, np.ndarray):
+            if region.shape == (self.dimx, self.dimy):
+                region = np.copy(region)
+            else:
+                raise TypeError('region shape should be ({}, {}) but is {}'.format(
+                    self.dimx, self.dimy, region.shape))
+        else:
+            region = self.get_mask_from_ds9_region_file(region)
 
         # check maps in params
         mapped_kwargs = dict()
@@ -556,21 +573,21 @@ class SpectralCube(orcs.core.SpectralCube):
                         # try to detect binning
                         _bin = orb.utils.image.compute_binning(ivmap.shape, (self.dimx, self.dimy))
                         if _bin[0] == _bin[1]:
-                            if debug:
+                            if self.debug:
                                 logging.debug('parameter map binned {}x{}'.format(_bin[0], _bin[1]))
                             ivmap = orb.cutils.unbin_image(ivmap, self.dimx, self.dimy)
                         else:
-                            if debug:
+                            if self.debug:
                                 logging.debug('parameter map not binned. Interpolating {} map from {} to ({}, {})'.format(key, ivmap.shape, self.dimx, self.dimy))
                             ivmap = orb.utils.image.interpolate_map(ivmap, self.dimx, self.dimy)
-                        if debug:
+                        if self.debug:
                             logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
 
                     kwargs[rkey] = np.nanmedian(ivmap)
-                    if debug:
+                    if self.debug:
                         logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
                     if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
-                        logging.warninging('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
+                        logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
                     ivmap[np.isnan(ivmap)] = kwargs[rkey]
                     ivmap[np.isinf(ivmap)] = kwargs[rkey]
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
@@ -653,7 +670,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
     def estimate_parameters_in_region(self, region, lines, vel_range,
                                       subtract_spectrum=None, binning=3,
-                                      precision=8):
+                                      precision=10):
         """
         :param lines: Emission lines to fit (must be in cm-1 if the
           cube is in wavenumber. must be in nm otherwise).
