@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Getting started &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,7 +34,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
@@ -56,7 +58,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -158,6 +160,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -171,7 +175,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/getting_started.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -190,21 +194,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -305,7 +323,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -371,6 +389,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -449,9 +468,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: SpectralCube</span>
-<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span></span># import base class for the manipulation of a SITELLE spectral cube: SpectralCube
+from orcs.process import SpectralCube
+import pylab as pl
 </pre></div>
 </div>
 </div>
@@ -460,7 +479,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+<span></span>cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
 </pre></div>
 </div>
 </div>
@@ -481,13 +500,13 @@ master.ff2bd|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1">## Resetting flux calibration</span>
-<span class="c1"># You should not do this if your cube has been freshly reduced. The cube used here as an example has an outdated flambda parameter</span>
-<span class="c1"># which can be reset to the latest one this way.</span>
-<span class="c1"># Note that this calibration is computed from known instrumental parameters for ideal atmosheric conditions and modulation efficiency.</span>
-<span class="c1"># The measured flux may thus be underestimated by more than 10%. But, in case something&#39;s really wrong in the calibration, this is a good starting point</span>
-<span class="c1"># which sould not be more than 15% off (and is generally around 5% off).</span>
-<span class="n">cube</span><span class="o">.</span><span class="n">set_flambda</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">compute_flambda</span><span class="p">())</span>
+<span></span>## Resetting flux calibration
+# You should not do this if your cube has been freshly reduced. The cube used here as an example has an outdated flambda parameter
+# which can be reset to the latest one this way.
+# Note that this calibration is computed from known instrumental parameters for ideal atmosheric conditions and modulation efficiency.
+# The measured flux may thus be underestimated by more than 10%. But, in case something&#39;s really wrong in the calibration, this is a good starting point
+# which sould not be more than 15% off (and is generally around 5% off).
+cube.set_flambda(cube.compute_flambda())
 </pre></div>
 </div>
 </div>
@@ -525,13 +544,13 @@ master.ff2bd|INFO| standard_image not set: no absolute vector correction compute
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># explore the deep frame (in counts)</span>
-<span class="n">deep</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span> <span class="c1"># this step should take a second or less. If it takes a lot of time, see above.</span>
-<span class="n">deep</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">perc</span><span class="o">=</span><span class="mi">95</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">cb</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">shrink</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.1e</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;counts&#39;</span><span class="p">)</span>
-<span class="n">deep</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;M31_SN3.deep_frame.fits&#39;</span><span class="p">)</span> <span class="c1"># if you want to exampine it your way (e.g. with ds9 :P)</span>
+<span></span># explore the deep frame (in counts)
+deep = cube.get_deep_frame() # this step should take a second or less. If it takes a lot of time, see above.
+deep.imshow(perc=95, wcs=True)
+pl.grid()
+cb = pl.colorbar(shrink=0.8, format=&#39;%.1e&#39;)
+cb.ax.set_title(&#39;counts&#39;)
+deep.to_fits(&#39;M31_SN3.deep_frame.fits&#39;) # if you want to exampine it your way (e.g. with ds9 :P)
 </pre></div>
 </div>
 </div>
@@ -559,17 +578,17 @@ master.03e73|INFO| Data written as M31_SN3.deep_frame.fits in 0.17 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># extract and plot a spectrum at x=919 y=893 integrated over a radius of 2 pixels</span>
-<span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># option mean_flux</span>
-<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;spectrum of a planetary nebula&#39;</span><span class="p">)</span>
+<span></span># extract and plot a spectrum at x=919 y=893 integrated over a radius of 2 pixels
+spectrum = cube.get_spectrum(919, 893, 2) # option mean_flux
+spectrum.plot(plot_real=True)
+pl.grid()
+pl.title(&#39;spectrum of a planetary nebula&#39;)
 
-<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;zoom in&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+pl.figure()
+spectrum.plot(plot_real=True)
+pl.xlim((15150, 15350))
+pl.title(&#39;zoom in&#39;)
+pl.grid()
 </pre></div>
 </div>
 </div>
@@ -602,9 +621,9 @@ master.03e73|INFO| Data written as M31_SN3.deep_frame.fits in 0.17 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;object type:&#39;</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data as numpy.ndarray vector&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis (in cm-1) as numpy.ndarray vector&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span></span>print(&#39;object type:&#39;, spectrum)
+print(&#39;data as numpy.ndarray vector&#39;, type(spectrum.data))
+print(&#39;axis (in cm-1) as numpy.ndarray vector&#39;, type(spectrum.axis.data))
 </pre></div>
 </div>
 </div>
@@ -626,17 +645,17 @@ axis (in cm-1) as numpy.ndarray vector &lt;class &#39;numpy.ndarray&#39;&gt;
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">background</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum_in_annulus</span><span class="p">(</span><span class="mi">919</span><span class="p">,</span> <span class="mi">893</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">median</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mean_flux</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># mean_flux=True: The mean flux is returned (i.e. integrated flux / number of integrated pixels).</span>
-<span class="c1">#  This is important when computing a sky spectrum.</span>
-<span class="c1">#</span>
-<span class="c1"># median=True: When combining spectra, the median is used instead of the mean (if mean_flux is True,</span>
-<span class="c1">#  the computed median vector is then multiplied by the number of integrated pixels to keep with a</span>
-<span class="c1">#  measure of the total flux.). On large integrated regions, this operation removes outliers like</span>
-<span class="c1">#  isolated bright stars.</span>
-<span class="n">background</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Background around the planetary nebula&#39;</span><span class="p">)</span>
+<span></span>background = cube.get_spectrum_in_annulus(919, 893, 4, 25, median=True, mean_flux=True)
+# mean_flux=True: The mean flux is returned (i.e. integrated flux / number of integrated pixels).
+#  This is important when computing a sky spectrum.
+#
+# median=True: When combining spectra, the median is used instead of the mean (if mean_flux is True,
+#  the computed median vector is then multiplied by the number of integrated pixels to keep with a
+#  measure of the total flux.). On large integrated regions, this operation removes outliers like
+#  isolated bright stars.
+background.plot()
+pl.grid()
+pl.title(&#39;Background around the planetary nebula&#39;)
 </pre></div>
 </div>
 </div>
@@ -671,14 +690,14 @@ Text(0.5, 1.0, &#39;Background around the planetary nebula&#39;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Background is high below the source. It can be removed by subtracting the spectrum of a region in a an annulus around the source.</span>
+<span></span># Background is high below the source. It can be removed by subtracting the spectrum of a region in a an annulus around the source.
 
-<span class="n">spectrum_corr</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">subtract_sky</span><span class="p">(</span><span class="n">background</span><span class="p">)</span>
-<span class="c1"># note that you didn&#39;t have to bother with the number of integrated pixels in each spectrum</span>
-<span class="c1"># (even if both have been integrated over different surfaces)</span>
-<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spectrum with background removed&#39;</span><span class="p">)</span>
+spectrum_corr = spectrum.subtract_sky(background)
+# note that you didn&#39;t have to bother with the number of integrated pixels in each spectrum
+# (even if both have been integrated over different surfaces)
+spectrum_corr.plot()
+pl.grid()
+pl.title(&#39;Spectrum with background removed&#39;)
 </pre></div>
 </div>
 </div>
@@ -729,29 +748,29 @@ Text(0.5, 1.0, &#39;Spectrum with background removed&#39;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum_corr</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
-                        <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
-                        <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,),</span>
-                        <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                        <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># fitting results are combined into an orb.fit.OutputParams object which behaves exacly like a dict but offers some valuable methods</span>
-<span class="c1"># for quick results plotting</span>
+<span></span>fit = spectrum_corr.fit([&#39;Halpha&#39;, &#39;[NII]6583&#39;],
+                        fmodel=&#39;sinc&#39;,
+                        pos_cov=(-513,),
+                        pos_def=[&#39;1&#39;, &#39;1&#39;],
+                        nofilter=True)
+# fitting results are combined into an orb.fit.OutputParams object which behaves exacly like a dict but offers some valuable methods
+# for quick results plotting
 
-<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span> <span class="c1"># print the most important results</span>
+print(fit) # print the most important results
 
-<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+spectrum_corr.plot(label=&#39;spectrum&#39;)
 
-<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-
-
+fit.plot(label=&#39;fit&#39;, c=&#39;red&#39;) # plot the fitted vector
+fit.plot_residual(label=&#39;residual&#39;, c=&#39;gray&#39;) # plot the residual of the fit
+pl.grid()
+pl.xlim((15150, 15350))
+pl.legend()
 
 
-<span class="c1"># note that more can be retrived by looking into all the data provided:</span>
-<span class="c1"># print(dict(fit))</span>
+
+
+# note that more can be retrived by looking into all the data provided:
+# print(dict(fit))
 </pre></div>
 </div>
 </div>
@@ -797,19 +816,19 @@ Broadening (km/s): [nan +- nan nan +- nan]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum_corr</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
-                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
-                   <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,</span> <span class="o">-</span><span class="mi">513</span><span class="p">),</span>
-                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">],</span>
-                   <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
-<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+<span></span>fit = spectrum_corr.fit([&#39;Halpha&#39;, &#39;[NII]6583&#39;],
+                   fmodel=&#39;sinc&#39;,
+                   pos_cov=(-513, -513),
+                   pos_def=[&#39;1&#39;, &#39;2&#39;],
+                   nofilter=True)
+print(fit)
+spectrum_corr.plot(label=&#39;spectrum&#39;)
+fit.plot_residual(label=&#39;residual&#39;, c=&#39;gray&#39;) # plot the residual of the fit
+fit.plot(label=&#39;fit&#39;, c=&#39;red&#39;) # plot the fitted vector
 
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+pl.grid()
+pl.xlim((15150, 15350))
+pl.legend()
 </pre></div>
 </div>
 </div>
@@ -858,22 +877,22 @@ Broadening (km/s): [nan +- nan nan +- nan]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum_corr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
-    <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-    <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,),</span>
-    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-    <span class="n">sigma_cov</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,),</span>
-    <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
-<span class="n">spectrum_corr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+<span></span>fit = spectrum_corr.fit(
+    [&#39;Halpha&#39;, &#39;[NII]6583&#39;],
+    fmodel=&#39;sincgauss&#39;,
+    pos_cov=(-513,),
+    pos_def=[&#39;1&#39;, &#39;1&#39;],
+    sigma_def=[&#39;1&#39;, &#39;1&#39;],
+    sigma_cov=(20,),
+    nofilter=True)
+print(fit)
+spectrum_corr.plot(label=&#39;spectrum&#39;)
+fit.plot_residual(label=&#39;residual&#39;, c=&#39;gray&#39;) # plot the residual of the fit
+fit.plot(label=&#39;fit&#39;, c=&#39;red&#39;) # plot the fitted vector
 
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15150</span><span class="p">,</span> <span class="mi">15350</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+pl.grid()
+pl.xlim((15150, 15350))
+pl.legend()
 </pre></div>
 </div>
 </div>
@@ -924,22 +943,22 @@ Broadening (km/s): [27.1(1.7) 27.1(1.7)]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
-    <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-    <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">513</span><span class="p">,),</span>
-    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
-    <span class="n">sigma_cov</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,),</span>
-    <span class="n">nofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
-<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot_residual</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;residual&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span> <span class="c1"># plot the residual of the fit</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span> <span class="c1"># plot the fitted vector</span>
+<span></span>fit = spectrum.fit(
+    [&#39;Halpha&#39;, &#39;[NII]6583&#39;],
+    fmodel=&#39;sincgauss&#39;,
+    pos_cov=(-513,),
+    pos_def=[&#39;1&#39;, &#39;1&#39;],
+    sigma_def=[&#39;1&#39;, &#39;1&#39;],
+    sigma_cov=(20,),
+    nofilter=False,
+    poly_order=2)
+print(fit)
+spectrum.plot(label=&#39;spectrum&#39;)
+fit.plot_residual(label=&#39;residual&#39;, c=&#39;gray&#39;) # plot the residual of the fit
+fit.plot(label=&#39;fit&#39;, c=&#39;red&#39;) # plot the fitted vector
 
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+pl.grid()
+pl.legend()
 </pre></div>
 </div>
 </div>
@@ -999,37 +1018,29 @@ Broadening (km/s): [26.6(1.7) 26.6(1.7)]
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="script_example_velocity_parameter_precision.html" class="btn btn-neutral float-right" title="How precise must be the input velocity parameter ?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="script_example_velocity_parameter_precision.html" class="btn btn-neutral float-right" title="How precise must be the input velocity parameter ?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Core module &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,10 +34,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -143,6 +143,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -154,7 +156,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/core_module.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -201,30 +203,30 @@
 </div>
 <dl class="py class">
 <dt id="orcs.core.DataFiles">
-<em class="property">class </em><code class="sig-prename descclassname">orcs.core.</code><code class="sig-name descname">DataFiles</code><a class="headerlink" href="#orcs.core.DataFiles" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">orcs.core.</span></code><code class="sig-name descname"><span class="pre">DataFiles</span></code><a class="headerlink" href="#orcs.core.DataFiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Manage data files (files in orcs/data)</p>
 <dl class="py method">
 <dt id="orcs.core.DataFiles.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Init class</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="orcs.core.DataFiles.__weakref__">
-<code class="sig-name descname">__weakref__</code><a class="headerlink" href="#orcs.core.DataFiles.__weakref__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__weakref__</span></code><a class="headerlink" href="#orcs.core.DataFiles.__weakref__" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.DataFiles.get_dirname">
-<code class="sig-name descname">get_dirname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.get_dirname" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_dirname</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.get_dirname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return absolute data directory path</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.DataFiles.get_path">
-<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.get_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.DataFiles.get_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the path to a file in ORCS data folder: orb/data/file_name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -237,12 +239,12 @@
 
 <dl class="py class">
 <dt id="orcs.core.LineMaps">
-<em class="property">class </em><code class="sig-prename descclassname">orcs.core.</code><code class="sig-name descname">LineMaps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimx</span></em>, <em class="sig-param"><span class="n">dimy</span></em>, <em class="sig-param"><span class="n">lines</span></em>, <em class="sig-param"><span class="n">wavenumber</span></em>, <em class="sig-param"><span class="n">binning</span></em>, <em class="sig-param"><span class="n">div_nb</span></em>, <em class="sig-param"><span class="n">wcs_header</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.Tools</span></code></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">orcs.core.</span></code><code class="sig-name descname"><span class="pre">LineMaps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.core.</span></code></p>
 <p>Manage line parameters maps</p>
 <dl class="py method">
 <dt id="orcs.core.LineMaps.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimx</span></em>, <em class="sig-param"><span class="n">dimy</span></em>, <em class="sig-param"><span class="n">lines</span></em>, <em class="sig-param"><span class="n">wavenumber</span></em>, <em class="sig-param"><span class="n">binning</span></em>, <em class="sig-param"><span class="n">div_nb</span></em>, <em class="sig-param"><span class="n">wcs_header</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavenumber</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binning</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">div_nb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Init class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -264,13 +266,13 @@ frames (default None).</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps._get_hdf5_path">
-<code class="sig-name descname">_get_hdf5_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_hdf5_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_get_hdf5_path</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_hdf5_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the path to the hdf5 bundle</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps._get_map_path">
-<code class="sig-name descname">_get_map_path</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">line_name</span></em>, <em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">binning</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_map_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_get_map_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps._get_map_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the path to a map of one gaussian fit parameter for
 one given emission line.</p>
 <dl class="field-list simple">
@@ -287,7 +289,7 @@ instance binning is used (default None).</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps.get_map">
-<code class="sig-name descname">get_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_map</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get map values</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -304,7 +306,7 @@ None)</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps.get_spectrum">
-<code class="sig-name descname">get_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">fmodel</span><span class="o">=</span><span class="default_value">'sinc'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_spectrum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_spectrum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sinc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reconstruct the fitted vector from the mapped parameters.
 :param cube: a SpectralCube instance</p>
 <dl class="field-list simple">
@@ -320,13 +322,13 @@ None)</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>save class as an HDF5 file</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps.set_map">
-<code class="sig-name descname">set_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">data_map</span></em>, <em class="sig-param"><span class="n">x_range</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_range</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.set_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">set_map</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.set_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set map values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -344,7 +346,7 @@ None)</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.LineMaps.write_maps">
-<code class="sig-name descname">write_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.write_maps" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">write_maps</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.write_maps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write all maps to disk in fits format.</p>
 </dd></dl>
 
@@ -352,8 +354,8 @@ None)</p></li>
 
 <dl class="py class">
 <dt id="orcs.core.SpectralCube">
-<em class="property">class </em><code class="sig-prename descclassname">orcs.core.</code><code class="sig-name descname">SpectralCube</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.cube.SpectralCube</span></code></p>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">orcs.core.</span></code><code class="sig-name descname"><span class="pre">SpectralCube</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.cube.</span></code></p>
 <p>Extension of <code class="xref py py-class docutils literal notranslate"><span class="pre">orb.cube.SpectralCube</span></code></p>
 <p>Core class which gives access to an HDF5 cube. The child class
 <a class="reference internal" href="process_module.html#orcs.process.SpectralCube" title="orcs.process.SpectralCube"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectralCube</span></code></a> may be prefered in general
@@ -364,7 +366,7 @@ for its broader functionality.</p>
 </div>
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cube_path</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -377,20 +379,20 @@ for its broader functionality.</p>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube._extract_wrapper">
-<code class="sig-name descname">_extract_wrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube._extract_wrapper" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_extract_wrapper</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube._extract_wrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>General wrapper around get_spectrum* methods for backward
 compatibility</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube._get_data_prefix">
-<code class="sig-name descname">_get_data_prefix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube._get_data_prefix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_get_data_prefix</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube._get_data_prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return data prefix</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.extract_integrated_spectrum">
-<code class="sig-name descname">extract_integrated_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_integrated_spectrum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">extract_integrated_spectrum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_integrated_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -417,7 +419,7 @@ spectra.</p>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.extract_spectrum">
-<code class="sig-name descname">extract_spectrum</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">extract_spectrum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a spectrum extracted at x, y and integrated
 over a circular aperture or radius r.</p>
 <dl class="field-list simple">
@@ -446,7 +448,7 @@ vector of the same size as the extracted spectrum.</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.extract_spectrum_bin">
-<code class="sig-name descname">extract_spectrum_bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum_bin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">extract_spectrum_bin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum_bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a spectrum extracted at x, y and integrated
 over a binned region.</p>
 <dl class="field-list simple">
@@ -471,7 +473,7 @@ flux) is returned.</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.extract_spectrum_in_annulus">
-<code class="sig-name descname">extract_spectrum_in_annulus</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum_in_annulus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">extract_spectrum_in_annulus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.extract_spectrum_in_annulus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a. orb.fft.RealSpectrum extracted at x, y and integrated
 over a circular annulus of min radius rmin and max radius rmax.</p>
 <dl class="field-list simple">
@@ -494,14 +496,14 @@ flux) is returned.</p></li>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.get_flux_uncertainty">
-<code class="sig-name descname">get_flux_uncertainty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_flux_uncertainty" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_flux_uncertainty</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_flux_uncertainty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the uncertainty on the flux (1 sigma) of the spectrum in a
 given channel in counts/s.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.get_radial_velocity_correction">
-<code class="sig-name descname">get_radial_velocity_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kind</span><span class="o">=</span><span class="default_value">'heliocentric'</span></em>, <em class="sig-param"><span class="n">date</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">silent</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_radial_velocity_correction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'heliocentric'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_radial_velocity_correction" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Return heliocentric or barycentric velocity correction to apply on</dt><dd><p>the observed target in km/s</p>
 </dd>
@@ -537,7 +539,7 @@ for more information on how to use the returned quantities.</p>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.get_spectrum_from_region">
-<code class="sig-name descname">get_spectrum_from_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_spectrum_from_region</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.get_spectrum_from_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper around the extract_spectrum_from_region method to apply
 flux calibration by default when extracting spectra (the real
 data is in counts) when cube is flux calibrated.</p>
@@ -545,7 +547,7 @@ data is in counts) when cube is flux calibrated.</p>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.process_by_pixel">
-<code class="sig-name descname">process_by_pixel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">modules</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">binning</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.process_by_pixel" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">process_by_pixel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.process_by_pixel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallelize a function taking binned spectra of the cube as
 an input. All pixels are gone through unless a mask is passed
 which indicates the pixels that must be processed. The typical
@@ -589,7 +591,7 @@ dimension can have any size)</p>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.process_by_region">
-<code class="sig-name descname">process_by_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">regions</span></em>, <em class="sig-param"><span class="n">subtract</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">modules</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">depfuncs</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.process_by_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">process_by_region</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtract</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depfuncs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.process_by_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallelize a function applied to a list of integrated
 regions extracted from the spectral cube.</p>
 <p>the function must be defined as func(spectrum_bundle, <a href="#id3"><span class="problematic" id="id4">*</span></a>args)</p>
@@ -598,7 +600,7 @@ regions extracted from the spectral cube.</p>
 
 <dl class="py method">
 <dt id="orcs.core.SpectralCube.reproject">
-<code class="sig-name descname">reproject</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.reproject" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">reproject</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.SpectralCube.reproject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reproject data cube in a distorsion-less WCS.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -616,37 +618,29 @@ the cube size on disk.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="fit_module.html" class="btn btn-neutral float-right" title="Fit module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral float-left" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="fit_module.html" class="btn btn-neutral float-right" title="Fit module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral float-left" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

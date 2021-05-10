@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Differences between fitting a sincgauss model and two sinc lines &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,17 +34,14 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model+fit_1_line.html" />
+    <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model%2Bfit_1_line.html" />
     <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -159,6 +159,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -172,7 +174,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/script_example_sincgauss_vs_2_sinc.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -191,21 +193,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -306,7 +322,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -372,6 +388,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -454,11 +471,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">orb.utils.spectrum</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">orb.fit</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span>%matplotlib inline
+import orb.utils.spectrum
+import pylab as pl
+import orb.fit
+import numpy as np
 </pre></div>
 </div>
 </div>
@@ -471,9 +488,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">sinc1d_2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">sinc1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">sinc1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">))</span>
+<span></span>def sinc1d_2(x, h, a, dx, fwhm, sigma):
+    return (orb.utils.spectrum.sinc1d(x, h, a/2., dx + sigma, fwhm)
+            + orb.utils.spectrum.sinc1d(x, h, a/2., dx - sigma, fwhm))
 
 </pre></div>
 </div>
@@ -483,13 +500,13 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># model parameters</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">h</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-<span class="n">fwhm</span> <span class="o">=</span> <span class="mi">60</span>
-<span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">fwhm</span>
+<span></span># model parameters
+x = np.arange(1000)
+h = 0
+a = 1
+dx = np.size(x) / 2
+fwhm = 60
+sigma = 0.1 * fwhm
 </pre></div>
 </div>
 </div>
@@ -499,15 +516,15 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">isig</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-    <span class="n">sd</span> <span class="o">=</span> <span class="n">sinc1d_2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">isig</span> <span class="o">*</span> <span class="n">fwhm</span><span class="p">)</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_vector</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">],</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                      <span class="n">sigma_guess</span><span class="o">=</span><span class="n">isig</span><span class="o">*</span><span class="n">fwhm</span><span class="p">)</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;two sinc lines&#39;</span><span class="p">)</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fitted sincgauss model&#39;</span><span class="p">)</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> / </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">isig</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params_gvar&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span> <span class="n">fwhm</span><span class="p">))</span>
+<span></span>for isig in np.linspace(0.01, 0.5, 10):
+    sd = sinc1d_2(x, h, a, dx, fwhm, isig * fwhm)
+    fit = orb.fit.fit_lines_in_vector(sd, [dx], fwhm, fmodel=&#39;sincgauss&#39;,
+                                      sigma_guess=isig*fwhm)
+    pl.figure(figsize=(15,3))
+    pl.plot(sd, label=&#39;two sinc lines&#39;)
+    pl.plot(fit[&#39;fitted_vector&#39;], label=&#39;fitted sincgauss model&#39;)
+    pl.legend()
+    pl.title(&#39;{} / {}&#39;.format(isig, fit[&#39;lines_params_gvar&#39;][0,-1]/ fwhm))
 </pre></div>
 </div>
 </div>
@@ -595,30 +612,30 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">real_ratios</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="n">fitted_ratios</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">isig</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-    <span class="n">sd</span> <span class="o">=</span> <span class="n">sinc1d_2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">isig</span> <span class="o">*</span> <span class="n">fwhm</span><span class="p">)</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_vector</span><span class="p">(</span><span class="n">sd</span><span class="p">,</span> <span class="p">[</span><span class="n">dx</span><span class="p">],</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                                      <span class="n">sigma_guess</span><span class="o">=</span><span class="n">isig</span><span class="o">*</span><span class="n">fwhm</span><span class="p">)</span>
-    <span class="n">real_ratios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isig</span><span class="p">)</span>
-    <span class="n">fitted_ratios</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span> <span class="n">fwhm</span><span class="p">)</span>
-<span class="n">real_ratios</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">real_ratios</span><span class="p">)</span>
-<span class="n">fitted_ratios</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fitted_ratios</span><span class="p">)</span>
+<span></span>real_ratios = list()
+fitted_ratios = list()
+for isig in np.linspace(0.01, 0.5, 10):
+    sd = sinc1d_2(x, h, a, dx, fwhm, isig * fwhm)
+    fit = orb.fit.fit_lines_in_vector(sd, [dx], fwhm, fmodel=&#39;sincgauss&#39;,
+                                      sigma_guess=isig*fwhm)
+    real_ratios.append(isig)
+    fitted_ratios.append(fit[&#39;lines_params&#39;][0,-1]/ fwhm)
+real_ratios = np.array(real_ratios)
+fitted_ratios = np.array(fitted_ratios)
 
-<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">real_ratios</span><span class="p">,</span> <span class="n">fitted_ratios</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">real_ratios</span><span class="p">,</span> <span class="n">real_ratios</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;0.&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;one-to-one line&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;real broadening ratio&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;fitted broadening with a sincgauss model&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+pl.figure(figsize=(15,7))
+pl.plot(real_ratios, fitted_ratios)
+pl.plot(real_ratios, real_ratios, c=&#39;0.&#39;, ls=&#39;:&#39;, label=&#39;one-to-one line&#39;)
+pl.xlabel(&#39;real broadening ratio&#39;)
+pl.ylabel(&#39;fitted broadening with a sincgauss model&#39;)
+pl.legend()
+pl.grid()
 
-<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">real_ratios</span><span class="p">,</span> <span class="p">(</span><span class="n">fitted_ratios</span><span class="o">-</span><span class="n">real_ratios</span><span class="p">)</span><span class="o">/</span><span class="n">real_ratios</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;real broadening ratio&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;error in </span><span class="si">% o</span><span class="s1">f the measured broadening with a sincgauss model&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+pl.figure(figsize=(15,7))
+pl.plot(real_ratios, (fitted_ratios-real_ratios)/real_ratios * 100)
+pl.xlabel(&#39;real broadening ratio&#39;)
+pl.ylabel(&#39;error in % of the measured broadening with a sincgauss model&#39;)
+pl.grid()
 </pre></div>
 </div>
 </div>
@@ -653,37 +670,29 @@ div.rendered_html tbody tr:hover {
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="script_example_model+fit_1_line.html" class="btn btn-neutral float-right" title="Modelling and fitting a single line spectrum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="script_example_model%2Bfit_1_line.html" class="btn btn-neutral float-right" title="Modelling and fitting a single line spectrum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Make a fit over an entire region of the field &mdash; Orcs latest documentation</title>
   
@@ -18,7 +18,10 @@
   
     <link rel="shortcut icon" href="_static/logo.ico"/>
   
+
   
+  
+
   
 
   
@@ -31,10 +34,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Orcs
+            <a href="index.html" class="icon icon-home"> Orcs
           
 
           
@@ -158,6 +158,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -171,7 +173,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/script_example_fit_region.ipynb.txt" rel="nofollow"> View page source</a>
           
         
@@ -190,21 +192,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -305,7 +321,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -371,6 +387,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -455,10 +472,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">orb.utils.io</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span>import orcs.process
+import pylab as pl
+import orb.utils.io
+import numpy as np
+from importlib import reload
 </pre></div>
 </div>
 </div>
@@ -467,7 +485,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/local/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span>cube = orcs.process.SpectralCube(&#39;/home/thomas/local/M57_SN3.merged.cm1.1.0.hdf5&#39;)
 </pre></div>
 </div>
 </div>
@@ -476,26 +494,26 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">master.11e5|WARNING| both level2 and level3 in attrs</span>
-master.11e5|INFO| Cube is level 3
-master.11e5|INFO| shape: (2048, 2064, 593)
-master.11e5|INFO| wavenumber calibration: True
-master.11e5|INFO| flux calibration: True
-master.11e5|INFO| wcs calibration: True
+WARNING:root:both level2 and level3 in attrs
+INFO:root:Cube is level 3
+INFO:root:shape: (2048, 2064, 593)
+INFO:root:wavenumber calibration: True
+INFO:root:flux calibration: True
+INFO:root:wcs calibration: True
 </pre></div></div>
 </div>
 <div class="section" id="Export-the-deep-frame-with-its-WCS-to-define-the-ROI">
 <h2>Export the deep frame with its WCS to define the ROI<a class="headerlink" href="#Export-the-deep-frame-with-its-WCS-to-define-the-ROI" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">deep_frame</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
-<span class="n">deep_frame</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray_r&#39;</span><span class="p">,</span> <span class="n">perc</span><span class="o">=</span><span class="mf">99.9</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">550</span><span class="p">,</span><span class="mi">970</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">650</span><span class="p">,</span><span class="mi">1030</span><span class="p">))</span>
-<span class="n">deep_frame</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;deep_frame.fits&#39;</span><span class="p">)</span>
+<span></span>deep_frame = cube.get_deep_frame()
+deep_frame.imshow(cmap=&#39;gray_r&#39;, perc=99.9)
+pl.xlim((550,970))
+pl.ylim((650,1030))
+deep_frame.to_fits(&#39;deep_frame.fits&#39;)
 </pre></div>
 </div>
 </div>
@@ -504,8 +522,8 @@ master.11e5|INFO| wcs calibration: True
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">master.11e5|WARNING| Complex data cast to float32 (FITS format do not support complex data)</span>
-master.11e5|INFO| Data written as deep_frame.fits in 0.19 s
+WARNING:root:Complex data cast to float32 (FITS format do not support complex data)
+INFO:root:Data written as deep_frame.fits in 0.29 s
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -524,26 +542,26 @@ global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman" select=
 fk5
 circle(18:53:35.739,+33:02:03.821,12.264")<p>It can be plotted (for checking purpose) with pyregion (<a class="reference external" href="http://pyregion.readthedocs.io/en/latest/index.html">http://pyregion.readthedocs.io/en/latest/index.html</a>) like this</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pyregion</span>
+<span></span>import pyregion
 
-<span class="c1"># draw the background image</span>
-<span class="n">deep_frame</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray_r&#39;</span><span class="p">,</span> <span class="n">perc</span><span class="o">=</span><span class="mf">99.9</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">550</span><span class="p">,</span><span class="mi">970</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">650</span><span class="p">,</span><span class="mi">1030</span><span class="p">))</span>
+# draw the background image
+deep_frame.imshow(cmap=&#39;gray_r&#39;, perc=99.9)
+pl.xlim((550,970))
+pl.ylim((650,1030))
 
-<span class="c1"># load region file and draw the regions</span>
-<span class="n">reg</span> <span class="o">=</span> <span class="n">pyregion</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;region.reg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">as_imagecoord</span><span class="p">(</span><span class="n">cube</span><span class="o">.</span><span class="n">get_wcs_header</span><span class="p">())</span>
+# load region file and draw the regions
+reg = pyregion.open(&#39;region.reg&#39;).as_imagecoord(cube.get_wcs_header())
 
-<span class="n">ax</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-<span class="n">patch_list</span><span class="p">,</span> <span class="n">artist_list</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">get_mpl_patches_texts</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patch_list</span><span class="p">:</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">artist_list</span><span class="p">:</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+ax = pl.gca()
+patch_list, artist_list = reg.get_mpl_patches_texts()
+for p in patch_list:
+    ax.add_patch(p)
+for t in artist_list:
+    ax.add_artist(t)
 </pre></div>
 </div>
 </div>
@@ -555,26 +573,24 @@ circle(18:53:35.739,+33:02:03.821,12.264")<p>It can be plotted (for checking pur
 </div>
 </div>
 </div>
-<div class="section" id="Extract-a-spectrum-of-the-region-to-define-the-fit-parameters">
-<h2>Extract a spectrum of the region to define the fit parameters<a class="headerlink" href="#Extract-a-spectrum-of-the-region-to-define-the-fit-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Extract-a-spectrum-of-the-region-to-estimate-the-fit-parameters">
+<h2>Extract a spectrum of the region to estimate the fit parameters<a class="headerlink" href="#Extract-a-spectrum-of-the-region-to-estimate-the-fit-parameters" title="Permalink to this headline">¶</a></h2>
+<p>parameters estimation can be done automatically. Only one velocity component is considered along the line of sight.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">749</span><span class="p">,</span> <span class="mi">898</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span></span>spectrum = cube.get_spectrum(749, 898, 3)
 
-<span class="c1"># all the spectrum</span>
-<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">14750</span><span class="p">,</span><span class="mi">15500</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+# all the spectrum
+spectrum.plot()
+pl.xlim((14750,15500))
+pl.grid()
 
-<span class="c1"># zoom over Halpha</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span><span class="mi">15250</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-
+vel, fluxes = spectrum.estimate_parameters((&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;), [-300, 300])
+print(&#39;velocity estimate (km/s)&#39;, vel)
+print(&#39;fluxes estimate (erg/cm^2/s)&#39;, fluxes)
 </pre></div>
 </div>
 </div>
@@ -582,8 +598,10 @@ circle(18:53:35.739,+33:02:03.821,12.264")<p>It can be plotted (for checking pur
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_10_0.png" src="_images/script_example_fit_region_10_0.png" />
-</div>
+<div class="highlight"><pre>
+velocity estimate (km/s) 60.0
+fluxes estimate (erg/cm^2/s) [6.702803507687017e-14, 2.303640071085414e-13, 2.159394315301985e-13, 1.2902492268605936e-14, 1.0764452284205345e-14]
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -593,52 +611,29 @@ circle(18:53:35.739,+33:02:03.821,12.264")<p>It can be plotted (for checking pur
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Halpha wavenumber is roughly 15235 cm-1 which gives a velocity :</span>
+<span></span># set up the fit to check if before running the long extraction process over the whole ROI
 
-<span class="kn">import</span> <span class="nn">orb.utils.spectrum</span>
-<span class="kn">from</span> <span class="nn">orb.core</span> <span class="kn">import</span> <span class="n">Lines</span>
-<span class="n">vel</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">compute_radial_velocity</span><span class="p">(</span><span class="mi">15235</span><span class="p">,</span> <span class="n">Lines</span><span class="p">()</span><span class="o">.</span><span class="n">get_line_cm1</span><span class="p">(</span><span class="s1">&#39;Halpha&#39;</span><span class="p">),</span> <span class="n">wavenumber</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;velocity: </span><span class="si">{}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vel</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-velocity: 46.329113734443276 km/s
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># set up the fit to check if before running the long extraction process over the whole ROI</span>
+fit = spectrum.fit((&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;),
+                   fmodel=&#39;sincgauss&#39;,
+                   pos_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                   pos_cov=[vel, vel],
+                   sigma_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                   sigma_cov=[20, 20],
+                   nofilter=True)
 
-<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">((</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6716&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">),</span>
-                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                   <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">vel</span><span class="p">,</span> <span class="n">vel</span><span class="p">],</span>
-                   <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                   <span class="n">sigma_cov</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
-                   <span class="n">snr_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+print(fit)
+new_vel = fit[&#39;velocity&#39;][0], fit[&#39;velocity&#39;][1]
 
-<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
-<span class="n">new_vel</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-
-<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fitted model&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">14800</span><span class="p">,</span><span class="mi">15300</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+pl.figure(figsize=(20,10))
+spectrum.plot(label=&#39;spectrum&#39;)
+fit.get_spectrum().plot(label=&#39;fitted model&#39;)
+pl.xlim((14800,15300))
+pl.legend()
+pl.grid()
 </pre></div>
 </div>
 </div>
@@ -647,7 +642,8 @@ velocity: 46.329113734443276 km/s
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">master.11e5|WARNING| please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans</span>
+/home/thomas/miniconda3/envs/orb3/lib/python3.7/site-packages/ipykernel/ipkernel.py:283: DeprecationWarning: `should_run_async` will not call `transform_cell` automatically in the future. Please pass the result to `transformed_cell` argument and any exception that happen during thetransform in `preprocessing_exc_tuple` in IPython 7.17 and above.
+  and should_run_async(code)
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -657,10 +653,10 @@ velocity: 46.329113734443276 km/s
 <div class="highlight"><pre>
 === Fit results ===
 lines: [&#39;[NII]6548&#39;, &#39;H3&#39;, &#39;[NII]6584&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;], fmodel: sincgauss
-iterations: 56, fit time: 2.67e-01 s
+iterations: 56, fit time: 4.02e-01 s
 Velocity (km/s): [53.74(14) 62.98(15) 53.74(14) 53.74(14) 53.74(14)]
 Flux: [9.372(85)e-14 2.984(12)e-13 2.887(12)e-13 1.753(84)e-14 1.674(84)e-14]
-Broadening (km/s): [15.61(54) 17.91(48) 15.61(54) 15.61(54) 15.61(54)]
+Broadening (km/s): [15.61(54) 17.90(48) 15.61(54) 15.61(54) 15.61(54)]
 
 </pre></div></div>
 </div>
@@ -668,41 +664,135 @@ Broadening (km/s): [15.61(54) 17.91(48) 15.61(54) 15.61(54) 15.61(54)]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_12_2.png" src="_images/script_example_fit_region_12_2.png" />
+<img alt="_images/script_example_fit_region_11_2.png" src="_images/script_example_fit_region_11_2.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Fit-the-ROI">
 <h2>Fit the ROI<a class="headerlink" href="#Fit-the-ROI" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Estimate-parameters-in-the-ROI">
+<h3>Estimate parameters in the ROI<a class="headerlink" href="#Estimate-parameters-in-the-ROI" title="Permalink to this headline">¶</a></h3>
+<p>We can start by estimating the parameters (especially the velocity) in the region we want to fit. The estimated velocity map can then be used as an input in the fitting process. It is a very fast process which should be always done before running a long fitting process. As an example we will run the estimation on a much larger region of the cube.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>estimates = cube.estimate_parameters_in_region(&#39;large_reg_m57.reg&#39;, (&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;), [-300, 300],
+                                               binning=10)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/thomas/miniconda3/envs/orb3/lib/python3.7/site-packages/ipykernel/ipkernel.py:283: DeprecationWarning: `should_run_async` will not call `transform_cell` automatically in the future. Please pass the result to `transformed_cell` argument and any exception that happen during thetransform in `preprocessing_exc_tuple` in IPython 7.17 and above.
+  and should_run_async(code)
+INFO:root:Init of the parallel processing server with 32 threads
+INFO:root:passed mapped kwargs : []
+INFO:root:79 rows to fit
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1120: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 32.7 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Closing parallel processing server
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Data written as ./M57_SN3/M57_SN3.SpectralCube.estimated_velocity.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/M57_SN3.SpectralCube.estimated_[NII]6548.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/M57_SN3.SpectralCube.estimated_Halpha.fits in 0.26 s
+INFO:root:Data written as ./M57_SN3/M57_SN3.SpectralCube.estimated_[NII]6583.fits in 0.26 s
+INFO:root:Data written as ./M57_SN3/M57_SN3.SpectralCube.estimated_[SII]6716.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/M57_SN3.SpectralCube.estimated_[SII]6731.fits in 0.26 s
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>import orb.utils.graph as graph
+vel_map = orb.utils.io.read_fits(&#39;./M57_SN3/M57_SN3.SpectralCube.estimated_velocity.fits&#39;)
+graph.imshow(vel_map)
+pl.xlim(380, 1200)
+pl.ylim(400, 1220)
+pl.colorbar()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/thomas/miniconda3/envs/orb3/lib/python3.7/site-packages/ipykernel/ipkernel.py:283: DeprecationWarning: `should_run_async` will not call `transform_cell` automatically in the future. Please pass the result to `transformed_cell` argument and any exception that happen during thetransform in `preprocessing_exc_tuple` in IPython 7.17 and above.
+  and should_run_async(code)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.colorbar.Colorbar at 0x7f5348165110&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_fit_region_15_2.png" src="_images/script_example_fit_region_15_2.png" />
+</div>
+</div>
 <p>We are ready to fit all the spectra in the defined ROI.</p>
 <ul class="simple">
-<li><p>On very high SNR data it’s better to set snr_guess=‘auto’ and use the bayesian fit mode even if it’s longer since there are some instabilities on the classic fit due to the numerical computation of the jacobian. Note that a classical fit (snr_guess=None) will still give mostly relieable results although some pixels in the maps can be slightly biased with respect to their neighbourhood but the uncertainty will be a NaN so that they can be filtered.</p></li>
 <li><p>The guess on sigma must be small – as small as the smaller sigma you expect – but not too small (&lt; 0.1 km/s). 1 km/s is a good guess. In theory we can expect a sigma of 0 km/s for unbroadened lines but the loss of modulation efficiency can broaden the line by a few km/s (see Baril et al. 2016 <a class="reference external" href="http://proceedings.spiedigitallibrary.org/proceeding.aspx?doi=10.1117/12.2232075">http://proceedings.spiedigitallibrary.org/proceeding.aspx?doi=10.1117/12.2232075</a> and Martin et al. 2016 <a class="reference external" href="http://cdsads.u-strasbg.fr/abs/2016MNRAS.463.4223M">http://cdsads.u-strasbg.fr/abs/2016MNRAS.463.4223M</a>)</p></li>
 <li><p>Don’t hesitate to fit binned data first, you will gain time and SNR which is a good way to check fitting errors.</p></li>
 <li><p>warning: Jupyter can give an error (neverending fit process) if the fit below is done more than one time. Just restart the kernel as a workaround.</p></li>
 </ul>
+</div>
 <div class="section" id="3x3-binning">
 <h3>3x3 binning<a class="headerlink" href="#3x3-binning" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># warning: Jupyter can give an error (neverending fit process) if the fit below is done more than one time. Just restart the kernel as a workaround and run the</span>
-<span class="c1"># following cells before doing the fit</span>
-<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">orb.utils.io</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/local/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span># warning: Jupyter can give an error (neverending fit process) if the fit below is done more than one time. Just restart the kernel as a workaround and run the
+# following cells before doing the fit
+from orcs.process import SpectralCube
+import pylab as pl
+import orb.utils.io
+import numpy as np
 </pre></div>
 </div>
 </div>
@@ -711,29 +801,46 @@ Broadening (km/s): [15.61(54) 17.91(48) 15.61(54) 15.61(54) 15.61(54)]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-<span class="ansi-yellow-fg">master.11e5|WARNING| both level2 and level3 in attrs</span>
-master.11e5|INFO| Cube is level 3
-master.11e5|INFO| shape: (2048, 2064, 593)
-master.11e5|INFO| wavenumber calibration: True
-master.11e5|INFO| flux calibration: True
-master.11e5|INFO| wcs calibration: True
+/home/thomas/miniconda3/envs/orb3/lib/python3.7/site-packages/ipykernel/ipkernel.py:283: DeprecationWarning: `should_run_async` will not call `transform_cell` automatically in the future. Please pass the result to `transformed_cell` argument and any exception that happen during thetransform in `preprocessing_exc_tuple` in IPython 7.17 and above.
+  and should_run_async(code)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">new_vel</span> <span class="o">=</span> <span class="mi">50</span> <span class="c1"># km/s</span>
-<span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_region</span><span class="p">(</span><span class="s1">&#39;region.reg&#39;</span><span class="p">,</span>
-        <span class="p">(</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6716&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">),</span>
-                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                   <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="n">new_vel</span><span class="p">,</span> <span class="n">new_vel</span><span class="p">],</span>
-                   <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                   <span class="n">sigma_cov</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
-                   <span class="n">snr_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">binning</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span></span>cube = SpectralCube(&#39;/home/thomas/local/M57_SN3.merged.cm1.1.0.hdf5&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:both level2 and level3 in attrs
+INFO:root:Cube is level 3
+INFO:root:shape: (2048, 2064, 593)
+INFO:root:wavenumber calibration: True
+INFO:root:flux calibration: True
+INFO:root:wcs calibration: True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>new_vel = 50 # km/s
+cube.fit_lines_in_region(&#39;region.reg&#39;,
+        (&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;),
+                   fmodel=&#39;sincgauss&#39;,
+                   pos_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                   pos_cov_map=vel_map,
+                   sigma_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                   sigma_cov=[20, 20],
+                   nofilter=True, binning=3)
 </pre></div>
 </div>
 </div>
@@ -742,14 +849,11 @@ master.11e5|INFO| wcs calibration: True
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-master.11e5|INFO| Number of spectra to fit: 511
-<span class="ansi-yellow-fg">master.11e5|WARNING| please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans</span>
-master.11e5|INFO| Init of the parallel processing server with 32 threads
-master.11e5|INFO| passed mapped kwargs : []
-master.11e5|INFO| 26 rows to fit
-<span class="ansi-yellow-fg">master.11e5|WARNING| /home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1073: RuntimeWarning: Mean of empty slice
-  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
-</span>
+WARNING:root:nans and infs in passed map pos_cov_map will be replaced by the median of the map
+INFO:root:Number of spectra to fit: 511
+INFO:root:Init of the parallel processing server with 32 threads
+INFO:root:passed mapped kwargs : [&#39;pos_cov_0&#39;]
+INFO:root:26 rows to fit
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -757,7 +861,7 @@ master.11e5|INFO| 26 rows to fit
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- [==========] [100%] [completed in 14.5 s]
+ [=         ] [11%] [] [remains: unknown]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -765,7 +869,24 @@ master.11e5|INFO| 26 rows to fit
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-master.11e5|INFO| Closing parallel processing server
+/home/thomas/Astro/Python/ORB/Orb/orb/utils/image.py:1120: RuntimeWarning: Mean of empty slice
+  return np.squeeze(np.nanmean(np.nanmean(im_view, axis=3), axis=1))
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 9.0 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Closing parallel processing server
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -781,143 +902,166 @@ master.11e5|INFO| Closing parallel processing server
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-master.11e5|INFO| parallel processing closed
-master.11e5|INFO| all maps saved as ./M57_SN3/MAPS/M57_SN3.LineMaps.maps.3x3.hdf5
-master.11e5|INFO| Writing height maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param height is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.height.fits in 0.01 s
-master.11e5|INFO| Writing height-err maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param height-err is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.height-err.fits in 0.01 s
-master.11e5|INFO| Writing amplitude maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.amplitude.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.amplitude.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.amplitude.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.amplitude.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.amplitude.fits in 0.01 s
-master.11e5|INFO| Writing amplitude-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.amplitude-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.amplitude-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.amplitude-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.amplitude-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.amplitude-err.fits in 0.01 s
-master.11e5|INFO| Writing velocity maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.velocity.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.velocity.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.velocity.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.velocity.fits in 0.01 s
-master.11e5|INFO| Writing velocity-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.velocity-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.velocity-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.velocity-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.velocity-err.fits in 0.01 s
-master.11e5|INFO| Writing fwhm maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param fwhm is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.fwhm.fits in 0.01 s
-master.11e5|INFO| Writing fwhm-err maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param fwhm-err is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.fwhm-err.fits in 0.01 s
-master.11e5|INFO| Writing sigma maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.sigma.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.sigma.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.sigma.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.sigma.fits in 0.01 s
-master.11e5|INFO| Writing sigma-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.sigma-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.sigma-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.sigma-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.sigma-err.fits in 0.01 s
-master.11e5|INFO| Writing flux maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.flux.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.flux.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.flux.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.flux.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.flux.fits in 0.01 s
-master.11e5|INFO| Writing flux-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.flux-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.flux-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.flux-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.flux-err.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.flux-err.fits in 0.01 s
-master.11e5|INFO| Writing logGBF maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.logGBF.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.logGBF.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.logGBF.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.logGBF.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.logGBF.fits in 0.01 s
-master.11e5|INFO| Writing chi2 maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param chi2 is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.chi2.fits in 0.01 s
-master.11e5|INFO| Writing rchi2 maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param rchi2 is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.rchi2.fits in 0.01 s
-master.11e5|INFO| Writing ks_pvalue maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param ks_pvalue is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.ks_pvalue.fits in 0.01 s
-master.11e5|INFO| Writing cont_p0 maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param cont_p0 is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.3x3.cont_p0.fits in 0.01 s
-master.11e5|INFO| Writing cont_p1 maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p1.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p1.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p1.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p1.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p1.fits in 0.01 s
-master.11e5|INFO| Writing cont_p2 maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p2.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p2.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p2.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p2.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p2.fits in 0.01 s
-master.11e5|INFO| Writing cont_p3 maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p3.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p3.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p3.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p3.fits in 0.01 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p3.fits in 0.01 s
+INFO:root:all maps saved as ./M57_SN3/MAPS/M57_SN3.LineMaps.maps.3x3.hdf5
+INFO:root:Writing height maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.height.fits in 0.02 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.height.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.height.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.height.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.height.fits in 0.01 s
+INFO:root:Writing height-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.height-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.height-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.height-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.height-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.height-err.fits in 0.02 s
+INFO:root:Writing amplitude maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.amplitude.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.amplitude.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.amplitude.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.amplitude.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.amplitude.fits in 0.01 s
+INFO:root:Writing amplitude-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.amplitude-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.amplitude-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.amplitude-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.amplitude-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.amplitude-err.fits in 0.01 s
+INFO:root:Writing velocity maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.velocity.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.velocity.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.velocity.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.velocity.fits in 0.01 s
+INFO:root:Writing velocity-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.velocity-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.velocity-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.velocity-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.velocity-err.fits in 0.01 s
+INFO:root:Writing fwhm maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.fwhm.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.fwhm.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.fwhm.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.fwhm.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.fwhm.fits in 0.01 s
+INFO:root:Writing fwhm-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.fwhm-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.fwhm-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.fwhm-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.fwhm-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.fwhm-err.fits in 0.01 s
+INFO:root:Writing sigma maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.sigma.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.sigma.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.sigma.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.sigma.fits in 0.01 s
+INFO:root:Writing sigma-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.sigma-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.sigma-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.sigma-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.sigma-err.fits in 0.01 s
+INFO:root:Writing flux maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.flux.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.flux.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.flux.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.flux.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.flux.fits in 0.01 s
+INFO:root:Writing flux-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.flux-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.flux-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.flux-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.flux-err.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.flux-err.fits in 0.01 s
+INFO:root:Writing logGBF maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.logGBF.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.logGBF.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.logGBF.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.logGBF.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.logGBF.fits in 0.01 s
+INFO:root:Writing chi2 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.chi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.chi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.chi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.chi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.chi2.fits in 0.01 s
+INFO:root:Writing rchi2 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.rchi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.rchi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.rchi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.rchi2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.rchi2.fits in 0.01 s
+INFO:root:Writing ks_pvalue maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.ks_pvalue.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.ks_pvalue.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.ks_pvalue.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.ks_pvalue.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.ks_pvalue.fits in 0.01 s
+INFO:root:Writing cont_p0 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p0.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p0.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p0.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p0.fits in 0.02 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p0.fits in 0.01 s
+INFO:root:Writing cont_p1 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p1.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p1.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p1.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p1.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p1.fits in 0.01 s
+INFO:root:Writing cont_p2 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p2.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p2.fits in 0.01 s
+INFO:root:Writing cont_p3 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.3x3.cont_p3.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.cont_p3.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.cont_p3.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.3x3.cont_p3.fits in 0.01 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.cont_p3.fits in 0.01 s
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;orcs.core.LineMaps at 0x7fe13565ced0&gt;
+&lt;orcs.core.LineMaps at 0x7f607832e550&gt;
 </pre></div></div>
 </div>
 </div>
 <div class="section" id="Check-the-results">
 <h3>Check the results<a class="headerlink" href="#Check-the-results" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">show_map</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">get_wcs</span><span class="p">())</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="s1">&#39;hh:mm:ss.s&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="s1">&#39;dd:mm:ss&#39;</span><span class="p">)</span>
-    <span class="n">_map</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">_map</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom-left&#39;</span><span class="p">,</span>
-              <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">_map</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-              <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">_map</span><span class="p">,</span> <span class="mi">90</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">700</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span><span class="mi">780</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">850</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span><span class="mi">930</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+<span></span>def show_map(path, title):
+    fig = pl.figure()
+    ax = fig.add_subplot(111, projection=cube.get_wcs())
+    ax.coords[0].set_major_formatter(&#39;hh:mm:ss.s&#39;)
+    ax.coords[1].set_major_formatter(&#39;dd:mm:ss&#39;)
+    _map = orb.utils.io.read_fits(path)
+    pl.imshow(_map.T, origin=&#39;lower&#39;,
+              vmin=np.nanpercentile(_map, 10),
+              vmax=np.nanpercentile(_map, 90))
+    pl.xlim((700/3,780/3))
+    pl.ylim((850/3,930/3))
+    pl.colorbar()
+    pl.title(title)
 
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.flux.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;H$\alpha$ flux (erg/cm$^2$/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;H$\alpha$ velocity (km/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;H$\alpha$ broadening (km/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.flux.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;[NII]6583 flux (erg/cm$^2$/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.velocity.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;[NII]6583 velocity (km/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.sigma.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;[NII]6583 broadening (km/s)&#39;</span><span class="p">)</span>
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.flux.fits&#39;, r&#39;H$\alpha$ flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity.fits&#39;, r&#39;H$\alpha$ velocity (km/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma.fits&#39;, r&#39;H$\alpha$ broadening (km/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.flux.fits&#39;, r&#39;[NII]6583 flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.velocity.fits&#39;, r&#39;[NII]6583 velocity (km/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.3x3.sigma.fits&#39;, r&#39;[NII]6583 broadening (km/s)&#39;)
 
 </pre></div>
 </div>
@@ -926,42 +1070,42 @@ master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_20_0.png" src="_images/script_example_fit_region_20_0.png" />
+<img alt="_images/script_example_fit_region_22_0.png" src="_images/script_example_fit_region_22_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_20_1.png" src="_images/script_example_fit_region_20_1.png" />
+<img alt="_images/script_example_fit_region_22_1.png" src="_images/script_example_fit_region_22_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_20_2.png" src="_images/script_example_fit_region_20_2.png" />
+<img alt="_images/script_example_fit_region_22_2.png" src="_images/script_example_fit_region_22_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_20_3.png" src="_images/script_example_fit_region_20_3.png" />
+<img alt="_images/script_example_fit_region_22_3.png" src="_images/script_example_fit_region_22_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_20_4.png" src="_images/script_example_fit_region_20_4.png" />
+<img alt="_images/script_example_fit_region_22_4.png" src="_images/script_example_fit_region_22_4.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_20_5.png" src="_images/script_example_fit_region_20_5.png" />
+<img alt="_images/script_example_fit_region_22_5.png" src="_images/script_example_fit_region_22_5.png" />
 </div>
 </div>
 </div>
@@ -972,12 +1116,12 @@ master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.c
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># warning: Jupyter can give an error (neverending fit process) if the fit below is done more than one time. Just restart the kernel as a workaround and run the</span>
-<span class="c1"># following cells before doing the fit</span>
-<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">orb.utils.io</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span># warning: Jupyter can give an error (neverending fit process) if the fit below is done more than one time. Just restart the kernel as a workaround and run the
+# following cells before doing the fit
+from orcs.process import SpectralCube
+import pylab as pl
+import orb.utils.io
+import numpy as np
 </pre></div>
 </div>
 </div>
@@ -986,7 +1130,7 @@ master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.3x3.c
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/local/M57_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span>cube = SpectralCube(&#39;/home/thomas/local/M57_SN3.merged.cm1.1.0.hdf5&#39;, debug=False)
 </pre></div>
 </div>
 </div>
@@ -1003,198 +1147,232 @@ master.11e5|INFO| flux calibration: True
 master.11e5|INFO| wcs calibration: False
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_region</span><span class="p">(</span><span class="s1">&#39;region.reg&#39;</span><span class="p">,</span>
-        <span class="p">(</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6716&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">),</span>
-                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
-                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                   <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
-                   <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
-                   <span class="n">sigma_cov</span><span class="o">=</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
-                   <span class="n">snr_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">nofilter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">binning</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span></span># we can use the binned map as an input for the new fit process
+vel_map = orb.utils.io.read_fits(&#39;./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.velocity.fits&#39;)
+sig_map = orb.utils.io.read_fits(&#39;./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.3x3.sigma.fits&#39;)
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-master.11e5|INFO| Number of spectra to fit: 4604
-<span class="ansi-yellow-fg">master.11e5|WARNING| please set a guess, or a covarying value of sigma &gt; 0 or use a  sinc model or you might end up with nans</span>
-master.11e5|INFO| Init of the parallel processing server with 32 threads
-master.11e5|INFO| passed mapped kwargs : []
-master.11e5|INFO| 77 rows to fit
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
- [==========] [100%] [completed in 1m31s]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-master.11e5|INFO| Closing parallel processing server
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-master.11e5|INFO| parallel processing closed
-master.11e5|INFO| all maps saved as ./M57_SN3/MAPS/M57_SN3.LineMaps.maps.1x1.hdf5
-master.11e5|INFO| Writing height maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param height is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.height.fits in 0.23 s
-master.11e5|INFO| Writing height-err maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param height-err is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.height-err.fits in 0.16 s
-master.11e5|INFO| Writing amplitude maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.amplitude.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.amplitude.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.amplitude.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.amplitude.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.amplitude.fits in 0.16 s
-master.11e5|INFO| Writing amplitude-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.amplitude-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.amplitude-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.amplitude-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.amplitude-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.amplitude-err.fits in 0.16 s
-master.11e5|INFO| Writing velocity maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.velocity.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.velocity.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.velocity.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.velocity.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.velocity.fits in 0.16 s
-master.11e5|INFO| Writing velocity-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.velocity-err.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.velocity-err.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.velocity-err.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.velocity-err.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.velocity-err.fits in 0.16 s
-master.11e5|INFO| Writing fwhm maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param fwhm is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.fwhm.fits in 0.17 s
-master.11e5|INFO| Writing fwhm-err maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param fwhm-err is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.fwhm-err.fits in 0.16 s
-master.11e5|INFO| Writing sigma maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.sigma.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.sigma.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.sigma.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.sigma.fits in 0.17 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.sigma.fits in 0.16 s
-master.11e5|INFO| Writing sigma-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.sigma-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.sigma-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.sigma-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.sigma-err.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.sigma-err.fits in 0.16 s
-master.11e5|INFO| Writing flux maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.flux.fits in 0.17 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.flux.fits in 0.17 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.flux.fits in 0.19 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.flux.fits in 0.18 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.flux.fits in 0.19 s
-master.11e5|INFO| Writing flux-err maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.flux-err.fits in 0.20 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.flux-err.fits in 0.20 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.flux-err.fits in 0.19 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.flux-err.fits in 0.18 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.flux-err.fits in 0.17 s
-master.11e5|INFO| Writing logGBF maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.logGBF.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.logGBF.fits in 0.17 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.logGBF.fits in 0.16 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.logGBF.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.logGBF.fits in 0.15 s
-master.11e5|INFO| Writing chi2 maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param chi2 is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.chi2.fits in 0.15 s
-master.11e5|INFO| Writing rchi2 maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param rchi2 is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.rchi2.fits in 0.15 s
-master.11e5|INFO| Writing ks_pvalue maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param ks_pvalue is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.ks_pvalue.fits in 0.15 s
-master.11e5|INFO| Writing cont_p0 maps
-<span class="ansi-yellow-fg">master.11e5|WARNING| param cont_p0 is the same for all lines</span>
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.all.1x1.cont_p0.fits in 0.15 s
-master.11e5|INFO| Writing cont_p1 maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p1.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p1.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p1.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p1.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p1.fits in 0.15 s
-master.11e5|INFO| Writing cont_p2 maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p2.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p2.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p2.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p2.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p2.fits in 0.15 s
-master.11e5|INFO| Writing cont_p3 maps
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p3.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p3.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p3.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p3.fits in 0.15 s
-master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p3.fits in 0.15 s
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;orcs.core.LineMaps at 0x7fddca816b10&gt;
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">show_map</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">cube</span><span class="o">.</span><span class="n">get_wcs</span><span class="p">())</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="s1">&#39;hh:mm:ss.s&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="s1">&#39;dd:mm:ss&#39;</span><span class="p">)</span>
-    <span class="n">_map</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">_map</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom-left&#39;</span><span class="p">,</span>
-              <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">_map</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-              <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">_map</span><span class="p">,</span> <span class="mi">99</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">700</span><span class="p">,</span><span class="mi">780</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">850</span><span class="p">,</span><span class="mi">930</span><span class="p">))</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+<span></span>cube.fit_lines_in_region(&#39;region.reg&#39;,
+        (&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;, &#39;[SII]6716&#39;, &#39;[SII]6731&#39;),
+                   fmodel=&#39;sincgauss&#39;,
+                   pos_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                   pos_cov_map=vel_map,
+                   sigma_def=[&#39;1&#39;,&#39;2&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;],
+                   sigma_cov_map=sig_map,
+                   nofilter=True, binning=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:nans and infs in passed map pos_cov_map will be replaced by the median of the map
+WARNING:root:nans and infs in passed map sigma_cov_map will be replaced by the median of the map
+INFO:root:Number of spectra to fit: 4604
+INFO:root:Init of the parallel processing server with 32 threads
+INFO:root:passed mapped kwargs : [&#39;pos_cov_0&#39;, &#39;sigma_cov_0&#39;]
+INFO:root:77 rows to fit
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 24.5 s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Closing parallel processing server
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
 
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.flux.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;H$\alpha$ flux (erg/cm$^2$/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.velocity.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;H$\alpha$ velocity (km/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.sigma.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;H$\alpha$ broadening (km/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.flux.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;[NII]6583 flux (erg/cm$^2$/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.velocity.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;[NII]6583 velocity (km/s)&#39;</span><span class="p">)</span>
-<span class="n">show_map</span><span class="p">(</span><span class="s1">&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.sigma.fits&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;[NII]6583 broadening (km/s)&#39;</span><span class="p">)</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:all maps saved as ./M57_SN3/MAPS/M57_SN3.LineMaps.maps.1x1.hdf5
+INFO:root:Writing height maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.height.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.height.fits in 0.30 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.height.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.height.fits in 0.32 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.height.fits in 0.27 s
+INFO:root:Writing height-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.height-err.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.height-err.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.height-err.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.height-err.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.height-err.fits in 0.29 s
+INFO:root:Writing amplitude maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.amplitude.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.amplitude.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.amplitude.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.amplitude.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.amplitude.fits in 0.04 s
+INFO:root:Writing amplitude-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.amplitude-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.amplitude-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.amplitude-err.fits in 0.06 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.amplitude-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.amplitude-err.fits in 0.05 s
+INFO:root:Writing velocity maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.velocity.fits in 0.06 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.velocity.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.velocity.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.velocity.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.velocity.fits in 0.05 s
+INFO:root:Writing velocity-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.velocity-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.velocity-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.velocity-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.velocity-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.velocity-err.fits in 0.07 s
+INFO:root:Writing fwhm maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.fwhm.fits in 0.30 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.fwhm.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.fwhm.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.fwhm.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.fwhm.fits in 0.29 s
+INFO:root:Writing fwhm-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.fwhm-err.fits in 0.29 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.fwhm-err.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.fwhm-err.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.fwhm-err.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.fwhm-err.fits in 0.27 s
+INFO:root:Writing sigma maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.sigma.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.sigma.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.sigma.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.sigma.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.sigma.fits in 0.05 s
+INFO:root:Writing sigma-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.sigma-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.sigma-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.sigma-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.sigma-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.sigma-err.fits in 0.04 s
+INFO:root:Writing flux maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.flux.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.flux.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.flux.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.flux.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.flux.fits in 0.04 s
+INFO:root:Writing flux-err maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.flux-err.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.flux-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.flux-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.flux-err.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.flux-err.fits in 0.04 s
+INFO:root:Writing logGBF maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.logGBF.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.logGBF.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.logGBF.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.logGBF.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.logGBF.fits in 0.05 s
+INFO:root:Writing chi2 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.chi2.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.chi2.fits in 0.26 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.chi2.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.chi2.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.chi2.fits in 0.27 s
+INFO:root:Writing rchi2 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.rchi2.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.rchi2.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.rchi2.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.rchi2.fits in 0.26 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.rchi2.fits in 0.29 s
+INFO:root:Writing ks_pvalue maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.ks_pvalue.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.ks_pvalue.fits in 0.26 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.ks_pvalue.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.ks_pvalue.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.ks_pvalue.fits in 0.27 s
+INFO:root:Writing cont_p0 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p0.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p0.fits in 0.26 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p0.fits in 0.28 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p0.fits in 0.27 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p0.fits in 0.28 s
+INFO:root:Writing cont_p1 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p1.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p1.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p1.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p1.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p1.fits in 0.04 s
+INFO:root:Writing cont_p2 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p2.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p2.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p2.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p2.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p2.fits in 0.04 s
+INFO:root:Writing cont_p3 maps
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6548.1x1.cont_p3.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.cont_p3.fits in 0.05 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.cont_p3.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6716.1x1.cont_p3.fits in 0.04 s
+INFO:root:Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.cont_p3.fits in 0.04 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;orcs.core.LineMaps at 0x7f605900d850&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>def show_map(path, title):
+    fig = pl.figure()
+    ax = fig.add_subplot(111, projection=cube.get_wcs())
+    ax.coords[0].set_major_formatter(&#39;hh:mm:ss.s&#39;)
+    ax.coords[1].set_major_formatter(&#39;dd:mm:ss&#39;)
+    _map = orb.utils.io.read_fits(path)
+    pl.imshow(_map.T, origin=&#39;lower&#39;,
+              vmin=np.nanpercentile(_map, 1),
+              vmax=np.nanpercentile(_map, 99))
+    pl.xlim((700,780))
+    pl.ylim((850,930))
+    pl.colorbar()
+    pl.title(title)
+
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.flux.fits&#39;, r&#39;H$\alpha$ flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.velocity.fits&#39;, r&#39;H$\alpha$ velocity (km/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6563.1x1.sigma.fits&#39;, r&#39;H$\alpha$ broadening (km/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.flux.fits&#39;, r&#39;[NII]6583 flux (erg/cm$^2$/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.velocity.fits&#39;, r&#39;[NII]6583 velocity (km/s)&#39;)
+show_map(&#39;M57_SN3/MAPS/M57_SN3.LineMaps.map.6583.1x1.sigma.fits&#39;, r&#39;[NII]6583 broadening (km/s)&#39;)
 
 </pre></div>
 </div>
@@ -1203,42 +1381,51 @@ master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.c
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_25_0.png" src="_images/script_example_fit_region_25_0.png" />
+<img alt="_images/script_example_fit_region_28_0.png" src="_images/script_example_fit_region_28_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_25_1.png" src="_images/script_example_fit_region_25_1.png" />
+<img alt="_images/script_example_fit_region_28_1.png" src="_images/script_example_fit_region_28_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_25_2.png" src="_images/script_example_fit_region_25_2.png" />
+<img alt="_images/script_example_fit_region_28_2.png" src="_images/script_example_fit_region_28_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_25_3.png" src="_images/script_example_fit_region_25_3.png" />
+<img alt="_images/script_example_fit_region_28_3.png" src="_images/script_example_fit_region_28_3.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_25_4.png" src="_images/script_example_fit_region_25_4.png" />
+<img alt="_images/script_example_fit_region_28_4.png" src="_images/script_example_fit_region_28_4.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/script_example_fit_region_25_5.png" src="_images/script_example_fit_region_25_5.png" />
+<img alt="_images/script_example_fit_region_28_5.png" src="_images/script_example_fit_region_28_5.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
 </div>
 </div>
 </div>
@@ -1250,37 +1437,29 @@ master.11e5|INFO| Data written as ./M57_SN3/MAPS/M57_SN3.LineMaps.map.6731.1x1.c
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="script_example_velocity_parameter_precision.html" class="btn btn-neutral float-left" title="How precise must be the input velocity parameter ?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_velocity_parameter_precision.html" class="btn btn-neutral float-left" title="How precise must be the input velocity parameter ?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Thomas Martin (thomas.martin.1@ulaval.ca)
+        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
