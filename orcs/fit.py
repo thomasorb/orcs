@@ -136,12 +136,14 @@ class SpectralCube(orcs.core.SpectralCube):
         preparation_spectrum = self.get_spectrum(self.dimx/2, self.dimy/2, 3)
         inputparams, kwargs = preparation_spectrum.prepare_fit(
             lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
+
+        print(inputparams['allparams'].keys())
         
         all_fit = self.process_by_region(
             _fit_lines, regions, subtract_spectrum,
             args=(inputparams, kwargs, max_iter, self.debug),
             modules=())
-        lines = inputparams['allparams']['pos_guess_mean']
+        lines = inputparams['allparams']['pos_guess']
 
         # process results
         for iregion in range(len(regions)):
@@ -154,8 +156,7 @@ class SpectralCube(orcs.core.SpectralCube):
                 line_names = list()
                 for iline in range(np.size(lines)):
                     line_name = orb.core.Lines().round_nm2ang(
-                        orb.utils.spectrum.cm12nm(
-                            lines[iline]))
+                        orb.utils.spectrum.cm12nm(lines[iline]))
 
                     fit_params = ifit['lines_params']
                     err_params = ifit['lines_params_err']

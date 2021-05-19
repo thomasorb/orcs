@@ -332,7 +332,7 @@ class SpectralCube(fit.SpectralCube):
             fig = pl.figure()
             pl.imshow(final_sky_vel_map.astype(float).T,
                       interpolation='none', vmin=vmin, vmax=vmax,
-                      origin='lower-left', cmap='viridis')
+                      origin='lower', cmap='viridis')
             pl.colorbar()
             pl.title('Sky velocity map model (km/s)')
             fig.savefig(self._get_data_prefix() + 'sky_map_model_full.pdf')
