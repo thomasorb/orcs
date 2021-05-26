@@ -137,8 +137,6 @@ class SpectralCube(orcs.core.SpectralCube):
         inputparams, kwargs = preparation_spectrum.prepare_fit(
             lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
 
-        print(inputparams['allparams'].keys())
-        
         all_fit = self.process_by_region(
             _fit_lines, regions, subtract_spectrum,
             args=(inputparams, kwargs, max_iter, self.debug),

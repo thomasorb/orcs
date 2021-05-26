@@ -794,12 +794,12 @@ class SpectralCube(orb.cube.SpectralCube):
                                     try:
                                         out[ikey][ix[irow], iy[irow], ...] = res[ikey]
                                     except:
-                                        print(res)
+                                        print('exception:', res)
                         else:
                             try:
                                 out[ix[irow], iy[irow], ...] = res
                             except:
-                                print(res)
+                                print('exception:', res)
                     logging.debug('job {} time (whole loop): {} s'.format(
                         ijob_index, time.time() - stime))
 
@@ -853,7 +853,7 @@ class LineMaps(orb.core.Tools):
 
         :param div_nb: Number of divisions if the data is binned in quadrant mode.
 
-        :param wcs_header: (Optional) WCS header passed to the written
+        :param wcs_header: (Optional) Unbinned WCS header passed to the written
           frames (default None).
 
         :param kwargs: Kwargs are :meth:`~core.Tools.__init__` kwargs.
@@ -861,11 +861,30 @@ class LineMaps(orb.core.Tools):
         super().__init__(**kwargs)
         self.__version__ = version.__version__
 
+        self.binning = int(binning)
+
+        # bin wcs
+        wcs_header = wcs_header.copy()
+        if self.binning > 1:            
+            wcs = astropy.wcs.WCS(wcs_header)
+            wcsp = orb.utils.astrometry.get_wcs_parameters(wcs)
+            wcsp[0] /= self.binning
+            wcsp[1] /= self.binning
+            wcsp[2] *= self.binning
+            wcsp[3] *= self.binning
+            wcs = orb.utils.astrometry.create_wcs(*wcsp, sip=None)
+
+            # remove old CD matrix in case because WCS convert CD to PC
+            for ikey in ['CD1_1', 'CD1_2', 'CD2_1', 'CD2_2']:
+                if ikey in wcs_header:
+                    del wcs_header[ikey]        
+
+            wcs_header.update(wcs.to_header())
+
         self.wcs_header = wcs_header
         self.wavenumber = wavenumber
         self.div_nb = div_nb
-        self.binning = binning
-
+        
         if binning > 1:
             # not optimal but always returns the exact numbers
             self.dimx, self.dimy = orb.utils.image.nanbin_image(
@@ -876,7 +895,6 @@ class LineMaps(orb.core.Tools):
 
         self.unbinned_dimx = int(dimx)
         self.unbinned_dimy = int(dimy)
-
 
         # Create dataset
         if np.size(lines) == 1:
