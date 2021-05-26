@@ -866,20 +866,7 @@ class LineMaps(orb.core.Tools):
         # bin wcs
         wcs_header = wcs_header.copy()
         if self.binning > 1:            
-            wcs = astropy.wcs.WCS(wcs_header)
-            wcsp = orb.utils.astrometry.get_wcs_parameters(wcs)
-            wcsp[0] /= self.binning
-            wcsp[1] /= self.binning
-            wcsp[2] *= self.binning
-            wcsp[3] *= self.binning
-            wcs = orb.utils.astrometry.create_wcs(*wcsp, sip=None)
-
-            # remove old CD matrix in case because WCS convert CD to PC
-            for ikey in ['CD1_1', 'CD1_2', 'CD2_1', 'CD2_2']:
-                if ikey in wcs_header:
-                    del wcs_header[ikey]        
-
-            wcs_header.update(wcs.to_header())
+            wcs_header = orb.utils.astrometry.bin_header(wcs_header, binning)
 
         self.wcs_header = wcs_header
         self.wavenumber = wavenumber
