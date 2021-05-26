@@ -66,6 +66,7 @@ These examples show advanced fitting procedures.
    :maxdepth: 1
 
    script_example_constaining_line_ratios.ipynb
+   fitting_notes.ipynb
 
 Other Tools
 -----------
