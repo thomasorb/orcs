@@ -128,7 +128,7 @@ class SpectralCube(fit.SpectralCube):
                          x_range=None, y_range=None,
                          exclude_reg_file_path=None,
                          no_fit=False, threshold=None,
-                         sky_lines=None):
+                         sky_lines=None, signal_range=None):
         """Map the sky velocity on a rectangular grid and interpolate it
         to return a map of the velocity zero point that can be
         subtracted to the returned velocity map of the cube fit.
@@ -230,7 +230,8 @@ class SpectralCube(fit.SpectralCube):
             paramsfile = self.fit_integrated_spectra(
                 self._get_temp_reg_path(), sky_lines, plot=False, verbose=False,
                 fmodel='sinc', pos_def=['1'] * len(sky_lines),
-                pos_cov=[mean_sky_vel], fwhm_def=['fixed'] * len(sky_lines))
+                pos_cov=[mean_sky_vel], fwhm_def=['fixed'] * len(sky_lines),
+                signal_range=signal_range)
 
             lines_nb = len(sky_lines)
 
