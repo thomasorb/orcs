@@ -424,7 +424,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
         """
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
-                               sky_vel_ij, calib_coeff_ij, calib_coeff_orig_ij,
+                               calib_coeff_ij, calib_coeff_orig_ij,
                                flux_sdev_ij, debug, max_iter, subtract_spectrum,
                                binning, mapped_kwargs):
 
@@ -473,7 +473,7 @@ class SpectralCube(orcs.core.SpectralCube):
                         newentry.append(mapped_kwargs.pop(key))
                         fmapped_kwargs[rkey] = newentry
             mapped_kwargs = fmapped_kwargs
-
+            
             if debug:
                 logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
 
@@ -618,13 +618,6 @@ class SpectralCube(orcs.core.SpectralCube):
         total_fit_nb = np.nansum(mask_bin)
         logging.info('Number of spectra to fit: {}'.format(int(total_fit_nb)))
 
-        if self.get_sky_velocity_map() is not None:
-            sky_velocity_map = orb.utils.image.nanbin_image(
-                self.get_sky_velocity_map(), binning)
-        else:
-            sky_velocity_map = orb.utils.image.nanbin_image(
-                np.zeros((self.dimx, self.dimy), dtype=float), binning)
-
         calibration_coeff_map = orb.utils.image.nanbin_image(
             self.get_calibration_coeff_map(), binning)
         
@@ -645,7 +638,6 @@ class SpectralCube(orcs.core.SpectralCube):
 
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
-                                         sky_velocity_map,
                                          calibration_coeff_map, calibration_coeff_map_orig,
                                          flux_uncertainty, self.debug, max_iter,
                                          subtract_spectrum, binning],
