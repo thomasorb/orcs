@@ -794,12 +794,12 @@ class SpectralCube(orb.cube.SpectralCube):
                                     try:
                                         out[ikey][ix[irow], iy[irow], ...] = res[ikey]
                                     except:
-                                        print('exception:', res)
+                                        print('exception1:', res)
                         else:
                             try:
                                 out[ix[irow], iy[irow], ...] = res
                             except:
-                                print('exception:', res)
+                                print('exception2:', res, out[ix[irow], iy[irow], ...].shape, out.shape)
                     logging.debug('job {} time (whole loop): {} s'.format(
                         ijob_index, time.time() - stime))
 

@@ -76,9 +76,9 @@ class SpectralCube(orcs.core.SpectralCube):
         return (dirname + os.sep + "INTEGRATED"
                 + os.sep + basename + "integrated_spectrum_{}.hdf5".format(region_name))
 
-    def _get_estimated_frame_path(self, param):
-        """Return path to the estiamted parameter frame"""
-        return self._data_path_hdr + "estimated_" + str(param) + ".fits"
+    def _get_estimated_frame_path(self, param, comp):
+        """Return path to the estimated parameter frame"""
+        return self._data_path_hdr + "estimated_{}.{}.fits".format(str(param), int(comp))
 
 
     def fit_integrated_spectra(self, regions_file_path, lines,
@@ -661,7 +661,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
     def estimate_parameters_in_region(self, region, lines, vel_range,
                                       subtract_spectrum=None, binning=3,
-                                      precision=10):
+                                      precision=10, max_comps=1):
         """
         :param lines: Emission lines to fit (must be in cm-1 if the
           cube is in wavenumber. must be in nm otherwise).
@@ -669,21 +669,26 @@ class SpectralCube(orcs.core.SpectralCube):
         :param region: Region to fit. Multiple regions can be used to
           define the fitted region. They do not need to be contiguous.
         """
-        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, mapped_kwargs):
+        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, max_comps, mapped_kwargs):
 
-            out = np.full(len(lines_cm1) + 1, np.nan, dtype=float)
+            out = np.full((len(lines_cm1) + 1) * max_comps, np.nan, dtype=float)
             spectrum = spectrum.real
             if subtract_spectrum is not None:
                 spectrum -= subtract_spectrum.real
             try:
-                out[0] = orb.utils.fit.estimate_velocity_prepared(
-                    spectrum, vels, combs, filter_range_pix)
-                out[1:] = orb.utils.fit.estimate_flux(
-                    spectrum, axis, lines_cm1, out[0],
-                    filter_range_pix, oversampling_ratio)
+                
+                out[:max_comps] = orb.utils.fit.estimate_velocity_prepared(
+                    spectrum, vels, combs, filter_range_pix, max_comps=max_comps)
+                for icomp in range(max_comps):
+                    out[max_comps + icomp * len(lines_cm1):
+                        max_comps + icomp * len(lines_cm1) + len(lines_cm1)] = orb.utils.fit.estimate_flux(
+                        spectrum, axis, lines_cm1, out[icomp],
+                        filter_range_pix, oversampling_ratio)
                 
             except Exception as e:
+                print(e)
                 pass
+            
             
             return out
 
@@ -708,7 +713,7 @@ class SpectralCube(orcs.core.SpectralCube):
             
         pmap = self.process_by_pixel(estimate_parameters_in_pixel,
                                     args=[axis, combs, vels, filter_range_pix, lines_cm1,
-                                          oversampling_ratio, subtract_spectrum],
+                                          oversampling_ratio, subtract_spectrum, max_comps],
                                     modules=['numpy as np', 'gvar', 'orcs.utils',
                                              'logging', 'warnings', 'time',
                                              'import orb.utils.spectrum',
@@ -716,20 +721,22 @@ class SpectralCube(orcs.core.SpectralCube):
                                     mask=mask,
                                     binning=binning,
                                     out=np.full((mask_bin.shape[0], mask_bin.shape[1],
-                                                 len(lines_cm1) + 1),
+                                                 (len(lines_cm1) + 1) * max_comps),
                                                 np.nan, dtype=float))
 
 
-        orb.utils.io.write_fits(
-            self._get_estimated_frame_path('velocity'),
-            orb.cutils.unbin_image(pmap[:,:,0], self.dimx, self.dimy),
-            overwrite=True)
-
-        for i in range(1, pmap.shape[2]):
+        for icomp in range(max_comps):
             orb.utils.io.write_fits(
-                self._get_estimated_frame_path(lines[i-1]),
-                orb.cutils.unbin_image(pmap[:,:,i], self.dimx, self.dimy),
+                self._get_estimated_frame_path('velocity', icomp),
+                orb.cutils.unbin_image(pmap[:,:,icomp], self.dimx, self.dimy),
                 overwrite=True)
+
+            for i in range(len(lines_cm1)):
+                orb.utils.io.write_fits(
+                    self._get_estimated_frame_path(lines[i], icomp),
+                    orb.cutils.unbin_image(pmap[:,:,max_comps + (len(lines_cm1) * icomp) + i],
+                                           self.dimx, self.dimy),
+                    overwrite=True)
 
         return pmap
                 
