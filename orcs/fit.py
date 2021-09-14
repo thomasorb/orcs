@@ -661,15 +661,18 @@ class SpectralCube(orcs.core.SpectralCube):
 
     def estimate_parameters_in_region(self, region, lines, vel_range,
                                       subtract_spectrum=None, binning=3,
-                                      precision=10, max_comps=1):
-        """
-        :param lines: Emission lines to fit (must be in cm-1 if the
+                                      precision=10, max_comps=1, threshold=3):
+        """:param lines: Emission lines to fit (must be in cm-1 if the
           cube is in wavenumber. must be in nm otherwise).
 
         :param region: Region to fit. Multiple regions can be used to
           define the fitted region. They do not need to be contiguous.
+
+        :param threshold: Detection threshold as a factor of the std
+          of the calculated score.
+
         """
-        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, max_comps, mapped_kwargs):
+        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, max_comps, threshold, mapped_kwargs):
 
             out = np.full((len(lines_cm1) + 1) * max_comps, np.nan, dtype=float)
             spectrum = spectrum.real
@@ -678,7 +681,8 @@ class SpectralCube(orcs.core.SpectralCube):
             try:
                 
                 out[:max_comps] = orb.utils.fit.estimate_velocity_prepared(
-                    spectrum, vels, combs, filter_range_pix, max_comps=max_comps)
+                    spectrum, vels, combs, filter_range_pix, max_comps=max_comps,
+                    threshold=threshold)
                 for icomp in range(max_comps):
                     out[max_comps + icomp * len(lines_cm1):
                         max_comps + icomp * len(lines_cm1) + len(lines_cm1)] = orb.utils.fit.estimate_flux(
@@ -713,7 +717,8 @@ class SpectralCube(orcs.core.SpectralCube):
             
         pmap = self.process_by_pixel(estimate_parameters_in_pixel,
                                     args=[axis, combs, vels, filter_range_pix, lines_cm1,
-                                          oversampling_ratio, subtract_spectrum, max_comps],
+                                          oversampling_ratio, subtract_spectrum, max_comps,
+                                          threshold],
                                     modules=['numpy as np', 'gvar', 'orcs.utils',
                                              'logging', 'warnings', 'time',
                                              'import orb.utils.spectrum',
