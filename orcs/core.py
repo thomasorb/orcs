@@ -864,9 +864,10 @@ class LineMaps(orb.core.Tools):
         self.binning = int(binning)
 
         # bin wcs
-        wcs_header = wcs_header.copy()
-        if self.binning > 1:            
-            wcs_header = orb.utils.astrometry.bin_header(wcs_header, binning)
+        if wcs_header is not None:
+            wcs_header = wcs_header.copy()
+            if self.binning > 1:            
+                wcs_header = orb.utils.astrometry.bin_header(wcs_header, binning)
 
         self.wcs_header = wcs_header
         self.wavenumber = wavenumber
@@ -1112,11 +1113,8 @@ class LineMaps(orb.core.Tools):
         """
         Reconstruct the fitted vector from the mapped parameters.
         :param cube: a SpectralCube instance
-
         :param x: x position in pixels (unbinned)
-
         :param y: y position in pixels (unbinned)
-
         :param fmodel: line model
         """
         x = int(x)
@@ -1129,8 +1127,8 @@ class LineMaps(orb.core.Tools):
             sigma = self.data['sigma'][x_bin, y_bin]
         except KeyError:
             sigma = 0
-        corr = cube.get_calibration_coeff_map_orig()[x, y]
-        spec = orb.fit.create_cm1_lines_model_raw(
+        corr = cube.params.axis_corr
+        _, spec = orb.fit.create_cm1_lines_model_raw(
             self.lines, amp, cube.params.step, cube.params.order, cube.dimz,
             corr, cube.params.zpd_index, vel=vel, sigma=sigma, fmodel=fmodel)
         contparams = [self.data['cont_p{}'.format(icont)][x_bin, y_bin][0] for icont in range(4)]
@@ -1141,6 +1139,5 @@ class LineMaps(orb.core.Tools):
         params = dict(cube.params)
         params['calibration_coeff'] = cube.get_calibration_coeff_map()[x, y]
         params['calibration_coeff_orig'] = corr
-        return orb.fft.Spectrum(spec + cont, axis=axis, params=params)
-        
+        return orb.fft.Spectrum(spec + cont, axis=axis, params=params)        
         
