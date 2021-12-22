@@ -595,9 +595,16 @@ class SpectralCube(orcs.core.SpectralCube):
 
 
         ## init LineMaps object
+        lines_to_map = list()
+        for iline in lines:
+            if isinstance(iline, str):
+                lines_to_map.append(orb.core.Lines().get_line_cm1(iline))
+            else:
+                lines_to_map.append(iline)
+                
         linemaps = LineMaps(
             self.dimx, self.dimy,
-            orb.core.Lines().get_line_cm1(lines),
+            lines_to_map,
             self.params.wavenumber,
             binning, self.config.DIV_NB,
             wcs_header=self.get_wcs_header(),
