@@ -426,7 +426,7 @@ class SpectralCube(orcs.core.SpectralCube):
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
                                calib_coeff_ij, calib_coeff_orig_ij,
                                flux_sdev_ij, debug, max_iter, subtract_spectrum,
-                               binning, mapped_kwargs):
+                               binning, flambda, mapped_kwargs):
 
             import orb.utils.spectrum
             import orb.fft
@@ -442,10 +442,12 @@ class SpectralCube(orcs.core.SpectralCube):
             # correct spectrum for nans
             spectrum[np.isnan(spectrum)] = 0.
 
-            spectrum_bundle['data'] = spectrum
+            spectrum_bundle['data'] = spectrum * flambda
             spectrum_bundle['err'] = np.ones(spectrum.size, dtype=float) * flux_sdev_ij
             
             spectrum = orb.fft.RealSpectrum(spectrum_bundle)
+
+            
             spectrum.params['calib_coeff'] = calib_coeff_ij
             spectrum.params['calib_coeff_orig'] = calib_coeff_orig_ij
                 
@@ -494,7 +496,7 @@ class SpectralCube(orcs.core.SpectralCube):
                     logging.debug('fit function time: {} s'.format(time.time() - stime))
                     logging.debug('velocity: {}'.format(ifit['velocity_gvar']))
                     logging.debug('broadening: {}'.format(ifit['broadening_gvar']))
-
+                    
                 outdict = {
                     'height': ifit['lines_params'][:,0],
                     'amplitude': ifit['lines_params'][:,1],
@@ -636,11 +638,18 @@ class SpectralCube(orcs.core.SpectralCube):
             lines, fmodel=fmodel, nofilter=nofilter, **kwargs)
         spectrum_bundle = preparation_spectrum.to_bundle()
 
+        # get flambda
+        if self.has_flux_calibration() and self.is_level3():
+            flambda = self.params.flambda / self.dimz / self.params.exposure_time
+        else:
+            flambda = np.ones(self.dimz, dtype=float)
+            
+
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
                                          calibration_coeff_map, calibration_coeff_map_orig,
                                          flux_uncertainty, self.debug, max_iter,
-                                         subtract_spectrum, binning],
+                                         subtract_spectrum, binning, flambda],
                                    kwargs=mapped_kwargs,
                                    modules=['numpy as np', 'gvar', 'orcs.utils',
                                             'logging', 'warnings', 'time',
