@@ -474,7 +474,12 @@ class SpectralCube(orb.cube.SpectralCube):
           be corrected on the fly at data extraction so that the called
           function must handle it.
 
-        :param args: List of arguments passed to the function
+        :param args: List of arguments passed to the
+          function. arguments can be a function in which case the
+          function must be f(x,y), x and y being the pixel
+          coordinates. Note that x and y can also be lists of
+          coordinates in which case the function must return a list of
+          data.
 
         :param modules: Modules to import to run the function.
 
@@ -530,9 +535,10 @@ class SpectralCube(orb.cube.SpectralCube):
                     if mapped[j]:
                         iarg = np.squeeze(iarg)
                         shape = iarg.shape
-                        if shape == (irow_data.shape[0], ):
-                            iarg = iarg[i]                    
-
+                        if len(shape) > 0:
+                            if shape[0] == irow_data.shape[0]:
+                                iarg = iarg[i, ...]
+                        
                     iargs_list.append(iarg)
 
                 # last arg gives the kwargs which are eventually passed as a dict
