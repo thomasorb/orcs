@@ -677,7 +677,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
     def estimate_parameters_in_region(self, region, lines, vel_range,
                                       subtract_spectrum=None, binning=3,
-                                      precision=10, max_comps=1, threshold=3):
+                                      precision=10, max_comps=1, threshold=1):
         """:param lines: Emission lines to fit (must be in cm-1 if the
           cube is in wavenumber. must be in nm otherwise).
 
