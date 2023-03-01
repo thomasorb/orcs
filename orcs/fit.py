@@ -544,7 +544,7 @@ class SpectralCube(orcs.core.SpectralCube):
         
         if isinstance(region, np.ndarray):
             if region.shape == (self.dimx, self.dimy):
-                region = np.copy(region)
+                region = np.nonzero(region)
             else:
                 raise TypeError('region shape should be ({}, {}) but is {}'.format(
                     self.dimx, self.dimy, region.shape))
