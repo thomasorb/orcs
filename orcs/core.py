@@ -240,7 +240,7 @@ class SpectralCube(orb.cube.SpectralCube):
         """
         spec = super().get_spectrum_from_region(
             *args, **kwargs)
-        if self.has_flux_calibration() and self.is_level3():
+        if self.has_flux_calibration() and self.get_level() >= 3:
             spec = spec.multiply(orb.core.Cm1Vector1d(
                 self.params.flambda / self.dimz / self.params.exposure_time,
                 self.get_base_axis(),
@@ -711,7 +711,6 @@ class SpectralCube(orb.cube.SpectralCube):
                     min(ix) * binning, (max(ix) + 1) * binning,
                     iy[0] * binning, (iy[0] + 1) * binning,
                     0, self.dimz, silent=True)
-
 
                 if binning > 1:
                     irow = orb.utils.image.nanbin_image(irow, binning) * binning**2

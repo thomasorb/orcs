@@ -647,7 +647,7 @@ class SpectralCube(orcs.core.SpectralCube):
         spectrum_bundle = preparation_spectrum.to_bundle()
 
         # get flambda
-        if self.has_flux_calibration() and self.is_level3():
+        if self.has_flux_calibration() and self.get_level() >= 3:
             flambda = self.params.flambda / self.dimz / self.params.exposure_time
         else:
             flambda = np.ones(self.dimz, dtype=float)
