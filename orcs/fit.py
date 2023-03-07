@@ -480,7 +480,7 @@ class SpectralCube(orcs.core.SpectralCube):
             if debug:
                 logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))                 
                 
-                
+
             try:
                 ifit = spectrum.prepared_fit(
                     inputparams, max_iter=max_iter,
@@ -585,7 +585,10 @@ class SpectralCube(orcs.core.SpectralCube):
                         if self.debug:
                             logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
 
-                    # kwargs[rkey] = np.nanmedian(ivmap)
+                    # necessary to pass any default value for the
+                    # mapped parameters to be used at fitting.
+                    kwargs[rkey] = np.nanmedian(ivmap) 
+                    
                     # if self.debug:
                     #     logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
                     # if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
