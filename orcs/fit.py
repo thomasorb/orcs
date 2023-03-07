@@ -431,6 +431,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
             import orb.utils.spectrum
             import orb.fft
+            import copy
             
             stime = time.time()
             if debug:
@@ -476,10 +477,10 @@ class SpectralCube(orcs.core.SpectralCube):
                         newentry.append(mapped_kwargs.pop(key))
                         fmapped_kwargs[rkey] = newentry
             mapped_kwargs = fmapped_kwargs
-            
             if debug:
-                logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
-
+                logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))                 
+                
+                
             try:
                 ifit = spectrum.prepared_fit(
                     inputparams, max_iter=max_iter,
@@ -489,9 +490,8 @@ class SpectralCube(orcs.core.SpectralCube):
                 if debug:
                     logging.debug('Exception occured during fit: {}'.format(e))
                 ifit = []
-
             
-            if ifit != []:
+            if ifit != []:                
                 if debug:
                     logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
                     logging.debug('fit function time: {} s'.format(time.time() - stime))
@@ -585,13 +585,13 @@ class SpectralCube(orcs.core.SpectralCube):
                         if self.debug:
                             logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
 
-                    kwargs[rkey] = np.nanmedian(ivmap)
-                    if self.debug:
-                        logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
-                    if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
-                        logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
-                    ivmap[np.isnan(ivmap)] = kwargs[rkey]
-                    ivmap[np.isinf(ivmap)] = kwargs[rkey]
+                    # kwargs[rkey] = np.nanmedian(ivmap)
+                    # if self.debug:
+                    #     logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
+                    # if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
+                    #     logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
+                    # ivmap[np.isnan(ivmap)] = kwargs[rkey]
+                    # ivmap[np.isinf(ivmap)] = kwargs[rkey]
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
 
 
@@ -652,7 +652,6 @@ class SpectralCube(orcs.core.SpectralCube):
         else:
             flambda = np.ones(self.dimz, dtype=float)
             
-
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
                                          calibration_coeff_map, calibration_coeff_map_orig,

@@ -557,6 +557,7 @@ class SpectralCube(orb.cube.SpectralCube):
                     out_row.append(traceback.format_exc())
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
+                
             return out_row
 
         ## function must be serialized (or picked)
