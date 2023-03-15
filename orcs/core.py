@@ -203,16 +203,7 @@ class SpectralCube(orb.cube.SpectralCube):
             dec=self.params.target_dec * astropy.units.deg)
 
         if date is None:
-            try:
-                obs_date = '-'.join([str(i) for i in self.params.obs_date])
-            except Exception:
-                obs_date = str(self.params.obs_date)
-            
-            time_str = (obs_date + 'T'
-                        + '{}:{}:{}'.format(
-                            int(self.params.hour_ut[0]),
-                            int(self.params.hour_ut[1]),
-                            float(self.params.hour_ut[2])))
+            time_str = (self.params.OBS_DATE + 'T' + self.params.OBS_TIME)
         else:
             if not isinstance(date, str):
                 raise TypeError('date must be a string with format YYYY-MM-DDTHH:MM:SS.S')
