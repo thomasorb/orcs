@@ -78,6 +78,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
     def _get_estimated_frame_path(self, param, comp):
         """Return path to the estimated parameter frame"""
+        param = str(param).replace('[','').replace(']','')
         return self._data_path_hdr + "estimated_{}.{}.fits".format(str(param), int(comp))
 
 
@@ -430,6 +431,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
             import orb.utils.spectrum
             import orb.fft
+            import copy
             
             stime = time.time()
             if debug:
@@ -475,9 +477,9 @@ class SpectralCube(orcs.core.SpectralCube):
                         newentry.append(mapped_kwargs.pop(key))
                         fmapped_kwargs[rkey] = newentry
             mapped_kwargs = fmapped_kwargs
-            
             if debug:
-                logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))
+                logging.debug('transformed mapped kwargs: {}'.format(mapped_kwargs))                 
+                
 
             try:
                 ifit = spectrum.prepared_fit(
@@ -488,9 +490,8 @@ class SpectralCube(orcs.core.SpectralCube):
                 if debug:
                     logging.debug('Exception occured during fit: {}'.format(e))
                 ifit = []
-
             
-            if ifit != []:
+            if ifit != []:                
                 if debug:
                     logging.debug('pure fit time: {} s'.format(ifit['fit_time']))
                     logging.debug('fit function time: {} s'.format(time.time() - stime))
@@ -544,7 +545,7 @@ class SpectralCube(orcs.core.SpectralCube):
         
         if isinstance(region, np.ndarray):
             if region.shape == (self.dimx, self.dimy):
-                region = np.copy(region)
+                region = np.nonzero(region)
             else:
                 raise TypeError('region shape should be ({}, {}) but is {}'.format(
                     self.dimx, self.dimy, region.shape))
@@ -584,13 +585,16 @@ class SpectralCube(orcs.core.SpectralCube):
                         if self.debug:
                             logging.debug('final {} map shape: {}'.format(rkey, ivmap.shape))
 
-                    kwargs[rkey] = np.nanmedian(ivmap)
-                    if self.debug:
-                        logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
-                    if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
-                        logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
-                    ivmap[np.isnan(ivmap)] = kwargs[rkey]
-                    ivmap[np.isinf(ivmap)] = kwargs[rkey]
+                    # necessary to pass any default value for the
+                    # mapped parameters to be used at fitting.
+                    kwargs[rkey] = np.nanmedian(ivmap) 
+                    
+                    # if self.debug:
+                    #     logging.debug('final {} map median: {}'.format(rkey, kwargs[rkey]))
+                    # if np.any(np.isnan(ivmap)) or np.any(np.isinf(ivmap)):
+                    #     logging.warning('nans and infs in passed map {} will be replaced by the median of the map'.format(key))
+                    # ivmap[np.isnan(ivmap)] = kwargs[rkey]
+                    # ivmap[np.isinf(ivmap)] = kwargs[rkey]
                     mapped_kwargs[rkey + '_{}'.format(i)] = ivmap
 
 
@@ -646,12 +650,11 @@ class SpectralCube(orcs.core.SpectralCube):
         spectrum_bundle = preparation_spectrum.to_bundle()
 
         # get flambda
-        if self.has_flux_calibration() and self.is_level3():
+        if self.has_flux_calibration() and self.get_level() >= 3:
             flambda = self.params.flambda / self.dimz / self.params.exposure_time
         else:
             flambda = np.ones(self.dimz, dtype=float)
             
-
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
                                          calibration_coeff_map, calibration_coeff_map_orig,
@@ -688,7 +691,7 @@ class SpectralCube(orcs.core.SpectralCube):
           of the calculated score.
 
         """
-        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, max_comps, threshold, mapped_kwargs):
+        def estimate_parameters_in_pixel(spectrum, axis, combs, vels, precision, filter_range_pix, lines_cm1, oversampling_ratio, subtract_spectrum, max_comps, threshold, mapped_kwargs):
 
             out = np.full((len(lines_cm1) + 1) * max_comps, np.nan, dtype=float)
             spectrum = spectrum.real
@@ -696,7 +699,7 @@ class SpectralCube(orcs.core.SpectralCube):
                 spectrum -= subtract_spectrum.real
             try:
                 out[:max_comps] = orb.utils.fit.estimate_velocity_prepared(
-                    spectrum, vels, combs, filter_range_pix, max_comps=max_comps,
+                    spectrum, vels, combs, precision, filter_range_pix, max_comps=max_comps,
                     threshold=threshold)
                 for icomp in range(max_comps):
                     out[max_comps + icomp * len(lines_cm1):
@@ -718,7 +721,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
         preparation_spectrum = self.get_spectrum_bin(self.dimx/2, self.dimy/2, binning)
         axis = preparation_spectrum.axis.data
-        combs, vels, filter_range_pix, lines_cm1, oversampling_ratio = preparation_spectrum.prepare_velocity_estimate(lines, vel_range, precision=precision)
+        combs, vels, filter_range_pix, lines_cm1, oversampling_ratio, precision = preparation_spectrum.prepare_velocity_estimate(lines, vel_range, precision=precision)
 
         if (subtract_spectrum is not None) and (not callable(subtract_spectrum)):
             if isinstance(subtract_spectrum, np.ndarray):
@@ -729,7 +732,8 @@ class SpectralCube(orcs.core.SpectralCube):
             else: raise Exception('subtract_spectrum type should be an array or an orb.fft.Spectrum instance')
             
         pmap = self.process_by_pixel(estimate_parameters_in_pixel,
-                                    args=[axis, combs, vels, filter_range_pix, lines_cm1,
+                                    args=[axis, combs, vels, precision,
+                                          filter_range_pix, lines_cm1,
                                           oversampling_ratio, subtract_spectrum, max_comps,
                                           threshold],
                                     modules=['numpy as np', 'gvar', 'orcs.utils',

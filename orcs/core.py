@@ -203,16 +203,7 @@ class SpectralCube(orb.cube.SpectralCube):
             dec=self.params.target_dec * astropy.units.deg)
 
         if date is None:
-            try:
-                obs_date = '-'.join([str(i) for i in self.params.obs_date])
-            except Exception:
-                obs_date = str(self.params.obs_date)
-            
-            time_str = (obs_date + 'T'
-                        + '{}:{}:{}'.format(
-                            int(self.params.hour_ut[0]),
-                            int(self.params.hour_ut[1]),
-                            float(self.params.hour_ut[2])))
+            time_str = (self.params.OBS_DATE + 'T' + self.params.OBS_TIME)
         else:
             if not isinstance(date, str):
                 raise TypeError('date must be a string with format YYYY-MM-DDTHH:MM:SS.S')
@@ -240,7 +231,7 @@ class SpectralCube(orb.cube.SpectralCube):
         """
         spec = super().get_spectrum_from_region(
             *args, **kwargs)
-        if self.has_flux_calibration() and self.is_level3():
+        if self.has_flux_calibration() and self.get_level() >= 3:
             spec = spec.multiply(orb.core.Cm1Vector1d(
                 self.params.flambda / self.dimz / self.params.exposure_time,
                 self.get_base_axis(),
@@ -557,6 +548,7 @@ class SpectralCube(orb.cube.SpectralCube):
                     out_row.append(traceback.format_exc())
                     logging.warning('Exception occured in process_in_row at function call level: {}'.format(e))
 
+                
             return out_row
 
         ## function must be serialized (or picked)
@@ -712,7 +704,6 @@ class SpectralCube(orb.cube.SpectralCube):
                     iy[0] * binning, (iy[0] + 1) * binning,
                     0, self.dimz, silent=True)
 
-
                 if binning > 1:
                     irow = orb.utils.image.nanbin_image(irow, binning) * binning**2
 
@@ -799,13 +790,13 @@ class SpectralCube(orb.cube.SpectralCube):
                                 if res[ikey] is not None:
                                     try:
                                         out[ikey][ix[irow], iy[irow], ...] = res[ikey]
-                                    except:
-                                        print('exception1:', res)
+                                    except Exception as e:
+                                        print('exception1:', res[ikey], ikey, e)
                         else:
                             try:
                                 out[ix[irow], iy[irow], ...] = res
-                            except:
-                                print('exception2:', res, out[ix[irow], iy[irow], ...].shape, out.shape)
+                            except Exception as e:
+                                print('exception2:', res, out[ix[irow], iy[irow], ...].shape, out.shape, e)
                     logging.debug('job {} time (whole loop): {} s'.format(
                         ijob_index, time.time() - stime))
 
@@ -919,13 +910,29 @@ class LineMaps(orb.core.Tools):
             _line_names.append(test_line)
         self.line_names = _line_names
 
-        self.data = dict()
+        
         base_array =  np.empty((self.dimx, self.dimy, np.size(lines)),
-                               dtype=float)
+                               dtype=np.float32)
         base_array.fill(np.nan)
+        #self.data = dict()
+        self.data = orb.utils.io.open_hdf5(self._get_hdf5_path(), 'w')
+        
+        self.data.attrs['lines'] = self.lines
+        self.data.attrs['wavenumber'] = self.wavenumber
+        self.data.attrs['binning'] = self.binning
+        self.data.attrs['div_nb'] = self.div_nb
+        
+        logging.info('creating output file for {} parameters x {} lines ({} Go)'.format(len(self.lineparams), np.size(lines), len(self.lineparams) * base_array.nbytes / 1e9))
+                
         for iparam in self.lineparams:
+            logging.info(' > allocating: {}'.format(iparam))
             self.data[iparam] = np.copy(base_array)
 
+    def __del__(self):
+        try:
+            self.data.close()
+        except: pass
+            
     @classmethod
     def load(cls, path):
         data = dict()
@@ -1015,6 +1022,8 @@ class LineMaps(orb.core.Tools):
                         min(x_range):max(x_range),
                         min(y_range):max(y_range), ik] = data_map
 
+        self.data.flush()
+
     def get_map(self, param, x_range=None, y_range=None):
         """Get map values
 
@@ -1040,22 +1049,23 @@ class LineMaps(orb.core.Tools):
         """
         save class as an HDF5 file
         """
-        outpath = self._get_hdf5_path()
+        self.data.flush()
+        # outpath = self._get_hdf5_path()
         
-        if os.path.exists(outpath):
-            os.remove(outpath)
+        # if os.path.exists(outpath):
+        #     os.remove(outpath)
             
-        with orb.utils.io.open_hdf5(outpath, 'w') as f:
+        # with orb.utils.io.open_hdf5(outpath, 'w') as f:
 
-            f.attrs['lines'] = self.lines
-            f.attrs['wavenumber'] = self.wavenumber
-            f.attrs['binning'] = self.binning
-            f.attrs['div_nb'] = self.div_nb
+        #     f.attrs['lines'] = self.lines
+        #     f.attrs['wavenumber'] = self.wavenumber
+        #     f.attrs['binning'] = self.binning
+        #     f.attrs['div_nb'] = self.div_nb
             
-            for ikey in self.data:
-                f.create_dataset(ikey, data=self.data[ikey])
+        #     for ikey in self.data:
+        #         f.create_dataset(ikey, data=self.data[ikey])
 
-        logging.info('all maps saved as {}'.format(outpath))
+        # logging.info('all maps saved as {}'.format(outpath))
         
                 
     def write_maps(self):
@@ -1075,7 +1085,7 @@ class LineMaps(orb.core.Tools):
             # check if data is the same for all the lines
             same_param = True
             if len(self.lines) > 1:
-                if np.all(np.isnan(self.data[param])):
+                if np.all(np.isnan(self.data[param][:])):
                     same_param = False
                 else:
                     for icheck in range(1, len(self.lines)):
