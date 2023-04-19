@@ -26,6 +26,17 @@ These examples show the basic usage of ORCS
    script_example_sincgauss_vs_2_sinc.ipynb
 
 
+Automatic velocity and flux estimation (complete examples)
+----------------------------------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   script_example_ngc6888.ipynb
+   script_example_estimate_parameters.ipynb
+	    
+
+   
 Bayesian fitting vs. classical fitting
 --------------------------------------
 
@@ -66,7 +77,7 @@ These examples show advanced fitting procedures.
    :maxdepth: 1
 
    script_example_constaining_line_ratios.ipynb
-   fitting_notes.ipynb
+   fitting_notes.ipynb   
 
 Other Tools
 -----------

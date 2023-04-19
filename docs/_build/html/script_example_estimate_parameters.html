@@ -1,0 +1,1058 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Multiple components fitting with automatic velocity estimate &mdash; Orcs latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Modelling and fitting a single line spectrum" href="script_example_model%2Bfit_1_line.html" />
+    <link rel="prev" title="Differences between fitting a sincgauss model and two sinc lines" href="script_example_sincgauss_vs_2_sinc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Orcs
+          
+
+          
+            
+            <img src="_static/logo_sidebar.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                lastest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="examples.html#first-basic-examples">First basic examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="examples.html#automatic-velocity-estimation-flux">Automatic velocity estimation (+ flux)</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Multiple components fitting with automatic velocity estimate</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#load-cube">load cube</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extract-deep-frame">extract deep frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extract-sky-spectrum">extract sky spectrum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#estimate-velocities-on-a-single-vector-with-up-to-3-velocity-components">estimate velocities on a single vector with up to 3 velocity components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Estimation-of-the-different-components-velocity">Estimation of the different components velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-a-velocity-map-considering-all-three-estimations.">build a velocity map considering all three estimations.</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Flux-is-also-estimated">Flux is also estimated</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Using-the-estimated-velocity-as-an-input-for-a-single-fit">Using the estimated velocity as an input for a single fit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Using-the-estimated-velocity-as-an-input-for-a-complete-fit">Using the estimated velocity as an input for a complete fit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#bayesian-fitting-vs-classical-fitting">Bayesian fitting vs. classical fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#calibrating-your-data">Calibrating your data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#advanced-fitting">Advanced fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#other-tools">Other Tools</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core_module.html">Core module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fit_module.html">Fit module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process_module.html">Process module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils_module.html">Utils module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Orcs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="examples.html">Examples</a> &raquo;</li>
+        
+      <li>Multiple components fitting with automatic velocity estimate</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/script_example_estimate_parameters.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Multiple-components-fitting-with-automatic-velocity-estimate">
+<h1>Multiple components fitting with automatic velocity estimate<a class="headerlink" href="#Multiple-components-fitting-with-automatic-velocity-estimate" title="Permalink to this headline">¶</a></h1>
+<p>This is a complete (and complex) example of what can be achieved with the automatic velocity estimation algorithm described in <a class="reference external" href="https://doi.org/10.1093/mnras/staa4046">Martin et al. (2021)</a>. This algorithm permit to estimate the velocity of one or more components along the line of sight. It is both fast and reliable, giving the necessary velocity input for the fitting procedure of objects displaying complex velocity patterns (here the Crab Nebula).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>import orcs.process
+import numpy as np
+import pylab as pl
+from importlib import reload
+import orb.utils.graph as graph
+import orb.utils.io
+</pre></div>
+</div>
+</div>
+<div class="section" id="load-cube">
+<h2>load cube<a class="headerlink" href="#load-cube" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>cube = orcs.process.SpectralCube(&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.b308|INFO| CFHT version
+dev.b308|INFO| Cube is level 2.5
+dev.b308|INFO| shape: (2048, 2064, 847)
+dev.b308|INFO| wavenumber calibration: True
+dev.b308|INFO| flux calibration: True
+dev.b308|INFO| wcs calibration: True
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="extract-deep-frame">
+<h2>extract deep frame<a class="headerlink" href="#extract-deep-frame" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>df = cube.get_deep_frame()
+df.imshow(wcs=False)
+df.to_fits(&#39;m1.df.fits&#39;)
+pl.xlim(500,1500)
+pl.ylim(600,1600)
+pl.grid()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.b308|INFO| Data written as m1.df.fits in 0.11 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_5_1.png" src="_images/script_example_estimate_parameters_5_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="extract-sky-spectrum">
+<h2>extract sky spectrum<a class="headerlink" href="#extract-sky-spectrum" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>sky1 = cube.get_spectrum(300,1000,r=150, mean_flux=True, median=True)
+sky1.plot()
+sky1.writeto(&#39;sky.hdf5&#39;) # write spectrum to disk
+sky1 = orb.fft.Spectrum(&#39;sky.hdf5&#39;) # read spectrum from disk
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_7_0.png" src="_images/script_example_estimate_parameters_7_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="estimate-velocities-on-a-single-vector-with-up-to-3-velocity-components">
+<h2>estimate velocities on a single vector with up to 3 velocity components<a class="headerlink" href="#estimate-velocities-on-a-single-vector-with-up-to-3-velocity-components" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>NCOMP = 3
+lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
+
+ix, iy = 1140, 1200 # x, y position to check
+threshold = 4 # loosely related to mean SNR in all 5 lines
+
+spec = cube.get_spectrum(ix, iy, 3)
+spec.data -= sky1.data # subtract sky spectrum
+fit = spec.autofit(lines, vel_range=[-2500,2500], max_comps=NCOMP, threshold=threshold, prod=True)
+
+print(fit)
+pl.figure()
+spec.plot(label=&#39;data&#39;)
+fit.get_spectrum().plot(label=&#39;fit&#39;)
+for ipos in fit[&#39;lines_params&#39;][:,2]:
+    pl.axvline(ipos, c=&#39;gray&#39;, alpha=0.3)
+
+pl.legend(loc=&#39;upper right&#39;)
+pl.xlim(14700, 15400)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.b308|INFO| estimated velocities: [1394.0285954583683, 1162.7417998317915, -1053.4062237174096]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+=== Fit results ===
+lines: [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;H3&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;, &#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;H3&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;, &#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;H3&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;], fmodel: sinc
+iterations: 161, fit time: 1.99e-01 s
+number of free parameters: 19, BIC: -2.93457e+04, chi2: 5.22e-37
+Velocity (km/s): [1394.03(98) 1394.03(98) 1394.03(98) 1394.03(98) 1394.03(98) 1163.4(1.0)
+ 1163.4(1.0) 1163.4(1.0) 1163.4(1.0) 1163.4(1.0) -1053.3(1.7) -1053.3(1.7)
+ -1053.3(1.7) -1053.3(1.7) -1053.3(1.7)]
+Flux: [1.38(17)e-15 4.62(17)e-15 1.12(17)e-15 4.4(1.8)e-16 3.6(1.8)e-16
+ 2.42(17)e-15 4.01(17)e-15 9.8(1.7)e-16 3.1(1.7)e-16 4.9(1.8)e-16
+ 3.0(1.6)e-16 1.35(17)e-15 1.65(16)e-15 9.3(1.7)e-16 1.42(17)e-15]
+Broadening (km/s): [nan +- nan nan +- nan nan +- nan nan +- nan nan +- nan nan +- nan
+ nan +- nan nan +- nan nan +- nan nan +- nan nan +- nan nan +- nan
+ nan +- nan nan +- nan nan +- nan]
+SNR (km/s): [ 8.30487822 27.43659442  6.68909642  2.50369318  2.04827803 14.52643587
+ 23.85049878  5.84494441  1.77571222  2.792017    1.83420901  8.16856966
+ 10.05266299  5.43872817  8.25670331]
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(14700.0, 15400.0)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_9_3.png" src="_images/script_example_estimate_parameters_9_3.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Estimation-of-the-different-components-velocity">
+<h2>Estimation of the different components velocity<a class="headerlink" href="#Estimation-of-the-different-components-velocity" title="Permalink to this headline">¶</a></h2>
+<p>Estimation is best done for 3 different groups of lines since sometimes only SII lines are strong enough, sometimes they simply disappear leaving only Halpha and NII. The following is thus run 3 times and its results put in different folders (<code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">ha_nii</span></code>, <code class="docutils literal notranslate"><span class="pre">sii</span></code>).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">binning</span></code> parameter can be set to a value above 1 to do a quick estimate especially on objects where the velocity gradient is small (e.g. a galaxy). In general, on a galaxy we can use a safe value of 3 or 4 for the binning, making the estimate 10 to 16 times faster (i.e. a few minutes).In this example we started with 5 and 3 binning values to check the validity of the input parameter before going to a 1x1 binning.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span># a region is defined (ds9 style) to keep the estimate into it.
+region = &#39;polygon(438.09517,1072.4537,602.32429,1400.9119,811.34317,1511.3933,906.89466,1929.4311,1115.9135,1902.5572,1115.9135,1693.5384,1181.6052,1693.5384,1268.1987,1741.3141,1390.6241,1801.0338,1632.4888,1708.4683,1668.3206,1541.2532,1745.9562,1448.6877,1734.0122,1111.2715,1742.9702,961.97229,1513.0494,624.5561,847.17498,466.29894,417.19328,576.78035,342.54368,800.72915)&#39;
+p = cube.estimate_parameters_in_region(
+    region,
+    #[&#39;[NII]6584&#39;, &#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;],
+    #[&#39;[NII]6584&#39;, &#39;[NII]6548&#39;, &#39;Halpha&#39;],
+    [&#39;[SII]6717&#39;, &#39;[SII]6731&#39;],
+    vel_range=[-2000,2000], subtract_spectrum=sky1.data, binning=1, max_comps=6, threshold=3)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.4cc3|INFO| Init of the parallel processing server with 8 threads
+dev.4cc3|INFO| passed mapped kwargs : []
+dev.4cc3|INFO| 1463 rows to fit
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ [==========] [100%] [completed in 3h2m26s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.4cc3|INFO| Closing parallel processing server
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_velocity.0.fits in 0.33 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6717.0.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6731.0.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_velocity.1.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6717.1.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6731.1.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_velocity.2.fits in 0.12 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6717.2.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6731.2.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_velocity.3.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6717.3.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6731.3.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_velocity.4.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6717.4.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6731.4.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_velocity.5.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6717.5.fits in 0.11 s
+dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.estimated_SII6731.5.fits in 0.12 s
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="build-a-velocity-map-considering-all-three-estimations.">
+<h2>build a velocity map considering all three estimations.<a class="headerlink" href="#build-a-velocity-map-considering-all-three-estimations." title="Permalink to this headline">¶</a></h2>
+<p>A lot of components have been detected multiple times since a component display in all the lines will be detected by all the different runs. We must now detect and remove the duplicates</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>def get_cube(ifolder):
+    NCOMP = 6
+    maps = list()
+    for icomp in range(NCOMP):
+        imap = orb.utils.io.read_fits(&#39;Crab-nebula_SN3_2022/{}/Crab-nebula_SN3.SpectralCube.estimated_velocity.{}.fits&#39;.format(ifolder, icomp))
+        maps.append(imap)
+    return np.dstack(maps)
+
+map_all = get_cube(&#39;all&#39;)
+map_nii = get_cube(&#39;ha-nii&#39;)
+map_sii = get_cube(&#39;sii&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>stop = False
+
+precision = 3e5 / cube.params.resolution / 4 # channel size in km/s
+
+mask = np.sum(~np.isnan(map_all), axis=2) + np.sum(~np.isnan(map_nii), axis=2) + np.sum(~np.isnan(map_sii), axis=2)
+
+map_final = np.full((map_all.shape[0],map_all.shape[1],12) , np.nan)
+
+for ix in range(map_all.shape[0]):
+    for iy in range(map_all.shape[1]):
+        if mask[ix, iy] == 0: continue
+
+        #if mask[ix, iy] &gt; 6:
+        vels = np.array(list(map_all[ix,iy,:]) + list(map_nii[ix,iy,:]) + list(map_sii[ix,iy,:]))
+        vels = list(vels[~np.isnan(vels)])
+        kept = list()
+
+        while len(vels) &gt; 0:
+            ivel = vels.pop(0)
+            kept.append(ivel)
+            vels = [iivel for iivel in vels if np.abs(iivel - ivel) &gt; precision]
+
+        map_final[ix, iy, :len(kept)] = kept
+
+
+        if stop: break
+    if stop: break
+
+orb.utils.io.write_fits(&#39;velocity_estimate.fits&#39;, map_final)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.b308|INFO| Data written as velocity_estimate.fits in 2.35 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;velocity_estimate.fits&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>graph.imshow(map_all[:,:,0], figsize=(20,15), interpolation=&#39;nearest&#39;, cmap=&#39;seismic&#39;)
+pl.colorbar()
+pl.ylim(500,1600)
+pl.xlim(500,1600)
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(500.0, 1600.0)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_15_1.png" src="_images/script_example_estimate_parameters_15_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Flux-is-also-estimated">
+<h2>Flux is also estimated<a class="headerlink" href="#Flux-is-also-estimated" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>graph.imshow(orb.utils.io.read_fits(&#39;Crab-nebula_SN3_2022/all/Crab-nebula_SN3.SpectralCube.estimated_Halpha.0.fits&#39;), figsize=(20,15), interpolation=&#39;nearest&#39;)
+pl.colorbar()
+pl.ylim(500,1600)
+pl.xlim(500,1600)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(500.0, 1600.0)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_17_1.png" src="_images/script_example_estimate_parameters_17_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Using-the-estimated-velocity-as-an-input-for-a-single-fit">
+<h2>Using the estimated velocity as an input for a single fit<a class="headerlink" href="#Using-the-estimated-velocity-as-an-input-for-a-single-fit" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>NCOMP = 3
+lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
+cube = orcs.process.SpectralCube(&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;)
+amp_ratio = cube.get_amp_ratio_from_flux_ratio(&#39;[NII]6583&#39;, &#39;[NII]6548&#39;, 3)
+
+
+pos_def = list()
+pos_cov = list()
+amp_def = list()
+amp_guess = list()
+
+map_final = orb.utils.io.read_fits(&#39;velocity_estimate.fits&#39;)
+
+for i in range(NCOMP):
+    pos_cov.append(map_final[ix,iy,i])
+    pos_def += (str(i),) * len(lines)
+    amp_def += (str(i*len(lines)), str(i*len(lines)),
+                 str(i*len(lines)+1), str(i*len(lines)+2),
+                 str(i*len(lines)+3))
+    amp_guess += (1, amp_ratio, 1, 1, 1)
+
+print(pos_cov)
+
+fit = cube.fit_lines_in_spectrum(1000, 1000, 0, lines * NCOMP, pos_def=pos_def, pos_cov=pos_cov, amp_def=amp_def, amp_guess=amp_guess, subtract_spectrum=sky1.data)
+
+pl.plot(fit[0], fit[1],label=&#39;data&#39;)
+fit[2].get_spectrum().plot(label=&#39;fit&#39;)
+pl.legend()
+pl.grid()
+
+pl.figure()
+pl.plot(fit[0], fit[1].data - fit[2].get_spectrum().data)
+pl.title(&#39;residual&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dev.b308|INFO| CFHT version
+dev.b308|INFO| Cube is level 2.5
+dev.b308|INFO| shape: (2048, 2064, 847)
+dev.b308|INFO| wavenumber calibration: True
+dev.b308|INFO| flux calibration: True
+dev.b308|INFO| wcs calibration: True
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[-968.1397705078125, 647.4819946289062, -1638.2755126953125]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-fg">dev.b308|WARNING| /home/thomas/miniconda3/envs/orb3/lib/python3.10/site-packages/matplotlib/cbook/__init__.py:1335: ComplexWarning: Casting complex values to real discards the imaginary part
+  return np.asarray(x, float)
+</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0.5, 1.0, &#39;residual&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_19_4.png" src="_images/script_example_estimate_parameters_19_4.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/script_example_estimate_parameters_19_5.png" src="_images/script_example_estimate_parameters_19_5.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Using-the-estimated-velocity-as-an-input-for-a-complete-fit">
+<h2>Using the estimated velocity as an input for a complete fit<a class="headerlink" href="#Using-the-estimated-velocity-as-an-input-for-a-complete-fit" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>NCOMP = 3
+lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
+cube = orcs.process.SpectralCube(&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;)
+amp_ratio = cube.get_amp_ratio_from_flux_ratio(&#39;[NII]6583&#39;, &#39;[NII]6548&#39;, 3)
+
+
+pos_def = list()
+pos_cov = list()
+amp_def = list()
+amp_guess = list()
+
+map_final = orb.utils.io.read_fits(&#39;velocity_estimate.fits&#39;)
+sky1 = orb.fft.Spectrum(&#39;sky.hdf5&#39;)
+
+for i in range(NCOMP):
+    pos_cov.append(map_final[:,:,i])
+    pos_def += (str(i),) * len(lines)
+    amp_def += (str(i*len(lines)), str(i*len(lines)),
+                 str(i*len(lines)+1), str(i*len(lines)+2),
+                 str(i*len(lines)+3))
+    amp_guess += (1, amp_ratio, 1, 1, 1)
+
+
+cube.fit_lines_in_region(&#39;circle(1000,1000,300)&#39;,
+                         lines * NCOMP,
+                         pos_def=pos_def,
+                         pos_cov_map=pos_cov,  ## NOTE that we use the suffix _map to pass a map instead of a single value
+                         amp_def=amp_def,
+                         amp_guess=amp_guess,
+                         binning=3,
+                         subtract_spectrum=sky1.data)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="script_example_model%2Bfit_1_line.html" class="btn btn-neutral float-right" title="Modelling and fitting a single line spectrum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_sincgauss_vs_2_sinc.html" class="btn btn-neutral float-left" title="Differences between fitting a sincgauss model and two sinc lines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, Thomas Martin (thomas.martin.1@ulaval.ca).
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

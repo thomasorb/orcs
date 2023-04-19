@@ -213,8 +213,8 @@ general for its broader functionality.</p>
 </div>
 <dl class="py method">
 <dt id="orcs.fit.SpectralCube._get_estimated_frame_path">
-<code class="sig-name descname"><span class="pre">_get_estimated_frame_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube._get_estimated_frame_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return path to the estiamted parameter frame</p>
+<code class="sig-name descname"><span class="pre">_get_estimated_frame_path</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube._get_estimated_frame_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return path to the estimated parameter frame</p>
 </dd></dl>
 
 <dl class="py method">
@@ -241,7 +241,7 @@ general for its broader functionality.</p>
 
 <dl class="py method">
 <dt id="orcs.fit.SpectralCube.estimate_parameters_in_region">
-<code class="sig-name descname"><span class="pre">estimate_parameters_in_region</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtract_spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.estimate_parameters_in_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">estimate_parameters_in_region</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtract_spectrum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_comps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.fit.SpectralCube.estimate_parameters_in_region" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -249,6 +249,8 @@ general for its broader functionality.</p>
 cube is in wavenumber. must be in nm otherwise).</p></li>
 <li><p><strong>region</strong> – Region to fit. Multiple regions can be used to
 define the fitted region. They do not need to be contiguous.</p></li>
+<li><p><strong>threshold</strong> – Detection threshold as a factor of the std
+of the calculated score.</p></li>
 </ul>
 </dd>
 </dl>
@@ -470,7 +472,7 @@ dictionary containing the fit results (same output as
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
+        &#169; Copyright 2023, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>

@@ -256,7 +256,7 @@
 it is in wavelength.</p></li>
 <li><p><strong>binning</strong> – Binning of the data.</p></li>
 <li><p><strong>div_nb</strong> – Number of divisions if the data is binned in quadrant mode.</p></li>
-<li><p><strong>wcs_header</strong> – (Optional) WCS header passed to the written
+<li><p><strong>wcs_header</strong> – (Optional) Unbinned WCS header passed to the written
 frames (default None).</p></li>
 <li><p><strong>kwargs</strong> – Kwargs are <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> kwargs.</p></li>
 </ul>
@@ -308,16 +308,10 @@ None)</p></li>
 <dt id="orcs.core.LineMaps.get_spectrum">
 <code class="sig-name descname"><span class="pre">get_spectrum</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sinc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orcs.core.LineMaps.get_spectrum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reconstruct the fitted vector from the mapped parameters.
-:param cube: a SpectralCube instance</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – x position in pixels (unbinned)</p></li>
-<li><p><strong>y</strong> – y position in pixels (unbinned)</p></li>
-<li><p><strong>fmodel</strong> – line model</p></li>
-</ul>
-</dd>
-</dl>
+:param cube: a SpectralCube instance
+:param x: x position in pixels (unbinned)
+:param y: y position in pixels (unbinned)
+:param fmodel: line model</p>
 </dd></dl>
 
 <dl class="py method">
@@ -565,7 +559,12 @@ supplied, kwargs are passed to the function as the last
 argument in a dict object.  Note also that velocity will not
 be corrected on the fly at data extraction so that the called
 function must handle it.</p></li>
-<li><p><strong>args</strong> – List of arguments passed to the function</p></li>
+<li><p><strong>args</strong> – List of arguments passed to the
+function. arguments can be a function in which case the
+function must be f(x,y), x and y being the pixel
+coordinates. Note that x and y can also be lists of
+coordinates in which case the function must return a list of
+data.</p></li>
 <li><p><strong>modules</strong> – Modules to import to run the function.</p></li>
 <li><p><strong>out</strong> – depends on the returned values of func. See param
 func.</p></li>
@@ -627,7 +626,7 @@ the cube size on disk.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Thomas Martin (thomas.martin.1@ulaval.ca).
+        &#169; Copyright 2023, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
