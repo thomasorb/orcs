@@ -6,10 +6,10 @@
 * extract integrated spectra
   
 * fit the sinc emission lines
+
+* get a fast and robust estimation fo the velocity and fluxes of all the emission lines in you cube (even for multiple components, see [our paper](https://doi.org/10.1093/mnras/staa4046)).
   
 * recalibrate your data in wavelength, astrometry and flux
-  
-* choose between a Bayesian or a classical fitting algorithm
 
 * and much more ...
 
@@ -20,13 +20,9 @@ https://orcs.readthedocs.io/en/latest/examples.html
    
 **Warning:** ORCS is always in fast development. You might see bugs or
  strange behaviours ! You might also want desperatly to have new
- features. In all cases please send an email:
- thomas.martin.1@ulaval.ca
-
-
+ features. In all cases please send an email: thomas dot martin dot 1 at ulaval dot ca
 
 ## Documentation
-
 
 You can find the up-to-date documentation here:
 
@@ -85,17 +81,15 @@ python -c 'import orcs.core'
 
 ## Publications
 
+* Martin, Milisavljevic, Drissen (2021), 3D mapping of the Crab Nebula with SITELLE – I. Deconvolution and kinematic reconstruction, MNRAS, Volume 502, Issue 2, Pages 1864–1881, https://doi.org/10.1093/mnras/staa4046
 
-* Martin, Drissen, Melchior (2017). A SITELLE view of M31's central region - I: Calibrations and radial velocity catalogue of nearly 800 emission-line point-like sources. MNRAS (accepted)
+* Martin, Drissen, Prunet (2021), **Data reduction and calibration accuracy** of the imaging Fourier transform spectrometer SITELLE, MNRAS, Volume 505, Issue 4, Pages 5514–5529, https://doi.org/10.1093/mnras/stab1656
+
+* Martin, Drissen, Melchior (2017). A SITELLE view of M31's central region - I: Calibrations and radial velocity catalogue of nearly 800 emission-line point-like sources. MNRAS
   http://adsabs.harvard.edu/abs/2017arXiv170701366M
-
-
-* Martin, Drissen (2017). SITELLE's level-1 calibration. MNRAS (submitted)
-  http://adsabs.harvard.edu/abs/2017arXiv170603230M
 
 * Martin, Prunet, Drissen (2016). Optimal fitting of Gaussian-apodized or under-resolved emission lines in Fourier transform spectra providing new insights on the velocity structure of NGC 6720. MNRAS
   http://adsabs.harvard.edu/abs/2016MNRAS.463.4223M
-
 
 * Martin, Drissen, Joncas (2015). ORBS, ORCS, OACS, a Software Suite for Data Reduction and Analysis of the Hyperspectral Imagers SITELLE and SpIOMM. PASP
   http://adsabs.harvard.edu/abs/2015ASPC..495..327M
