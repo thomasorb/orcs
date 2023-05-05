@@ -698,17 +698,19 @@ class SpectralCube(orcs.core.SpectralCube):
                                          subtract_spectrum, max_comps, threshold, binning, prod,
                                          mapped_kwargs):
 
-            out = np.full((len(lines_cm1) + 1) * max_comps, np.nan, dtype=float)
+            out = np.full((len(lines_cm1) + 2) * max_comps, np.nan, dtype=float)
             spectrum = spectrum.real
             if subtract_spectrum is not None:
                 spectrum -= subtract_spectrum.real * binning ** 2
             try:
-                out[:max_comps] = orb.utils.fit.estimate_velocity_prepared(
+                res = orb.utils.fit.estimate_velocity_prepared(
                     spectrum, vels, combs, precision, filter_range_pix, max_comps=max_comps,
-                    threshold=threshold, prod=prod)
+                    threshold=threshold, prod=prod, return_score=True)
+                out[:max_comps], out[max_comps:max_comps*2] = res
                 for icomp in range(max_comps):
-                    out[max_comps + icomp * len(lines_cm1):
-                        max_comps + icomp * len(lines_cm1) + len(lines_cm1)] = orb.utils.fit.estimate_flux(spectrum, axis, lines_cm1, out[icomp], filter_range_pix, oversampling_ratio)
+                    res = orb.utils.fit.estimate_flux(spectrum, axis, lines_cm1, out[icomp], filter_range_pix, oversampling_ratio)
+                    out[max_comps*2 + icomp * len(lines_cm1):
+                        max_comps*2 + icomp * len(lines_cm1) + len(lines_cm1)] = res
                 
             except Exception as e:
                 print(e)
@@ -735,7 +737,7 @@ class SpectralCube(orcs.core.SpectralCube):
             elif isinstance(subtract_spectrum, orb.fft.Spectrum):
                 subtract_spectrum = np.copy(subtract_spectrum.data)
             else: raise Exception('subtract_spectrum type should be an array or an orb.fft.Spectrum instance')
-            
+
         pmap = self.process_by_pixel(estimate_parameters_in_pixel,
                                     args=[axis, combs, vels, precision,
                                           filter_range_pix, lines_cm1,
@@ -748,24 +750,25 @@ class SpectralCube(orcs.core.SpectralCube):
                                     mask=mask,
                                     binning=binning,
                                     out=np.full((mask_bin.shape[0], mask_bin.shape[1],
-                                                 (len(lines_cm1) + 1) * max_comps),
+                                                 (len(lines_cm1) + 2) * max_comps),
                                                 np.nan, dtype=float))
 
 
         for icomp in range(max_comps):
             orb.utils.io.write_fits(
                 self._get_estimated_frame_path('velocity', icomp),
-                #orb.cutils.unbin_image(pmap[:,:,icomp], self.dimx, self.dimy),
                 orb.utils.image.nn_interpolate(pmap[:,:,icomp], (self.dimx, self.dimy)),
+                overwrite=True)
+            orb.utils.io.write_fits(
+                self._get_estimated_frame_path('score', icomp),
+                orb.utils.image.nn_interpolate(pmap[:,:,max_comps+icomp], (self.dimx, self.dimy)),
                 overwrite=True)
 
             for i in range(len(lines_cm1)):
                 orb.utils.io.write_fits(
                     self._get_estimated_frame_path(lines[i], icomp),
-                    #orb.cutils.unbin_image(pmap[:,:,max_comps + (len(lines_cm1) * icomp) + i],
-                    #                       self.dimx, self.dimy),
                     orb.utils.image.nn_interpolate(
-                        pmap[:,:,max_comps + (len(lines_cm1) * icomp) + i],
+                        pmap[:,:,max_comps*2 + (len(lines_cm1) * icomp) + i],
                         (self.dimx, self.dimy)),
                     overwrite=True)
 
