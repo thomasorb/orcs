@@ -696,10 +696,10 @@ class SpectralCube(orcs.core.SpectralCube):
                                          precision, filter_range_pix, lines_cm1,
                                          oversampling_ratio,
                                          subtract_spectrum, max_comps, threshold, binning, prod,
-                                         mapped_kwargs):
+                                         flambda, mapped_kwargs):
 
             out = np.full((len(lines_cm1) + 2) * max_comps, np.nan, dtype=float)
-            spectrum = spectrum.real
+            spectrum = spectrum.real * flambda
             if subtract_spectrum is not None:
                 spectrum -= subtract_spectrum.real * binning ** 2
             try:
@@ -738,11 +738,17 @@ class SpectralCube(orcs.core.SpectralCube):
                 subtract_spectrum = np.copy(subtract_spectrum.data)
             else: raise Exception('subtract_spectrum type should be an array or an orb.fft.Spectrum instance')
 
+        # get flambda
+        if self.has_flux_calibration() and self.get_level() >= 3:
+            flambda = self.params.flambda / self.dimz / self.params.exposure_time
+        else:
+            flambda = np.ones(self.dimz, dtype=float)
+
         pmap = self.process_by_pixel(estimate_parameters_in_pixel,
                                     args=[axis, combs, vels, precision,
                                           filter_range_pix, lines_cm1,
                                           oversampling_ratio, subtract_spectrum, max_comps,
-                                          threshold, binning, prod],
+                                          threshold, binning, prod, flambda],
                                     modules=['numpy as np', 'gvar', 'orcs.utils',
                                              'logging', 'warnings', 'time',
                                              'import orb.utils.spectrum',
