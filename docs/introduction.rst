@@ -15,6 +15,103 @@ fitting spectra, both a classical (frequentist) and a Bayesian
 paradigm are available.
 
 
+Outputs
+-------
+
+ORCS generates a lot of different output maps when fitting entire regions of the cube.
+
+File name format is:
+
+[ObjectName]_[Filter].LineMaps.maps.[Lambda]_[ComponentNumber].[Binning].[Parameter].fits
+
+Parameters are:
+
+* ``amplitude``: Amplitude in erg/cm2/s/A
+* ``flux``: Integrated flux in erg/cm2/s
+* ``height``: Height of the continuum below in erg/cm2/s/A
+* ``fwhm``: FWHM in cm-1 (must be first converted in Angstrom to compute flux in erg/cm2/s)
+* ``velocity``: Doppler velocity in km/s
+* ``sigma``: line broadening (with sincgauss model) in km/s (must first be converted in Angstrom to compute flux in erg/cm2/s)
+
+How flux is computed?
+---------------------
+
+For a line of amplitude a, width :math:`\Delta\sigma` , wavenumber :math:`\sigma`
+
+* sinc model:
+.. py:function:: orb.utils.spectrum.sinc1d_flux
+  
+.. math::
+
+   F = \frac{a \times \text{FWHM}}{1.20671}
+
+* sincgauss model (D is the Dawson integral):
+
+.. py:function:: orb.utils.spectrum.sincgauss1d_flux
+
+.. math::
+
+   B = \frac{\sigma}{\sqrt{2}\Delta\sigma}
+   
+   F = \frac{\pi a \sigma}{\sqrt{2}}\frac{e^{B^2}}{iD(iB)}
+
+
+
+
+
+Useful conversions
+------------------
+
+* To convert the fwhm or width ( :math:`\Delta\lambda` ) to nm from cm-1:
+
+.. py:function:: orb.utils.spectrum.fwhm_cm12nm
+
+.. math::
+   \Delta\lambda [\text{nm}] = \frac{10^7 \Delta\sigma [\text{cm}^{-1}]}{\sigma^2}
+
+* To convert from FWHM to width for a sincgauss:
+
+.. math::
+   \Delta\sigma = \frac{\text{FWHM}}{1.20671\pi}
+
+* To convert broadening from km/s to a shift in cm-1:
+
+  .. py:function:: orb.utils.fit.vel2sigma
+
+   
+
+HDF5 Cubes formatting (levels)
+---------------------
+
+As ORCS results of years of development, there are different levels of
+HDF5 cube depending on the moment when the data was obtained and
+reduced. Each one with a different internal formatting. Note that this
+concerns you only if you want to access the raw internal data since it
+should be transparent if you use orcs functions directly.
+
+* ``level 1``: old internal hdf5 architecture, data stored as float, unit in
+  erg/cm2/s/A, the deep frame is the mean of the interferogram cube
+
+* ``level 2``: new internal hdf5 architecture, data stored as float, unit in
+  erg/cm2/s/A, the deep frame is the sum of the interferogram cube
+
+* ``level 3`` (last version): new hdf5 architecture, data is stored as
+  complex (keeps all the information contained in the original data),
+  unit is in counts, data data can be calibrated via the flambda
+  parameter : spectrum *= cube.params.flambda / cube.dimz /
+  cube.exposure_time, deep frame is the sum of the interferogram
+  cube. Note that the calibration is done on the fly when using Orcs
+  functions.
+
+* ``level 2.5``: CFHT version, similar to level3 but the internal data is
+  calibrated and hard written (thus not stored in counts but in
+  erg/cm2/s/A). Used calibration vector is
+  cube.params.flambda2. spectrum = spectrum_counts *
+  cube.params.flambda. With the latest version of ORCS this format
+  should be transparent also. In older versions this format was not
+  recognized and thus subject to incoherencies.
+
+
 The fitting engine
 ------------------
 

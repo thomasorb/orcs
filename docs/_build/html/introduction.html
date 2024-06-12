@@ -35,6 +35,8 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -97,6 +99,10 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#a-few-words-on-orcs">A few words on ORCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#outputs">Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-flux-is-computed">How flux is computed?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-conversions">Useful conversions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hdf5-cubes-formatting-levels">HDF5 Cubes formatting (levels)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-fitting-engine">The fitting engine</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#models">Models</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#models-parameters">Models parameters</a><ul>
@@ -210,27 +216,31 @@
 }
 </style>
 <div class="section" id="introduction">
-<h1><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id3">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p>
+<li><p><a class="reference internal" href="#introduction" id="id3">Introduction</a></p>
 <ul>
-<li><p><a class="reference internal" href="#a-few-words-on-orcs" id="id2">A few words on ORCS</a></p></li>
-<li><p><a class="reference internal" href="#the-fitting-engine" id="id3">The fitting engine</a></p>
+<li><p><a class="reference internal" href="#a-few-words-on-orcs" id="id4">A few words on ORCS</a></p></li>
+<li><p><a class="reference internal" href="#outputs" id="id5">Outputs</a></p></li>
+<li><p><a class="reference internal" href="#how-flux-is-computed" id="id6">How flux is computed?</a></p></li>
+<li><p><a class="reference internal" href="#useful-conversions" id="id7">Useful conversions</a></p></li>
+<li><p><a class="reference internal" href="#hdf5-cubes-formatting-levels" id="id8">HDF5 Cubes formatting (levels)</a></p></li>
+<li><p><a class="reference internal" href="#the-fitting-engine" id="id9">The fitting engine</a></p>
 <ul>
-<li><p><a class="reference internal" href="#models" id="id4">Models</a></p></li>
-<li><p><a class="reference internal" href="#models-parameters" id="id5">Models parameters</a></p></li>
-<li><p><a class="reference internal" href="#uncertainties" id="id6">Uncertainties</a></p></li>
+<li><p><a class="reference internal" href="#models" id="id10">Models</a></p></li>
+<li><p><a class="reference internal" href="#models-parameters" id="id11">Models parameters</a></p></li>
+<li><p><a class="reference internal" href="#uncertainties" id="id12">Uncertainties</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#list-of-available-lines" id="id7">List of available lines</a></p></li>
+<li><p><a class="reference internal" href="#list-of-available-lines" id="id13">List of available lines</a></p></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="a-few-words-on-orcs">
-<h2><a class="toc-backref" href="#id2">A few words on ORCS</a><a class="headerlink" href="#a-few-words-on-orcs" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">A few words on ORCS</a><a class="headerlink" href="#a-few-words-on-orcs" title="Permalink to this headline">¶</a></h2>
 <p>ORCS is a Python module which gives you the keys to the analysis of
 your SITELLE data cube.</p>
 <p>It is composed of calibration methods, extracting tools and a powerful
@@ -238,10 +248,104 @@ fitting engine specifically designed for interferometric data. When
 fitting spectra, both a classical (frequentist) and a Bayesian
 paradigm are available.</p>
 </div>
+<div class="section" id="outputs">
+<h2><a class="toc-backref" href="#id5">Outputs</a><a class="headerlink" href="#outputs" title="Permalink to this headline">¶</a></h2>
+<p>ORCS generates a lot of different output maps when fitting entire regions of the cube.</p>
+<p>File name format is:</p>
+<p>[ObjectName]_[Filter].LineMaps.maps.[Lambda]_[ComponentNumber].[Binning].[Parameter].fits</p>
+<p>Parameters are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">amplitude</span></code>: Amplitude in erg/cm2/s/A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flux</span></code>: Integrated flux in erg/cm2/s</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: Height of the continuum below in erg/cm2/s/A</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fwhm</span></code>: FWHM in cm-1 (must be first converted in Angstrom to compute flux in erg/cm2/s)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">velocity</span></code>: Doppler velocity in km/s</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sigma</span></code>: line broadening (with sincgauss model) in km/s (must first be converted in Angstrom to compute flux in erg/cm2/s)</p></li>
+</ul>
+</div>
+<div class="section" id="how-flux-is-computed">
+<h2><a class="toc-backref" href="#id6">How flux is computed?</a><a class="headerlink" href="#how-flux-is-computed" title="Permalink to this headline">¶</a></h2>
+<p>For a line of amplitude a, width <span class="math notranslate nohighlight">\(\Delta\sigma\)</span> , wavenumber <span class="math notranslate nohighlight">\(\sigma\)</span></p>
+<ul class="simple">
+<li><p>sinc model:</p></li>
+</ul>
+<dl class="py function">
+<dt id="orb.utils.spectrum.sinc1d_flux">
+<code class="sig-prename descclassname"><span class="pre">orb.utils.spectrum.</span></code><code class="sig-name descname"><span class="pre">sinc1d_flux</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orb.utils.spectrum.sinc1d_flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="math notranslate nohighlight">
+\[F = \frac{a \times \text{FWHM}}{1.20671}\]</div>
+<ul class="simple">
+<li><p>sincgauss model (D is the Dawson integral):</p></li>
+</ul>
+<dl class="py function">
+<dt id="orb.utils.spectrum.sincgauss1d_flux">
+<code class="sig-prename descclassname"><span class="pre">orb.utils.spectrum.</span></code><code class="sig-name descname"><span class="pre">sincgauss1d_flux</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orb.utils.spectrum.sincgauss1d_flux" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}B = \frac{\sigma}{\sqrt{2}\Delta\sigma}\\F = \frac{\pi a \sigma}{\sqrt{2}}\frac{e^{B^2}}{iD(iB)}\end{aligned}\end{align} \]</div>
+</div>
+<div class="section" id="useful-conversions">
+<h2><a class="toc-backref" href="#id7">Useful conversions</a><a class="headerlink" href="#useful-conversions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>To convert the fwhm or width ( <span class="math notranslate nohighlight">\(\Delta\lambda\)</span> ) to nm from cm-1:</p></li>
+</ul>
+<dl class="py function">
+<dt id="orb.utils.spectrum.fwhm_cm12nm">
+<code class="sig-prename descclassname"><span class="pre">orb.utils.spectrum.</span></code><code class="sig-name descname"><span class="pre">fwhm_cm12nm</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orb.utils.spectrum.fwhm_cm12nm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="math notranslate nohighlight">
+\[\Delta\lambda [\text{nm}] = \frac{10^7 \Delta\sigma [\text{cm}^{-1}]}{\sigma^2}\]</div>
+<ul class="simple">
+<li><p>To convert from FWHM to width for a sincgauss:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\Delta\sigma = \frac{\text{FWHM}}{1.20671\pi}\]</div>
+<ul>
+<li><p>To convert broadening from km/s to a shift in cm-1:</p>
+<dl class="py function">
+<dt id="orb.utils.fit.vel2sigma">
+<code class="sig-prename descclassname"><span class="pre">orb.utils.fit.</span></code><code class="sig-name descname"><span class="pre">vel2sigma</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orb.utils.fit.vel2sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</li>
+</ul>
+</div>
+<div class="section" id="hdf5-cubes-formatting-levels">
+<h2><a class="toc-backref" href="#id8">HDF5 Cubes formatting (levels)</a><a class="headerlink" href="#hdf5-cubes-formatting-levels" title="Permalink to this headline">¶</a></h2>
+<p>As ORCS results of years of development, there are different levels of
+HDF5 cube depending on the moment when the data was obtained and
+reduced. Each one with a different internal formatting. Note that this
+concerns you only if you want to access the raw internal data since it
+should be transparent if you use orcs functions directly.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span> <span class="pre">1</span></code>: old internal hdf5 architecture, data stored as float, unit in
+erg/cm2/s/A, the deep frame is the mean of the interferogram cube</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span> <span class="pre">2</span></code>: new internal hdf5 architecture, data stored as float, unit in
+erg/cm2/s/A, the deep frame is the sum of the interferogram cube</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span> <span class="pre">3</span></code> (last version): new hdf5 architecture, data is stored as
+complex (keeps all the information contained in the original data),
+unit is in counts, data data can be calibrated via the flambda
+parameter : spectrum <a href="#id1"><span class="problematic" id="id2">*</span></a>= cube.params.flambda / cube.dimz /
+cube.exposure_time, deep frame is the sum of the interferogram
+cube. Note that the calibration is done on the fly when using Orcs
+functions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span> <span class="pre">2.5</span></code>: CFHT version, similar to level3 but the internal data is
+calibrated and hard written (thus not stored in counts but in
+erg/cm2/s/A). Used calibration vector is
+cube.params.flambda2. spectrum = spectrum_counts *
+cube.params.flambda. With the latest version of ORCS this format
+should be transparent also. In older versions this format was not
+recognized and thus subject to incoherencies.</p></li>
+</ul>
+</div>
 <div class="section" id="the-fitting-engine">
-<h2><a class="toc-backref" href="#id3">The fitting engine</a><a class="headerlink" href="#the-fitting-engine" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">The fitting engine</a><a class="headerlink" href="#the-fitting-engine" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="models">
-<h3><a class="toc-backref" href="#id4">Models</a><a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id10">Models</a><a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h3>
 <p>ORCS ftting engine has been built to accept any number of models (even
 grid models). Up to now only three models are available (and used by
 default). They all are implemented and documented in the orb.fit
@@ -259,7 +363,7 @@ polynomial)</p></li>
 </ul>
 </div>
 <div class="section" id="models-parameters">
-<h3><a class="toc-backref" href="#id5">Models parameters</a><a class="headerlink" href="#models-parameters" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id11">Models parameters</a><a class="headerlink" href="#models-parameters" title="Permalink to this headline">¶</a></h3>
 <p>Emission lines and background model parameters are always defined via
 keywords which are passed to the fitting functions (see
 <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples</span></a>).</p>
@@ -324,7 +428,7 @@ velocities in the order of their appearance in the definition
 <a class="reference internal image-reference" href="_images/sky-spectrum.png"><img alt="_images/sky-spectrum.png" class="align-center" src="_images/sky-spectrum.png" style="width: 100%;" /></a>
 </div>
 <div class="section" id="uncertainties">
-<h3><a class="toc-backref" href="#id6">Uncertainties</a><a class="headerlink" href="#uncertainties" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id12">Uncertainties</a><a class="headerlink" href="#uncertainties" title="Permalink to this headline">¶</a></h3>
 <p>The uncertainties on the returned parameters are based on the
 assumption that noise distribution is Gaussian and that there are not
 correlated. I have checked those assumptions by analyzing the
@@ -336,7 +440,7 @@ percents).</p>
 </div>
 </div>
 <div class="section" id="list-of-available-lines">
-<span id="list-lines"></span><h2><a class="toc-backref" href="#id7">List of available lines</a><a class="headerlink" href="#list-of-available-lines" title="Permalink to this headline">¶</a></h2>
+<span id="list-lines"></span><h2><a class="toc-backref" href="#id13">List of available lines</a><a class="headerlink" href="#list-of-available-lines" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 43%" />
@@ -439,7 +543,7 @@ percents).</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2023, Thomas Martin (thomas.martin.1@ulaval.ca).
+        &#169; Copyright 2024, Thomas Martin (thomas.martin.1@ulaval.ca).
 
     </p>
   </div>
