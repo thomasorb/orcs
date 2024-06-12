@@ -9,7 +9,7 @@ build:
   os: ubuntu-22.04
   
   tools:
-    python: "miniconda23.1.0"
+    python: "miniconda3-4.2"
     
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
