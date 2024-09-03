@@ -24,6 +24,7 @@ These examples show the basic usage of ORCS
    script_example_velocity_parameter_precision.ipynb
    script_example_fit_region.ipynb
    script_example_sincgauss_vs_2_sinc.ipynb
+   script_example_check_fit.ipynb
 
 
 Automatic velocity and flux estimation (complete examples)
