@@ -88,3 +88,5 @@ Other Tools
 
    script_example_automatic_source_detection.ipynb
    script_example_heliocentric_velocity.ipynb
+   script_example_recipes.ipynb
+   
