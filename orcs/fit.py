@@ -418,10 +418,9 @@ class SpectralCube(orcs.core.SpectralCube):
         .. note:: You can pass the fitting parameters (e.g. pos_cov,
           sigma_cov etc.) as maps (a 2d numpy.ndarray instance or a
           path to a map). But you have to append the suffix '_map' to
-          the parameter you want to map. Any nan or inf in the map
-          will be replaced by the median of the map. This mode is best
-          used once the velocity parameter has been estimated with
-          estimate_parameters_in_region().
+          the parameter you want to map. Nans will generate
+          errors. This mode is best used once the velocity parameter
+          has been estimated with estimate_parameters_in_region().
 
         """
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
@@ -713,7 +712,7 @@ class SpectralCube(orcs.core.SpectralCube):
                         max_comps*2 + icomp * len(lines_cm1) + len(lines_cm1)] = res
                 
             except Exception as e:
-                print(e)
+                #print(e)
                 pass
             
             
