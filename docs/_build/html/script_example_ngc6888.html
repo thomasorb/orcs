@@ -42,7 +42,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Multiple components fitting with automatic velocity estimate" href="script_example_estimate_parameters.html" />
-    <link rel="prev" title="Differences between fitting a sincgauss model and two sinc lines" href="script_example_sincgauss_vs_2_sinc.html" /> 
+    <link rel="prev" title="Check obtained fit" href="script_example_check_fit.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -468,11 +468,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>from orcs. process import SpectralCube
-import orb.utils.io as io
-import pylab as pl
-import numpy as np
-import orb.utils.graph as graph
+<span></span><span class="kn">from</span> <span class="nn">orcs.</span> <span class="n">process</span> <span class="kn">import</span> <span class="nn">SpectralCube</span>
+<span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="k">as</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">orb.utils.graph</span> <span class="k">as</span> <span class="nn">graph</span>
 </pre></div>
 </div>
 </div>
@@ -481,7 +481,7 @@ import orb.utils.graph as graph
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube = SpectralCube(&#39;/home/thomas/data/NGC6888_North_SN3.merged.cm1.1.0.hdf5&#39;)
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/data/NGC6888_North_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -502,7 +502,7 @@ dev.3ea5|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube.params.resolution
+<span></span><span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">resolution</span>
 </pre></div>
 </div>
 </div>
@@ -520,8 +520,8 @@ dev.3ea5|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>df = cube.get_deep_frame()
-df.to_fits(&#39;deep_frame.fits&#39;)
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;deep_frame.fits&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -538,8 +538,8 @@ dev.f573|INFO| Data written as deep_frame.fits in 0.10 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>df.imshow(perc=99, wcs=None)
-pl.grid()
+<span></span><span class="n">df</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">perc</span><span class="o">=</span><span class="mi">99</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -557,14 +557,14 @@ pl.grid()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>spec = cube.get_spectrum(1500, 250, 5)
-#spec = cube.get_spectrum(550, 125, 5)
-#spec = cube.get_spectrum(675,521, 5)
-fit = spec.autofit(lines, vel_range=[-2500,2500], max_comps=2, threshold=3, prod=True,precision=100)
-pl.figure()
-spec.plot()
-fit.get_spectrum().plot()
-pl.xlim(14750, 15400)
+<span></span><span class="n">spec</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1">#spec = cube.get_spectrum(550, 125, 5)</span>
+<span class="c1">#spec = cube.get_spectrum(675,521, 5)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">autofit</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">vel_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2500</span><span class="p">,</span><span class="mi">2500</span><span class="p">],</span> <span class="n">max_comps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">prod</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">precision</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14750</span><span class="p">,</span> <span class="mi">15400</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -600,8 +600,8 @@ dev.3ea5|INFO| estimated velocities: [-1.7588293232024625, nan]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>region = &#39;polygon(-83.32082,1404.5042,517.27761,1658.3654,1216.9438,1175.4099,2201.4299,704.83797,2096.1704,-38.170401,-27.595192,-62.937347)&#39;
-lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
+<span></span><span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;polygon(-83.32082,1404.5042,517.27761,1658.3654,1216.9438,1175.4099,2201.4299,704.83797,2096.1704,-38.170401,-27.595192,-62.937347)&#39;</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6584&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6717&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -610,8 +610,8 @@ lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube.estimate_parameters_in_region(region, lines,
-                                   vel_range=[-2500,2500], max_comps=3, threshold=3)
+<span></span><span class="n">cube</span><span class="o">.</span><span class="n">estimate_parameters_in_region</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span>
+                                   <span class="n">vel_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2500</span><span class="p">,</span><span class="mi">2500</span><span class="p">],</span> <span class="n">max_comps</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -620,9 +620,9 @@ lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>graph.imshow(io.read_fits(&#39;NGC6888_North_SN3/NGC6888_North_SN3.SpectralCube.estimated_Halpha.0.fits&#39;), interpolation=&#39;nearest&#39;)
-pl.colorbar()
-pl.grid()
+<span></span><span class="n">graph</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;NGC6888_North_SN3/NGC6888_North_SN3.SpectralCube.estimated_Halpha.0.fits&#39;</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -638,10 +638,10 @@ pl.grid()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>velmap = io.read_fits(&#39;NGC6888_North_SN3/NGC6888_North_SN3.SpectralCube.estimated_velocity.0.fits&#39;)
-graph.imshow(velmap, interpolation=&#39;nearest&#39;)
-pl.colorbar()
-pl.grid()
+<span></span><span class="n">velmap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;NGC6888_North_SN3/NGC6888_North_SN3.SpectralCube.estimated_velocity.0.fits&#39;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">velmap</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -660,7 +660,7 @@ pl.grid()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>velmap = io.read_fits(&#39;NGC6888_North_SN3/NGC6888_North_SN3.SpectralCube.estimated_velocity.0.fits&#39;)
+<span></span><span class="n">velmap</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;NGC6888_North_SN3/NGC6888_North_SN3.SpectralCube.estimated_velocity.0.fits&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -669,11 +669,11 @@ pl.grid()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>#ix,iy = 1500,250 # somehow larger than pure sinc
-#ix,iy = 574,93 # somehow larger than pure sinc
-ix,iy = 675,521 # two clearly resolved components
-spec = cube.get_spectrum(ix,iy,0)
-spec.plot()
+<span></span><span class="c1">#ix,iy = 1500,250 # somehow larger than pure sinc</span>
+<span class="c1">#ix,iy = 574,93 # somehow larger than pure sinc</span>
+<span class="n">ix</span><span class="p">,</span><span class="n">iy</span> <span class="o">=</span> <span class="mi">675</span><span class="p">,</span><span class="mi">521</span> <span class="c1"># two clearly resolved components</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -689,23 +689,23 @@ spec.plot()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># try sincgauss model
-amp_ratio = cube.get_amp_ratio_from_flux_ratio(&#39;[NII]6583&#39;, &#39;[NII]6548&#39;, 3)
+<span></span><span class="c1"># try sincgauss model</span>
+<span class="n">amp_ratio</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_amp_ratio_from_flux_ratio</span><span class="p">(</span><span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-amp_def = (1,1,2,3,4)
-amp_guess = (1, amp_ratio, 1, 1, 1)
+<span class="n">amp_def</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">amp_guess</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">amp_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-fit = spec.fit(lines, pos_def=&#39;1&#39;,
-               pos_cov=velmap[ix,iy],
-               fmodel=&#39;sincgauss&#39;,
-               sigma_def=&#39;1&#39;,
-               sigma_cov=50,
-               amp_def=amp_def,
-               amp_guess=amp_guess)
-spec.plot()
-fit.get_spectrum().plot()
-print(fit)
-pl.xlim(15100, 15300)
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+               <span class="n">pos_cov</span><span class="o">=</span><span class="n">velmap</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">],</span>
+               <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+               <span class="n">sigma_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+               <span class="n">sigma_cov</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+               <span class="n">amp_def</span><span class="o">=</span><span class="n">amp_def</span><span class="p">,</span>
+               <span class="n">amp_guess</span><span class="o">=</span><span class="n">amp_guess</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">15100</span><span class="p">,</span> <span class="mi">15300</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -746,27 +746,27 @@ SNR (km/s): [12.1029742  12.1029742  19.78560767  1.23540797  0.21401056]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># try double sinc model
-fit = spec.fit(lines + lines,
-               pos_def=5*[&#39;1&#39;,] + 5*[&#39;2&#39;,],
-               pos_cov=(velmap[ix,iy]+10, velmap[ix,iy]-10),
-               amp_def=amp_def + tuple(np.array(amp_def) + 10),
-               amp_guess=amp_guess+amp_guess)
-print(fit)
-spec.plot(c=&#39;black&#39;)
-fit.get_spectrum().plot(c=&#39;tab:orange&#39;)
+<span></span><span class="c1"># try double sinc model</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">lines</span> <span class="o">+</span> <span class="n">lines</span><span class="p">,</span>
+               <span class="n">pos_def</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,]</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">,],</span>
+               <span class="n">pos_cov</span><span class="o">=</span><span class="p">(</span><span class="n">velmap</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">]</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="n">velmap</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">]</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span>
+               <span class="n">amp_def</span><span class="o">=</span><span class="n">amp_def</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">amp_def</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+               <span class="n">amp_guess</span><span class="o">=</span><span class="n">amp_guess</span><span class="o">+</span><span class="n">amp_guess</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;tab:orange&#39;</span><span class="p">)</span>
 
-i = 0
-comp0 = np.zeros_like(spec.data.real)
-comp1 = np.zeros_like(spec.data.real)
-for i, imod in zip(range(10), fit[&#39;fitted_models&#39;][&#39;Cm1LinesModel&#39;]):
-    if i&lt;5: comp0 += imod
-    else: comp1 += imod
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">comp0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="n">comp1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">imod</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_models&#39;</span><span class="p">][</span><span class="s1">&#39;Cm1LinesModel&#39;</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">:</span> <span class="n">comp0</span> <span class="o">+=</span> <span class="n">imod</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">comp1</span> <span class="o">+=</span> <span class="n">imod</span>
 
-pl.plot(spec.axis.data, comp0, c=&#39;tab:blue&#39;)
-pl.plot(spec.axis.data, comp1, c=&#39;tab:red&#39;)
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">comp0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;tab:blue&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">comp1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;tab:red&#39;</span><span class="p">)</span>
 
-pl.xlim(15100, 15300)
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">15100</span><span class="p">,</span> <span class="mi">15300</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -815,13 +815,13 @@ SNR (km/s): [ 1.68178043e+01  1.68178043e+01  2.13511602e+01  9.60421679e-01
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>region = &#39;circle(675,521,30)&#39;
-cube.fit_lines_in_region(region,
-                         lines + lines,
-                         pos_def=5*[&#39;1&#39;,] + 5*[&#39;2&#39;,],
-                         pos_cov_map=(velmap+10, velmap-10), # note the &#39;_map&#39; suffix
-                         amp_def=amp_def + tuple(np.array(amp_def) + 10),
-                         amp_guess=amp_guess+amp_guess)
+<span></span><span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;circle(675,521,30)&#39;</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_region</span><span class="p">(</span><span class="n">region</span><span class="p">,</span>
+                         <span class="n">lines</span> <span class="o">+</span> <span class="n">lines</span><span class="p">,</span>
+                         <span class="n">pos_def</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,]</span> <span class="o">+</span> <span class="mi">5</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">,],</span>
+                         <span class="n">pos_cov_map</span><span class="o">=</span><span class="p">(</span><span class="n">velmap</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="n">velmap</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="c1"># note the &#39;_map&#39; suffix</span>
+                         <span class="n">amp_def</span><span class="o">=</span><span class="n">amp_def</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">amp_def</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="p">),</span>
+                         <span class="n">amp_guess</span><span class="o">=</span><span class="n">amp_guess</span><span class="o">+</span><span class="n">amp_guess</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -835,7 +835,7 @@ cube.fit_lines_in_region(region,
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="script_example_estimate_parameters.html" class="btn btn-neutral float-right" title="Multiple components fitting with automatic velocity estimate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="script_example_sincgauss_vs_2_sinc.html" class="btn btn-neutral float-left" title="Differences between fitting a sincgauss model and two sinc lines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="script_example_check_fit.html" class="btn btn-neutral float-left" title="Check obtained fit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

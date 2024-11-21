@@ -226,3 +226,5 @@ man_pages = [
     ('index', 'orcs', 'Orcs Documentation',
      ['Thomas Martin'], 1)
 ]
+
+nbsphinx_execute = 'never'

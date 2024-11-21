@@ -90,4 +90,5 @@ Other Tools
    script_example_heliocentric_velocity.ipynb
    script_example_clean.ipynb
    script_example_recipes.ipynb
+   script_example_apodization.ipynb
    

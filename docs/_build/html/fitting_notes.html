@@ -466,12 +466,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import numpy as np
-import pylab as pl
-import orb.fit
-import orb.fft
-import orb.utils.fit
-import orb.sim
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">orb.fit</span>
+<span class="kn">import</span> <span class="nn">orb.fft</span>
+<span class="kn">import</span> <span class="nn">orb.utils.fit</span>
+<span class="kn">import</span> <span class="nn">orb.sim</span>
 </pre></div>
 </div>
 </div>
@@ -488,52 +488,52 @@ import orb.sim
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>### synthetic spectrum
+<span></span><span class="c1">### synthetic spectrum</span>
 
-lines = [&#39;Halpha&#39;, &#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
-amp = np.array([1, 0.1, 0.3, 0.1, 0.1]) # amplitude of the lines
-sigma = 100 # line broadening in km/s
-vel_diff = 275 # velocity diffrence between both components in km/s
-amp2_ratio = 0.5 # ratio between the second component and the first one
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6584&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6717&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">]</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span> <span class="c1"># amplitude of the lines</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># line broadening in km/s</span>
+<span class="n">vel_diff</span> <span class="o">=</span> <span class="mi">275</span> <span class="c1"># velocity diffrence between both components in km/s</span>
+<span class="n">amp2_ratio</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># ratio between the second component and the first one</span>
 
-step_nb = 850 # resolution ~ 5000
-filter_name = &#39;SN3&#39;
-ss = orb.sim.Spectrum(step_nb, filter_name)
-ss.add_component(lines, amp, sigma=sigma)
-ss.add_component(lines, amp2_ratio * amp, sigma=sigma, vel=vel_diff)
-spectrum = ss.get_spectrum()
-# add noise
-spectrum.data += np.random.standard_normal(size=spectrum.data.size) * 0.1 # SNR 10
-
-
-### 1 component fit
-fit1 = spectrum.fit(lines, fmodel=&#39;sincgauss&#39;, pos_def=&#39;1&#39;, pos_cov=0, sigma_def=&#39;1&#39;, sigma_cov=sigma,
-                   amp_def=[&#39;1&#39;,&#39;2&#39;,&#39;2&#39;,&#39;3&#39;,&#39;4&#39;], amp_guess=[1,1,2.985,1,1])
-print(fit1)
-spectrum.plot()
-fit1.get_spectrum().plot()
-pl.xlim(14800, 15300)
-
-### 2 components fit
-fit2 = spectrum.fit(lines + lines, fmodel=&#39;sincgauss&#39;,
-                    pos_def=[&#39;1&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;, &#39;2&#39;,&#39;2&#39;,&#39;2&#39;,&#39;2&#39;,&#39;2&#39;], pos_cov=[0, vel_diff],
-                    sigma_def=[&#39;1&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;,&#39;1&#39;, &#39;2&#39;,&#39;2&#39;,&#39;2&#39;,&#39;2&#39;,&#39;2&#39;], sigma_cov=[sigma, sigma],
-                    amp_def=[&#39;1&#39;,&#39;2&#39;,&#39;2&#39;,&#39;3&#39;,&#39;4&#39;, &#39;5&#39;,&#39;6&#39;,&#39;6&#39;,&#39;7&#39;,&#39;8&#39;], amp_guess=[1,1,2.985,1,1,1,1,2.985,1,1])
-print(fit2)
-pl.figure()
-spectrum.plot()
-fit2.get_spectrum().plot()
-pl.xlim(14800, 15300)
+<span class="n">step_nb</span> <span class="o">=</span> <span class="mi">850</span> <span class="c1"># resolution ~ 5000</span>
+<span class="n">filter_name</span> <span class="o">=</span> <span class="s1">&#39;SN3&#39;</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="n">step_nb</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">amp2_ratio</span> <span class="o">*</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">vel_diff</span><span class="p">)</span>
+<span class="n">spectrum</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span>
+<span class="c1"># add noise</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">spectrum</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="c1"># SNR 10</span>
 
 
-print(&#39;=== BIC COMPARISON ===&#39;)
-print(&#39;if positive and &gt; 2, two component fit is better&#39;)
-print(&quot;&quot;&quot;0 to 2 \t\tNot worth more than a bare mention
-2 to 6 \t\tPositive
-6 to 10 \tStrong
-&gt;10 \t\tVery strong &quot;&quot;&quot;)
+<span class="c1">### 1 component fit</span>
+<span class="n">fit1</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span> <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">pos_cov</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">sigma_cov</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span>
+                   <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">],</span> <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">2.985</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit1</span><span class="p">)</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">fit1</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14800</span><span class="p">,</span> <span class="mi">15300</span><span class="p">)</span>
 
-print(&#39;DELTA BIC =&#39;, fit1[&#39;BIC&#39;] - fit2[&#39;BIC&#39;])
+<span class="c1">### 2 components fit</span>
+<span class="n">fit2</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">lines</span> <span class="o">+</span> <span class="n">lines</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">],</span> <span class="n">pos_cov</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">vel_diff</span><span class="p">],</span>
+                    <span class="n">sigma_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">],</span> <span class="n">sigma_cov</span><span class="o">=</span><span class="p">[</span><span class="n">sigma</span><span class="p">,</span> <span class="n">sigma</span><span class="p">],</span>
+                    <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">,</span><span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span><span class="s1">&#39;6&#39;</span><span class="p">,</span><span class="s1">&#39;6&#39;</span><span class="p">,</span><span class="s1">&#39;7&#39;</span><span class="p">,</span><span class="s1">&#39;8&#39;</span><span class="p">],</span> <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">2.985</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">2.985</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fit2</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">fit2</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14800</span><span class="p">,</span> <span class="mi">15300</span><span class="p">)</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=== BIC COMPARISON ===&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;if positive and &gt; 2, two component fit is better&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;0 to 2 </span><span class="se">\t\t</span><span class="s2">Not worth more than a bare mention</span>
+<span class="s2">2 to 6 </span><span class="se">\t\t</span><span class="s2">Positive</span>
+<span class="s2">6 to 10 </span><span class="se">\t</span><span class="s2">Strong</span>
+<span class="s2">&gt;10 </span><span class="se">\t\t</span><span class="s2">Very strong &quot;&quot;&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;DELTA BIC =&#39;</span><span class="p">,</span> <span class="n">fit1</span><span class="p">[</span><span class="s1">&#39;BIC&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fit2</span><span class="p">[</span><span class="s1">&#39;BIC&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>

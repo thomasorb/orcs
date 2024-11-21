@@ -106,6 +106,9 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Automatic source detection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_heliocentric_velocity.html">Radial Velocity Correction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_heliocentric_velocity.html#How-to-use-the-computed-correction">How to use the computed correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_clean.html">CLEAN algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_recipes.html">Various recipes (e.g. resolution reduction, etc.)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_apodization.html">Spectral cube modifications (apodization, interpolation etc.)</a></li>
 </ul>
 </li>
 </ul>
@@ -464,11 +467,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># import base class for the manipulation of a SITELLE spectral cube: HDFCube
-from orcs.process import SpectralCube
-import pylab as pl
-import numpy as np
-cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
+<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -489,7 +492,7 @@ master.03e73|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube.detect_sources(fast=True)
+<span></span><span class="n">cube</span><span class="o">.</span><span class="n">detect_sources</span><span class="p">(</span><span class="n">fast</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -549,15 +552,15 @@ master.03e73|INFO| parallel processing closed
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import orb.utils.io as io
-detect_map = io.read_fits(&#39;./M31_SN3/M31_SN3.SpectralCube.detection_frame.fits&#39;)
-pl.figure(figsize=(8,8))
-pl.imshow(detect_map.T, vmin=np.nanpercentile(detect_map,5),
-         vmax = np.nanpercentile(detect_map, 99))
-pl.xlim((400,800))
-pl.ylim((800,1200))
-pl.grid()
-pl.title(&#39;detection frame&#39;)
+<span></span><span class="kn">import</span> <span class="nn">orb.utils.io</span> <span class="k">as</span> <span class="nn">io</span>
+<span class="n">detect_map</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;./M31_SN3/M31_SN3.SpectralCube.detection_frame.fits&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">detect_map</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">detect_map</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
+         <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">detect_map</span><span class="p">,</span> <span class="mi">99</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span><span class="mi">800</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">800</span><span class="p">,</span><span class="mi">1200</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;detection frame&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -582,12 +585,12 @@ Text(0.5, 1.0, &#39;detection image&#39;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>df = cube.get_deep_frame()
-df.imshow(wcs=False, figsize=(8,8), perc=95)
-pl.xlim((400,800))
-pl.ylim((800,1200))
-pl.grid()
-pl.title(&#39;deep frame&#39;)
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wcs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="n">perc</span><span class="o">=</span><span class="mi">95</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span><span class="mi">800</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">800</span><span class="p">,</span><span class="mi">1200</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;deep frame&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

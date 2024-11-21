@@ -359,10 +359,9 @@ pixel is passed (default None).</p>
 <p>You can pass the fitting parameters (e.g. pos_cov,
 sigma_cov etc.) as maps (a 2d numpy.ndarray instance or a
 path to a map). But you have to append the suffix ‘_map’ to
-the parameter you want to map. Any nan or inf in the map
-will be replaced by the median of the map. This mode is best
-used once the velocity parameter has been estimated with
-estimate_parameters_in_region().</p>
+the parameter you want to map. Nans will generate
+errors. This mode is best used once the velocity parameter
+has been estimated with estimate_parameters_in_region().</p>
 </div>
 </dd></dl>
 

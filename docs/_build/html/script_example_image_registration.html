@@ -468,12 +468,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import pylab as pl
-import orb.image
-import logging
-# useful to get logging output. orb and orcs use the logging package which is automatically set to INFO level when a cube is loaded.
-# But, as we are not loading a cube this time and only working on images, you must do it manually.
-logging.getLogger().setLevel(logging.INFO)
+<span></span><span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">orb.image</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="c1"># useful to get logging output. orb and orcs use the logging package which is automatically set to INFO level when a cube is loaded.</span>
+<span class="c1"># But, as we are not loading a cube this time and only working on images, you must do it manually.</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -486,10 +486,10 @@ logging.getLogger().setLevel(logging.INFO)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>im = orb.image.Image(&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;, instrument=&#39;sitelle&#39;)
-# in case any wrong wcs parameters were stored in the header, it is safe to reset the wcs to get a fresh start before the registration.
-im.reset_wcs(294.1120729, 19.70678597)
-im.register()
+<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71_SN3.merged.InterferogramMerger.deep_frame.fits&#39;</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;sitelle&#39;</span><span class="p">)</span>
+<span class="c1"># in case any wrong wcs parameters were stored in the header, it is safe to reset the wcs to get a fresh start before the registration.</span>
+<span class="n">im</span><span class="o">.</span><span class="n">reset_wcs</span><span class="p">(</span><span class="mf">294.1120729</span><span class="p">,</span> <span class="mf">19.70678597</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -498,10 +498,10 @@ im.register()
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># the HDF5 format is the native format for orb and orcs and you are sure to keep all the data with it.
-# But for an image you can, in principle, safely use the fits format.
-im.writeto(&#39;M1-71.deep_frame.wcs.init.hdf5&#39;)
-im.to_fits(&#39;M1-71.deep_frame.wcs.init.fits&#39;)
+<span></span><span class="c1"># the HDF5 format is the native format for orb and orcs and you are sure to keep all the data with it.</span>
+<span class="c1"># But for an image you can, in principle, safely use the fits format.</span>
+<span class="n">im</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.fits&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -518,10 +518,10 @@ INFO:root:Data written as M1-71.deep_frame.wcs.init.fits in 0.05 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># now we will check the results of the calibration by loading the positions of the stars in the field from the gaia catalog
-# before plotting them on the image
-im = orb.image.Image(&#39;M1-71.deep_frame.wcs.init.hdf5&#39;)
-sl = im.get_stars_from_catalog(max_stars=1000)
+<span></span><span class="c1"># now we will check the results of the calibration by loading the positions of the stars in the field from the gaia catalog</span>
+<span class="c1"># before plotting them on the image</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
+<span class="n">sl</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_stars_from_catalog</span><span class="p">(</span><span class="n">max_stars</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -541,7 +541,7 @@ INFO:root:Magnitude min: 9.5522, max:17.1995
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>sl # the catalog position ra, dec as well as their positions in pixels are stroed in a pandas.DataFrame object
+<span></span><span class="n">sl</span> <span class="c1"># the catalog position ra, dec as well as their positions in pixels are stroed in a pandas.DataFrame object</span>
 </pre></div>
 </div>
 </div>
@@ -662,9 +662,9 @@ INFO:root:Magnitude min: 9.5522, max:17.1995
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># You can see that the registration is correct near the center of the field but without a proper distortion model, the position in the corners can be very bad.
-im.imshow(cmap=&#39;gray&#39;, wcs=False)
-pl.scatter(sl.x, sl.y, marker=&#39;+&#39;, color=&#39;red&#39;)
+<span></span><span class="c1"># You can see that the registration is correct near the center of the field but without a proper distortion model, the position in the corners can be very bad.</span>
+<span class="n">im</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sl</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -694,9 +694,9 @@ pl.scatter(sl.x, sl.y, marker=&#39;+&#39;, color=&#39;red&#39;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>im = orb.image.Image(&#39;M1-71.deep_frame.wcs.init.hdf5&#39;)
-wcs, dxmap, dymap = im.register(skip_registration=True, compute_distortion=True, return_error_maps=True, max_radius_coeff=2, sip_order=4, max_stars_detect=200)
-im.writeto(&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;)
+<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.init.hdf5&#39;</span><span class="p">)</span>
+<span class="n">wcs</span><span class="p">,</span> <span class="n">dxmap</span><span class="p">,</span> <span class="n">dymap</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">skip_registration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compute_distortion</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_error_maps</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_radius_coeff</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sip_order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">max_stars_detect</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -778,11 +778,11 @@ INFO:root:internal WCS updated (to update the file on disk use self.writeto func
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>im = orb.image.Image(&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;)
-sl = im.get_stars_from_catalog(max_stars=1000)
-im.imshow(cmap=&#39;gray&#39;, wcs=True)
-pl.scatter(sl.x, sl.y, marker=&#39;+&#39;, color=&#39;red&#39;)
-pl.grid()
+<span></span><span class="n">im</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;M1-71.deep_frame.wcs.sip1.hdf5&#39;</span><span class="p">)</span>
+<span class="n">sl</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">get_stars_from_catalog</span><span class="p">(</span><span class="n">max_stars</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sl</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">sl</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

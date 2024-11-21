@@ -473,12 +473,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import orcs.process
-import numpy as np
-import pylab as pl
-from importlib import reload
-import orb.utils.graph as graph
-import orb.utils.io
+<span></span><span class="kn">import</span> <span class="nn">orcs.process</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">reload</span>
+<span class="kn">import</span> <span class="nn">orb.utils.graph</span> <span class="k">as</span> <span class="nn">graph</span>
+<span class="kn">import</span> <span class="nn">orb.utils.io</span>
 </pre></div>
 </div>
 </div>
@@ -489,7 +489,7 @@ import orb.utils.io
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube = orcs.process.SpectralCube(&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;)
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -514,12 +514,12 @@ dev.b308|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>df = cube.get_deep_frame()
-df.imshow(wcs=False)
-df.to_fits(&#39;m1.df.fits&#39;)
-pl.xlim(500,1500)
-pl.ylim(600,1600)
-pl.grid()
+<span></span><span class="n">df</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_deep_frame</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wcs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_fits</span><span class="p">(</span><span class="s1">&#39;m1.df.fits&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1500</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">1600</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -546,10 +546,10 @@ dev.b308|INFO| Data written as m1.df.fits in 0.11 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>sky1 = cube.get_spectrum(300,1000,r=150, mean_flux=True, median=True)
-sky1.plot()
-sky1.writeto(&#39;sky.hdf5&#39;) # write spectrum to disk
-sky1 = orb.fft.Spectrum(&#39;sky.hdf5&#39;) # read spectrum from disk
+<span></span><span class="n">sky1</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">mean_flux</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">median</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sky1</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">sky1</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="s1">&#39;sky.hdf5&#39;</span><span class="p">)</span> <span class="c1"># write spectrum to disk</span>
+<span class="n">sky1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="s1">&#39;sky.hdf5&#39;</span><span class="p">)</span> <span class="c1"># read spectrum from disk</span>
 
 </pre></div>
 </div>
@@ -569,25 +569,25 @@ sky1 = orb.fft.Spectrum(&#39;sky.hdf5&#39;) # read spectrum from disk
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>NCOMP = 3
-lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
+<span></span><span class="n">NCOMP</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6584&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6717&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">]</span>
 
-ix, iy = 1140, 1200 # x, y position to check
-threshold = 4 # loosely related to mean SNR in all 5 lines
+<span class="n">ix</span><span class="p">,</span> <span class="n">iy</span> <span class="o">=</span> <span class="mi">1140</span><span class="p">,</span> <span class="mi">1200</span> <span class="c1"># x, y position to check</span>
+<span class="n">threshold</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1"># loosely related to mean SNR in all 5 lines</span>
 
-spec = cube.get_spectrum(ix, iy, 3)
-spec.data -= sky1.data # subtract sky spectrum
-fit = spec.autofit(lines, vel_range=[-2500,2500], max_comps=NCOMP, threshold=threshold, prod=True)
+<span class="n">spec</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">data</span> <span class="o">-=</span> <span class="n">sky1</span><span class="o">.</span><span class="n">data</span> <span class="c1"># subtract sky spectrum</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">autofit</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">vel_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2500</span><span class="p">,</span><span class="mi">2500</span><span class="p">],</span> <span class="n">max_comps</span><span class="o">=</span><span class="n">NCOMP</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">prod</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-print(fit)
-pl.figure()
-spec.plot(label=&#39;data&#39;)
-fit.get_spectrum().plot(label=&#39;fit&#39;)
-for ipos in fit[&#39;lines_params&#39;][:,2]:
-    pl.axvline(ipos, c=&#39;gray&#39;, alpha=0.3)
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ipos</span> <span class="ow">in</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]:</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 
-pl.legend(loc=&#39;upper right&#39;)
-pl.xlim(14700, 15400)
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14700</span><span class="p">,</span> <span class="mi">15400</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -649,14 +649,14 @@ SNR (km/s): [ 8.30487822 27.43659442  6.68909642  2.50369318  2.04827803 14.5264
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># a region is defined (ds9 style) to keep the estimate into it.
-region = &#39;polygon(438.09517,1072.4537,602.32429,1400.9119,811.34317,1511.3933,906.89466,1929.4311,1115.9135,1902.5572,1115.9135,1693.5384,1181.6052,1693.5384,1268.1987,1741.3141,1390.6241,1801.0338,1632.4888,1708.4683,1668.3206,1541.2532,1745.9562,1448.6877,1734.0122,1111.2715,1742.9702,961.97229,1513.0494,624.5561,847.17498,466.29894,417.19328,576.78035,342.54368,800.72915)&#39;
-p = cube.estimate_parameters_in_region(
-    region,
-    #[&#39;[NII]6584&#39;, &#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;],
-    #[&#39;[NII]6584&#39;, &#39;[NII]6548&#39;, &#39;Halpha&#39;],
-    [&#39;[SII]6717&#39;, &#39;[SII]6731&#39;],
-    vel_range=[-2000,2000], subtract_spectrum=sky1.data, binning=1, max_comps=6, threshold=3)
+<span></span><span class="c1"># a region is defined (ds9 style) to keep the estimate into it.</span>
+<span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;polygon(438.09517,1072.4537,602.32429,1400.9119,811.34317,1511.3933,906.89466,1929.4311,1115.9135,1902.5572,1115.9135,1693.5384,1181.6052,1693.5384,1268.1987,1741.3141,1390.6241,1801.0338,1632.4888,1708.4683,1668.3206,1541.2532,1745.9562,1448.6877,1734.0122,1111.2715,1742.9702,961.97229,1513.0494,624.5561,847.17498,466.29894,417.19328,576.78035,342.54368,800.72915)&#39;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">estimate_parameters_in_region</span><span class="p">(</span>
+    <span class="n">region</span><span class="p">,</span>
+    <span class="c1">#[&#39;[NII]6584&#39;, &#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;],</span>
+    <span class="c1">#[&#39;[NII]6584&#39;, &#39;[NII]6548&#39;, &#39;Halpha&#39;],</span>
+    <span class="p">[</span><span class="s1">&#39;[SII]6717&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">],</span>
+    <span class="n">vel_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span><span class="mi">2000</span><span class="p">],</span> <span class="n">subtract_spectrum</span><span class="o">=</span><span class="n">sky1</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">binning</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_comps</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -728,17 +728,17 @@ dev.4cc3|INFO| Data written as ./Crab-nebula_SN3/Crab-nebula_SN3.SpectralCube.es
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>def get_cube(ifolder):
-    NCOMP = 6
-    maps = list()
-    for icomp in range(NCOMP):
-        imap = orb.utils.io.read_fits(&#39;Crab-nebula_SN3_2022/{}/Crab-nebula_SN3.SpectralCube.estimated_velocity.{}.fits&#39;.format(ifolder, icomp))
-        maps.append(imap)
-    return np.dstack(maps)
+<span></span><span class="k">def</span> <span class="nf">get_cube</span><span class="p">(</span><span class="n">ifolder</span><span class="p">):</span>
+    <span class="n">NCOMP</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">icomp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NCOMP</span><span class="p">):</span>
+        <span class="n">imap</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;Crab-nebula_SN3_2022/</span><span class="si">{}</span><span class="s1">/Crab-nebula_SN3.SpectralCube.estimated_velocity.</span><span class="si">{}</span><span class="s1">.fits&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ifolder</span><span class="p">,</span> <span class="n">icomp</span><span class="p">))</span>
+        <span class="n">maps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imap</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span>
 
-map_all = get_cube(&#39;all&#39;)
-map_nii = get_cube(&#39;ha-nii&#39;)
-map_sii = get_cube(&#39;sii&#39;)
+<span class="n">map_all</span> <span class="o">=</span> <span class="n">get_cube</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="n">map_nii</span> <span class="o">=</span> <span class="n">get_cube</span><span class="p">(</span><span class="s1">&#39;ha-nii&#39;</span><span class="p">)</span>
+<span class="n">map_sii</span> <span class="o">=</span> <span class="n">get_cube</span><span class="p">(</span><span class="s1">&#39;sii&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -747,35 +747,35 @@ map_sii = get_cube(&#39;sii&#39;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>stop = False
+<span></span><span class="n">stop</span> <span class="o">=</span> <span class="kc">False</span>
 
-precision = 3e5 / cube.params.resolution / 4 # channel size in km/s
+<span class="n">precision</span> <span class="o">=</span> <span class="mf">3e5</span> <span class="o">/</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">resolution</span> <span class="o">/</span> <span class="mi">4</span> <span class="c1"># channel size in km/s</span>
 
-mask = np.sum(~np.isnan(map_all), axis=2) + np.sum(~np.isnan(map_nii), axis=2) + np.sum(~np.isnan(map_sii), axis=2)
+<span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_all</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_nii</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">map_sii</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-map_final = np.full((map_all.shape[0],map_all.shape[1],12) , np.nan)
+<span class="n">map_final</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">map_all</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">map_all</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">12</span><span class="p">)</span> <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
-for ix in range(map_all.shape[0]):
-    for iy in range(map_all.shape[1]):
-        if mask[ix, iy] == 0: continue
+<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">map_all</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">iy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">map_all</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">continue</span>
 
-        #if mask[ix, iy] &gt; 6:
-        vels = np.array(list(map_all[ix,iy,:]) + list(map_nii[ix,iy,:]) + list(map_sii[ix,iy,:]))
-        vels = list(vels[~np.isnan(vels)])
-        kept = list()
+        <span class="c1">#if mask[ix, iy] &gt; 6:</span>
+        <span class="n">vels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">map_all</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">,:])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">map_nii</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">,:])</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">map_sii</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">,:]))</span>
+        <span class="n">vels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">vels</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">vels</span><span class="p">)])</span>
+        <span class="n">kept</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
-        while len(vels) &gt; 0:
-            ivel = vels.pop(0)
-            kept.append(ivel)
-            vels = [iivel for iivel in vels if np.abs(iivel - ivel) &gt; precision]
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">vels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ivel</span> <span class="o">=</span> <span class="n">vels</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">kept</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivel</span><span class="p">)</span>
+            <span class="n">vels</span> <span class="o">=</span> <span class="p">[</span><span class="n">iivel</span> <span class="k">for</span> <span class="n">iivel</span> <span class="ow">in</span> <span class="n">vels</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">iivel</span> <span class="o">-</span> <span class="n">ivel</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">precision</span><span class="p">]</span>
 
-        map_final[ix, iy, :len(kept)] = kept
+        <span class="n">map_final</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)]</span> <span class="o">=</span> <span class="n">kept</span>
 
 
-        if stop: break
-    if stop: break
+        <span class="k">if</span> <span class="n">stop</span><span class="p">:</span> <span class="k">break</span>
+    <span class="k">if</span> <span class="n">stop</span><span class="p">:</span> <span class="k">break</span>
 
-orb.utils.io.write_fits(&#39;velocity_estimate.fits&#39;, map_final)
+<span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write_fits</span><span class="p">(</span><span class="s1">&#39;velocity_estimate.fits&#39;</span><span class="p">,</span> <span class="n">map_final</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -801,10 +801,10 @@ dev.b308|INFO| Data written as velocity_estimate.fits in 2.35 s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>graph.imshow(map_all[:,:,0], figsize=(20,15), interpolation=&#39;nearest&#39;, cmap=&#39;seismic&#39;)
-pl.colorbar()
-pl.ylim(500,1600)
-pl.xlim(500,1600)
+<span></span><span class="n">graph</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">map_all</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;seismic&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1600</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1600</span><span class="p">)</span>
 
 </pre></div>
 </div>
@@ -833,10 +833,10 @@ pl.xlim(500,1600)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>graph.imshow(orb.utils.io.read_fits(&#39;Crab-nebula_SN3_2022/all/Crab-nebula_SN3.SpectralCube.estimated_Halpha.0.fits&#39;), figsize=(20,15), interpolation=&#39;nearest&#39;)
-pl.colorbar()
-pl.ylim(500,1600)
-pl.xlim(500,1600)
+<span></span><span class="n">graph</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;Crab-nebula_SN3_2022/all/Crab-nebula_SN3.SpectralCube.estimated_Halpha.0.fits&#39;</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1600</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span><span class="mi">1600</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -864,39 +864,39 @@ pl.xlim(500,1600)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>NCOMP = 3
-lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
-cube = orcs.process.SpectralCube(&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;)
-amp_ratio = cube.get_amp_ratio_from_flux_ratio(&#39;[NII]6583&#39;, &#39;[NII]6548&#39;, 3)
+<span></span><span class="n">NCOMP</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6584&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6717&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">]</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;</span><span class="p">)</span>
+<span class="n">amp_ratio</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_amp_ratio_from_flux_ratio</span><span class="p">(</span><span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
 
-pos_def = list()
-pos_cov = list()
-amp_def = list()
-amp_guess = list()
+<span class="n">pos_def</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">pos_cov</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">amp_def</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">amp_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
-map_final = orb.utils.io.read_fits(&#39;velocity_estimate.fits&#39;)
+<span class="n">map_final</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;velocity_estimate.fits&#39;</span><span class="p">)</span>
 
-for i in range(NCOMP):
-    pos_cov.append(map_final[ix,iy,i])
-    pos_def += (str(i),) * len(lines)
-    amp_def += (str(i*len(lines)), str(i*len(lines)),
-                 str(i*len(lines)+1), str(i*len(lines)+2),
-                 str(i*len(lines)+3))
-    amp_guess += (1, amp_ratio, 1, 1, 1)
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NCOMP</span><span class="p">):</span>
+    <span class="n">pos_cov</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">map_final</span><span class="p">[</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">,</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">pos_def</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">amp_def</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)),</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">amp_guess</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">amp_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-print(pos_cov)
+<span class="nb">print</span><span class="p">(</span><span class="n">pos_cov</span><span class="p">)</span>
 
-fit = cube.fit_lines_in_spectrum(1000, 1000, 0, lines * NCOMP, pos_def=pos_def, pos_cov=pos_cov, amp_def=amp_def, amp_guess=amp_guess, subtract_spectrum=sky1.data)
+<span class="n">fit</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lines</span> <span class="o">*</span> <span class="n">NCOMP</span><span class="p">,</span> <span class="n">pos_def</span><span class="o">=</span><span class="n">pos_def</span><span class="p">,</span> <span class="n">pos_cov</span><span class="o">=</span><span class="n">pos_cov</span><span class="p">,</span> <span class="n">amp_def</span><span class="o">=</span><span class="n">amp_def</span><span class="p">,</span> <span class="n">amp_guess</span><span class="o">=</span><span class="n">amp_guess</span><span class="p">,</span> <span class="n">subtract_spectrum</span><span class="o">=</span><span class="n">sky1</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-pl.plot(fit[0], fit[1],label=&#39;data&#39;)
-fit[2].get_spectrum().plot(label=&#39;fit&#39;)
-pl.legend()
-pl.grid()
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 
-pl.figure()
-pl.plot(fit[0], fit[1].data - fit[2].get_spectrum().data)
-pl.title(&#39;residual&#39;)
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="n">fit</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -962,37 +962,37 @@ Text(0.5, 1.0, &#39;residual&#39;)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>NCOMP = 3
-lines = [&#39;[NII]6548&#39;, &#39;[NII]6584&#39;, &#39;Halpha&#39;, &#39;[SII]6717&#39;, &#39;[SII]6731&#39;]
-cube = orcs.process.SpectralCube(&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;)
-amp_ratio = cube.get_amp_ratio_from_flux_ratio(&#39;[NII]6583&#39;, &#39;[NII]6548&#39;, 3)
+<span></span><span class="n">NCOMP</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6584&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6717&#39;</span><span class="p">,</span> <span class="s1">&#39;[SII]6731&#39;</span><span class="p">]</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;../M1_2022_SN3.merged.cm1.hdf5&#39;</span><span class="p">)</span>
+<span class="n">amp_ratio</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_amp_ratio_from_flux_ratio</span><span class="p">(</span><span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
 
-pos_def = list()
-pos_cov = list()
-amp_def = list()
-amp_guess = list()
+<span class="n">pos_def</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">pos_cov</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">amp_def</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">amp_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
-map_final = orb.utils.io.read_fits(&#39;velocity_estimate.fits&#39;)
-sky1 = orb.fft.Spectrum(&#39;sky.hdf5&#39;)
+<span class="n">map_final</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;velocity_estimate.fits&#39;</span><span class="p">)</span>
+<span class="n">sky1</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="s1">&#39;sky.hdf5&#39;</span><span class="p">)</span>
 
-for i in range(NCOMP):
-    pos_cov.append(map_final[:,:,i])
-    pos_def += (str(i),) * len(lines)
-    amp_def += (str(i*len(lines)), str(i*len(lines)),
-                 str(i*len(lines)+1), str(i*len(lines)+2),
-                 str(i*len(lines)+3))
-    amp_guess += (1, amp_ratio, 1, 1, 1)
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NCOMP</span><span class="p">):</span>
+    <span class="n">pos_cov</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">map_final</span><span class="p">[:,:,</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">pos_def</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    <span class="n">amp_def</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)),</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span>
+                 <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">amp_guess</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">amp_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 
-cube.fit_lines_in_region(&#39;circle(1000,1000,300)&#39;,
-                         lines * NCOMP,
-                         pos_def=pos_def,
-                         pos_cov_map=pos_cov,  ## NOTE that we use the suffix _map to pass a map instead of a single value
-                         amp_def=amp_def,
-                         amp_guess=amp_guess,
-                         binning=3,
-                         subtract_spectrum=sky1.data)
+<span class="n">cube</span><span class="o">.</span><span class="n">fit_lines_in_region</span><span class="p">(</span><span class="s1">&#39;circle(1000,1000,300)&#39;</span><span class="p">,</span>
+                         <span class="n">lines</span> <span class="o">*</span> <span class="n">NCOMP</span><span class="p">,</span>
+                         <span class="n">pos_def</span><span class="o">=</span><span class="n">pos_def</span><span class="p">,</span>
+                         <span class="n">pos_cov_map</span><span class="o">=</span><span class="n">pos_cov</span><span class="p">,</span>  <span class="c1">## NOTE that we use the suffix _map to pass a map instead of a single value</span>
+                         <span class="n">amp_def</span><span class="o">=</span><span class="n">amp_def</span><span class="p">,</span>
+                         <span class="n">amp_guess</span><span class="o">=</span><span class="n">amp_guess</span><span class="p">,</span>
+                         <span class="n">binning</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                         <span class="n">subtract_spectrum</span><span class="o">=</span><span class="n">sky1</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

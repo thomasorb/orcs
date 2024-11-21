@@ -480,9 +480,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># import base class for the manipulation of a SITELLE spectral cube: HDFCube
-from orcs.process import SpectralCube
-import pylab as pl
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
+<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
 </pre></div>
 </div>
 </div>
@@ -491,8 +491,8 @@ import pylab as pl
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># load spectral cube
-cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
+<span></span><span class="c1"># load spectral cube</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -513,11 +513,11 @@ master.fa09a|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># extract and plot a spectrum of a large integrated region. Sky lines should be visible.
-spectrum = cube.get_spectrum(50, 50, 20)
-pl.figure(figsize=(10,6))
-spectrum.plot()
-pl.xlim(14500, 15500)
+<span></span><span class="c1"># extract and plot a spectrum of a large integrated region. Sky lines should be visible.</span>
+<span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -546,19 +546,19 @@ calibration laser (which is falsely considered to be at 453.5 nm).</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>sky_lines_cm1 = cube.get_sky_lines()
-fit_res = spectrum.fit(sky_lines_cm1,
-                       fmodel=&#39;sinc&#39;,
-                       pos_def=&#39;1&#39;,
-                       fwhm_def=&#39;fixed&#39;,
-                       nofilter=False,
-                       pos_cov=80)
+<span></span><span class="n">sky_lines_cm1</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_sky_lines</span><span class="p">()</span>
+<span class="n">fit_res</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sky_lines_cm1</span><span class="p">,</span>
+                       <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sinc&#39;</span><span class="p">,</span>
+                       <span class="n">pos_def</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
+                       <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                       <span class="n">nofilter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">pos_cov</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 
-print(&#39;Velocity: &#39;, fit_res[&#39;velocity_gvar&#39;][0])
-pl.figure(figsize=(10,6))
-spectrum.plot()
-fit_res.get_spectrum().plot(c=&#39;red&#39;)
-pl.xlim(14500, 15500)
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Velocity: &#39;</span><span class="p">,</span> <span class="n">fit_res</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">fit_res</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -604,9 +604,9 @@ Velocity:  77.5(1.5)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># once the fit is done, you can see the results with the following
-cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;) # it is always better to reload the data cube right before running a parallel process
-cube.map_sky_velocity(80, div_nb=10, exclude_reg_file_path=&#39;m31_exclude.reg&#39;, no_fit=False) # the mean velocity bias is set around 80 km/s
+<span></span><span class="c1"># once the fit is done, you can see the results with the following</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span> <span class="c1"># it is always better to reload the data cube right before running a parallel process</span>
+<span class="n">cube</span><span class="o">.</span><span class="n">map_sky_velocity</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">div_nb</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_reg_file_path</span><span class="o">=</span><span class="s1">&#39;m31_exclude.reg&#39;</span><span class="p">,</span> <span class="n">no_fit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># the mean velocity bias is set around 80 km/s</span>
 </pre></div>
 </div>
 </div>
@@ -906,12 +906,12 @@ al. 2017a</a>)</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import orb.utils.io
-skymap = orb.utils.io.read_fits(&#39;./M31_SN3/M31_SN3.skymap.fits&#39;)
-pl.imshow(skymap.T, origin=&#39;bottom&#39;)
-pl.grid()
-cb = pl.colorbar()
-cb.set_label(&#39;velocity error (km/s)&#39;)
+<span></span><span class="kn">import</span> <span class="nn">orb.utils.io</span>
+<span class="n">skymap</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_fits</span><span class="p">(</span><span class="s1">&#39;./M31_SN3/M31_SN3.skymap.fits&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">skymap</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+<span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="s1">&#39;velocity error (km/s)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

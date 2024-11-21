@@ -467,11 +467,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># import base class for the manipulation of a SITELLE spectral cube: HDFCube
-from orcs.process import SpectralCube
-import pylab as pl
-# load spectral cube
-cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
+<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="c1"># load spectral cube</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -494,21 +494,21 @@ master.03e73|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>spectrum = cube.get_spectrum(998, 1198, 2)
-fit = spectrum.fit([&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;],
-                   fmodel=&#39;gaussian&#39;,
-                   pos_cov=-350,
-                   pos_def=[&#39;1&#39;],
-                   fwhm_def=&#39;fixed&#39;)
+<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">)</span>
 
 
-print(fit)
-print(&#39;[NII] flux ratio&#39;, fit[&#39;flux&#39;][2]/fit[&#39;flux&#39;][0])
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] flux ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
-pl.figure(figsize=(10,6))
-spectrum.plot(ls=&#39;:&#39;, c=&#39;black&#39;)
-fit.get_spectrum().plot(ls=&#39;-&#39;, c=&#39;orange&#39;)
-pl.xlim(14500, 15500)
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -555,25 +555,25 @@ amplitude of 3.2e-17 while the second one will have a final amplitude of 9.6e-17
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>spectrum = cube.get_spectrum(998, 1198, 2)
-fit = spectrum.fit([&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;],
-                   fmodel=&#39;gaussian&#39;,
-                   pos_cov=-350,
-                   pos_def=[&#39;1&#39;],
-                   fwhm_def=&#39;fixed&#39;,
-                   amp_def=[&#39;1&#39;, &#39;2&#39;, &#39;1&#39;],
-                   amp_guess=[1, 1, 3])
+<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                   <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
 
-print(fit)
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
 
-print(&#39;[NII] amplitude ratio&#39;, fit[&#39;lines_params&#39;][2,1]/fit[&#39;lines_params&#39;][0,1])
-print(&#39;[NII] flux ratio&#39;, fit[&#39;flux&#39;][2]/fit[&#39;flux&#39;][0])
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] amplitude ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] flux ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
-pl.figure(figsize=(10,6))
-spectrum.plot(ls=&#39;:&#39;, c=&#39;black&#39;)
-fit.get_spectrum().plot(ls=&#39;-&#39;, c=&#39;orange&#39;)
-pl.xlim(14500, 15500)
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -618,8 +618,8 @@ Broadening (km/s): [nan +- nan nan +- nan nan +- nan]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>amp_ratio = cube.get_amp_ratio_from_flux_ratio(&#39;[NII]6583&#39;, &#39;[NII]6548&#39;, 3)
-amp_ratio
+<span></span><span class="n">amp_ratio</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_amp_ratio_from_flux_ratio</span><span class="p">(</span><span class="s1">&#39;[NII]6583&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">amp_ratio</span>
 </pre></div>
 </div>
 </div>
@@ -637,25 +637,25 @@ amp_ratio
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>spectrum = cube.get_spectrum(998, 1198, 2)
-fit = spectrum.fit([&#39;[NII]6548&#39;, &#39;Halpha&#39;, &#39;[NII]6583&#39;],
-                   fmodel=&#39;gaussian&#39;,
-                   pos_cov=-350,
-                   pos_def=[&#39;1&#39;],
-                   fwhm_def=&#39;fixed&#39;,
-                   amp_def=[&#39;1&#39;, &#39;2&#39;, &#39;1&#39;],
-                   amp_guess=[1, 1, amp_ratio])
+<span></span><span class="n">spectrum</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">998</span><span class="p">,</span> <span class="mi">1198</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s1">&#39;[NII]6548&#39;</span><span class="p">,</span> <span class="s1">&#39;Halpha&#39;</span><span class="p">,</span> <span class="s1">&#39;[NII]6583&#39;</span><span class="p">],</span>
+                   <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+                   <span class="n">pos_cov</span><span class="o">=-</span><span class="mi">350</span><span class="p">,</span>
+                   <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">fwhm_def</span><span class="o">=</span><span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                   <span class="n">amp_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                   <span class="n">amp_guess</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">amp_ratio</span><span class="p">])</span>
 
 
-print(fit)
+<span class="nb">print</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
 
-print(&#39;[NII] amplitude ratio&#39;, fit[&#39;lines_params&#39;][2,1]/fit[&#39;lines_params&#39;][0,1])
-print(&#39;[NII] flux ratio&#39;, fit[&#39;flux&#39;][2]/fit[&#39;flux&#39;][0])
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] amplitude ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;lines_params&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[NII] flux ratio&#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
-pl.figure(figsize=(10,6))
-spectrum.plot(ls=&#39;:&#39;, c=&#39;black&#39;)
-fit.get_spectrum().plot(ls=&#39;-&#39;, c=&#39;orange&#39;)
-pl.xlim(14500, 15500)
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">spectrum</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+<span class="n">fit</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ls</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">14500</span><span class="p">,</span> <span class="mi">15500</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

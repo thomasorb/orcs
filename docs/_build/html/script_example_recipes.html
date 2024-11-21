@@ -41,8 +41,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Core module" href="core_module.html" />
-    <link rel="prev" title="Radial Velocity Correction" href="script_example_heliocentric_velocity.html" /> 
+    <link rel="next" title="Spectral cube modifications (apodization, interpolation etc.)" href="script_example_apodization.html" />
+    <link rel="prev" title="CLEAN algorithm" href="script_example_clean.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,10 +106,12 @@
 <li class="toctree-l3"><a class="reference internal" href="script_example_automatic_source_detection.html">Automatic source detection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_heliocentric_velocity.html">Radial Velocity Correction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="script_example_heliocentric_velocity.html#How-to-use-the-computed-correction">How to use the computed correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_clean.html">CLEAN algorithm</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Various recipes (e.g. resolution reduction, etc.)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#reduce-the-resolution-of-a-spectrum">reduce the resolution of a spectrum</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_apodization.html">Spectral cube modifications (apodization, interpolation etc.)</a></li>
 </ul>
 </li>
 </ul>
@@ -466,10 +468,10 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import orcs.core
-import matplotlib.pyplot as pl
-import numpy as np
-import scipy.fft
+<span></span><span class="kn">import</span> <span class="nn">orcs.core</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.fft</span>
 </pre></div>
 </div>
 </div>
@@ -486,7 +488,7 @@ import scipy.fft
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube = orcs.core.SpectralCube(&#39;data/M1_2022_SN3.merged.cm1.hdf5&#39;)
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;data/M1_2022_SN3.merged.cm1.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -510,31 +512,31 @@ dev.0624|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># reduce the resolution of a spectrum by half
+<span></span><span class="c1"># reduce the resolution of a spectrum by half</span>
 
-REDUCTION = 0.5
+<span class="n">REDUCTION</span> <span class="o">=</span> <span class="mf">0.5</span>
 
-spec = cube.get_spectrum(1000,1000)
-spec.plot()
+<span class="n">spec</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_spectrum</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 
-# inverse transform
-zp_spec = np.concatenate([spec.data, spec.data[::-1]])
-spec_ifft = scipy.fft.ifft(zp_spec)
-spec_ifft = np.roll(spec_ifft, spec.data.size)
+<span class="c1"># inverse transform</span>
+<span class="n">zp_spec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">spec</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">spec_ifft</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">zp_spec</span><span class="p">)</span>
+<span class="n">spec_ifft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">spec_ifft</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
-# apply window to reduce resolution
-w = np.zeros(spec_ifft.size, dtype=float)
-ncut = int(REDUCTION / 2 * spec_ifft.size) # remove half data (2*0.25, on each side)
+<span class="c1"># apply window to reduce resolution</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">spec_ifft</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">ncut</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">REDUCTION</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">spec_ifft</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="c1"># remove half data (2*0.25, on each side)</span>
 
-w[spec.params.zpd_index + ncut:-(ncut + spec.params.zpd_index)] = 1
-spec_ifft *= w
-spec_ifft = np.roll(spec_ifft, -spec.data.size)
+<span class="n">w</span><span class="p">[</span><span class="n">spec</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">zpd_index</span> <span class="o">+</span> <span class="n">ncut</span><span class="p">:</span><span class="o">-</span><span class="p">(</span><span class="n">ncut</span> <span class="o">+</span> <span class="n">spec</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">zpd_index</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">spec_ifft</span> <span class="o">*=</span> <span class="n">w</span>
+<span class="n">spec_ifft</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">spec_ifft</span><span class="p">,</span> <span class="o">-</span><span class="n">spec</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
-# forward transform
-spec.data = scipy.fft.fft(spec_ifft)[:spec.dimx]
+<span class="c1"># forward transform</span>
+<span class="n">spec</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">spec_ifft</span><span class="p">)[:</span><span class="n">spec</span><span class="o">.</span><span class="n">dimx</span><span class="p">]</span>
 
-spec.plot()
-pl.grid()
+<span class="n">spec</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -563,8 +565,8 @@ pl.grid()
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="script_example_heliocentric_velocity.html" class="btn btn-neutral float-left" title="Radial Velocity Correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="script_example_apodization.html" class="btn btn-neutral float-right" title="Spectral cube modifications (apodization, interpolation etc.)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_clean.html" class="btn btn-neutral float-left" title="CLEAN algorithm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

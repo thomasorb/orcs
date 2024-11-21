@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Core module" href="core_module.html" />
+    <link rel="next" title="CLEAN algorithm" href="script_example_clean.html" />
     <link rel="prev" title="Automatic source detection" href="script_example_automatic_source_detection.html" /> 
 </head>
 
@@ -111,6 +111,9 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#How-to-use-the-computed-correction">How to use the computed correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_clean.html">CLEAN algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_recipes.html">Various recipes (e.g. resolution reduction, etc.)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="script_example_apodization.html">Spectral cube modifications (apodization, interpolation etc.)</a></li>
 </ul>
 </li>
 </ul>
@@ -468,7 +471,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import orcs.process
+<span></span><span class="kn">import</span> <span class="nn">orcs.process</span>
 </pre></div>
 </div>
 </div>
@@ -477,7 +480,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>cube = orcs.process.SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
+<span></span><span class="n">cube</span> <span class="o">=</span> <span class="n">orcs</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -500,8 +503,8 @@ master.03e73|INFO| wcs calibration: True
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>corr = cube.get_radial_velocity_correction(kind=&#39;barycentric&#39;)
-print(&#39;Barycentric velocity correction: {:.2f} km/s&#39;.format(corr))
+<span></span><span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Barycentric velocity correction: </span><span class="si">{:.2f}</span><span class="s1"> km/s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -549,21 +552,21 @@ Barycentric velocity correction: 20.13 km/s
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># The results of the radial velocity correction for
-# each individual file of the initial inteferometric
-# cube are recorded here
-fout = open(&#39;abell426.barycorr.list&#39;, &#39;w&#39;)
+<span></span><span class="c1"># The results of the radial velocity correction for</span>
+<span class="c1"># each individual file of the initial inteferometric</span>
+<span class="c1"># cube are recorded here</span>
+<span class="n">fout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;abell426.barycorr.list&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
 
-# we loop in the dates file
-with open(&#39;abell426.dates.list&#39;, &#39;r&#39;) as f:
-    for line in f:
-        date = line.split()[1]
+<span class="c1"># we loop in the dates file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;abell426.dates.list&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
 
-        corr = cube.get_radial_velocity_correction(
-            kind=&#39;barycentric&#39;, date=date, silent=True)
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">get_radial_velocity_correction</span><span class="p">(</span>
+            <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barycentric&#39;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        fout.write(&#39;{} {}\n&#39;.format(date, corr))
-        print(date, corr)
+        <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">corr</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -896,25 +899,25 @@ with open(&#39;abell426.dates.list&#39;, &#39;r&#39;) as f:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># Now, we can then display the output file,
-# i.e. the barycentric velocity correction
+<span></span><span class="c1"># Now, we can then display the output file,</span>
+<span class="c1"># i.e. the barycentric velocity correction</span>
 
-import astropy.time
+<span class="kn">import</span> <span class="nn">astropy.time</span>
 
-dates = list() ; corrs = list()
-with open(&#39;abell426.barycorr.list&#39;, &#39;r&#39;) as f:
-    for line in f:
-        line = line.split()
-        dates.append(line[0])
-        corrs.append(float(line[1]))
+<span class="n">dates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="p">;</span> <span class="n">corrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;abell426.barycorr.list&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">dates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">corrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
-dates = astropy.time.Time(dates, format=&#39;isot&#39;, scale=&#39;utc&#39;)
+<span class="n">dates</span> <span class="o">=</span> <span class="n">astropy</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;isot&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;utc&#39;</span><span class="p">)</span>
 
-import pylab as pl
-pl.plot_date(dates.plot_date, corrs, ls=&#39;None&#39;, marker=&#39;+&#39;, c=&#39;orange&#39;)
-pl.grid()
-pl.xlabel(&#39;Date (UTC)&#39;)
-pl.ylabel(&#39;Barycentric velocity correction (in km/s)&#39;)
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">dates</span><span class="o">.</span><span class="n">plot_date</span><span class="p">,</span> <span class="n">corrs</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Date (UTC)&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Barycentric velocity correction (in km/s)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -961,7 +964,7 @@ Text(0, 0.5, &#39;Barycentric velocity correction (in km/s)&#39;)
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="core_module.html" class="btn btn-neutral float-right" title="Core module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="script_example_clean.html" class="btn btn-neutral float-right" title="CLEAN algorithm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="script_example_automatic_source_detection.html" class="btn btn-neutral float-left" title="Automatic source detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

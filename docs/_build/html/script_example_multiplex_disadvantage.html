@@ -443,11 +443,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span>%matplotlib inline
-import numpy as np
-import pylab as pl
-import orb.utils.spectrum
-import orb.utils.sim
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">orb.utils.spectrum</span>
+<span class="kn">import</span> <span class="nn">orb.utils.sim</span>
 </pre></div>
 </div>
 </div>
@@ -456,18 +456,18 @@ import orb.utils.sim
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span># dispersive spectrum model
-N = 1000
-x = np.arange(N, dtype=float)
-h = 0
-a = 3
-dx = N/4.
-fwhm = 2
-spectrum = orb.utils.spectrum.gaussian1d(x, h, a, dx, fwhm)
-pl.plot(spectrum)
-noise = np.random.standard_normal(N) * np.sqrt(spectrum)
-pl.plot(spectrum + noise)
-pl.xlim((230,270))
+<span></span><span class="c1"># dispersive spectrum model</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">dx</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="mf">4.</span>
+<span class="n">fwhm</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">spectrum</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">gaussian1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum</span> <span class="o">+</span> <span class="n">noise</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">230</span><span class="p">,</span><span class="mi">270</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -492,16 +492,16 @@ pl.xlim((230,270))
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
-<span></span># interferometric spectrum model
-interf = orb.utils.sim.line_interf(dx/2, N, 0) * a / N * 2
-noise = np.random.standard_normal(N) * np.sqrt(interf)
-pl.plot(interf)
-pl.figure()
-axis, interf_spectrum = orb.utils.sim.fft(interf, zp_coeff=1)
-pl.plot(interf_spectrum)
-axis, interf_spectrum_noise = orb.utils.sim.fft(interf + noise, zp_coeff=1)
-pl.plot(interf_spectrum_noise)
-pl.xlim((230,270))
+<span></span><span class="c1"># interferometric spectrum model</span>
+<span class="n">interf</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">line_interf</span><span class="p">(</span><span class="n">dx</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">a</span> <span class="o">/</span> <span class="n">N</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">interf</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">interf</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">axis</span><span class="p">,</span> <span class="n">interf_spectrum</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">interf</span><span class="p">,</span> <span class="n">zp_coeff</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">interf_spectrum</span><span class="p">)</span>
+<span class="n">axis</span><span class="p">,</span> <span class="n">interf_spectrum_noise</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">interf</span> <span class="o">+</span> <span class="n">noise</span><span class="p">,</span> <span class="n">zp_coeff</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">interf_spectrum_noise</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">230</span><span class="p">,</span><span class="mi">270</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>

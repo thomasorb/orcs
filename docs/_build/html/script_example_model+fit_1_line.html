@@ -467,9 +467,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>import orb.fit
-import pylab as pl
-import numpy as np
+<span></span><span class="kn">import</span> <span class="nn">orb.fit</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
@@ -481,8 +481,8 @@ import numpy as np
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># import base class for the manipulation of a SITELLE spectral cube: HDFCube
-from orcs.process import SpectralCube
+<span></span><span class="c1"># import base class for the manipulation of a SITELLE spectral cube: HDFCube</span>
+<span class="kn">from</span> <span class="nn">orcs.process</span> <span class="kn">import</span> <span class="n">SpectralCube</span>
 </pre></div>
 </div>
 </div>
@@ -491,13 +491,13 @@ from orcs.process import SpectralCube
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># load spectral cube
-cube = SpectralCube(&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;)
-print(&#39;step (scan step size in nm): &#39;, cube.params.step)
-print(&#39;order: &#39;, cube.params.order)
-print(&#39;number of steps: &#39;, cube.params.step_nb)
-print(&#39;zpd_index&#39;, cube.params.zpd_index)
-print(&#39;axis correction coefficient (calibration coefficient of the wavenumber axis which only depends on theta)&#39;, cube.params.axis_corr)
+<span></span><span class="c1"># load spectral cube</span>
+<span class="n">cube</span> <span class="o">=</span> <span class="n">SpectralCube</span><span class="p">(</span><span class="s1">&#39;/home/thomas/M31_SN3.merged.cm1.1.0.hdf5&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step (scan step size in nm): &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;order: &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of steps: &#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">step_nb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;zpd_index&#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">zpd_index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;axis correction coefficient (calibration coefficient of the wavenumber axis which only depends on theta)&#39;</span><span class="p">,</span> <span class="n">cube</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">axis_corr</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -533,28 +533,28 @@ axis correction coefficient (calibration coefficient of the wavenumber axis whic
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>from orb.core import Lines
-halpha_cm1 = Lines().get_line_cm1(&#39;Halpha&#39;)
+<span></span><span class="kn">from</span> <span class="nn">orb.core</span> <span class="kn">import</span> <span class="n">Lines</span>
+<span class="n">halpha_cm1</span> <span class="o">=</span> <span class="n">Lines</span><span class="p">()</span><span class="o">.</span><span class="n">get_line_cm1</span><span class="p">(</span><span class="s1">&#39;Halpha&#39;</span><span class="p">)</span>
 
-step = 2943
-order = 8
-step_nb = 840
-axis_corr = 1.0374712062298759
-theta = orb.utils.spectrum.corr2theta(axis_corr)
-print(&#39;incident angle theta (in degrees):&#39;, theta)
-zpd_index = 168
+<span class="n">step</span> <span class="o">=</span> <span class="mi">2943</span>
+<span class="n">order</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">step_nb</span> <span class="o">=</span> <span class="mi">840</span>
+<span class="n">axis_corr</span> <span class="o">=</span> <span class="mf">1.0374712062298759</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectrum</span><span class="o">.</span><span class="n">corr2theta</span><span class="p">(</span><span class="n">axis_corr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incident angle theta (in degrees):&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+<span class="n">zpd_index</span> <span class="o">=</span> <span class="mi">168</span>
 
-# model spectrum
-velocity = 250
-broadening = 10.
-spectrum_axis, spectrum = orb.fit.create_cm1_lines_model_raw([halpha_cm1], [1], step, order, step_nb, axis_corr, zpd_index=zpd_index, fmodel=&#39;sincgauss&#39;,
-                                                                  sigma=broadening, vel=velocity)
+<span class="c1"># model spectrum</span>
+<span class="n">velocity</span> <span class="o">=</span> <span class="mi">250</span>
+<span class="n">broadening</span> <span class="o">=</span> <span class="mf">10.</span>
+<span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">create_cm1_lines_model_raw</span><span class="p">([</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">step_nb</span><span class="p">,</span> <span class="n">axis_corr</span><span class="p">,</span> <span class="n">zpd_index</span><span class="o">=</span><span class="n">zpd_index</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                                                                  <span class="n">sigma</span><span class="o">=</span><span class="n">broadening</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">velocity</span><span class="p">)</span>
 
-# add noise (can be commented to obtain a noise free spectrum)
-spectrum += np.random.standard_normal(spectrum.shape) * 0.01
+<span class="c1"># add noise (can be commented to obtain a noise free spectrum)</span>
+<span class="n">spectrum</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.01</span>
 
-pl.plot(spectrum_axis, spectrum)
-pl.xlim((15200, 15270))
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span> <span class="mi">15270</span><span class="p">))</span>
 
 </pre></div>
 </div>
@@ -591,26 +591,26 @@ incident angle theta (in degrees): 15.445939567249903
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>nm_laser = 543.5 # wavelength of the calibration laser, in fact it can be any real positive number (e.g. 1 is ok)
-# note: an apodization of 1 means: no apodization (which is the case here)
-#
-# pos_cov is the velocity of the lines in km/s. It is a covarying parameter,
-# because the reference position -i.e. the initial guess- of the lines is set
-#
-# sigma_guess is the initial guess on the broadening (in km/s)
-fit = orb.fit.fit_lines_in_spectrum(spectrum, [halpha_cm1], step, order, nm_laser, theta, zpd_index=zpd_index,
-                                    wavenumber=True, apodization=1, fmodel=&#39;sincgauss&#39;,
-                                    pos_def=[&#39;1&#39;],
-                                    pos_cov=velocity, sigma_guess=broadening)
+<span></span><span class="n">nm_laser</span> <span class="o">=</span> <span class="mf">543.5</span> <span class="c1"># wavelength of the calibration laser, in fact it can be any real positive number (e.g. 1 is ok)</span>
+<span class="c1"># note: an apodization of 1 means: no apodization (which is the case here)</span>
+<span class="c1">#</span>
+<span class="c1"># pos_cov is the velocity of the lines in km/s. It is a covarying parameter,</span>
+<span class="c1"># because the reference position -i.e. the initial guess- of the lines is set</span>
+<span class="c1">#</span>
+<span class="c1"># sigma_guess is the initial guess on the broadening (in km/s)</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_lines_in_spectrum</span><span class="p">(</span><span class="n">spectrum</span><span class="p">,</span> <span class="p">[</span><span class="n">halpha_cm1</span><span class="p">],</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">nm_laser</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">zpd_index</span><span class="o">=</span><span class="n">zpd_index</span><span class="p">,</span>
+                                    <span class="n">wavenumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">apodization</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmodel</span><span class="o">=</span><span class="s1">&#39;sincgauss&#39;</span><span class="p">,</span>
+                                    <span class="n">pos_def</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">],</span>
+                                    <span class="n">pos_cov</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">sigma_guess</span><span class="o">=</span><span class="n">broadening</span><span class="p">)</span>
 
-# velocity and broadening should be exact at the machine precision if no noise is present in the spectrum.
-print(&#39;velocity (in km/s): &#39;, fit[&#39;velocity_gvar&#39;])
-print(&#39;broadening (in km/s): &#39;, fit[&#39;broadening_gvar&#39;])
-print(&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;, fit[&#39;flux_gvar&#39;])
-pl.plot(spectrum_axis, spectrum, label=&#39;real_spectrum&#39;)
-pl.plot(spectrum_axis, fit[&#39;fitted_vector&#39;], label=&#39;fit&#39;)
-pl.xlim((15200, 15270))
-pl.legend()
+<span class="c1"># velocity and broadening should be exact at the machine precision if no noise is present in the spectrum.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;velocity (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;velocity_gvar&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;broadening (in km/s): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;broadening_gvar&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;flux (in the unit of the spectrum amplitude / unit of the axis fwhm): &#39;</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;flux_gvar&#39;</span><span class="p">])</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;real_spectrum&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">spectrum_axis</span><span class="p">,</span> <span class="n">fit</span><span class="p">[</span><span class="s1">&#39;fitted_vector&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">15200</span><span class="p">,</span> <span class="mi">15270</span><span class="p">))</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
