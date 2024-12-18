@@ -376,7 +376,7 @@ class SpectralCube(orcs.core.SpectralCube):
         return self._fit_wrapper(self.get_spectrum_from_region, args, kwargs)
 
     def fit_lines_in_region(self, region, lines, fmodel='sinc', binning=1, nofilter=True,
-                            subtract_spectrum=None, max_iter=None,
+                            subtract_spectrum=None, max_iter=None, force_positive_flux=True,
                             timeout=None, **kwargs):
         """Fit lines in a given region of the cube. All the pixels in
         the defined region are fitted one by one and a set of maps
@@ -425,7 +425,9 @@ class SpectralCube(orcs.core.SpectralCube):
         """
         def fit_lines_in_pixel(spectrum, spectrum_bundle, inputparams, 
                                calib_coeff_ij, calib_coeff_orig_ij,
-                               flux_sdev_ij, debug, max_iter, subtract_spectrum,
+                               flux_sdev_ij, debug, max_iter,
+                               force_positive_flux,                               
+                               subtract_spectrum,
                                binning, flambda, mapped_kwargs):
 
             import orb.utils.spectrum
@@ -483,6 +485,7 @@ class SpectralCube(orcs.core.SpectralCube):
             try:
                 ifit = spectrum.prepared_fit(
                     inputparams, max_iter=max_iter,
+                    force_positive_flux=force_positive_flux,
                     **mapped_kwargs)
                 
             except Exception as e:
@@ -658,6 +661,7 @@ class SpectralCube(orcs.core.SpectralCube):
                                    args=[spectrum_bundle, inputparams,
                                          calibration_coeff_map, calibration_coeff_map_orig,
                                          flux_uncertainty, self.debug, max_iter,
+                                         force_positive_flux,
                                          subtract_spectrum, binning, flambda],
                                    kwargs=mapped_kwargs,
                                    modules=['numpy as np', 'gvar', 'orcs.utils',
@@ -696,14 +700,16 @@ class SpectralCube(orcs.core.SpectralCube):
                                          oversampling_ratio,
                                          subtract_spectrum, max_comps, threshold, binning, prod,
                                          flambda, mapped_kwargs):
-
+        
+            warnings.simplefilter('ignore', RuntimeWarning)
             out = np.full((len(lines_cm1) + 2) * max_comps, np.nan, dtype=float)
             spectrum = spectrum.real * flambda
             if subtract_spectrum is not None:
                 spectrum -= subtract_spectrum.real * binning ** 2
             try:
                 res = orb.utils.fit.estimate_velocity_prepared(
-                    spectrum, vels, combs, precision, filter_range_pix, max_comps=max_comps,
+                    spectrum, vels, combs, precision, filter_range_pix, max_comps,
+                    lines_cm1, axis, oversampling_ratio,
                     threshold=threshold, prod=prod, return_score=True)
                 out[:max_comps], out[max_comps:max_comps*2] = res
                 for icomp in range(max_comps):
@@ -712,7 +718,6 @@ class SpectralCube(orcs.core.SpectralCube):
                         max_comps*2 + icomp * len(lines_cm1) + len(lines_cm1)] = res
                 
             except Exception as e:
-                #print(e)
                 pass
             
             
