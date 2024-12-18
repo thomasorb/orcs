@@ -915,6 +915,9 @@ class LineMaps(orb.core.Tools):
                                dtype=np.float32)
         base_array.fill(np.nan)
         #self.data = dict()
+        # remove old file
+        if os.path.exists(self._get_hdf5_path()): os.remove(self._get_hdf5_path())
+        
         self.data = orb.utils.io.open_hdf5(self._get_hdf5_path(), 'w')
         
         self.data.attrs['lines'] = self.lines
@@ -931,7 +934,9 @@ class LineMaps(orb.core.Tools):
     def __del__(self):
         try:
             self.data.close()
-        except: pass
+        except Exception as e:
+            logging.warning(f'Exception occured at HDF5 linemaps.data closing: {e}')
+            
             
     @classmethod
     def load(cls, path):
