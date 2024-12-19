@@ -370,6 +370,7 @@ class SpectralCube(orb.cube.SpectralCube):
         out = list()
         jobs = list() # submitted and unfinished jobs
         all_jobs_nb = len(all_jobs)
+
         progress = orb.core.ProgressBar(all_jobs_nb)
         while len(all_jobs) > 0 or len(jobs) > 0:
             while_loop_start = time.time()
@@ -601,7 +602,7 @@ class SpectralCube(orb.cube.SpectralCube):
         mask[np.nonzero(mask)] = 1
         mask = mask.astype(bool)
 
-
+        total_number_of_pixels = np.sum(mask)
         # add kwargs to args
         kwargs_keys = list(kwargs.keys())
         for key in kwargs_keys:
@@ -662,12 +663,14 @@ class SpectralCube(orb.cube.SpectralCube):
 
         def check_timesup():
             if timeout is not None:
-                if time.time() - process_start_time > timeout * float(np.sum(mask)):
-                    logging.warning('process time reached timeout * number of binned pixels = {}*{} s'.format(timeout, np.nansum(mask)))
+                if time.time() - process_start_time > timeout * float(total_number_of_pixels):
+                    logging.warning('process time reached timeout * number of binned pixels = {}*{} s'.format(timeout, total_number_of_pixels))
                     logging.info(orb.utils.parallel.get_stats_str(job_server))
                     return True
             return False
 
+
+        timing_per_pixel = list()
         progress = orb.core.ProgressBar(all_jobs_nb)
         while len(all_jobs_indexes) > 0 or len(jobs) > 0:
             if check_timesup(): break
@@ -742,7 +745,8 @@ class SpectralCube(orb.cube.SpectralCube):
                         modules=tuple(modules)),
                     (ix, iy), time.time(), timer, all_jobs_indexes[0]])
                 all_jobs_indexes.pop(0)
-                progress.update(all_jobs_nb - len(all_jobs_indexes))
+                _median_timing = np.nanmedian(timing_per_pixel)
+                progress.update(all_jobs_nb - len(all_jobs_indexes), info=f'{_median_timing:.2f}s/pix|{(_median_timing*total_number_of_pixels)/ncpus/3600:.2f}h')
 
 
             # retrieve all finished jobs
@@ -758,6 +762,8 @@ class SpectralCube(orb.cube.SpectralCube):
                     logging.debug('job {} load data time: {} s'.format(
                         ijob_index, timer['job_load_data_end'] - timer['job_load_data_start']))
 
+                    timing_per_pixel.append((time.time() - stime) / np.size(ix))
+                    
                     res_row = ijob()
                     for irow in range(len(res_row)):
                         res = res_row[irow]

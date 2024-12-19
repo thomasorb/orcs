@@ -32,7 +32,7 @@ import warnings
 import logging
 import numpy as np
 import gvar
-
+from datetime import datetime
 import orb.utils.spectrum
 import orb.utils.log
 import orb.utils.io
@@ -656,7 +656,9 @@ class SpectralCube(orcs.core.SpectralCube):
             flambda = self.params.flambda / self.dimz / self.params.exposure_time
         else:
             flambda = np.ones(self.dimz, dtype=float)
-            
+
+        # datetime object containing current date and time
+        logging.info(f'fitting started at {datetime.now()}')
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
                                          calibration_coeff_map, calibration_coeff_map_orig,
@@ -762,7 +764,7 @@ class SpectralCube(orcs.core.SpectralCube):
 
 
         # create mask
-        imask = mask * (ncomp_map == ncomp)
+        imask = mask * (ncomp_map >= ncomp)
         logging.info(f'number of spectra to fit with {ncomp} components: {np.sum(imask)}')
 
         ivelmap = np.squeeze(velocity_maps[:ncomp])
