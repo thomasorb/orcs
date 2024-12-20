@@ -818,7 +818,7 @@ class SpectralCube(orcs.core.SpectralCube):
     def estimate_parameters_in_region(self, region, lines, vel_range,
                                       subtract_spectrum=None, binning=3,
                                       precision=10, max_comps=1, threshold=1,
-                                      prod=True):
+                                      clean=False, prod=True):
         """Detect and estimate the most probable velocities and
         fluxes of a set of emission lines in an entire region of the
         cube. Multiple components (same set of emission lines,
@@ -848,7 +848,7 @@ class SpectralCube(orcs.core.SpectralCube):
         def estimate_parameters_in_pixel(spectrum, axis, combs, vels,
                                          precision, filter_range_pix, lines_cm1,
                                          oversampling_ratio,
-                                         subtract_spectrum, max_comps, threshold, binning, prod,
+                                         subtract_spectrum, max_comps, threshold, binning, prod, clean,
                                          flambda, mapped_kwargs):
         
             warnings.simplefilter('ignore', RuntimeWarning)
@@ -860,7 +860,7 @@ class SpectralCube(orcs.core.SpectralCube):
                 res = orb.utils.fit.estimate_velocity_prepared(
                     spectrum, vels, combs, precision, filter_range_pix, max_comps,
                     lines_cm1, axis, oversampling_ratio,
-                    threshold=threshold, prod=prod, return_score=True)
+                    threshold=threshold, prod=prod, clean=clean, return_score=True)
                 out[:max_comps], out[max_comps:max_comps*2] = res
                 for icomp in range(max_comps):
                     res = orb.utils.fit.estimate_flux(spectrum, axis, lines_cm1, out[icomp], filter_range_pix, oversampling_ratio)
@@ -902,7 +902,7 @@ class SpectralCube(orcs.core.SpectralCube):
                                     args=[axis, combs, vels, precision,
                                           filter_range_pix, lines_cm1,
                                           oversampling_ratio, subtract_spectrum, max_comps,
-                                          threshold, binning, prod, flambda],
+                                          threshold, binning, prod, clean, flambda],
                                     modules=['numpy as np', 'gvar', 'orcs.utils',
                                              'logging', 'warnings', 'time',
                                              'import orb.utils.spectrum',
