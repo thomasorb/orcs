@@ -124,6 +124,17 @@ class SpectralCube(fit.SpectralCube):
         """Return path to the detection position frame"""
         return self._data_path_hdr + "detection_pos_frame.fits"
 
+    def _get_emission_map_path(self):
+        """Return path to the generated emission map.
+        """
+        return self._get_data_prefix() + 'emission_map.fits'
+
+    def _get_background_map_path(self):
+        """Return path to the generated background emission map.
+        """
+        return self._get_data_prefix() + 'background_map.fits'
+
+
     def map_sky_velocity(self, mean_sky_vel, div_nb=20, plot=True,
                          x_range=None, y_range=None,
                          exclude_reg_file_path=None,
@@ -572,3 +583,104 @@ class SpectralCube(fit.SpectralCube):
                         fits_header=newhdr, overwrite=True)
 
 
+    def get_emission_map(self, region, binning=1, subtract_spectrum=None):
+        """
+        Return maps of emission and background flux in a given region.
+
+        :param region: Region of interest. Multiple regions can be used to
+          define the fitted region. Can be a path to a ds9 file, a
+          string defining the region in ds9 format or a boolean map
+          (i.e. a mask) of the same dimension as the cube field of
+          view where 1s stand for pixels that should be fitted. If a
+          ds9 file, multiple regions can be used to define the fitted
+          region. They do not need to be contiguous.
+
+        :param binning: Binning of the spectra.
+
+        :param subtract_spectrum: (Optional) Remove the given spectrum
+          from the extracted spectrum before estimating the emission.
+          Useful to remove sky spectrum. Both spectra must
+          have the same size.
+        """
+        def get_emission_in_pixel(spectrum, filter_range_pix, binning, 
+                                  subtract_spectrum, flambda, mapped_kwargs):
+
+            SNR_COEFF = 3
+
+            warnings.simplefilter('ignore', RuntimeWarning)
+            out = np.full(2, np.nan, dtype=float)
+            spectrum = spectrum.real * flambda
+            if subtract_spectrum is not None:
+                spectrum -= subtract_spectrum.real * binning ** 2
+
+            xmin, xmax = filter_range_pix.astype(int)
+
+            threshold = orb.utils.stats.unbiased_std(
+                np.concatenate([spectrum[10:xmin-int(spectrum.size*0.1)],
+                                spectrum[xmax+int(spectrum.size*0.1):-10]])) * SNR_COEFF
+            spectrum = spectrum[xmin:xmax]
+
+            # background estimation and subtraction 
+            background = np.copy(spectrum.real)
+            x = np.arange(background.size)
+            ok = np.ones_like(x, dtype=bool)
+            for i in range(4):
+                c = np.polyfit(x[ok], background[ok], 3)
+                ifit = np.polyval(c, x)
+                ok = np.abs(background - ifit) < threshold
+            background = np.polyval(c, x)
+
+            spectrum -= background
+
+            out[1] = np.sum(background)
+            out[0] = np.sum(spectrum)
+            return out
+
+        region = self.get_mask_from_ds9_region_file(region)
+
+        mask = np.zeros((self.dimx, self.dimy), dtype=float)
+        mask[region] = 1
+
+        mask_bin = orb.utils.image.nanbin_image(mask, binning)
+
+        preparation_spectrum = self.get_spectrum_bin(self.dimx/2, self.dimy/2, binning)
+        axis = preparation_spectrum.axis.data
+
+        if (subtract_spectrum is not None) and (not callable(subtract_spectrum)):
+            if isinstance(subtract_spectrum, np.ndarray):
+                subtract_spectrum = np.copy(subtract_spectrum)
+            
+            elif isinstance(subtract_spectrum, orb.fft.Spectrum):
+                subtract_spectrum = np.copy(subtract_spectrum.data)
+            else: raise Exception('subtract_spectrum type should be an array or an orb.fft.Spectrum instance')
+
+        # get flambda
+        if self.has_flux_calibration() and self.get_level() >= 3:
+            flambda = self.params.flambda / self.dimz / self.params.exposure_time
+        else:
+            flambda = np.ones(self.dimz, dtype=float)
+
+        filter_range_pix = self.get_filter_range_pix()
+
+        pmap = self.process_by_pixel(get_emission_in_pixel,
+                                    args=[filter_range_pix, binning, subtract_spectrum, flambda],
+                                    modules=['numpy as np', 'gvar', 'orcs.utils',
+                                             'logging', 'warnings',],
+                                    mask=mask,
+                                    binning=binning,
+                                    out=np.full((mask_bin.shape[0], mask_bin.shape[1], 2),
+                                                np.nan, dtype=float))
+
+
+        orb.utils.io.write_fits(
+            self._get_emission_map_path(),
+            orb.utils.image.nn_interpolate(pmap[:,:,0], (self.dimx, self.dimy)),
+            overwrite=True)
+                                     
+
+        orb.utils.io.write_fits(
+            self._get_background_map_path(),
+            orb.utils.image.nn_interpolate(pmap[:,:,1], (self.dimx, self.dimy)),
+            overwrite=True)
+
+        return pmap

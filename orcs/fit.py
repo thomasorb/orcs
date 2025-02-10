@@ -32,7 +32,7 @@ import warnings
 import logging
 import numpy as np
 import gvar
-
+from datetime import datetime
 import orb.utils.spectrum
 import orb.utils.log
 import orb.utils.io
@@ -76,10 +76,13 @@ class SpectralCube(orcs.core.SpectralCube):
         return (dirname + os.sep + "INTEGRATED"
                 + os.sep + basename + "integrated_spectrum_{}.hdf5".format(region_name))
 
-    def _get_estimated_frame_path(self, param, comp):
+    def _get_estimated_frame_path(self, param, binning, comp):
         """Return path to the estimated parameter frame"""
         param = str(param).replace('[','').replace(']','')
-        return self._data_path_hdr + "estimated_{}.{}.fits".format(str(param), int(comp))
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + f"Estimated_{int(binning)}x{int(binning)}"
+                + os.sep + basename + f"estimated_{str(param)}.{int(comp)}.fits")
 
 
     def fit_integrated_spectra(self, regions_file_path, lines,
@@ -616,7 +619,7 @@ class SpectralCube(orcs.core.SpectralCube):
             wcs_header=self.get_wcs_header(),
             instrument=self.instrument,
             data_prefix=self._data_prefix,
-            config=self.config)        
+            config=self.config)
 
         # check subtract spectrum
         if subtract_spectrum is not None:
@@ -656,7 +659,9 @@ class SpectralCube(orcs.core.SpectralCube):
             flambda = self.params.flambda / self.dimz / self.params.exposure_time
         else:
             flambda = np.ones(self.dimz, dtype=float)
-            
+
+        # datetime object containing current date and time
+        logging.info(f'fitting started at {datetime.now()}')
         out = self.process_by_pixel(fit_lines_in_pixel,
                                    args=[spectrum_bundle, inputparams,
                                          calibration_coeff_map, calibration_coeff_map_orig,
@@ -676,20 +681,168 @@ class SpectralCube(orcs.core.SpectralCube):
                              x_range=[0, self.dimx],
                              y_range=[0, self.dimy])
 
-
         linemaps.save()
         linemaps.write_maps()
         return linemaps
 
+    def fit_lines_in_region_from_estimate(self, ncomp, lines=None, folder=None, mask=None,
+                                          fmodel='sinc', binning=1, nofilter=True,
+                                          subtract_spectrum=None, max_iter=None,
+                                          force_positive_flux=True,
+                                          timeout=None, **kwargs):
+        """Fit the lines in a region given the velocity estimates
+        computed with estimate_velocity_in_region(). All common
+        fitting parameters are automatically set but they can also be
+        set by the user using the same arguments as
+        fit_lines_in_region().
+
+        :param: ncomp, the number of components to fit. Only the
+          pixels with this exact number of components will be
+          fitted. If the velocity estimate was made with more than one
+          component, the user must run this method for every number of
+          detected components (see example in the documentation for a
+          script which does the entire fit automatically for a large
+          number of components).
+
+        :param lines: Set the lines to fit (for one velocity
+          component). If None, common emission lines in the filter are
+          automatically choosen.
+
+        :param folder: Path to the folder containing the
+          estimate_velocity maps if they are in a different folder
+          than the default one.
+
+        :param mask: Additional mask to apply on the fitted
+          region. Useful to fit only on a small part of the cube if
+          the estimate was done on a much larger area. Can be a path
+          to a ds9 file, a string defining the region in ds9 format or
+          a boolean map (i.e. a mask) of the same dimension as the
+          cube field of view where 1s stand for pixels that should be
+          fitted. If a ds9 file, multiple regions can be used to
+          define the fitted region. They do not need to be contiguous.
+
+        .. note:: Other parameters are the same as in
+          fit_lines_in_region().
+        """
+
+        if mask is None:
+            mask = np.ones((self.dimx, self.dimy), dtype=bool)
+        else:
+            if isinstance(mask, np.ndarray):
+                if mask.shape == (self.dimx, self.dimy):
+                    mask = mask.astype(bool)
+                else:
+                    raise TypeError('mask shape should be ({}, {}) but is {}'.format(
+                        self.dimx, self.dimy, mask.shape))
+            else:
+                ds9_mask = self.get_mask_from_ds9_region_file(mask)
+                mask = np.zeros((self.dimx, self.dimy), dtype=bool)
+                mask[ds9_mask] = True
+
+            
+        # get estimate velocity maps
+        velocity_maps = list()
+        maxcomp = 0
+        while True:
+            ipath = self._get_estimated_frame_path('velocity', binning, maxcomp)
+            if folder is not None:
+                ipath = folder + os.sep + os.path.split(ipath)[1]
+            if not os.path.exists(ipath):
+                break
+            velocity_maps.append(orb.utils.io.read_fits(ipath))
+            logging.info(f'component: {maxcomp + 1} - {ipath} loaded')
+            maxcomp += 1
+        logging.info('{} velocity components detected in folder'.format(maxcomp))
+        if maxcomp == 0: raise Exception(f'{ipath} not found')
+
+        velocity_maps = np.array(velocity_maps)
+        
+        ncomp_map = np.sum(~np.isnan(velocity_maps), axis=0)
+
+        # write totle number of pixels for each components
+        for icomp in range(maxcomp):
+            logging.info(f'{icomp + 1} components: {np.sum(ncomp_map == icomp + 1)} pixels to fit')
+
+        logging.info(f'================== starting fit for {ncomp} components ============================')
+
+
+        # create mask
+        imask = mask * (ncomp_map >= ncomp)
+        logging.info(f'number of spectra to fit with {ncomp} components: {np.sum(imask)}')
+
+        ivelmap = np.squeeze(velocity_maps[:ncomp])
+        if ncomp > 1:
+            ivelmap = list(ivelmap)
+
+        # sanity check
+        if ncomp == 1:
+            if np.any(np.isnan(ivelmap)[imask]): raise Exception('badly formatted velocity maps')
+        else:
+            if np.any(np.isnan(ivelmap)[::,imask]): raise Exception('badly formatted velocity maps')
+
+
+        # get lines
+        spec = self.get_spectrum(1000, 1000) # any spectrum will do to compute autofit parameters
+        ilines, auto_params = spec.get_autofit_parameters(lines=lines, velocities=[0,] * (ncomp))
+
+        logging.info(f'lines to fit: {ilines}')
+
+        # loading defined parameters
+        for iparam in kwargs:
+            auto_params[iparam] = kwargs[iparam]
+
+        auto_params['pos_cov_map'] = ivelmap
+        del auto_params['pos_cov']
+
+        logging.info('-------- fit parameters ----------')
+        for iparam in auto_params:
+            if iparam == 'pos_cov_map':
+                if ncomp == 1:
+                    logging.info(f'{iparam}: shape: {auto_params[iparam].shape}')
+                else:
+                    logging.info(f'{iparam}: len: {len(auto_params[iparam])}, shape: {auto_params[iparam][0].shape}')
+            else:
+                logging.info(f'{iparam}: {auto_params[iparam]}')
+        logging.info('----------------------------------')
+
+        self.fit_lines_in_region(
+            imask,
+            subtract_spectrum=subtract_spectrum, 
+            fmodel=fmodel,
+            binning=binning,
+            nofilter=nofilter,
+            max_iter=max_iter,
+            force_positive_flux=force_positive_flux,
+            timeout=timeout,
+            **auto_params)
+            
+        
+
     def estimate_parameters_in_region(self, region, lines, vel_range,
                                       subtract_spectrum=None, binning=3,
                                       precision=10, max_comps=1, threshold=1,
-                                      prod=True):
-        """:param lines: Emission lines to fit (must be in cm-1 if the
+                                      clean=False, prod=True):
+        """Detect and estimate the most probable velocities and
+        fluxes of a set of emission lines in an entire region of the
+        cube. Multiple components (same set of emission lines,
+        different velocities) can be detected
+
+        :param lines: Emission lines to fit (must be in cm-1 if the
           cube is in wavenumber. must be in nm otherwise).
 
         :param region: Region to fit. Multiple regions can be used to
-          define the fitted region. They do not need to be contiguous.
+          define the fitted region. Can be a path to a ds9 file, a
+          string defining the region in ds9 format or a boolean map
+          (i.e. a mask) of the same dimension as the cube field of
+          view where 1s stand for pixels that should be fitted. If a
+          ds9 file, multiple regions can be used to define the fitted
+          region. They do not need to be contiguous.
+
+        :param vel_range: A tuple (vel_min, vel_max) of the range of
+          velocities to try.
+
+        :param max_comps: Maximum number of components to detect. The
+          number of detected components can be lower.
 
         :param threshold: Detection threshold as a factor of the std
           of the calculated score.
@@ -698,7 +851,7 @@ class SpectralCube(orcs.core.SpectralCube):
         def estimate_parameters_in_pixel(spectrum, axis, combs, vels,
                                          precision, filter_range_pix, lines_cm1,
                                          oversampling_ratio,
-                                         subtract_spectrum, max_comps, threshold, binning, prod,
+                                         subtract_spectrum, max_comps, threshold, binning, prod, clean,
                                          flambda, mapped_kwargs):
         
             warnings.simplefilter('ignore', RuntimeWarning)
@@ -710,7 +863,7 @@ class SpectralCube(orcs.core.SpectralCube):
                 res = orb.utils.fit.estimate_velocity_prepared(
                     spectrum, vels, combs, precision, filter_range_pix, max_comps,
                     lines_cm1, axis, oversampling_ratio,
-                    threshold=threshold, prod=prod, return_score=True)
+                    threshold=threshold, prod=prod, clean=clean, return_score=True)
                 out[:max_comps], out[max_comps:max_comps*2] = res
                 for icomp in range(max_comps):
                     res = orb.utils.fit.estimate_flux(spectrum, axis, lines_cm1, out[icomp], filter_range_pix, oversampling_ratio)
@@ -752,7 +905,7 @@ class SpectralCube(orcs.core.SpectralCube):
                                     args=[axis, combs, vels, precision,
                                           filter_range_pix, lines_cm1,
                                           oversampling_ratio, subtract_spectrum, max_comps,
-                                          threshold, binning, prod, flambda],
+                                          threshold, binning, prod, clean, flambda],
                                     modules=['numpy as np', 'gvar', 'orcs.utils',
                                              'logging', 'warnings', 'time',
                                              'import orb.utils.spectrum',
@@ -766,17 +919,17 @@ class SpectralCube(orcs.core.SpectralCube):
 
         for icomp in range(max_comps):
             orb.utils.io.write_fits(
-                self._get_estimated_frame_path('velocity', icomp),
+                self._get_estimated_frame_path('velocity', binning, icomp),
                 orb.utils.image.nn_interpolate(pmap[:,:,icomp], (self.dimx, self.dimy)),
                 overwrite=True)
             orb.utils.io.write_fits(
-                self._get_estimated_frame_path('score', icomp),
+                self._get_estimated_frame_path('score', binning, icomp),
                 orb.utils.image.nn_interpolate(pmap[:,:,max_comps+icomp], (self.dimx, self.dimy)),
                 overwrite=True)
 
             for i in range(len(lines_cm1)):
                 orb.utils.io.write_fits(
-                    self._get_estimated_frame_path(lines[i], icomp),
+                    self._get_estimated_frame_path(lines[i], binning, icomp),
                     orb.utils.image.nn_interpolate(
                         pmap[:,:,max_comps*2 + (len(lines_cm1) * icomp) + i],
                         (self.dimx, self.dimy)),
