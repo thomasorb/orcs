@@ -76,10 +76,13 @@ class SpectralCube(orcs.core.SpectralCube):
         return (dirname + os.sep + "INTEGRATED"
                 + os.sep + basename + "integrated_spectrum_{}.hdf5".format(region_name))
 
-    def _get_estimated_frame_path(self, param, comp):
+    def _get_estimated_frame_path(self, param, binning, comp):
         """Return path to the estimated parameter frame"""
         param = str(param).replace('[','').replace(']','')
-        return self._data_path_hdr + "estimated_{}.{}.fits".format(str(param), int(comp))
+        dirname = os.path.dirname(self._data_path_hdr)
+        basename = os.path.basename(self._data_path_hdr)
+        return (dirname + os.sep + f"Estimated_{int(binning)}x{int(binning)}"
+                + os.sep + basename + f"estimated_{str(param)}.{int(comp)}.fits")
 
 
     def fit_integrated_spectra(self, regions_file_path, lines,
@@ -741,7 +744,7 @@ class SpectralCube(orcs.core.SpectralCube):
         velocity_maps = list()
         maxcomp = 0
         while True:
-            ipath = self._get_estimated_frame_path('velocity', maxcomp)
+            ipath = self._get_estimated_frame_path('velocity', binning, maxcomp)
             if folder is not None:
                 ipath = folder + os.sep + os.path.split(ipath)[1]
             if not os.path.exists(ipath):
@@ -916,17 +919,17 @@ class SpectralCube(orcs.core.SpectralCube):
 
         for icomp in range(max_comps):
             orb.utils.io.write_fits(
-                self._get_estimated_frame_path('velocity', icomp),
+                self._get_estimated_frame_path('velocity', binning, icomp),
                 orb.utils.image.nn_interpolate(pmap[:,:,icomp], (self.dimx, self.dimy)),
                 overwrite=True)
             orb.utils.io.write_fits(
-                self._get_estimated_frame_path('score', icomp),
+                self._get_estimated_frame_path('score', binning, icomp),
                 orb.utils.image.nn_interpolate(pmap[:,:,max_comps+icomp], (self.dimx, self.dimy)),
                 overwrite=True)
 
             for i in range(len(lines_cm1)):
                 orb.utils.io.write_fits(
-                    self._get_estimated_frame_path(lines[i], icomp),
+                    self._get_estimated_frame_path(lines[i], binning, icomp),
                     orb.utils.image.nn_interpolate(
                         pmap[:,:,max_comps*2 + (len(lines_cm1) * icomp) + i],
                         (self.dimx, self.dimy)),
