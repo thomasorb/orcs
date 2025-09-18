@@ -407,7 +407,9 @@ class SpectralCube(orcs.core.SpectralCube):
         :param subtract_spectrum: (Optional) Remove the given spectrum
           from the extracted spectrum before fitting
           parameters. Useful to remove sky spectrum. Both spectra must
-          have the same size.
+          have the same size. You can also pass a function f(x,y)
+          which takes the x and y position as arguments and outputs
+          the vector which must be subtracted as a numpy 1d array.
 
         :param max_iter: (Optional) Maximum number of iterations
           (default None)
